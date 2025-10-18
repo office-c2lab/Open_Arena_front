@@ -196,7 +196,7 @@ export default function Sidebar() {
                   key={subIdx}
                   onClick={() => handleSubMenuClick(sub.label, item.label)}
                   // 💡 ml-3 (12px) + pl-[32px] (패딩) = 텍스트 시작 44px
-                  className={`flex items-center ml-3 pl-[32px] pr-3 py-2 w-[172px] h-[38px] rounded-[8px] transition-colors cursor-pointer
+                  className={`flex items-center ml-7 pl-[20px] pr-3 py-2 w-[180px] h-[38px] rounded-[8px] transition-colors cursor-pointer
                     ${isSubActive ? 'bg-[#FF4854]' : 'hover:bg-gray-100'}
                   `}
                 >
