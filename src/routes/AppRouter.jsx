@@ -17,15 +17,14 @@ export default function AppRouter() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/tutorial" element={<Tutorial />} />
+        <Route path="/challenge" element={<Challenge />} />
         <Route path="/login" element={<Login />} />
         {/* DefaultLayout 안에서 처리할 404 */}
         <Route path="*" element={<NotFound />} />
       </Route>
 
       {/* ChallengeLayout 하위 Route */}
-      <Route element={<ChallengeLayout />}>
-        <Route path="/challenge" element={<Challenge />} />
-      </Route>
+      <Route element={<ChallengeLayout />}>{/* 여기에 챌린지 문제풀기 화면들 */}</Route>
     </Routes>
   );
 }
