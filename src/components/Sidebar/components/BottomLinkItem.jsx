@@ -1,14 +1,15 @@
 // src/components/Sidebar/components/BottomLinkItem.jsx
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 /**
- * 하단 링크 항목 컴포넌트 (Help, Logout 등)
- * @param {object} item - 링크 항목 데이터
+ * 하단 링크 항목 컴포넌트 (Link 기반)
  */
 export default function BottomLinkItem({ item }) {
   return (
-    <a
+    <Link
+      to={item.path}
       className={`flex items-center px-3 py-2 gap-3 w-full ${item.heightClass} rounded-[8px] transition-colors cursor-pointer hover:bg-gray-100`}
       onMouseEnter={() => item.setHovered(true)}
       onMouseLeave={() => item.setHovered(false)}
@@ -28,6 +29,6 @@ export default function BottomLinkItem({ item }) {
       />
       {/* 텍스트 색상 조정 스타일 */}
       <span className={item.isHovered ? item.hoverTextClass : item.textClass}>{item.label}</span>
-    </a>
+    </Link>
   );
 }
