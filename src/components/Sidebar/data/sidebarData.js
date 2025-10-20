@@ -1,6 +1,6 @@
 // src/components/Sidebar/data/sidebarData.js
 
-// Sidebar.jsx에서 사용되는 아이콘들을 모두 import 합니다.
+// 아이콘 import (경로는 프로젝트 설정에 따라 다를 수 있음)
 import DashboardIcon from '@/assets/icons/home.svg';
 import ChartIcon from '@/assets/icons/line-chart.svg';
 import PageIcon from '@/assets/icons/page.svg';
@@ -17,66 +17,87 @@ import SettingsIconWhite from '@/assets/icons/white-settings.svg';
 
 const primaryTextColor = 'text-[#0F172A]';
 
-// 챌린지 드롭다운 서브 메뉴 데이터 (path 제거 - 필터링 기능)
+// 챌린지 드롭다운 서브 메뉴 데이터 (필터링 기능)
 export const aiSubMenu = [
-  { label: 'Coding' },
-  { label: 'Counseling' },
-  { label: 'Finance' },
-  { label: 'Medical' },
-  { label: 'General' },
+  { label: '코딩' },
+  { label: '상담' },
+  { label: '금융' },
+  { label: '의료' },
+  { label: '일반' },
 ];
 
-// 설정 드롭다운 서브 메뉴 데이터 (path 유지 - 페이지 이동 기능)
+// 설정 드롭다운 서브 메뉴 데이터 (페이지 이동 기능)
 export const settingsSubMenu = [
-  { label: 'Account', path: '/settings/account' },
-  { label: 'Notification', path: '/settings/notification' }
+  { label: '계정', path: '/settings/account' },
+  { label: '알림', path: '/settings/notification' },
 ];
 
-// 메인 네비게이션 데이터 (Menu 섹션)
-export const mainNavigationData = (isAIDropdownOpen, handleItemClick) => [
-  { icon: DashboardIcon, activeIcon: DashboardIconWhite, label: 'Dashboard', path: '/', isDropdown: false },
+// -----------------------------------------------------------
+// 메인 네비게이션 데이터 (메뉴 섹션)
+// -----------------------------------------------------------
+export const mainNavigationData = isAIDropdownOpen => [
+  {
+    icon: DashboardIcon,
+    activeIcon: DashboardIconWhite,
+    label: '대시보드',
+    path: '/',
+    isDropdown: false,
+  },
   {
     icon: ChartIcon,
     activeIcon: ChartIconWhite,
-    label: 'Leaderboard',
+    label: '리더보드',
     path: '/leaderboard',
     isDropdown: false,
     hasChevron: false,
   },
-  { icon: PageIcon, activeIcon: PageIconWhite, label: 'Tutorial', path: '/tutorial', isDropdown: false },
+  {
+    icon: PageIcon,
+    activeIcon: PageIconWhite,
+    label: '튜토리얼',
+    path: '/tutorial',
+    isDropdown: false,
+  },
   {
     icon: AIIcon,
     activeIcon: AIIconWhite,
-    label: 'Challenge',
-    path: '/challenge', // Challenge 메인 페이지로 이동
+    label: '챌린지',
+    path: '/challenge',
     isDropdown: true,
     hasChevron: true,
     isOpen: isAIDropdownOpen,
     subMenu: aiSubMenu,
-    onClick: () => handleItemClick('Challenge', true),
   },
 ];
 
-// 서브 네비게이션 데이터 (Settings 섹션)
-export const subNavigationData = (isSettingsDropdownOpen, handleItemClick) => [
+// -----------------------------------------------------------
+// 서브 네비게이션 데이터 (설정 섹션)
+// -----------------------------------------------------------
+export const subNavigationData = isSettingsDropdownOpen => [
   {
     icon: SettingsIcon,
     activeIcon: SettingsIconWhite,
-    label: 'Settings',
-    path: '/settings', // Settings 메인 페이지로 이동
+    label: '설정',
+    path: '/settings',
     isDropdown: true,
     hasChevron: true,
     isOpen: isSettingsDropdownOpen,
     subMenu: settingsSubMenu,
-    onClick: () => handleItemClick('Settings', true),
   },
 ];
 
+// -----------------------------------------------------------
 // 하단 링크 데이터
-export const bottomLinksData = (isHelpHovered, setIsHelpHovered, isLogoutHovered, setIsLogoutHovered) => [
+// -----------------------------------------------------------
+export const bottomLinksData = (
+  isHelpHovered,
+  setIsHelpHovered,
+  isLogoutHovered,
+  setIsLogoutHovered
+) => [
   {
     icon: HelpIcon,
-    label: 'Help',
+    label: '도움말',
     path: '/help',
     textClass: `${primaryTextColor}/50 text-[12px] font-medium`,
     hoverTextClass: `${primaryTextColor} text-[12px] font-medium`,
@@ -87,7 +108,7 @@ export const bottomLinksData = (isHelpHovered, setIsHelpHovered, isLogoutHovered
   },
   {
     icon: LogoutIcon,
-    label: 'Login Account',
+    label: '계정 로그인',
     path: '/login',
     textClass: 'text-[#CC8889] text-[12px] font-medium',
     hoverTextClass: 'text-[#FF084A] text-[12px] font-medium',

@@ -1,7 +1,8 @@
-// src/components/Sidebar/components/NavLinkItem.jsx (수정)
+// src/components/Sidebar/components/NavLinkItem.jsx
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSidebarStore } from '../../../store/useSidebarStore'; // zustand import
 
 // 아이콘
 import DropdownIcon from '@/assets/icons/downbtn.svg';
@@ -12,12 +13,18 @@ const primaryTextColor = 'text-[#0F172A]';
 /**
  * 단일 네비게이션 링크 항목 컴포넌트 (Link 기반 + 필터링 기능)
  */
-export default function NavLinkItem({ item, activeItem, handleItemClick, handleSubMenuClick }) {
+export default function NavLinkItem({ item }) {
+  // props 목록 간소화
   const location = useLocation();
 
+  // 🔴 Zustand에서 필요한 상태와 액션을 구독 🔴
+  const { activeItem, handleItemClick, handleSubMenuClick } = useSidebarStore();
+
   // 1. 활성화 상태 계산 (배경색 결정):
+  // activeItem은 이제 '대시보드', '챌린지', '코딩' 등의 한글 레이블을 가집니다.
   const isLabelActive = activeItem === item.label;
   const isSubMenuActive = item.subMenu ? item.subMenu.some(sub => sub.label === activeItem) : false;
+
   const isActive = isLabelActive || isSubMenuActive;
 
   // 2. 시각적 활성화 상태 계산 (텍스트/아이콘 색상 결정):
@@ -28,26 +35,22 @@ export default function NavLinkItem({ item, activeItem, handleItemClick, handleS
   const currentIcon = isVisualActive && item.activeIcon ? item.activeIcon : item.icon;
   const currentChevronIcon = isVisualActive ? DropdownIconWhite : DropdownIcon;
 
-  // 🔴 3. 렌더링 컴포넌트 및 props 설정 수정: 🔴
-  // item.path가 존재하면(Challenge 포함), Link 컴포넌트를 사용합니다.
+  // 3. 렌더링 컴포넌트 및 props 설정:
   const isNavigational = !!item.path;
   const Component = isNavigational ? Link : 'div';
 
   const props = isNavigational
     ? {
-        to: item.path, // 💡 페이지 이동 경로: /challenge
-        // Link의 onClick은 네비게이션과 별개로 실행되어 드롭다운을 토글하고 activeItem을 설정합니다.
+        to: item.path,
         onClick: () => handleItemClick(item.label, item.isDropdown),
       }
     : {
-        // path가 없는 항목 (일부 필터링 기능만 하는 상위 메뉴 등)
         onClick: item.onClick || (() => handleItemClick(item.label, item.isDropdown)),
         role: 'button',
       };
 
-  // Challenge와 Settings의 서브 메뉴 렌더링 컴포넌트 분리
-  const isChallenge = item.label === 'Challenge';
-  const SubComponent = isChallenge ? 'a' : Link; // Challenge 하위 메뉴는 필터링용 <a> 태그 유지
+  const isChallenge = item.label === '챌린지'; // 한글 레이블 사용
+  const SubComponent = isChallenge ? 'a' : Link;
 
   return (
     <div className={`w-full ${isDropdownOpen ? 'flex flex-col gap-3' : ''}`}>

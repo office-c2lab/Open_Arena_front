@@ -1,6 +1,8 @@
-// src/components/Sidebar/Sidebar.jsx (최종: 필터링 및 페이지 이동 로직)
+// src/components/Sidebar/Sidebar.jsx
 
 import React, { useState } from 'react';
+// 💡 zustand 스토어 import
+import { useSidebarStore } from '../../store/useSidebarStore';
 
 // 하위 컴포넌트들을 './components/' 폴더에서 불러옵니다.
 import SidebarHeader from './components/SidebarHeader';
@@ -12,53 +14,20 @@ import SidebarProfile from './components/SidebarProfile';
 import { mainNavigationData, subNavigationData, bottomLinksData } from './data/sidebarData';
 
 export default function Sidebar() {
-  // activeItem 상태: 현재 선택된 메뉴 항목(혹은 필터)을 추적
-  const [activeItem, setActiveItem] = useState('Dashboard');
-  const [isAIDropdownOpen, setIsAIDropdownOpen] = useState(false);
-  const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
+  // 🔴 Zustand에서 필요한 상태와 액션을 구독 🔴
+  const {
+    activeItem,
+    isAIDropdownOpen,
+    isSettingsDropdownOpen, // handleItemClick, // NavLinkItem에서 직접 호출하므로 주석 처리
+    // handleSubMenuClick, // NavLinkItem에서 직접 호출하므로 주석 처리
+  } = useSidebarStore(); // 하단 링크 호버 상태는 여전히 로컬 상태로 유지 (전역 상태로 만들 필요 없음)
+
   const [isHelpHovered, setIsHelpHovered] = useState(false);
-  const [isLogoutHovered, setIsLogoutHovered] = useState(false);
+  const [isLogoutHovered, setIsLogoutHovered] = useState(false); // 정적 데이터 호출 (zustand 상태를 전달)
 
-  // --- 이벤트 핸들러 ---
-  const handleItemClick = (label, isDropdown) => {
-    // 페이지 이동 메뉴 (Dashboard, Tutorial 등) 클릭 시 activeItem 설정
-    setActiveItem(label);
+  const mainNavigation = mainNavigationData(isAIDropdownOpen);
+  const subNavigation = subNavigationData(isSettingsDropdownOpen);
 
-    // 드롭다운 토글 로직
-    if (label === 'Challenge') {
-      setIsSettingsDropdownOpen(false);
-      setIsAIDropdownOpen(prev => !prev);
-    } else if (label === 'Settings') {
-      setIsAIDropdownOpen(false);
-      setIsSettingsDropdownOpen(prev => !prev);
-    } else {
-      // 일반 링크 클릭 시 드롭다운 모두 닫기
-      setIsAIDropdownOpen(false);
-      setIsSettingsDropdownOpen(false);
-    }
-  };
-
-  const handleSubMenuClick = (subLabel, parentLabel) => {
-    // 서브 메뉴(필터) 클릭 시 activeItem을 해당 레이블로 설정
-    setActiveItem(subLabel);
-
-    // 드롭다운은 열린 상태 유지
-    if (parentLabel === 'Challenge') {
-      setIsAIDropdownOpen(true);
-      setIsSettingsDropdownOpen(false);
-    } else if (parentLabel === 'Settings') {
-      // Settings의 서브 메뉴는 페이지 이동이므로 클릭 후 드롭다운을 닫을 수도 있지만,
-      // 여기서는 Challenge와 동일하게 열린 상태를 유지합니다.
-      setIsSettingsDropdownOpen(true);
-      setIsAIDropdownOpen(false);
-    }
-
-    // 💡 참고: Challenge의 경우, 여기서 실제 필터링 로직이 실행되어야 합니다.
-  };
-
-  // 정적 데이터 호출
-  const mainNavigation = mainNavigationData(isAIDropdownOpen, handleItemClick);
-  const subNavigation = subNavigationData(isSettingsDropdownOpen, handleItemClick);
   const bottomLinks = bottomLinksData(
     isHelpHovered,
     setIsHelpHovered,
@@ -69,40 +38,31 @@ export default function Sidebar() {
   return (
     <aside
       className="
-      absolute left-[240px] top-0 
-      w-[256px] h-screen 
-      bg-white border-r border-white/10 rounded-[12px] 
-      flex flex-col p-6 gap-6
-    "
+   w-[256px] h-screen 
+   bg-white border-r border-white/10 rounded-[12px] 
+   flex flex-col p-6 gap-6
+  "
     >
-      <SidebarHeader />
-
+      <SidebarHeader /> {/* 섹션 제목 한글로 변경 */}
       <SidebarSection
-        title="Menu"
+        title="메뉴" // 💡 'Menu' -> '메뉴'로 변경
         items={mainNavigation}
         activeItem={activeItem}
-        handleItemClick={handleItemClick}
-        handleSubMenuClick={handleSubMenuClick}
       />
-
+      {/* 섹션 제목 한글로 변경 */}
       <SidebarSection
-        title="Settings"
+        title="설정" // 💡 'Settings' -> '설정'으로 변경
         items={subNavigation}
         activeItem={activeItem}
-        handleItemClick={handleItemClick}
-        handleSubMenuClick={handleSubMenuClick}
       />
-
       <div className="flex-grow"></div>
-
       <nav className="flex flex-col gap-2 w-[208px]">
         {bottomLinks.map((item, idx) => (
           <BottomLinkItem key={idx} item={item} />
         ))}
       </nav>
-
-      {/* 임시 데이터 전달 */}
-      <SidebarProfile name={'user'} role={'Product Manager'} />
+      {/* 임시 데이터 한글로 변경 */}
+      <SidebarProfile name={'사용자'} role={'프로덕트 매니저'} />
     </aside>
   );
 }
