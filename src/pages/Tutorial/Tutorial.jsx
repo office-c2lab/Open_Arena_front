@@ -1,6 +1,6 @@
 // src/pages/Tutorial.jsx
 
-import tutorialImage from '../../assets/image/tutorial.png'; // 💡 이미지 파일 경로를 import 합니다.
+import tutorialImage from '../../assets/images/tutorial.png'; // 💡 이미지 파일 경로를 import 합니다.
 
 // Tailwind CSS를 사용하여 Figma 디자인을 구현합니다.
 
