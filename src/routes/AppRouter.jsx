@@ -12,13 +12,14 @@ import NotFound from '../pages/NotFound/NotFound'; // ← 404 페이지 추가
 export default function AppRouter() {
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
+
       {/* DefaultLayout 하위 Route */}
       <Route element={<DefaultLayout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/challenge" element={<Challenge />} />
-        <Route path="/login" element={<Login />} />
         {/* DefaultLayout 안에서 처리할 404 */}
       </Route>
 
