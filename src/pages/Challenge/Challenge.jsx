@@ -1,7 +1,7 @@
 // src/features/Challenge/Challenge.jsx
 
 import React, { useState, useRef, useEffect } from 'react';
-import { TABS, BOT_RESPONSE } from './data/challengeData';
+import { TABS, BOT_RESPONSE, CHALLENGE_DETAILS } from './data/challengeData';
 
 import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
@@ -55,6 +55,7 @@ export default function Challenge() {
         activeTab={activeTab}
         activeTabContent={activeTabContent}
         handleTabClick={handleTabClick}
+        CHALLENGE_DETAILS={CHALLENGE_DETAILS}
       />
 
       {/* 2. 중앙 AI 채팅 및 입력 영역 */}
