@@ -21,13 +21,13 @@ export default function AppRouter() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
+        <Route path="*" element={<NotFound />} />
         {/* DefaultLayout 안에서 처리할 404 */}
       </Route>
 
       {/* ChallengeLayout 하위 Route */}
       <Route element={<ChallengeLayout />}>
         <Route path="/challenge" element={<Challenge />} />
-        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

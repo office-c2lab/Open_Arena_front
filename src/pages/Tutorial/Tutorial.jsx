@@ -1,18 +1,24 @@
 // src/pages/Tutorial.jsx
 
+import React from 'react'; // React import 추가
 import tutorialImage from '../../assets/images/tutorial.png'; // 💡 이미지 파일 경로를 import 합니다.
 
 // Tailwind CSS를 사용하여 Figma 디자인을 구현합니다.
 
 export default function Tutorial() {
   return (
-    <div className="w-full">
+    // 💡 수정: max-w-7xl, mx-auto, p-10을 적용하여 컨텐츠를 중앙으로 이동시키고 패딩을 줍니다.
+    <div className="w-full max-w-7xl mx-auto py-12 px-6 lg:px-8">
       {/* 튜토리얼 타이틀 영역 */}
-      <div className="mb-10"></div>
+      <div className="mb-10">
+        {/* 💡 이 부분에 H1 타이틀을 넣는 것이 일반적입니다. (현재는 비어있음) */}
+      </div>
+
       {/* 챌린지 카드 영역 (가이드 + 문제) */}
-      <div className="flex flex-col gap-10">
-        {/* === 1. 튜토리얼 가이드 카드 (Rectangle 23905) === */}{' '}
-        <div className="bg-white rounded-xl shadow-md w-full max-w-[1058px] p-8">
+      <div className="flex flex-col gap-10 items-center">
+        {/* === 1. 튜토리얼 가이드 카드 (Rectangle 23905) === */}
+        {/* 💡 카드 자체가 중앙 정렬되도록 mx-auto를 추가합니다. */}
+        <div className="bg-white rounded-xl shadow-md w-full max-w-[1058px] p-8 mx-auto">
           {/* 상단 콘텐츠 */} {/* Heading1 - 700 (588px Left) */}
           <h2 className="text-4xl font-extrabold text-[#FF4854] mb-15">튜토리얼</h2>
           {/* Heading 2 - 300 (588px Left) */}
@@ -21,8 +27,10 @@ export default function Tutorial() {
             여러분을 위한 곳입니다! 프롬프트의 기본부터 모든 관련 개념에 대해 알려드리겠습니다.
           </p>
         </div>
+
         {/* === 2. 챌린지 문제 카드 (Rectangle 23904 + Group 407) === */}
-        <div className="bg-white rounded-xl shadow-lg w-full max-w-[1058px] flex overflow-hidden border border-gray-200">
+        {/* 💡 카드 자체가 중앙 정렬되도록 mx-auto를 추가합니다. */}
+        <div className="bg-white rounded-xl shadow-lg w-full max-w-[1058px] flex overflow-hidden border border-gray-200 mx-auto">
           {/* 좌측 문제 설명 영역 */}
           <div className="p-8 flex flex-col justify-between w-full max-w-[674px]">
             {/* 목표 제목 (Heading 2 - 500) */}
@@ -48,10 +56,9 @@ export default function Tutorial() {
               문제 풀기
             </button>
           </div>
+
           {/* 우측 이미지 영역 (image 186) */}
-          {/* 384px 너비의 이미지가 오른쪽에 붙어있습니다. */}
           <div className="w-[384px] flex-shrink-0 bg-gray-100 hidden lg:block">
-            {/* 💡 src="placeholder_image_url" 대신 import한 변수를 사용합니다. */}
             <img
               src={tutorialImage}
               alt="Challenge Illustration"
