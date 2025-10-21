@@ -49,7 +49,7 @@ export default function NavLinkItem({ item }) {
         role: 'button',
       };
 
-  const isChallenge = item.label === '챌린지'; // 한글 레이블 사용
+  const isChallenge = item.label === '카테고리'; // 한글 레이블 사용
   const SubComponent = isChallenge ? 'a' : Link;
 
   return (

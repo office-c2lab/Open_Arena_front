@@ -62,7 +62,7 @@ export const mainNavigationData = isAIDropdownOpen => [
     icon: AIIcon,
     activeIcon: AIIconWhite,
     label: '챌린지',
-    path: '/challenge',
+    path: '/kategorie',
     isDropdown: true,
     hasChevron: true,
     isOpen: isAIDropdownOpen,

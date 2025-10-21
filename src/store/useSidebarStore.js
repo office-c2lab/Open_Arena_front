@@ -7,7 +7,7 @@ const PATH_TO_LABEL_MAP = {
   '/': '대시보드',
   '/leaderboard': '리더보드',
   '/tutorial': '튜토리얼',
-  '/challenge': '챌린지',
+  '/kategorie': '챌린지',
   // 서브 메뉴 경로는 필요하다면 여기에 추가 (예: '/settings/account': '계정')
 };
 
