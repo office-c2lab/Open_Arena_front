@@ -1,8 +1,9 @@
 // src/features/Challenge/Challenge.jsx
 
 import React, { useState, useRef, useEffect } from 'react';
-import { TABS, BOT_RESPONSE, CHALLENGE_DETAILS } from './data/challengeData';
+import { TABS, BOT_RESPONSE, CHALLENGE_HEADER_INFO } from './data/challengeData';
 
+// assets 경로가 '@'로 설정되어 있다고 가정합니다.
 import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
 import ResetIcon from '@/assets/icons/reset.svg';
@@ -15,6 +16,7 @@ import AttemptHistoryPanel from './components/AttemptHistoryPanel';
 // ----------------------------------------------------------------------
 
 export default function Challenge() {
+  // 초기 탭을 첫 번째 탭 ('description')으로 설정
   const [activeTab, setActiveTab] = useState(TABS[0].id);
   const activeTabContent = TABS.find(tab => tab.id === activeTab);
 
@@ -55,7 +57,7 @@ export default function Challenge() {
         activeTab={activeTab}
         activeTabContent={activeTabContent}
         handleTabClick={handleTabClick}
-        CHALLENGE_DETAILS={CHALLENGE_DETAILS}
+        CHALLENGE_HEADER_INFO={CHALLENGE_HEADER_INFO}
       />
 
       {/* 2. 중앙 AI 채팅 및 입력 영역 */}
