@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar/Sidebar';
-import ChallengeHeader from '../components/ChallengeHeader/ChallengeHeader';
+import ChallengeHeader from '../pages/Challenge/components/ChallengeHeader';
 
 export default function ChallengeLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

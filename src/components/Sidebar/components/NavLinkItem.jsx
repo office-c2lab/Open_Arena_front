@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSidebarStore } from '../../../store/useSidebarStore'; // zustand import
+import { useSidebarStore } from '../../../stores/useSidebarStore'; // zustand import
 
 // 아이콘
 import DropdownIcon from '@/assets/icons/downbtn.svg';

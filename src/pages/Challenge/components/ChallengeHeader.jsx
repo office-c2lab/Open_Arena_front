@@ -1,14 +1,25 @@
-// src/components/ChallengeHeader/ChallengeHeader.jsx
+// src/pages/Challenge/components/ChallengeHeader.jsx
 
 import React from 'react';
+// 💡 모달 스토어 임포트 (경로 수정)
+import useModalStore from '@/stores/useModalStore';
+
 // 💡 아이콘 경로는 실제 프로젝트 구조에 맞게 수정하세요.
 import MenuIcon from '@/assets/icons/toggleSidebar.svg';
 import HelpIcon from '@/assets/icons/helpModal.svg';
 
 // 💡 props로 toggleSidebar 함수를 받습니다.
 export default function ChallengeHeader({ toggleSidebar }) {
+  // --------------------------------------------------------
+  // 1. Zustand 스토어에서 openDebugModal 액션 함수 가져오기
+  // 💡 액션만 가져올 때는 Zustand 훅을 직접 호출하여 불필요한 리렌더링을 방지합니다.
+  // --------------------------------------------------------
+  const { openDebugModal } = useModalStore(); // 👈 이렇게 수정!
+
+  // 2. 도움말 버튼 클릭 핸들러
   const handleHelpClick = () => {
-    console.log('도움말 모달 열기/라우팅 로직 실행');
+    // 💡 디버그 모달 열기 함수 호출
+    openDebugModal();
   };
 
   return (

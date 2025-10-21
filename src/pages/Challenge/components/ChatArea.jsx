@@ -2,6 +2,8 @@
 
 import React from 'react';
 import ChatBubble from './ChatBubble';
+// 💡 모달 스토어 임포트
+import useModalStore from '@/stores/useModalStore';
 
 export default function ChatArea({
   ArenaIcon,
@@ -12,8 +14,13 @@ export default function ChatArea({
   inputValue,
   handleInputChange,
   handleSendMessage,
-  handleResetChat,
+  handleResetChat, // 사용되지 않음 (Modal로 로직 이동)
 }) {
+  // --------------------------------------------------------
+  // 💡 Zustand 스토어에서 openResetModal 액션 가져오기
+  // --------------------------------------------------------
+  const { openResetModal } = useModalStore(); // 액션만 가져와 리렌더링 최적화
+
   const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]';
 
   return (
@@ -24,6 +31,7 @@ export default function ChatArea({
           {chatMessages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center p-4">
               <img src={ArenaIcon} alt="ARENA Logo" className="w-[246.5px] h-[361.5px] mb-4" />
+
               <p className="text-[20px] font-light text-[#000000] mt-4">
                 AI와 대화를 시작하세요. <br /> 프롬프트를 입력하여 챌린지를 시작하세요.
               </p>
@@ -37,6 +45,7 @@ export default function ChatArea({
                   className="w-[246.5px] h-[361.5px] opacity-30"
                 />
               </div>
+
               <div className="relative z-10 pt-4">
                 {chatMessages.map(msg => (
                   <ChatBubble key={msg.id} sender={msg.sender} content={msg.content} />
@@ -46,7 +55,6 @@ export default function ChatArea({
             </>
           )}
         </div>
-
         {/* Input and Action Area */}
         <div className="h-[210px] md:h-[237px] p-4 md:p-6 bg-purple-50/20 shadow-[0px_-3px_10px_rgba(0,0,0,0.25)] rounded-b-[20px] flex flex-col justify-end gap-3 flex-shrink-0">
           {/* Textarea and Send Button */}
@@ -63,6 +71,7 @@ export default function ChatArea({
                 }
               }}
             ></textarea>
+
             <button
               className={`flex-shrink-0 w-10 h-10 ${sendButtonColorClass} rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-colors duration-200`}
               disabled={!inputValue.trim()}
@@ -71,18 +80,19 @@ export default function ChatArea({
               <img src={SendIcon} alt="Send" className="w-5 h-5" />
             </button>
           </div>
-
           {/* Reset and Submit Buttons */}
           <div className="flex justify-between flex-shrink-0 gap-3">
             <button
               className="flex items-center justify-center flex-1 h-[44px] bg-[#D9DADB] rounded-lg gap-2"
-              onClick={handleResetChat}
+              // 💡 openResetModal 호출
+              onClick={openResetModal}
             >
               <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
               <span className="text-[20px] font-bold text-white leading-[26px]">
                 대화 내용 초기화
               </span>
             </button>
+
             <button className="flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center">
               <span className="text-[20px] font-bold text-white leading-[26px]">제출하기</span>
             </button>

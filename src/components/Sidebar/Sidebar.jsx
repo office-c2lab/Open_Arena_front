@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useSidebarStore } from '../../store/useSidebarStore';
+import { useSidebarStore } from '../../stores/useSidebarStore';
 
 // 하위 컴포넌트 (가정된 경로)
 // 실제 프로젝트에 맞게 경로를 수정해야 합니다.
