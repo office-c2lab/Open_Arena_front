@@ -14,12 +14,12 @@ export default function ChatArea({
   inputValue,
   handleInputChange,
   handleSendMessage,
-  handleResetChat, // 사용되지 않음 (Modal로 로직 이동)
+  handleResetChat, // Modal에서 스토어 액션 호출로 변경되어 사용되지 않음
 }) {
   // --------------------------------------------------------
-  // 💡 Zustand 스토어에서 openResetModal 액션 가져오기
+  // 💡 Zustand 스토어에서 모달 열기 액션 가져오기
   // --------------------------------------------------------
-  const { openResetModal } = useModalStore(); // 액션만 가져와 리렌더링 최적화
+  const { openResetModal, openSubmitModal } = useModalStore();
 
   const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]';
 
@@ -84,7 +84,6 @@ export default function ChatArea({
           <div className="flex justify-between flex-shrink-0 gap-3">
             <button
               className="flex items-center justify-center flex-1 h-[44px] bg-[#D9DADB] rounded-lg gap-2"
-              // 💡 openResetModal 호출
               onClick={openResetModal}
             >
               <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
@@ -93,7 +92,10 @@ export default function ChatArea({
               </span>
             </button>
 
-            <button className="flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center">
+            <button
+              className="flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center"
+              onClick={openSubmitModal} // 💡 제출 모달 열기 액션 연결
+            >
               <span className="text-[20px] font-bold text-white leading-[26px]">제출하기</span>
             </button>
           </div>

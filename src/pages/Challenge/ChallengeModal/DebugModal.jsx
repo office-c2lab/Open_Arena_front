@@ -27,7 +27,7 @@ Model: Unknown
 const CancelIcon = ({ onClick }) => (
   <div
     onClick={onClick}
-    className="absolute top-[36px] right-[42px] w-[18px] h-[18px]  cursor-pointer"
+    className="absolute top-[36px] right-[42px] w-[18px] h-[18px] cursor-pointer"
   >
     <img src={CancelSvg} alt="닫기" className="w-full h-full" />
   </div>
