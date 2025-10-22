@@ -8,6 +8,7 @@ import LoadingModal from '../../components/Loading/LoadingModal.jsx';
 import FailedModal from '../Challenge/ChallengeModal/FailedModal.jsx';
 import SuccessModal from '../Challenge/ChallengeModal/SuccesModal.jsx';
 import ProblemCard from '../../components/ProblemCard/ProblemCard.jsx.jsx';
+import Banner from '../../components/Banner/Banner.jsx';
 
 const Kategorie = () => {
   const navigate = useNavigate(); // 💡 useNavigate 훅 호출
@@ -93,7 +94,10 @@ const Kategorie = () => {
   }, [closeSuccessModal]);
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-6 p-10">
+    <div className="w-full h-full flex flex-col justify-center items-center p-6 gap-8">
+      <div className="w-full max-w-[1069px] flex justify-center">
+        <Banner />
+      </div>
       <h1 className="text-4xl font-extrabold text-gray-800">Challenge 진행 화면</h1>
 
       {/* === 모달을 여는 버튼 그룹 === */}

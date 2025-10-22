@@ -2,18 +2,17 @@
 
 import React from 'react'; // React import 추가
 import tutorialImage from '../../assets/images/tutorial.png'; // 💡 이미지 파일 경로를 import 합니다.
+import Banner from '../../components/Banner/Banner';
 
 // Tailwind CSS를 사용하여 Figma 디자인을 구현합니다.
 
 export default function Tutorial() {
   return (
     // 💡 수정: max-w-7xl, mx-auto, p-10을 적용하여 컨텐츠를 중앙으로 이동시키고 패딩을 줍니다.
-    <div className="w-full max-w-7xl mx-auto py-12 px-6 lg:px-8">
-      {/* 튜토리얼 타이틀 영역 */}
-      <div className="mb-10">
-        {/* 💡 이 부분에 H1 타이틀을 넣는 것이 일반적입니다. (현재는 비어있음) */}
+    <div className="w-full h-full flex flex-col justify-center items-center p-6 gap-8">
+      <div className="w-full max-w-[1069px] flex justify-center">
+        <Banner />
       </div>
-
       {/* 챌린지 카드 영역 (가이드 + 문제) */}
       <div className="flex flex-col gap-10 items-center">
         {/* === 1. 튜토리얼 가이드 카드 (Rectangle 23905) === */}

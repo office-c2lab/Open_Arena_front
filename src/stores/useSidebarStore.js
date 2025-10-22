@@ -1,4 +1,4 @@
-// /src/store/useSidebarStore.js (최종 - 토글 로직 제거)
+// /src/store/useSidebarStore.js (최종 - '/challenge' 경로 매핑 추가)
 
 import { create } from 'zustand';
 
@@ -7,21 +7,18 @@ const PATH_TO_LABEL_MAP = {
   '/leaderboard': '리더보드',
   '/tutorial': '튜토리얼',
   '/kategorie': '챌린지',
+  '/challenge': '챌린지', // 💡 '/challenge' 경로 추가
 };
 
 export const useSidebarStore = create((set, get) => ({
   // --------------------
   // 1. 상태 (State)
   // --------------------
-  // 💡 isOpen 상태는 제거됨
   activeItem: PATH_TO_LABEL_MAP[window.location.pathname] || '대시보드',
   isAIDropdownOpen: false,
   isSettingsDropdownOpen: false, // --------------------
   // 2. 액션 (Actions)
   // --------------------
-
-  // 💡 toggleSidebar 액션은 제거됨
-
   setActiveItemByPath: pathname => {
     const label = PATH_TO_LABEL_MAP[pathname] || '대시보드';
 
