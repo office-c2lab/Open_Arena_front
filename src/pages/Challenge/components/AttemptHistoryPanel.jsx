@@ -158,7 +158,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
           )}
         </div>
         {/* Content/Attempt Cards List */}
-        <div className="flex flex-1 flex-col items-center overflow-y-auto px-4 py-4 gap-4">
+        <div className="flex flex-1 flex-col items-center overflow-y-auto px-4 py-1 gap-4">
           {filteredAttempts.length > 0 ? (
             // 시도 기록이 있을 경우 카드를 렌더링
             filteredAttempts.map(attempt => (
