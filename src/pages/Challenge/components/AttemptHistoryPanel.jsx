@@ -108,10 +108,10 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
     // 기존의 AttemptHistoryPanel 내부 내용을 이 컨테이너 안에 넣습니다.
     <div className="flex flex-col flex-shrink-0 w-[240px] lg:w-[295px] h-full gap-4">
       {/* ==================================== */} {/* 1. 토큰 정보 카드 렌더링 */}
-      <TokenInfoCard
+      {/* <TokenInfoCard
         currentBalance={DUMMY_BALANCE.currentToken}
         maxValue={DUMMY_BALANCE.maxToken}
-      />
+      /> */}
       {/* 2. 포인트 정보 카드 렌더링 */}
       <PointInfoCard currentBalance={DUMMY_BALANCE.currentPoint} />
       {/* ==================================== */}

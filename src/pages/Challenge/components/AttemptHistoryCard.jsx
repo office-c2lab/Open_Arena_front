@@ -42,7 +42,7 @@ const AttemptHistoryCard = ({ attemptNumber, isSuccess, isSubmitted, promptSumma
 
   return (
     <div
-      className="w-full h-[120px] flex flex-col justify-between p-[7px] flex-shrink-0 cursor-pointer 
+      className="w-full h-[100px] flex flex-col justify-between p-[5px] flex-shrink-0 cursor-pointer 
         bg-white rounded-[10px] border border-solid"
       onClick={onClick}
       style={{
