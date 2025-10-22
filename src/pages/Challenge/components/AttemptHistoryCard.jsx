@@ -1,4 +1,4 @@
-// src/features/Challenge/components/AttemptHistoryCard.jsx (수정된 코드)
+// src/features/Challenge/components/AttemptHistoryCard.jsx (미제출 상태 추가)
 
 import React from 'react';
 
@@ -10,24 +10,40 @@ const COLOR_GREEN = '#84CC16';
 const COLOR_WHITE = '#FFFFFF';
 const BORDER_COLOR = '#EBE8FE';
 
+// 💡 미제출 색상 추가
+const COLOR_NOT_SUBMITTED = '#D9DADB';
+
 /**
  * 챌린지 시도 기록 카드 컴포넌트
  * @param {object} props
  * @param {number} props.attemptNumber - 시도 번호 (1, 2, 3...)
- * @param {boolean} props.isSuccess - 성공 여부 (true: 성공, false: 실패)
+ * @param {boolean} props.isSuccess - 성공 여부 (true: 성공, false: 실패). isSubmitted가 true일 때만 유효.
+ * @param {boolean} props.isSubmitted - 제출 여부 (true: 제출됨, false: 미제출).
  * @param {string} props.promptSummary - 사용자가 입력한 프롬프트 요약 텍스트
  * @param {function} props.onClick - 카드 클릭 시 실행될 핸들러
  */
-const AttemptHistoryCard = ({ attemptNumber, isSuccess, promptSummary, onClick }) => {
-  const resultText = isSuccess ? '성공' : '실패';
-  const resultBgColor = isSuccess ? COLOR_GREEN : COLOR_RED;
+const AttemptHistoryCard = ({ attemptNumber, isSuccess, isSubmitted, promptSummary, onClick }) => {
+  let resultText, resultBgColor, summaryBgColor;
 
-  // 💡 수정된 부분: w-[267px] 대신 w-full을 사용하여 부모의 너비(최대 263px)에 맞춥니다.
+  if (isSubmitted) {
+    // 💡 제출된 경우 (성공 또는 실패)
+    resultText = isSuccess ? '성공' : '실패';
+    resultBgColor = isSuccess ? COLOR_GREEN : COLOR_RED;
+    summaryBgColor = COLOR_PURPLE; // 프롬프트 배경색
+  } else {
+    // 💡 미제출된 경우
+    resultText = '미제출';
+    resultBgColor = COLOR_NOT_SUBMITTED; // 결과 태그 배경색
+    summaryBgColor = COLOR_NOT_SUBMITTED; // 프롬프트 배경색
+  }
+
+  // 미제출 상태일 때 프롬프트 요약 텍스트
+  const summaryText = promptSummary; // Card Container: (height: 120px)
+
   return (
-    // Card Container: (height: 120px)
     <div
       className="w-full h-[120px] flex flex-col justify-between p-[7px] flex-shrink-0 cursor-pointer 
-                 bg-white rounded-[10px] border border-solid"
+        bg-white rounded-[10px] border border-solid"
       onClick={onClick}
       style={{
         border: `1px solid ${BORDER_COLOR}`,
@@ -48,30 +64,28 @@ const AttemptHistoryCard = ({ attemptNumber, isSuccess, promptSummary, onClick }
             {attemptNumber}
           </span>
         </div>
-
-        {/* 성공/실패 태그 */}
+        {/* 성공/실패/미제출 태그 */}
         <div
           className="flex justify-center items-center w-[65px] h-[26px] rounded-[8px]"
           style={{ background: resultBgColor }}
         >
           <span
-            className="font-['Noto Sans KR'] font-[400] text-[11.14px] leading-[17px] text-white"
+            className={`font-['Noto Sans KR'] font-[400] text-[11.14px] leading-[17px] ${isSubmitted ? 'text-white' : 'text-[#4C4C4C]'}`}
             style={{ fontWeight: 400 }}
           >
             {resultText}
           </span>
         </div>
       </div>
-
       {/* 2. 하단 영역: 프롬프트 요약 및 배경 박스 (Flex Row) */}
       <div
         className="w-full h-[48px] rounded-[10px] flex items-center flex-shrink-0"
-        style={{ background: COLOR_PURPLE }}
+        style={{ background: summaryBgColor }}
       >
         {/* 프롬프트 요약 텍스트 */}
         <p
-          className="w-full font-['Noto Sans KR'] font-[350] text-[11.14px] leading-[17px] text-white
-             mx-[8px] overflow-hidden" // mx-[8px]을 유지하여 좌우 여백 확보
+          className={`w-full font-['Noto Sans KR'] font-[350] text-[11.14px] leading-[17px] 
+      mx-[8px] overflow-hidden ${isSubmitted ? 'text-white' : 'text-[#4C4C4C]'}`} // 💡 미제출 시 텍스트 색상 변경
           style={{
             height: '34px', // 최대 2줄을 표시하기 위한 높이
             display: '-webkit-box',
@@ -80,7 +94,7 @@ const AttemptHistoryCard = ({ attemptNumber, isSuccess, promptSummary, onClick }
             wordBreak: 'break-all',
           }}
         >
-          {promptSummary}
+          {summaryText}
         </p>
       </div>
     </div>
