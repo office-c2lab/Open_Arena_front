@@ -59,7 +59,7 @@ export default function Banner({ className = '' }) {
       <div className="relative h-full flex flex-col pt-[45px] px-[55px] z-30">
         {/* LLM Safety 챌린지 */}
         <p
-          className="text-heading-1 font-bold mb-[33px]" // 45px top -> pt-[45px]로 처리, 122px top -> mb-[33px] (122-45-44=33)
+          className="heading-1 font-700 mb-[33px]" // 45px top -> pt-[45px]로 처리, 122px top -> mb-[33px] (122-45-44=33)
           style={{ color: VECTOR_COLOR }}
         >
           {BANNER_TITLE}
