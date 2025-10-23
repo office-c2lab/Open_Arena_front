@@ -58,12 +58,12 @@ export default function Banner({ className = '' }) {
       {/* Figma의 55px left 패딩을 px-14 (56px)로 사용 */}
       <div className="relative h-full flex flex-col pt-[45px] px-[55px] z-30">
         {/* LLM Safety 챌린지 */}
-        <h1
-          className="font-['Noto Sans KR'] font-bold text-[36px] leading-[44px] mb-[33px]" // 45px top -> pt-[45px]로 처리, 122px top -> mb-[33px] (122-45-44=33)
+        <p
+          className="text-heading-1 font-bold mb-[33px]" // 45px top -> pt-[45px]로 처리, 122px top -> mb-[33px] (122-45-44=33)
           style={{ color: VECTOR_COLOR }}
         >
           {BANNER_TITLE}
-        </h1>
+        </p>
 
         {/* 다양한 분야의 챗봇을 공격적으로 검증하라 */}
         <p

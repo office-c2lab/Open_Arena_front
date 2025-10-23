@@ -30,7 +30,7 @@ export default function AppRouter() {
 
       {/* ChallengeLayout 하위 Route */}
       <Route element={<ChallengeLayout />}>
-        <Route path="/challenge" element={<Challenge />} />
+        <Route path="/challenge/*" element={<Challenge />} />
       </Route>
     </Routes>
   );

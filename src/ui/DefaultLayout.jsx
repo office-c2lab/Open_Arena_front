@@ -7,10 +7,7 @@ export default function DefaultLayout() {
   return (
     <div className="min-h-screen w-full bg-[#F2F4F6] flex">
       {/* 💡 [수정] 사이드바와 메인 콘텐츠를 감싸는 래퍼에 좌우 240px 여백을 적용 */}
-      <div
-        className="flex-1 w-full flex"
-        style={{ paddingLeft: '240px', paddingRight: '240px' }} // 💡 좌우 240px 여백 강제
-      >
+      <div className="flex-1 w-full flex">
         {/* 1. Sidebar: 240px 여백 안에서 시작 (고정 256px) */}
         <Sidebar />
 

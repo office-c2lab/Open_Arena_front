@@ -1,21 +1,36 @@
-// src/pages/Dashboard/Dashboard.jsx (간단 렌더링으로 수정)
+// src/pages/Dashboard/Dashboard.jsx (수정된 버전)
 
 import React from 'react';
-// Banner 컴포넌트 임포트
+import TeamInfoSection from './components/TeamInfoSection';
+import ProblemList from './components/ProblemList';
 import Banner from '../../components/Banner/Banner';
-
-// 💡 더미 데이터 정의 제거
 
 const Dashboard = () => {
   return (
     <div className="w-full h-full flex flex-col items-center p-6 gap-8">
+      {/* 1. Banner 영역 */}
       <div className="w-full max-w-[1069px] flex justify-center">
         <Banner />
       </div>
-      {/* 2. 대시보드 다른 내용 (예시) */}
-      <h1 className="text-2xl font-bold mt-4">대시보드 주요 콘텐츠</h1>
-      <div className="text-gray-600">
-        여기에 차트, 통계, 빠른 링크 등의 대시보드 요소가 들어갑니다.
+      {/* 💡 2. 팀 정보 섹션: 제목과 컴포넌트를 묶어 왼쪽 정렬 */}
+      <div className="w-full max-w-[1027px] flex flex-col items-start mx-auto">
+        {/*
+          변경 사항:
+          1. w-full max-w-[1027px]로 너비를 제한하여 ProblemList/TeamInfoSection과 너비를 맞춥니다.
+          2. mx-auto로 이 <div>를 중앙 정렬합니다. (Dashboard의 items-center 역할을 대신)
+          3. items-start로 이 <div> 안의 모든 내용을 왼쪽 정렬합니다.
+        */}
+        <h1
+          className="text-[36px] leading-[44px] font-bold font-['Noto Sans KR'] mb-5"
+          style={{ color: '#FF4854' }}
+        >
+          TEAM A
+        </h1>
+        <TeamInfoSection />
+      </div>
+      {/* 3. ProblemList 렌더링 (TeamInfoSection 아래로 옮겨 일관성 유지) */}
+      <div className="w-full flex justify-center">
+        <ProblemList />
       </div>
     </div>
   );
