@@ -1,30 +1,29 @@
+// src/layouts/ChallengeLayout.jsx
+
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar/Sidebar';
+import ChallengeHeader from '../pages/Challenge/components/ChallengeHeader';
 
 export default function ChallengeLayout() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+  };
+
   return (
-    // Step 1: 전체 레이아웃 (Sidebar와 Main Area를 가로로 분리)
-    // Sidebar와 Main Area 모두 스크롤에 동참합니다.
-    <div className="min-h-screen w-full bg-[#F2F4F6] flex">
-      {/* Step 2: Sidebar (w-64 = 256px 고정 너비를 가진 Flex Item) */}
-      {/* Sidebar 컴포넌트 내부의 'fixed' 클래스는 반드시 제거되어야 합니다. */}
-      <Sidebar />
+    <div className="min-h-screen w-full bg-[#F2F4F6] flex flex-col">
+      <ChallengeHeader toggleSidebar={toggleSidebar} />
 
-      {/* Step 3: Main Area Wrapper (사이드바 공간 제외, 남은 공간을 모두 차지) */}
-      <div className="flex-1 w-full flex justify-center">
-        {/* Step 4: Content Container (최대 1440px 제한)
-            w-full: 좁은 화면에서는 100% 사용
-            max-w-[1440px]: 넓은 화면에서 1440px로 제한 및 중앙 정렬 (justify-center 덕분)
-            flex flex-col: Header와 Main을 수직으로 배치
-        */}
-        <div className="w-full max-w-[1440px] flex flex-col">
-          {/* Header */}
-          <header className="h-16 bg-white flex items-center px-6 shadow-md flex-shrink-0">
-            <h1 className="text-2xl font-bold">헤더</h1>
-          </header>
+      <div className="flex-1 w-full flex relative z-10">
+        {/* Sidebar: Fixed 포지션, 모달 방식으로 덮어씀 */}
+        <Sidebar isChallengeLayout={true} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-          {/* Main Content (Outlet) */}
-          <main className="flex-1 p-6">
+        {/* 메인 콘텐츠 영역: 사이드바 관련 스타일 제거 */}
+        <div className="flex-1 w-full transition-all duration-300">
+          {/* Main: Figma의 좌우 240px 레이아웃 여백을 여기서 부여 */}
+          <main className="w-full flex-1 px-[240px] py-6">
             <Outlet />
           </main>
         </div>

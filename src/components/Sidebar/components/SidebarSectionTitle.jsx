@@ -9,9 +9,7 @@ import React from 'react';
 export default function SidebarSectionTitle({ title }) {
   return (
     <div className="px-3">
-      <span className="text-[12px] font-medium leading-[18px] text-[#0F172A]/50 uppercase">
-        {title}
-      </span>
+      <span className="body-medium font-500 text-[#0F172A]/50 uppercase">{title}</span>
     </div>
   );
 }

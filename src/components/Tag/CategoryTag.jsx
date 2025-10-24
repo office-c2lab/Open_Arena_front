@@ -48,9 +48,7 @@ const CategoryTag = ({ children }) => {
     rounded-full 
     border 
     p-2               
-    text-xs 
-    font-normal 
-    font-['Source Code Pro']
+    body-small
   `;
 
   // 최종 클래스 조합

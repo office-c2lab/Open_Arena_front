@@ -5,6 +5,8 @@ import ChallengeLayout from '../ui/ChallengeLayout';
 import Login from '../pages/Login/Login';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import Leaderboard from '../pages/Leaderboard/Leaderboard';
+import AdminLeaderboard from '../pages/Leaderboard/AdminLeaderboard';
+
 import Tutorial from '../pages/Tutorial/Tutorial';
 import NotFound from '../pages/NotFound/NotFound'; // ← 404 페이지 추가
 import Kategorie from '../pages/Kategorie/Kategorie';
@@ -19,15 +21,16 @@ export default function AppRouter() {
       <Route element={<DefaultLayout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
         <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
+        <Route path="*" element={<NotFound />} />
         {/* DefaultLayout 안에서 처리할 404 */}
       </Route>
 
       {/* ChallengeLayout 하위 Route */}
       <Route element={<ChallengeLayout />}>
-        <Route path="/challenge" element={<Challenge />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/challenge/*" element={<Challenge />} />
       </Route>
     </Routes>
   );
