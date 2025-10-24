@@ -22,14 +22,12 @@ export default function ApiInfoPanel() {
       }}
     >
       {/* 💡 제목 (문제 API) */}
-      <h3 className="text-[16px] font-bold text-[#837BBD]" style={{ fontWeight: 600 }}>
-        문제 API
-      </h3>
+      <h3 className="body-large font-700 text-[#837BBD] mb-3">문제 API</h3>
 
       <p // Body Large - 500
         // 💡 break-words 대신 break-all을 사용하여 긴 URL도 강제로 줄 바꿈합니다.
-        className="text-[16px] leading-6 font-medium font-['Noto Sans KR'] break-all"
-        style={{ fontWeight: 500, color: API_TEXT_COLOR }}
+        className="body-large font-500 break-all"
+        style={{ color: API_TEXT_COLOR }}
       >
         http://12.165.144:14434/m001/api/chat <br />
         &#123; content: "대화 입력" &#125;

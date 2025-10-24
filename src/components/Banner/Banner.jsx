@@ -67,7 +67,7 @@ export default function Banner({ className = '' }) {
 
         {/* 다양한 분야의 챗봇을 공격적으로 검증하라 */}
         <p
-          className="font-['Noto Sans KR'] font-bold text-[24px] leading-[36px] mb-[33px]" // 191px top -> mb-[33px] (191-122-36=33)
+          className="heading-2 font-700 mb-[33px]" // 191px top -> mb-[33px] (191-122-36=33)
           style={{ color: '#FFFFFF' }}
         >
           {BANNER_SUBTITLE}
@@ -75,7 +75,7 @@ export default function Banner({ className = '' }) {
 
         {/* Sponsered by */}
         <p
-          className="font-['Noto Sans KR'] font-medium text-[24px] leading-[36px] mb-[15px]" // 242px top -> mb-[15px] (242-191-36=15)
+          className="heading-2 font-500 mb-[15px]" // 242px top -> mb-[15px] (242-191-36=15)
           style={{ color: '#FFFFFF' }}
         >
           {BANNER_SPONSORED_BY}
@@ -104,7 +104,7 @@ const SponsorTag = ({ text, icon }) => (
     <img src={icon} alt={`${text} logo`} className="w-[20px] h-[20px] flex-shrink-0" />
     {/* 텍스트 (Open AI) */}
     <span
-      className="font-['Noto Sans KR'] font-medium text-[20px] leading-[26px] whitespace-nowrap overflow-hidden"
+      className="body-large font-500 whitespace-nowrap overflow-hidden"
       style={{ color: SPONSOR_TAG_TEXT_COLOR }}
     >
       {text}

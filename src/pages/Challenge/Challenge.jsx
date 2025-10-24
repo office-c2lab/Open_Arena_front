@@ -43,6 +43,7 @@ export default function Challenge() {
     setSubmitAction,
     closeLoadingModal, // 로딩 닫기 액션
     openFailedModal, // 실패 열기 액션
+    openSuccessModal,
   } = useModalStore();
 
   // 초기 탭 설정

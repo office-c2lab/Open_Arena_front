@@ -20,10 +20,7 @@ const Dashboard = () => {
           2. mx-auto로 이 <div>를 중앙 정렬합니다. (Dashboard의 items-center 역할을 대신)
           3. items-start로 이 <div> 안의 모든 내용을 왼쪽 정렬합니다.
         */}
-        <h1
-          className="text-[36px] leading-[44px] font-bold font-['Noto Sans KR'] mb-5"
-          style={{ color: '#FF4854' }}
-        >
+        <h1 className="heading-1 font-700 mb-5" style={{ color: '#FF4854' }}>
           TEAM A
         </h1>
         <TeamInfoSection />

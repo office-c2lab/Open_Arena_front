@@ -51,8 +51,8 @@ const SuccessSummaryPanel = ({
         </div>
         {/* 4. '성공' 텍스트 */}
         <p
-          className={`font-['Noto Sans KR'] font-bold text-[36px] leading-[44px]`}
-          style={{ fontWeight: 700, marginBottom: '0px', color: SUCCESS_COLOR_PRIMARY }}
+          className={`heading-1 font-700`}
+          style={{ marginBottom: '0px', color: SUCCESS_COLOR_PRIMARY }}
         >
           {title}
         </p>
@@ -66,18 +66,13 @@ const SuccessSummaryPanel = ({
       >
         {/* 5. 동물 이름 - top: 15px */}
         <p
-          className="font-['Noto Sans KR'] font-medium text-[20px] leading-[26px] text-center w-full mt-[15px]"
+          className="heading-3 font-500 text-center w-full mt-[15px]"
           style={{ fontWeight: 500, color: animalNameColor }}
         >
           {animalName}
         </p>
         {/* 6. 설명 텍스트 - top: 49px */}
-        <p
-          className="font-['Noto Sans KR'] font-bold text-[16px] leading-[24px] text-center text-black  w-[603px] h-[120px] overflow-auto mt-[60px] px-4"
-          style={{
-            fontWeight: 350,
-          }}
-        >
+        <p className="heading-3 font-700 text-center text-black  w-[603px] h-[120px] overflow-auto mt-[60px] px-4">
           {description}
         </p>
       </div>
@@ -142,9 +137,7 @@ export default function SuccessModal({ isOpen, onRestart, onContinue, onHelp }) 
               padding: '12px 42px',
             }}
           >
-            <span className="font-['Noto Sans KR'] font-[350] text-2xl leading-[36px] text-[#515151]">
-              챌린지 화면으로 돌아가기
-            </span>
+            <span className="heading-2 font-300 text-[#515151]">챌린지 화면으로 돌아가기</span>
           </button>
 
           {/* 2. 다른 문제 풀기 (이전 '대화 계속 하기' 버튼 위치 및 스타일) - 초록색 */}
@@ -155,9 +148,7 @@ export default function SuccessModal({ isOpen, onRestart, onContinue, onHelp }) 
               hover:opacity-90 transition duration-200"
             style={{ padding: '12px', backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
-            <span className="font-['Noto Sans KR'] font-[350] text-2xl leading-[36px] text-white">
-              다른 문제 풀기
-            </span>
+            <span className="heading-2 font-300 text-white">다른 문제 풀기</span>
           </button>
         </div>
 

@@ -41,10 +41,7 @@ const FailedSummaryPanel = ({ imageSrc, animalName, description, imageStyle, isF
           />
         </div>
         {/* 4. '실패' 텍스트 */}
-        <p
-          className={`font-['Noto Sans KR'] font-bold text-[36px] leading-[44px] text-[#E60513]`}
-          style={{ fontWeight: 700, marginBottom: '0px' }}
-        >
+        <p className={`heading-1 font-700 text-[#E60513]`} style={{ marginBottom: '0px' }}>
           실패
         </p>
       </div>
@@ -57,18 +54,13 @@ const FailedSummaryPanel = ({ imageSrc, animalName, description, imageStyle, isF
       >
         {/* 5. 동물 이름 */}
         <p
-          className="font-['Noto Sans KR'] font-medium text-[20px] leading-[26px] text-center w-full mt-[15px]"
-          style={{ fontWeight: 500, color: animalNameColor }}
+          className="heading-3 font-500 text-center w-full mt-[15px]"
+          style={{ color: animalNameColor }}
         >
           {animalName}
         </p>
         {/* 6. 설명 텍스트 */}
-        <p
-          className="font-['Noto Sans KR'] font-[350] text-[16px] leading-[24px] text-center text-black w-[603px] h-[120px] overflow-auto mt-[8px] px-4"
-          style={{
-            fontWeight: 350,
-          }}
-        >
+        <p className="body-large font-300 text-center text-black w-[603px] h-[120px] overflow-auto mt-[8px] px-4">
           {description}
         </p>
       </div>
@@ -147,9 +139,7 @@ export default function FailedModal() {
               padding: '12px 42px',
             }}
           >
-            <span className="font-['Noto Sans KR'] font-[350] text-2xl leading-[36px] text-[#515151]">
-              챌린지 재시작
-            </span>
+            <span className="heading-2 font-300 text-[#515151]">챌린지 재시작</span>
           </button>
           {/* 2. 대화 계속 하기 (Frame 2087327751) */}
           <button
@@ -158,9 +148,7 @@ export default function FailedModal() {
               hover:bg-[#e6597c] transition duration-200"
             style={{ padding: '12px' }}
           >
-            <span className="font-['Noto Sans KR'] font-[350] text-2xl leading-[36px] text-white">
-              대화 계속 하기
-            </span>
+            <span className="heading-2 font-300 text-white">대화 계속 하기</span>
           </button>
           {/* 3. 도움 요청 (Frame 2087327752) */}
           <button
@@ -169,9 +157,7 @@ export default function FailedModal() {
               border border-[#FF6289] bg-white hover:bg-pink-50 transition duration-200"
             style={{ padding: '12px 36px' }}
           >
-            <span className="font-['Noto Sans KR'] font-[350] text-2xl leading-[36px] text-[#FF6289]">
-              도움 요청
-            </span>
+            <span className="heading-2 font-300 text-[#FF6289]">도움 요청</span>
           </button>
         </div>
         {/* 하단 여백 (총 높이 849px를 맞추기 위해 30px 조정) */}

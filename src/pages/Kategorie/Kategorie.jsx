@@ -61,7 +61,7 @@ const ChallengeSection = () => {
       </div>
       {/* H1 태그: 필터링 상태와 정렬 유지 */}
       <h1
-        className="text-4xl font-extrabold  text-left max-w-[1080px] w-full mx-auto"
+        className="heading-1 font-700  text-left max-w-[1080px] w-full mx-auto"
         style={{ color: '#FF4854' }}
       >
         {titleText}

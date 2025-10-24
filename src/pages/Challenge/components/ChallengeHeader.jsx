@@ -50,7 +50,7 @@ export default function ChallengeHeader({ toggleSidebar }) {
             {/* 아이콘 (왼쪽) - invert 필터로 흰색 강제 */}
             <img src={HelpIcon} alt="Help Icon" className="w-4 h-4" />
             {/* 텍스트 (오른쪽) */}
-            <span className="text-white text-[13px] font-medium leading-[17px]">도움</span>
+            <span className="text-white body-medium">도움</span>
           </button>
         </div>
       </div>

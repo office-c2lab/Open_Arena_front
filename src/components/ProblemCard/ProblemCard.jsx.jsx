@@ -18,7 +18,7 @@ const ProblemCard = ({ challenge, onSolveClick }) => {
   const imageClasses = `w-full h-[198px] object-cover`;
   const contentClasses = `p-6 flex flex-col gap-2.5`;
   const tagsContainerClasses = `flex space-x-1.5 items-start`;
-  const titleClasses = `text-lg font-medium text-[#0F172A] font-['Source Code Pro'] line-clamp-2`;
+  const titleClasses = `heading-3 font-500 line-clamp-2`;
 
   return (
     <div className={cardClasses.trim()}>

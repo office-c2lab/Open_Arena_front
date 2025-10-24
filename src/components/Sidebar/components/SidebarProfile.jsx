@@ -11,8 +11,10 @@ export default function SidebarProfile() {
       </div>
 
       <div className="flex flex-col gap-[4px] flex-grow">
-        <span className="text-body-sm-500 tracking-[0.4px] text-[#0F172A]/50">Product Manager</span>
-        <span className="text-body-sm-500 text-[#0F172A]/80">user</span>
+        <span className="body-medium font-500 tracking-[0.4px] text-[#0F172A]/50">
+          Product Manager
+        </span>
+        <span className="body-medium font-500 text-[#0F172A]/80">user</span>
       </div>
     </div>
   );

@@ -38,22 +38,12 @@ const PointInfoCard = ({ currentBalance }) => {
       <div className="flex flex-row ml-4 items-center flex-1 justify-between">
         {/* 'Point' 텍스트 */}
         {/* 💡 mr-16 같은 간격 클래스 제거 */}
-        <span
-          className="font-['Noto Sans KR'] font-[350] text-[16px] leading-[24px] text-black"
-          style={{ fontWeight: 350 }}
-        >
-          포인트
-        </span>
+        <span className="body-large font-300 text-black">포인트</span>
 
         {/* 잔액 값 */}
         <div className="flex items-baseline">
           {/* 잔액 (Heading1 - 700, 36px) */}
-          <span
-            className="font-['Noto Sans KR'] font-bold text-[36px] leading-[44px]"
-            style={{ color: COLOR_BLACK, fontWeight: 700 }}
-          >
-            {currentBalance}
-          </span>
+          <span className="heading-1 font-700 text-black">{currentBalance}</span>
         </div>
       </div>
     </div>

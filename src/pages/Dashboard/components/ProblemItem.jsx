@@ -5,7 +5,7 @@ import React from 'react';
 import LockIconSvg from '@/assets/icons/Lock.svg';
 
 // === UI 상수 정의 ===
-const BaseTextStyle = 'font-[Noto Sans KR] font-medium text-[14px] leading-[20px] truncate';
+const BaseTextStyle = 'body-medium font-500 truncate';
 const ItemWidth = '238px';
 const ItemHeight = '52px';
 const StatusBoxWidth = '88px';
@@ -59,7 +59,7 @@ const ProblemItem = ({ problem }) => {
         </span>
         {/* 성공 텍스트 (Inside auto layout: flex-grow: 0, order: 2) */}
         <span
-          className={`font-[Noto Sans KR] font-bold text-[20px] leading-[26px] z-20`}
+          className={`heading-3 font-700 z-20`}
           style={{ color: successColor, flexGrow: 0, marginRight: '16px' }} // padding 16px 12px에 gap 19px을 고려하여 최종 텍스트 위치 조정
         >
           {result}

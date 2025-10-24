@@ -52,17 +52,12 @@ const TeamInfoCard = ({ title, value, iconType, valueColor, cardStyle }) => {
       >
         {/* 2-1. 제목 (왼쪽 끝) */}
         <div>
-          <span className="font-[Noto Sans KR] font-medium text-[36px] leading-[44px] text-[#000000]">
-            {title}
-          </span>
+          <span className="heading-1 font-500 text-[#000000]">{title}</span>
         </div>
 
         {/* 2-2. 값 (오른쪽 끝) */}
         <div>
-          <span
-            className="font-[Noto Sans KR] font-bold text-[36px] leading-[44px] text-right"
-            style={{ color: valueColor }}
-          >
+          <span className="heading-1 font-700 text-right" style={{ color: valueColor }}>
             {value}
           </span>
         </div>

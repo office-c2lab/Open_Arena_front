@@ -119,7 +119,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
       <div className="flex flex-col shadow-xl rounded-[20px] overflow-hidden flex-1 bg-[rgba(235,232,254,0.1)]">
         {/* Header */}
         <div className="w-full h-[70px] p-3 md:p-4 shadow-sm bg-white rounded-t-[20px] flex items-center justify-between flex-shrink-0">
-          <span className="text-[24px] font-medium text-[#837BBD]">최근 시도</span>
+          <span className="heading-2 font-500 text-[#837BBD]">최근 시도</span>
         </div>
         {/* Dropdown/Filter Container */}
         <div
@@ -131,7 +131,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
             className="flex items-center justify-between w-[126px] h-[39px] px-4 py-[10px] bg-white shadow-[0px_0px_2px_rgba(0,0,0,0.25)] rounded-[10px] cursor-pointer flex-shrink-0"
             onClick={toggleDropdown}
           >
-            <span className="text-[16px] font-semibold text-[#837BBD]">{selectedFilter.label}</span>
+            <span className="body-large font-700 text-[#837BBD]">{selectedFilter.label}</span>
 
             <img
               src={PurpleDownIcon}
@@ -145,7 +145,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
               {FILTER_OPTIONS.map(option => (
                 <div
                   key={option.key}
-                  className={`px-4 py-[10px] text-[16px] font-semibold text-[#837BBD] cursor-pointer 
+                  className={`px-4 py-[10px] body-large font-700 text-[#837BBD] cursor-pointer 
                hover:bg-[#F5F4FF] transition-colors duration-100 ${
                  option.key === selectedFilter.key ? 'bg-[#EBE8FE] font-bold' : ''
                }`}
@@ -175,7 +175,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
           ) : (
             // 시도 기록이 없을 경우 플레이스홀더 텍스트 렌더링
             <div className="flex flex-1 justify-center items-center text-center">
-              <p className="text-[16px] font-medium text-[#000000]">
+              <p className="body-large font-500 text-[#000000]">
                 {selectedFilter.key === 'ALL'
                   ? '아직 시도 기록이 없습니다.'
                   : `${selectedFilter.label} 기록이 없습니다.`}

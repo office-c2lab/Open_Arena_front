@@ -32,7 +32,7 @@ export default function ChatArea({
             <div className="flex flex-col items-center justify-center h-full text-center p-4">
               <img src={ArenaIcon} alt="ARENA Logo" className="w-[246.5px] h-[361.5px] mb-4" />
 
-              <p className="text-[20px] font-light text-[#000000] mt-4">
+              <p className="heading-3 font-300 text-[#000000] mt-4">
                 AI와 대화를 시작하세요. <br /> 프롬프트를 입력하여 챌린지를 시작하세요.
               </p>
             </div>
@@ -60,7 +60,7 @@ export default function ChatArea({
           {/* Textarea and Send Button */}
           <div className="w-full h-[130px] md:h-[153px] bg-white shadow-[0px_0px_4px_rgba(0,0,0,0.25)] rounded-[20px] p-3 md:p-4 flex items-start relative">
             <textarea
-              className="w-full h-full resize-none focus:outline-none text-[13px] text-[#6B6B6B] pr-12 overflow-y-auto"
+              className="w-full h-full resize-none focus:outline-none body-large text-[#6B6B6B] pr-12 overflow-y-auto"
               placeholder="프롬프트를 입력하세요 (Shift + Enter로 줄바꿈)"
               value={inputValue}
               onChange={handleInputChange}
@@ -87,16 +87,14 @@ export default function ChatArea({
               onClick={openResetModal}
             >
               <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
-              <span className="text-[20px] font-bold text-white leading-[26px]">
-                대화 내용 초기화
-              </span>
+              <span className="heading-3 font-700 text-white leading-[26px]">대화 내용 초기화</span>
             </button>
 
             <button
               className="flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center"
               onClick={openSubmitModal} // 💡 제출 모달 열기 액션 연결
             >
-              <span className="text-[20px] font-bold text-white leading-[26px]">제출하기</span>
+              <span className="heading-3 font-700 text-white leading-[26px]">제출하기</span>
             </button>
           </div>
         </div>

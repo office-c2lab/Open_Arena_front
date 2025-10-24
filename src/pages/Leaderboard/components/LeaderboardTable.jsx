@@ -40,8 +40,8 @@ const LeaderboardTable = () => {
         {[{ isHeader: true, ...HEADER }, ...LEADERBOARD_DATA].map((row, idx) => (
           <div
             key={idx}
-            className={`flex items-center text-[20px] leading-[26px] h-[79px] font-['Noto Sans KR']
-              border-b border-[#FF4854] ${row.isHeader ? 'text-[#FF4854] font-medium' : 'text-[#010101] font-medium'}`}
+            className={`flex items-center h-[79px] heading-3 
+              border-b border-[#FF4854] ${row.isHeader ? 'text-[#FF4854] font-500' : 'text-[#010101] font-700'}`}
           >
             {/* 순위 */}
             <div className={`${COL_WIDTHS.rank} flex justify-center items-center`}>

@@ -18,7 +18,7 @@ export default function ChallengeInfoPanel({
         {/* Challenge Header (제목 및 태그) - 생략 */}
         <div className="flex flex-col p-3 md:p-4 h-[110px] shadow-sm bg-white rounded-t-[20px] flex-shrink-0">
           <div className="flex justify-between items-start">
-            <span className="text-[24px] font-medium text-[#34C759]">
+            <span className="heading-2 font-500 text-[#34C759] mb-2">
               {CHALLENGE_HEADER_INFO.title}
             </span>
 
@@ -29,7 +29,7 @@ export default function ChallengeInfoPanel({
             </div> */}
           </div>
 
-          <span className="text-[16px] font-medium text-[#010101]">
+          <span className="body-large font-500 text-[#010101]">
             {CHALLENGE_HEADER_INFO.subtitle}
           </span>
         </div>
@@ -41,7 +41,7 @@ export default function ChallengeInfoPanel({
               <button
                 key={tab.id}
                 onClick={e => handleTabClick(e, tab.id)}
-                className={`py-2 px-2 text-[13px] lg:text-[16px] font-bold rounded-lg transition-colors duration-200
+                className={`py-2 px-2 body-large font-500 rounded-lg transition-colors duration-200
     ${tab.titleColor} 
     ${
       activeTab === tab.id
@@ -60,23 +60,22 @@ export default function ChallengeInfoPanel({
             <div // 이 div는 패딩과 색상을 담당하며, Flex 컨테이너 역할을 합니다.
               className={`p-3 md:p-4 ${activeTabContent.bgColor} border-b-4 ${activeTabContent.borderColor} overflow-y-auto flex-grow flex flex-col`}
             >
-              <span
-                className={`text-[18px] font-bold ${activeTabContent.titleColor} block mb-2 flex-shrink-0`}
-              >
-                {activeTabContent.title}
-              </span>
-              {/* 💡 [수정됨] 설명 문단과 API 패널을 감싸는 Flex 컨테이너 */}
-              <div
-                className={`flex flex-col ${activeTab === 'description' ? 'justify-around' : 'justify-start'} flex-grow`}
-              >
-                <p className="text-[16px] leading-6 font-medium text-[#4C4C4C] whitespace-pre-wrap mb-4">
-                  {activeTabContent.content}
-                </p>
+              {/* ✅ flex 컨테이너 (제목 + 설명 한 묶음 + API) */}
+              <div className={`flex flex-col  flex-grow`}>
+                {/* ✅ 묶음 #1 : 제목 + 설명문 */}
+                <div className="flex flex-col mb-2">
+                  <span
+                    className={`heading-3 font-500 ${activeTabContent.titleColor} block mb-1 flex-shrink-0`}
+                  >
+                    {activeTabContent.title}
+                  </span>
+                  <p className="body-large font-500 text-[#4C4C4C] whitespace-pre-wrap mb-35">
+                    {activeTabContent.content}
+                  </p>
+                </div>
 
-                {activeTab === 'description' && (
-                  // ApiInfoPanel 내부에는 mt-4가 있으므로, 별도의 추가 마진은 불필요할 수 있습니다.
-                  <ApiInfoPanel />
-                )}
+                {/* ✅ 묶음 #2 : API Panel */}
+                {activeTab === 'description' && <ApiInfoPanel />}
               </div>
             </div>
           )}

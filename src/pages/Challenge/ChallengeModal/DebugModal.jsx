@@ -89,15 +89,13 @@ const DebugModal = () => {
             <img src={HelpSvg} alt="도움" className="w-full h-full" />
           </div>
 
-          <h2 className="font-['Noto Sans KR'] font-extrabold text-2xl leading-9 text-black m-0">
-            챌린지 디버그 정보
-          </h2>
+          <h2 className="heading-2 font-700 text-black m-0">챌린지 디버그 정보</h2>
         </div>
 
         {/* Description */}
         <p
           className="absolute w-[567px] left-[42px] top-[141px] 
-            font-['Noto Sans KR'] font-medium text-xl leading-[26px] 
+            heading-3 font-500
             text-[#6B6B6B] m-0"
         >
           아래 디버그 정보를 복사하고 서버에 지원 요청을 보내주세요.
@@ -108,9 +106,7 @@ const DebugModal = () => {
           className="absolute w-[600px] h-[220px] left-[42px] top-[219px] 
             bg-[#F1F1EF] rounded-[16px] p-[14px] pl-[28px] pr-7 overflow-auto"
         >
-          <pre className="font-['Noto Sans KR'] font-light text-base leading-6 text-black whitespace-pre-wrap m-0">
-            {DEBUG_INFO}
-          </pre>
+          <pre className="body-large font-300 text-black whitespace-pre-wrap m-0">{DEBUG_INFO}</pre>
         </div>
 
         {/* Action Buttons Container */}
@@ -123,7 +119,7 @@ const DebugModal = () => {
             {/* Copy Icon: w-6, h-6 */}
             <img src={CopySvg} alt="복사" className="w-6 h-6" />
 
-            <span className="font-['Noto Sans KR'] font-medium text-xl leading-[26px] text-[#6B6B6B]">
+            <span className="heading-3 font-500 text-[#6B6B6B]">
               {isCopied ? '복사 완료!' : '디버그 정보 복사'}
             </span>
           </div>
@@ -135,7 +131,7 @@ const DebugModal = () => {
             // Button Styles
             className="flex justify-center items-center w-[201px] h-[46px] 
                 bg-[#837BBD] rounded-[16px] px-[30px] py-[12px] gap-2.5 
-                font-['Noto Sans KR'] font-medium text-xl leading-[26px] text-white 
+                heading-3 font-500 text-white 
                 cursor-pointer border-none transition-colors hover:bg-indigo-500"
           >
             도움 요청

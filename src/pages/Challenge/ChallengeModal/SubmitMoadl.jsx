@@ -62,9 +62,7 @@ const SubmitModal = () => {
             <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
           </div>
 
-          <span className="ml-[9px] font-['Noto Sans KR'] font-bold text-xl leading-[26px] text-[#FF084A]">
-            ARENA
-          </span>
+          <span className="ml-[9px] heading-3 font-700 text-[#FF084A]">ARENA</span>
         </div>
         {/* 메인 아이콘: Arena.svg에 투명도 30% 적용 */}
         <div // 피그마 Frame 2087327787 영역: left: 128px, top: 105px, width: 148px, height: 218px
@@ -77,7 +75,7 @@ const SubmitModal = () => {
         {/* 경고 메시지 */}
         <p // 피그마 명세: left: 41px, top: 324px, width: 321px
           className="absolute w-[321px] left-[41px] top-[324px]
-      text-center font-['Noto Sans KR'] font-medium text-[17.55px] leading-[21px] 
+      text-center heading-3 font-500  
       text-black m-0 whitespace-pre-wrap"
         >
           <p>제출하면 세 개의 JUDGE AI 모델이 각각 판단하여 성공/실패 결과를 제공합니다.</p>{' '}
@@ -92,9 +90,7 @@ const SubmitModal = () => {
       bg-[#FF6289] rounded-[29.25px] cursor-pointer 
       hover:bg-pink-600 transition duration-200"
         >
-          <span className="font-['Noto Sans KR'] font-bold text-[17.55px] leading-[21px] text-white">
-            제출하기
-          </span>
+          <span className="heading-3 font-500  text-white">제출하기</span>
         </button>
       </div>
     </div>

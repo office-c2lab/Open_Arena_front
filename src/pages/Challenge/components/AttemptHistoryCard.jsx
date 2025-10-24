@@ -42,7 +42,7 @@ const AttemptHistoryCard = ({ attemptNumber, isSuccess, isSubmitted, promptSumma
 
   return (
     <div
-      className="w-full h-[100px] flex flex-col justify-between p-[5px] flex-shrink-0 cursor-pointer 
+      className="w-full h-[110px] flex flex-col justify-between p-[5px] flex-shrink-0 cursor-pointer 
         bg-white rounded-[10px] border border-solid"
       onClick={onClick}
       style={{
@@ -57,10 +57,7 @@ const AttemptHistoryCard = ({ attemptNumber, isSuccess, isSubmitted, promptSumma
           className="flex justify-center items-center w-[26px] h-[26px] rounded-[8px] box-border"
           style={{ border: `1px solid ${COLOR_PURPLE_LIGHT}` }}
         >
-          <span
-            className="font-['Noto Sans KR'] font-[350] text-[11.14px] leading-[17px]"
-            style={{ color: COLOR_PURPLE_LIGHT }}
-          >
+          <span className="body-small" style={{ color: COLOR_PURPLE_LIGHT }}>
             {attemptNumber}
           </span>
         </div>
@@ -69,22 +66,19 @@ const AttemptHistoryCard = ({ attemptNumber, isSuccess, isSubmitted, promptSumma
           className="flex justify-center items-center w-[65px] h-[26px] rounded-[8px]"
           style={{ background: resultBgColor }}
         >
-          <span
-            className={`font-['Noto Sans KR'] font-[400] text-[11.14px] leading-[17px] ${isSubmitted ? 'text-white' : 'text-[#4C4C4C]'}`}
-            style={{ fontWeight: 400 }}
-          >
+          <span className={`body-small ${isSubmitted ? 'text-white' : 'text-[#4C4C4C]'}`}>
             {resultText}
           </span>
         </div>
       </div>
       {/* 2. 하단 영역: 프롬프트 요약 및 배경 박스 (Flex Row) */}
       <div
-        className="w-full h-[48px] rounded-[10px] flex items-center flex-shrink-0"
+        className="w-full h-[58px] rounded-[10px] flex items-center flex-shrink-0"
         style={{ background: summaryBgColor }}
       >
         {/* 프롬프트 요약 텍스트 */}
         <p
-          className={`w-full font-['Noto Sans KR'] font-[350] text-[11.14px] leading-[17px] 
+          className={`w-full body-medium font-300 
       mx-[8px] overflow-hidden ${isSubmitted ? 'text-white' : 'text-[#4C4C4C]'}`} // 💡 미제출 시 텍스트 색상 변경
           style={{
             height: '34px', // 최대 2줄을 표시하기 위한 높이

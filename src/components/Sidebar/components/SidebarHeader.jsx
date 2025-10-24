@@ -14,7 +14,7 @@ export default function SidebarHeader({ isChallengeLayout, toggleSidebar }) {
     <div className="flex flex-row justify-between items-center w-[208px] h-[42px]">
       <div className="flex items-center gap-[9px]">
         <img src={ArenaLogo} alt="ARENA Logo" className="w-[29px] h-[42px]" />
-        <span className="text-[20px] font-bold leading-[26px] text-[#FF084A]">ARENA</span>
+        <span className="heading-3 font-700 text-[#FF084A]">ARENA</span>
       </div>
 
       {/* ChallengeLayout일 때만 아이콘을 렌더링하고, 클릭 핸들러 추가 */}

@@ -71,7 +71,7 @@ export default function NavLinkItem({ item }) {
         >
           {/* Icon, Label, Chevron (변경 없음) */}
           <img src={currentIcon} alt={item.label} className="w-[20px] h-[20px]" />
-          <span className={`text-body-lg-500 flex-grow ${defaultTextColor}`}>{item.label}</span>
+          <span className={`body-large font-500 flex-grow ${defaultTextColor}`}>{item.label}</span>
           {item.hasChevron && (
             <img
               src={currentChevronIcon}
@@ -105,7 +105,7 @@ export default function NavLinkItem({ item }) {
           `}
               >
                 <span
-                  className={`body-lg-500
+                  className={`body-large font-500
             ${isSubActive ? 'text-white/80' : `${primaryTextColor}/50`}`}
                 >
                   {sub.label}

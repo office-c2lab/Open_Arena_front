@@ -19,9 +19,7 @@ const SolveProblemButton = ({ children = '문제풀기', onClick, className = ''
     rounded-md             // border-radius: 5px
     px-[60px] py-[6px]     // 패딩: 좌우 60px, 상하 6px
     text-white 
-    text-sm                // font-size: 14px
-    font-medium            // font-weight: 500
-    font-['Noto Sans KR']
+    body-medium font-500
     transition duration-150 ease-in-out // 자연스러운 호버 효과 추가
     hover:bg-[#FF4854]     // 호버 시 투명도 제거 (더 진하게)
     active:scale-[0.98]    // 클릭 시 약간 축소

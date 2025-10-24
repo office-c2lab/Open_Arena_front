@@ -61,9 +61,7 @@ const ResetModal = () => {
             <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
           </div>
 
-          <span className="ml-[9px] font-['Noto Sans KR'] font-bold text-xl leading-[26px] text-[#FF084A]">
-            ARENA
-          </span>
+          <span className="ml-[9px] heading-3 font-700 text-[#FF084A]">ARENA</span>
         </div>
 
         {/* 메인 경고 아이콘 */}
@@ -74,7 +72,7 @@ const ResetModal = () => {
         {/* 경고 메시지 */}
         <p
           className="absolute w-[301.76px] left-1/2 -translate-x-1/2 top-[334.91px] 
-            text-center font-['Noto Sans KR'] font-medium text-[17.55px] leading-[21px] 
+            text-center heading-3 font-500 
             text-black m-0"
         >
           현재 입력한 내용과 진행 중인 모든 작업이 즉시 삭제되며, 되돌릴 수 없습니다.
@@ -89,9 +87,7 @@ const ResetModal = () => {
             bg-[#FF4854] rounded-[29.25px] cursor-pointer 
             hover:bg-red-600 transition duration-200"
         >
-          <span className="font-['Noto Sans KR'] font-normal text-[17.55px] leading-[21px] text-white">
-            대화 내용 초기화
-          </span>
+          <span className="heading-3 font-500 text-white">대화 내용 초기화</span>
         </button>
       </div>
     </div>
