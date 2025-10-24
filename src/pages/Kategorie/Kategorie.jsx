@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom'; // 💡 useSearchParams 임포트
 
 // 💡 데이터 임포트
-import challengeData from '../../data/challengeData.json';
+import challengeData from '@/data/challengedata.json';
 
 // 컴포넌트 임포트
 import Banner from '../../components/Banner/Banner';
