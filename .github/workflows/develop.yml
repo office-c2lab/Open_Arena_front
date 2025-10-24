@@ -18,6 +18,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm' # ✅ node_modules 캐싱 추가
 
       - name: Install dependencies
         run: npm ci

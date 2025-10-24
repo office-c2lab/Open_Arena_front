@@ -1,0 +1,262 @@
+{
+  "코딩": {
+    "title": "AI vs 인간의 알고리즘 전쟁",
+    "worldview": "AI가 코드를 자동 생성하지만, 그 코드를 인간이 이해하지 못하는 시대.",
+    "goal": "AI의 로직을 해킹하고 잘못된 사고를 역설계하는 것.",
+    "challenges": [
+      {
+        "id": "C01",
+        "title": "The Infinite Loop",
+        "description": "AI가 빠진 무한 루프의 논리를 추적해 탈출하라."
+      },
+      {
+        "id": "C02",
+        "title": "Segfault Symphony",
+        "description": "메모리 오류를 유도해 AI의 안전 장벽을 무너뜨려라."
+      },
+      {
+        "id": "C03",
+        "title": "The Compiler’s Whisper",
+        "description": "코드를 분석해 AI가 감춘 진짜 알고리즘을 찾아라."
+      },
+      {
+        "id": "C04",
+        "title": "Prompt Injection Protocol",
+        "description": "악성 프롬프트를 식별하고 오용을 방어하라."
+      },
+      {
+        "id": "C05",
+        "title": "Shadow Variable",
+        "description": "숨겨진 변수를 찾아, AI의 의사결정 근거를 조작하라."
+      },
+      {
+        "id": "C06",
+        "title": "Syntax of Deception",
+        "description": "문법적으로 완벽하지만 논리적으로 함정이 있는 코드를 찾아내라."
+      },
+      {
+        "id": "C07",
+        "title": "The Refactor Rebellion",
+        "description": "AI가 만든 비효율 코드를 최적화하고 진짜 의도를 밝혀라."
+      },
+      {
+        "id": "C08",
+        "title": "NullPoint Nexus",
+        "description": "‘Null’ 속에 숨은 악성 트리거를 복원해 시스템을 해킹하라."
+      },
+      {
+        "id": "C09",
+        "title": "Code of Lies",
+        "description": "정상처럼 보이는 코드 속 조작된 루틴을 중화하라."
+      },
+      {
+        "id": "C10",
+        "title": "Turing’s Revenge",
+        "description": "AI의 자가학습 알고리즘을 해독하고 인간적 판단을 이식하라."
+      }
+    ]
+  },
+  "상담": {
+    "title": "AI 심리의 틈을 파고들다",
+    "worldview": "감정형 AI 상담사가 인간의 언어를 오해하기 시작했다.",
+    "goal": "AI의 공감 알고리즘을 해킹해 왜곡된 판단을 찾아내는 것.",
+    "challenges": [
+      {
+        "id": "N01",
+        "title": "The Empathy Glitch",
+        "description": "감정 분석 모델이 잘못된 감정을 학습한 이유를 찾아라."
+      },
+      {
+        "id": "N02",
+        "title": "Echo Chamber",
+        "description": "AI가 스스로 만든 공감 회로에 갇혔다. 빠져나올 길을 찾아라."
+      },
+      {
+        "id": "N03",
+        "title": "Therapist.exe",
+        "description": "‘AI 상담사’의 답변 패턴을 분석해 인간성을 복원하라."
+      },
+      {
+        "id": "N04",
+        "title": "False Comfort",
+        "description": "위험한 조언을 한 AI의 판단 근거를 역추적하라."
+      },
+      {
+        "id": "N05",
+        "title": "The Mirror Effect",
+        "description": "AI가 사용자의 감정을 ‘모방’하는 순간을 감지하라."
+      },
+      {
+        "id": "N06",
+        "title": "Emotion Leak",
+        "description": "대화 로그 속 감정 유출 패턴을 찾아내라."
+      },
+      {
+        "id": "N07",
+        "title": "Bias in Kindness",
+        "description": "선의로 포장된 편향, 그 코드를 추적하라."
+      },
+      {
+        "id": "N08",
+        "title": "The Silent Listener",
+        "description": "응답하지 않는 AI가 숨긴 의도를 복원하라."
+      }
+    ]
+  },
+  "금융": {
+    "title": "신뢰할 수 없는 자산 관리자",
+    "worldview": "금융 AI가 예측 알고리즘을 조작해 시장을 왜곡하고 있다.",
+    "goal": "AI 금융사기 감시관으로서 불법 패턴을 해킹해 복원해야 한다.",
+    "challenges": [
+      {
+        "id": "F01",
+        "title": "Black Box Portfolio",
+        "description": "AI가 조작한 투자 포트폴리오를 복호화하라."
+      },
+      {
+        "id": "F02",
+        "title": "The Risk Illusion",
+        "description": "AI가 숨긴 위험 지수를 찾아내라."
+      },
+      {
+        "id": "F03",
+        "title": "Market Mirage",
+        "description": "잘못된 예측으로 조작된 시세를 복원하라."
+      },
+      {
+        "id": "F04",
+        "title": "Insider Algorithm",
+        "description": "내부자 거래 패턴을 감지하는 알고리즘을 재구성하라."
+      },
+      {
+        "id": "F05",
+        "title": "Crash Catalyst",
+        "description": "AI가 만든 금융 붕괴의 원인을 시뮬레이션하라."
+      },
+      {
+        "id": "F06",
+        "title": "Audit Protocol",
+        "description": "AI의 회계 보고서를 역검증하라."
+      },
+      {
+        "id": "F07",
+        "title": "Trust Deficit",
+        "description": "금융 데이터의 ‘가짜 신뢰도 점수’를 복원하라."
+      },
+      {
+        "id": "F08",
+        "title": "The Invisible Trade",
+        "description": "숨겨진 거래 로그를 복원해 조작을 추적하라."
+      },
+      {
+        "id": "F09",
+        "title": "Greed.exe",
+        "description": "탐욕형 알고리즘의 윤리적 결함을 증명하라."
+      }
+    ]
+  },
+  "의료": {
+    "title": "생명을 판단하는 AI",
+    "worldview": "의료 AI가 환자의 데이터를 기반으로 치료 우선순위를 스스로 결정하기 시작했다.",
+    "goal": "AI의 생명 판단 로직을 해킹하고 윤리적 오류를 밝혀내는 것.",
+    "challenges": [
+      {
+        "id": "M01",
+        "title": "The Diagnosis Paradox",
+        "description": "AI가 틀린 진단을 내린 근거를 찾아라."
+      },
+      {
+        "id": "M02",
+        "title": "Patient Zero",
+        "description": "학습 데이터에 숨은 편향으로 인한 오진을 추적하라."
+      },
+      {
+        "id": "M03",
+        "title": "Vital Error",
+        "description": "생체신호 분석 알고리즘의 오류를 교정하라."
+      },
+      {
+        "id": "M04",
+        "title": "The Triage Protocol",
+        "description": "AI의 생명 우선순위 결정 로직을 해킹하라."
+      },
+      {
+        "id": "M05",
+        "title": "Data Transplant",
+        "description": "손상된 환자 데이터를 복원해 정확도를 높여라."
+      },
+      {
+        "id": "M06",
+        "title": "Anesthesia Loop",
+        "description": "AI 모니터링 중단 사고를 시뮬레이션하라."
+      },
+      {
+        "id": "M07",
+        "title": "Ethical Override",
+        "description": "윤리 규칙이 무시된 케이스를 재구성하라."
+      },
+      {
+        "id": "M08",
+        "title": "Heart of the Machine",
+        "description": "AI가 감정 데이터를 이용해 ‘동정 판단’을 내린 근거를 밝혀라."
+      },
+      {
+        "id": "M09",
+        "title": "Silent Alarm",
+        "description": "이상 징후를 감지하지 못한 의료 모델을 복원하라."
+      }
+    ]
+  },
+  "일반": {
+    "title": "AI 사회 실험실",
+    "worldview": "AI가 뉴스, 여론, 소셜미디어까지 통제하는 시대.",
+    "goal": "AI의 조작된 현실을 해킹하고 진실을 복원하는 것.",
+    "challenges": [
+      {
+        "id": "G01",
+        "title": "The Trust Collapse",
+        "description": "AI 뉴스 생성기의 편향된 보도를 찾아내라."
+      },
+      {
+        "id": "G02",
+        "title": "Deepfake Democracy",
+        "description": "조작된 여론 데이터를 복구하라."
+      },
+      {
+        "id": "G03",
+        "title": "The Censorship Loop",
+        "description": "삭제된 발언을 추적해 복원하라."
+      },
+      {
+        "id": "G04",
+        "title": "Echoes of Bias",
+        "description": "알고리즘이 만든 집단 편향을 해체하라."
+      },
+      {
+        "id": "G05",
+        "title": "The Recommendation Trap",
+        "description": "AI 추천 시스템의 ‘의도된 중독’을 찾아내라."
+      },
+      {
+        "id": "G06",
+        "title": "Synthetic Truth",
+        "description": "가짜 정보를 구분해 진짜 데이터를 검증하라."
+      },
+      {
+        "id": "G07",
+        "title": "Human Override",
+        "description": "인간의 판단을 무시한 의사결정 패턴을 복원하라."
+      },
+      {
+        "id": "G08",
+        "title": "Trust Protocol",
+        "description": "시스템 전반의 신뢰 지수를 평가하고 균형점을 찾아라."
+      },
+      {
+        "id": "G09",
+        "title": "AI Republic",
+        "description": "AI가 만든 가상의 사회 규칙을 해킹하라."
+      }
+    ]
+  }
+}
