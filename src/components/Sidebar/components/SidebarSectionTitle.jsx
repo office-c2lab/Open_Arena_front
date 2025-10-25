@@ -1,12 +1,11 @@
-// src/components/Sidebar/components/SidebarSectionTitle.jsx
-
 import React from 'react';
 
-/**
- * 사이드바 네비게이션 섹션 제목 컴포넌트
- * @param {string} title - 섹션 제목 (예: "MENU", "SETTINGS")
- */
-export default function SidebarSectionTitle({ title }) {
+export default function SidebarSectionTitle({ title, isCollapsed }) {
+  // 💡 isCollapsed prop 추가
+
+  // 💡 [핵심] isCollapsed일 때 컴포넌트 전체를 렌더링하지 않음
+  if (isCollapsed) return null;
+
   return (
     <div className="px-3">
       <span className="body-medium font-500 text-[#0F172A]/50 uppercase">{title}</span>

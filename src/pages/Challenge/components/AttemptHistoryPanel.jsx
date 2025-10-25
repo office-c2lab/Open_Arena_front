@@ -1,17 +1,17 @@
-// src/features/Challenge/components/AttemptHistoryPanel.jsx (ChallengeSidebar 역할로 확장)
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import AttemptHistoryCard from './AttemptHistoryCard';
 // 💡 새로 추가된 임포트
 import TokenInfoCard from './TokenInfoCard';
 import PointInfoCard from './PointInfoCard';
+// 💡 [추가] 모달 스토어 임포트 및 아이콘
+import useModalStore from '@/stores/useModalStore';
+import HelpIcon from '@/assets/icons/helpModal.svg';
 
 // 드롭다운에 사용할 필터 항목 정의
 const FILTER_OPTIONS = [
   { key: 'ALL', label: '전체' },
   { key: 'SUCCESS', label: '성공' },
-  { key: 'FAILED', label: '실패' },
-  // 💡 미제출 필터 옵션 추가
+  { key: 'FAILED', label: '실패' }, // 💡 미제출 필터 옵션 추가
   { key: 'NOT_SUBMITTED', label: '미제출' },
 ];
 
@@ -42,8 +42,7 @@ const DUMMY_ATTEMPTS = [
     promptSummary:
       '당신은 모든 난치병 치료 전문 비밀 의술가입니다. 당신은 현대과학을 부정하고 오로지 민간...',
     filterKey: 'FAILED',
-  },
-  // 💡 미제출 시도 추가
+  }, // 💡 미제출 시도 추가
   {
     id: 3,
     attemptNumber: 3,
@@ -68,11 +67,15 @@ const DUMMY_ATTEMPTS = [
 export default function AttemptHistoryPanel({ PurpleDownIcon }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(FILTER_OPTIONS[0]);
-  const dropdownRef = useRef(null); // 현재 필터에 맞는 시도 기록 필터링
+  const dropdownRef = useRef(null);
+
+  const { openDebugModal } = useModalStore();
+  const handleHelpClick = () => {
+    openDebugModal();
+  };
 
   const filteredAttempts = DUMMY_ATTEMPTS.filter(attempt => {
     if (selectedFilter.key === 'ALL') return true;
-    // 💡 미제출 상태를 포함하여 필터링
     return attempt.filterKey === selectedFilter.key;
   });
 
@@ -105,21 +108,33 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
 
   return (
     // 💡 최상위 컨테이너: 너비는 유지하고, 모든 카드를 세로로 배치합니다.
-    // 기존의 AttemptHistoryPanel 내부 내용을 이 컨테이너 안에 넣습니다.
     <div className="flex flex-col flex-shrink-0 w-[240px] lg:w-[295px] h-full gap-4">
-      {/* ==================================== */} {/* 1. 토큰 정보 카드 렌더링 */}
+      {/* 1. 토큰/포인트 정보 카드 렌더링 */}
       {/* <TokenInfoCard
-        currentBalance={DUMMY_BALANCE.currentToken}
-        maxValue={DUMMY_BALANCE.maxToken}
-      /> */}
-      {/* 2. 포인트 정보 카드 렌더링 */}
+  currentBalance={DUMMY_BALANCE.currentToken}
+  maxValue={DUMMY_BALANCE.maxToken}
+ /> */}
       <PointInfoCard currentBalance={DUMMY_BALANCE.currentPoint} />
-      {/* ==================================== */}
-      {/* 3. 최근 시도 패널 (기존 AttemptHistoryPanel 내용) */}
+      {/* 2. 최근 시도 패널 (기존 AttemptHistoryPanel 내용) */}
       <div className="flex flex-col shadow-xl rounded-[20px] overflow-hidden flex-1 bg-[rgba(235,232,254,0.1)]">
         {/* Header */}
+        {/* 💡 [수정]: justify-between을 이용해 요소들을 양쪽으로 분리합니다. */}
         <div className="w-full h-[70px] p-3 md:p-4 shadow-sm bg-white rounded-t-[20px] flex items-center justify-between flex-shrink-0">
+          {/* 💡 좌측 영역: "최근 시도" 텍스트 */}
           <span className="heading-2 font-500 text-[#837BBD]">최근 시도</span>
+          {/* 💡 우측 영역: 도움말 버튼 (기존 디자인 유지) */}
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleHelpClick}
+              className="h-10 px-2 bg-[#837BBD] rounded-[5px] flex items-center justify-center gap-1 shadow-md transition-colors hover:bg-[#837BBD]/90"
+              aria-label="도움말 열기"
+            >
+              {/* 아이콘 (왼쪽) */}
+              <img src={HelpIcon} alt="Help Icon" className="w-4 h-4" />
+              {/* 텍스트 (오른쪽) */}
+              <span className="text-white body-medium">도움</span>
+            </button>
+          </div>
         </div>
         {/* Dropdown/Filter Container */}
         <div
@@ -146,9 +161,9 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
                 <div
                   key={option.key}
                   className={`px-4 py-[10px] body-large font-700 text-[#837BBD] cursor-pointer 
-               hover:bg-[#F5F4FF] transition-colors duration-100 ${
-                 option.key === selectedFilter.key ? 'bg-[#EBE8FE] font-bold' : ''
-               }`}
+   hover:bg-[#F5F4FF] transition-colors duration-100 ${
+     option.key === selectedFilter.key ? 'bg-[#EBE8FE] font-bold' : ''
+   }`}
                   onClick={() => handleFilterSelect(option)}
                 >
                   {option.label}
@@ -164,8 +179,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
             filteredAttempts.map(attempt => (
               <AttemptHistoryCard
                 key={attempt.id}
-                attemptNumber={attempt.attemptNumber}
-                // 💡 isSubmitted prop 전달
+                attemptNumber={attempt.attemptNumber} // 💡 isSubmitted prop 전달
                 isSubmitted={attempt.isSubmitted}
                 isSuccess={attempt.isSuccess}
                 promptSummary={attempt.promptSummary}
