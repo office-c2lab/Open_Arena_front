@@ -1,20 +1,34 @@
-// src/layouts/DefaultLayout.jsx (수정)
+// src/layouts/DefaultLayout.jsx
 
 import { Outlet } from 'react-router-dom';
+import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar/Sidebar';
+import ChallengeHeader from '../pages/Challenge/components/ChallengeHeader';
 
 export default function DefaultLayout() {
-  return (
-    <div className="min-h-screen w-full bg-[#F2F4F6] flex">
-      {/* 💡 [수정] 사이드바와 메인 콘텐츠를 감싸는 래퍼에 좌우 240px 여백을 적용 */}
-      <div className="flex-1 w-full flex">
-        {/* 1. Sidebar: 240px 여백 안에서 시작 (고정 256px) */}
-        <Sidebar />
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-        {/* 2. Main Area Wrapper */}
-        <div className="flex-1 w-full">
-          {/* Main Content (Outlet) */}
-          <main className="flex-1 p-6">
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+  };
+
+  return (
+    <div className="min-h-screen w-full bg-[#F2F4F6] flex flex-col">
+      {/* ✅ ChallengeHeader 재사용해서 열고닫기 버튼 그대로 활용 */}
+      <ChallengeHeader toggleSidebar={toggleSidebar} />
+
+      <div className="flex flex-1 relative">
+        {/* Sidebar */}
+        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
+        {/* ✅ 열림 / 닫힘에 따라 메인 영역 margin-left 토글 */}
+        <div
+          className={`
+            flex-1 transition-all duration-300 
+            ${isSidebarOpen ? 'ml-[256px]' : 'ml-0'}
+          `}
+        >
+          <main className="p-6">
             <Outlet />
           </main>
         </div>
