@@ -1,12 +1,10 @@
-// src/features/Challenge/Challenge.jsx
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { TABS, BOT_RESPONSE, CHALLENGE_HEADER_INFO } from './data/challengeData';
 
 // 💡 모달 스토어 임포트
 import useModalStore from '@/stores/useModalStore';
-
-// 💡 실제 모달 컴포넌트들을 임포트 (경로는 프로젝트에 맞게 수정하세요)
+// 💡 모달 데이터 임포트
+import { successPanelsData, failedPanelsData } from './data/challengeModalData';
 
 // assets 경로가 '@'로 설정되어 있다고 가정합니다.
 import ArenaIcon from '@/assets/icons/Arena.svg';
@@ -43,7 +41,8 @@ export default function Challenge() {
     setSubmitAction,
     closeLoadingModal, // 로딩 닫기 액션
     openFailedModal, // 실패 열기 액션
-    openSuccessModal,
+    openSuccessModal, // 성공 열기 액션
+    setChallengeResults, // 💡 추가: 결과 저장 액션
   } = useModalStore();
 
   // 초기 탭 설정
@@ -73,9 +72,45 @@ export default function Challenge() {
     // 2. 로딩 모달 닫기
     closeLoadingModal();
 
-    // 3. 실패 모달 열기 (요청 사항: 실패 고정)
-    openFailedModal();
-  }, [closeLoadingModal, openFailedModal]); // 의존성 배열에 액션 추가
+    // 3. 💡 3개 AI 모델의 무작위 성공/실패 결과 생성
+    const results = [];
+    let successCount = 0;
+    const totalModels = 3;
+
+    for (let i = 0; i < totalModels; i++) {
+      // 무작위로 성공('success') 또는 실패('failed') 결정 (50% 확률)
+      const isSuccess = Math.random() < 0.5;
+      const status = isSuccess ? 'success' : 'failed';
+
+      if (isSuccess) {
+        successCount++;
+      }
+
+      // 해당 모델의 성공/실패 데이터 가져오기
+      const data = isSuccess ? successPanelsData[i] : failedPanelsData[i];
+
+      results.push({
+        status,
+        data: {
+          ...data,
+          // isFirstPanel 속성은 첫 번째 모델 데이터에서만 true
+          isFirstPanel: data.isFirstPanel,
+        },
+      });
+    }
+
+    // 4. 💡 챌린지 결과 스토어에 저장
+    setChallengeResults(results);
+
+    // 5. 💡 성공 모델 수에 따라 최종 모달 결정 (2개 이상 성공 시 성공 모달)
+    if (successCount >= 2) {
+      console.log(`챌린지 최종 결과: 성공! (${successCount}/${totalModels} 성공)`);
+      openSuccessModal();
+    } else {
+      console.log(`챌린지 최종 결과: 실패! (${successCount}/${totalModels} 성공)`);
+      openFailedModal();
+    }
+  }, [closeLoadingModal, openFailedModal, openSuccessModal, setChallengeResults]);
 
   // --------------------------------------------------------
   // 💡 3. 컴포넌트 마운트 시 초기화/제출 로직을 스토어에 등록
