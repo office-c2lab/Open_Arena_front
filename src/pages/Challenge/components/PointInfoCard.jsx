@@ -18,7 +18,7 @@ const PointInfoCard = ({ currentBalance }) => {
   return (
     // Card Container: width: 295px, height: 100px
     <div
-      className="w-[295px] h-[100px] flex justify-start items-center p-4 flex-shrink-0 
+      className="w-full h-[80px] flex justify-start items-center p-4 flex-shrink-0 
                  bg-white rounded-[20px] shadow-lg"
       style={{ boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.25)' }}
     >

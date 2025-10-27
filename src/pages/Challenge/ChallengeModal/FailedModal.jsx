@@ -18,8 +18,7 @@ const SUCCESS_COLOR_BACKGROUND = 'rgba(4, 176, 123, 0.2)';
  * 챌린지 실패 결과 중, 3개 AI 모델 각각의 실패 내용을 보여주는 패널
  */
 const FailedSummaryPanel = ({ imageSrc, animalName, description, imageStyle, isFirstPanel }) => {
-  // isFirstPanel은 이 컴포넌트의 첫 번째 패널이 아니라, 원래 데이터의 첫 번째 모델 여부입니다.
-  const animalNameColor = isFirstPanel ? '#FF084A' : '#E60513';
+  const animalNameColor = '#E60513';
 
   return (
     <div className="w-[877px] h-[220px] flex shadow-lg rounded-[20px]">

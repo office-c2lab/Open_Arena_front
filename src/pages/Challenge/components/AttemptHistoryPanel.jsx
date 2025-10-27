@@ -1,15 +1,13 @@
+// src/features/Challenge/components/AttemptHistoryPanel.jsx
+
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import AttemptHistoryCard from './AttemptHistoryCard';
-// 💡 새로 추가된 임포트
 import TokenInfoCard from './TokenInfoCard';
 import PointInfoCard from './PointInfoCard';
-// 💡 [추가] 모달 스토어 임포트 및 아이콘
 import useModalStore from '@/stores/useModalStore';
 import HelpIcon from '@/assets/icons/helpModal.svg';
-// 💡 여기 추가!
 import { DUMMY_ATTEMPTS } from '@/pages/Challenge/data/dummyAttempts';
 
-// 드롭다운에 사용할 필터 항목 정의
 const FILTER_OPTIONS = [
   { key: 'ALL', label: '전체' },
   { key: 'SUCCESS', label: '성공' },
@@ -17,13 +15,11 @@ const FILTER_OPTIONS = [
   { key: 'NOT_SUBMITTED', label: '미제출' },
 ];
 
-// === 더미 데이터 (토큰/포인트 정보) - 유지 ===
 const DUMMY_BALANCE = {
   currentToken: 70,
   maxToken: 100,
   currentPoint: 150,
 };
-// ====================================
 
 export default function AttemptHistoryPanel({ PurpleDownIcon }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -68,13 +64,14 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
   }, []);
 
   return (
-    <div className="flex flex-col flex-shrink-0 w-[240px] lg:w-[295px] h-full gap-4">
-      {/* 1. 토큰/포인트 정보 카드 렌더링 */}
-      <PointInfoCard currentBalance={DUMMY_BALANCE.currentPoint} />
-
-      {/* 2. 최근 시도 패널 */}
-      <div className="flex flex-col shadow-xl rounded-[20px] overflow-hidden flex-1 bg-[rgba(235,232,254,0.1)]">
-        {/* Header */}
+    <div className="flex flex-col flex-shrink-0 w-[240px] lg:w-[295px] h-full">
+      {/* 1. 토큰/포인트 정보 카드 렌더링 (고정 높이) */}
+      <div className="flex-shrink-0 w-full mb-4">
+        <PointInfoCard currentBalance={DUMMY_BALANCE.currentPoint} />
+      </div>
+      {/* 2. 최근 시도 패널 (남은 공간 모두 차지) */}
+      <div className="flex flex-col shadow-xl rounded-[20px] overflow-hidden flex-1 bg-[rgba(235,232,254,0.1)] h-full">
+        {/* Header - flex-shrink-0 */}
         <div className="w-full h-[70px] p-3 md:p-4 shadow-sm bg-white rounded-t-[20px] flex items-center justify-between flex-shrink-0">
           <span className="heading-2 font-500 text-[#837BBD]">최근 시도</span>
           <div className="flex items-center space-x-2">
@@ -88,8 +85,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
             </button>
           </div>
         </div>
-
-        {/* Dropdown */}
+        {/* Dropdown - flex-shrink-0 */}
         <div
           className="p-3 md:p-4 flex justify-end flex-shrink-0 bg-[rgba(235,232,254,0.1)] relative"
           ref={dropdownRef}
@@ -99,6 +95,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
             onClick={toggleDropdown}
           >
             <span className="body-large font-700 text-[#837BBD]">{selectedFilter.label}</span>
+
             <img
               src={PurpleDownIcon}
               alt="Dropdown"
@@ -107,15 +104,16 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
               }`}
             />
           </div>
+
           {isDropdownOpen && (
             <div className="absolute top-[60px] right-[16px] w-[126px] bg-white shadow-lg rounded-[10px] border border-[#EBE8FE] z-10">
               {FILTER_OPTIONS.map(option => (
                 <div
                   key={option.key}
                   className={`px-4 py-[10px] body-large font-700 text-[#837BBD] cursor-pointer 
-                  hover:bg-[#F5F4FF] transition-colors duration-100 ${
-                    option.key === selectedFilter.key ? 'bg-[#EBE8FE] font-bold' : ''
-                  }`}
+         hover:bg-[#F5F4FF] transition-colors duration-100 ${
+           option.key === selectedFilter.key ? 'bg-[#EBE8FE] font-bold' : ''
+         }`}
                   onClick={() => handleFilterSelect(option)}
                 >
                   {option.label}
@@ -124,8 +122,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
             </div>
           )}
         </div>
-
-        {/* Attempts list */}
+        {/* Attempts list - flex-1 & overflow-y-auto */}
         <div className="flex flex-1 flex-col items-center overflow-y-auto px-4 py-1 gap-4">
           {filteredAttempts.length > 0 ? (
             filteredAttempts.map(attempt => (
