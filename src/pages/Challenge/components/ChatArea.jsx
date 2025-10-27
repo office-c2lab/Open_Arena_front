@@ -79,7 +79,7 @@ export default function ChatArea({
             </button>
           </div>
           {/* Reset and Submit Buttons */}
-          <div className="flex justify-between flex-shrink-0 gap-3">
+          <div className="flex justify-between flex-shrink-0 gap-16">
             <button
               className="flex items-center justify-center flex-1 h-[44px] bg-[#D9DADB] rounded-lg gap-2"
               onClick={openResetModal}
