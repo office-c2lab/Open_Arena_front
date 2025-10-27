@@ -20,7 +20,7 @@ export default function ChatArea({
   const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]';
 
   return (
-    <div className={`flex flex-col flex-grow h-full ${className}`}>
+    <div className={`flex flex-col  flex-grow h-full ${className}`}>
       {/* ChatArea 내부 메인 컨테이너에 h-full을 추가하여 높이를 상속받습니다. */}
       <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden h-full">
         {/* Chat Display Area (남은 공간) - flex-1 & overflow-y-auto */}

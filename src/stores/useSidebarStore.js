@@ -16,14 +16,12 @@ const getActiveLabelByPath = (pathname, search, lastSelectedCategory) => {
     } catch (e) {
       return null;
     }
-  };
+  }; // 챌린지 상세 페이지 (예: /challenge/123)
 
-  // 챌린지 상세 페이지 (예: /challenge/123)
   if (pathname.startsWith('/challenge/')) {
     return lastSelectedCategory || '챌린지';
-  }
+  } // 카테고리 페이지 (예: /kategorie?category=코딩)
 
-  // 카테고리 페이지 (예: /kategorie?category=코딩)
   if (pathname === '/kategorie' && search) {
     const category = getQueryParam(search, 'category');
     if (category && CHALLENGE_SUB_MENUS.includes(category)) {
@@ -35,8 +33,7 @@ const getActiveLabelByPath = (pathname, search, lastSelectedCategory) => {
     '/': '대시보드',
     '/leaderboard': '리더보드',
     '/tutorial': '튜토리얼',
-    '/kategorie': '챌린지',
-    // '설정' 관련 경로는 이곳에 추가될 수 있습니다.
+    '/kategorie': '챌린지', // '설정' 관련 경로는 이곳에 추가될 수 있습니다.
   };
   if (PATH_TO_LABEL_MAP[pathname]) {
     return PATH_TO_LABEL_MAP[pathname];
@@ -57,48 +54,56 @@ export const useSidebarStore = create(
 
       activeItem: '대시보드',
       isAIDropdownOpen: false,
-      isSettingsDropdownOpen: false,
-
-      // --------------------
+      isSettingsDropdownOpen: false, // --------------------
       // 2. 액션 (Actions)
       // --------------------
-
       // 💡 [추가된 액션] 콜랩스 상태를 직접 설정
-      setIsCollapsed: value => set({ isCollapsed: value }),
 
-      // 💡 [핵심] 콜랩스 상태 토글 액션
-      toggleCollapsed: () => set(state => ({ isCollapsed: !state.isCollapsed })),
+      setIsCollapsed: value => set({ isCollapsed: value }), // 💡 [핵심] 콜랩스 상태 토글 액션
 
-      // 💡 [수정] 경로에 따라 활성 아이템 및 isCollapsed 상태를 설정
+      toggleCollapsed: () => set(state => ({ isCollapsed: !state.isCollapsed })), // 💡 [수정] 경로에 따라 활성 아이템 및 isCollapsed 상태를 설정
+
       setActiveItemByPath: (pathname, search = '') => {
         const { lastSelectedChallengeCategory } = get();
         const label = getActiveLabelByPath(pathname, search, lastSelectedChallengeCategory);
         const isChallengeSubMenu = CHALLENGE_SUB_MENUS.includes(label);
-        const isChallengeMain = label === '챌린지';
+        const isChallengeMain = label === '챌린지'; // 챌린지 상세 페이지인 경우 isCollapsed: true로 강제 설정
 
-        // 챌린지 상세 페이지인 경우 isCollapsed: true로 강제 설정
         const shouldCollapse = pathname.startsWith('/challenge/');
 
-        if (isChallengeMain || isChallengeSubMenu) {
+        // 챌린지 상세 페이지에 진입하면 isCollapsed를 true로, 드롭다운은 false로 설정
+        if (shouldCollapse) {
           set({
-            activeItem: label,
-            isAIDropdownOpen: true,
-            isSettingsDropdownOpen: false,
-            isCollapsed: shouldCollapse, // 💡 챌린지 상세 페이지 진입 시 닫기
+            isCollapsed: true,
+            isAIDropdownOpen: false, // 💡 드롭다운 닫기 추가
+            isSettingsDropdownOpen: false, // 💡 드롭다운 닫기 추가
           });
+          // 나머지 로직은 activeItem만 설정하도록 분리
+        }
+
+        if (isChallengeMain || isChallengeSubMenu) {
+          // shouldCollapse가 true인 경우는 위에서 이미 처리했으므로,
+          // 여기는 'kategorie' 페이지 등 펼쳐진 상태로 챌린지 메뉴를 보여줘야 할 때입니다.
+          set(prev => ({
+            // set(prev)를 사용하여 shouldCollapse 처리 후 상태를 덮어쓰지 않도록 수정
+            activeItem: label,
+            isAIDropdownOpen: !shouldCollapse ? true : prev.isAIDropdownOpen,
+            isSettingsDropdownOpen: false,
+            isCollapsed: shouldCollapse,
+          }));
         } else if (label === '설정') {
           set({
             activeItem: label,
             isSettingsDropdownOpen: true,
             isAIDropdownOpen: false,
-            isCollapsed: false, // 💡 다른 메인 페이지 진입 시 펼침
+            isCollapsed: false,
           });
         } else {
           set({
             activeItem: label,
             isAIDropdownOpen: false,
             isSettingsDropdownOpen: false,
-            isCollapsed: false, // 💡 다른 메인 페이지 진입 시 펼침
+            isCollapsed: false,
           });
         }
       },
