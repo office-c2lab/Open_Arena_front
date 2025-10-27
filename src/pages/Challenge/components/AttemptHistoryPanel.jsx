@@ -81,7 +81,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
               aria-label="도움말 열기"
             >
               <img src={HelpIcon} alt="Help Icon" className="w-4 h-4" />
-              <span className="text-white body-medium">도움</span>
+              <span className="text-white body-medium">관리자 호출</span>
             </button>
           </div>
         </div>
