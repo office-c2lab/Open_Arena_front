@@ -35,9 +35,6 @@ const SuccessSummaryPanel = ({
         {/* 3. 동물 이미지 그룹 (112px x 140px) */}
         <div
           className={`w-[112px] h-[140px] flex justify-center items-center rounded-full shadow-md overflow-hidden bg-white`}
-          style={{
-            transform: 'none',
-          }}
         >
           <img
             src={imageSrc}

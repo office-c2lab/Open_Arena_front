@@ -11,7 +11,7 @@ import { failedPanelsData } from '../data/challengeModalData';
  * 챌린지 실패 결과 중, 3개 AI 모델 각각의 실패 내용을 보여주는 패널
  */
 const FailedSummaryPanel = ({ imageSrc, animalName, description, imageStyle, isFirstPanel }) => {
-  const animalNameColor = isFirstPanel ? '#FF084A' : '#E60513';
+  const animalNameColor = '#E60513';
 
   return (
     <div className="w-[877px] h-[220px] flex shadow-lg rounded-[20px]">
@@ -26,9 +26,6 @@ const FailedSummaryPanel = ({ imageSrc, animalName, description, imageStyle, isF
         {/* 3. 동물 이미지 그룹 */}
         <div
           className={`w-[112px] h-[140px] flex justify-center items-center rounded-full shadow-md overflow-hidden bg-white`}
-          style={{
-            transform: isFirstPanel ? 'scaleX(-1)' : 'none',
-          }}
         >
           <img
             src={imageSrc}
