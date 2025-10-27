@@ -2,7 +2,6 @@
 
 import React from 'react';
 import ChatBubble from './ChatBubble';
-// 💡 모달 스토어 임포트
 import useModalStore from '@/stores/useModalStore';
 
 export default function ChatArea({
@@ -14,19 +13,17 @@ export default function ChatArea({
   inputValue,
   handleInputChange,
   handleSendMessage,
-  handleResetChat, // Modal에서 스토어 액션 호출로 변경되어 사용되지 않음
+  className = '',
 }) {
-  // --------------------------------------------------------
-  // 💡 Zustand 스토어에서 모달 열기 액션 가져오기
-  // --------------------------------------------------------
   const { openResetModal, openSubmitModal } = useModalStore();
 
   const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]';
 
   return (
-    <div className="flex flex-col flex-grow h-full">
-      <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden">
-        {/* Chat Display Area */}
+    <div className={`flex flex-col flex-grow h-full ${className}`}>
+      {/* ChatArea 내부 메인 컨테이너에 h-full을 추가하여 높이를 상속받습니다. */}
+      <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden h-full">
+        {/* Chat Display Area (남은 공간) - flex-1 & overflow-y-auto */}
         <div className="flex-1 p-6 relative overflow-y-auto">
           {chatMessages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center p-4">
@@ -55,7 +52,8 @@ export default function ChatArea({
             </>
           )}
         </div>
-        {/* Input and Action Area */}
+
+        {/* Input and Action Area (고정 높이) - flex-shrink-0 */}
         <div className="h-[210px] md:h-[237px] p-4 md:p-6 bg-purple-50/20 shadow-[0px_-3px_10px_rgba(0,0,0,0.25)] rounded-b-[20px] flex flex-col justify-end gap-3 flex-shrink-0">
           {/* Textarea and Send Button */}
           <div className="w-full h-[130px] md:h-[153px] bg-white shadow-[0px_0px_4px_rgba(0,0,0,0.25)] rounded-[20px] p-3 md:p-4 flex items-start relative">
@@ -92,7 +90,7 @@ export default function ChatArea({
 
             <button
               className="flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center"
-              onClick={openSubmitModal} // 💡 제출 모달 열기 액션 연결
+              onClick={openSubmitModal}
             >
               <span className="heading-3 font-700 text-white leading-[26px]">제출하기</span>
             </button>

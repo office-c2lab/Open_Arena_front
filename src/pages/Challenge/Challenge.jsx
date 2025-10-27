@@ -156,7 +156,7 @@ export default function Challenge() {
   };
 
   return (
-    <div className="flex w-full h-[800px] gap-4 md:gap-6">
+    <div className="flex w-full h-full gap-4 md:gap-6">
       {/* 1. 좌측 챌린지 정보 패널 */}
       <ChallengeInfoPanel
         TABS={TABS}
