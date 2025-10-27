@@ -9,7 +9,7 @@ const Dashboard = () => {
   return (
     <div className="w-full h-full flex flex-col items-center p-6 gap-8">
       {/* 1. Banner 영역 */}
-      <div className="w-full max-w-[1069px] flex justify-center">
+      <div>
         <Banner />
       </div>
       {/* 💡 2. 팀 정보 섹션: 제목과 컴포넌트를 묶어 왼쪽 정렬 */}

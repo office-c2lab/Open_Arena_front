@@ -14,7 +14,7 @@ const Leaderboard = () => {
   return (
     <div className="w-full h-full flex flex-col items-center p-6 gap-[40px]">
       {/* 1. Banner 컴포넌트 렌더링 */}
-      <div className="w-full max-w-[1069px] flex justify-center">
+      <div>
         <Banner />
       </div>
       {/* 2. 팀별 점수 차트 */}
