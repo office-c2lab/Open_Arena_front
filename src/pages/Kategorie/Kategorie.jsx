@@ -56,7 +56,7 @@ const ChallengeSection = () => {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center p-6 gap-8">
-      <div className="w-full max-w-[1069px] flex justify-center">
+      <div>
         <Banner />
       </div>
       {/* H1 태그: 필터링 상태와 정렬 유지 */}

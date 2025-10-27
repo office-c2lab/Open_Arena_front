@@ -10,7 +10,7 @@ export default function Tutorial() {
   return (
     // 💡 수정: max-w-7xl, mx-auto, p-10을 적용하여 컨텐츠를 중앙으로 이동시키고 패딩을 줍니다.
     <div className="w-full h-full flex flex-col justify-center items-center p-6 gap-8">
-      <div className="w-full max-w-[1069px] flex justify-center">
+      <div>
         <Banner />
       </div>
       {/* 챌린지 카드 영역 (가이드 + 문제) */}
