@@ -1,23 +1,27 @@
-// src/layouts/DefaultLayout.jsx (수정)
+// src/layouts/DefaultLayout.jsx
 
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar/Sidebar';
+import { useSidebarStore } from '../stores/useSidebarStore'; // 💡 Store 임포트
 
 export default function DefaultLayout() {
-  return (
-    <div className="min-h-screen w-full bg-[#F2F4F6] flex">
-      {/* 💡 [수정] 사이드바와 메인 콘텐츠를 감싸는 래퍼에 좌우 240px 여백을 적용 */}
-      <div className="flex-1 w-full flex">
-        {/* 1. Sidebar: 240px 여백 안에서 시작 (고정 256px) */}
-        <Sidebar />
+  // 💡 [핵심] Store에서 isCollapsed 상태 구독
+  const isCollapsed = useSidebarStore(state => state.isCollapsed);
 
-        {/* 2. Main Area Wrapper */}
-        <div className="flex-1 w-full">
-          {/* Main Content (Outlet) */}
-          <main className="flex-1 p-6">
-            <Outlet />
-          </main>
-        </div>
+  // 💡 [핵심] 상태에 따라 마진 클래스를 동적으로 결정
+  // 펼침(false, 256px): ml-[256px]
+  // 접힘(true, 80px): ml-[80px]
+  const mainContentMargin = isCollapsed ? 'ml-[80px]' : 'ml-[256px]';
+
+  return (
+    <div className="min-h-screen w-full bg-[#F2F4F6]">
+      <Sidebar />
+
+      {/* 💡 [핵심] 동적 마진 클래스와 전환 애니메이션 적용 */}
+      <div className={`transition-all duration-300 ${mainContentMargin}`}>
+        <main className="p-6">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
