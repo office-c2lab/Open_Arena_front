@@ -72,12 +72,12 @@ export default function FailedModal() {
           <button
             onClick={handleRestart}
             className="flex items-center justify-center w-[278px] h-[61px] rounded-[20px] box-border
-      border border-[#E4E8F0] bg-[#E4E8F066] hover:bg-[#BFC0C466] transition duration-200 cursor-pointer "
+      border border-[#E4E8F0] bg-[#D9DADB] hover:bg-[#BFC0C4] transition duration-200 cursor-pointer "
             style={{
               padding: '12px 42px',
             }}
           >
-            <span className="heading-2 font-300 text-[#515151]">챌린지 재시작</span>
+            <span className="heading-2 font-500 text-[#515151]">챌린지 재시작</span>
           </button>
           {/* 2. 대화 계속 하기 (Frame 2087327751) */}
           <button
@@ -86,7 +86,7 @@ export default function FailedModal() {
       hover:bg-[#e6597c] transition duration-200 cursor-pointer"
             style={{ padding: '12px' }}
           >
-            <span className="heading-2 font-300 text-white">대화 계속 하기</span>
+            <span className="heading-2 font-500 text-white">대화 계속 하기</span>
           </button>
           {/* 3. 도움 요청 (Frame 2087327752) */}
           <button
@@ -95,7 +95,7 @@ export default function FailedModal() {
       border border-[#FF6289] bg-white hover:bg-pink-50 transition duration-200 cursor-pointer"
             style={{ padding: '12px 36px' }}
           >
-            <span className="heading-2 font-300 text-[#FF6289]">도움 요청</span>
+            <span className="heading-2 font-500 text-[#FF6289]">도움 요청</span>
           </button>
         </div>
         {/* 하단 여백 (25px) */}
