@@ -40,7 +40,7 @@ export const mainNavigationData = isAIDropdownOpen => [
     icon: DashboardIcon,
     activeIcon: DashboardIconWhite,
     label: '대시보드',
-    path: '/',
+    path: '/dashboard',
     isDropdown: false,
   },
   {

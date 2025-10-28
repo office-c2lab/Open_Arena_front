@@ -30,7 +30,7 @@ const getActiveLabelByPath = (pathname, search, lastSelectedCategory) => {
   }
 
   const PATH_TO_LABEL_MAP = {
-    '/': '대시보드',
+    '/dashboard': '대시보드',
     '/leaderboard': '리더보드',
     '/tutorial': '튜토리얼',
     '/kategorie': '챌린지',
