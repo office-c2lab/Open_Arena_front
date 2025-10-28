@@ -95,17 +95,17 @@ export const bottomLinksData = (
   isLogoutHovered,
   setIsLogoutHovered
 ) => [
-  {
-    icon: HelpIcon,
-    label: '도움말',
-    path: '/help',
-    textClass: `${primaryTextColor}/50 body-large font-500`,
-    hoverTextClass: `${primaryTextColor} body-large font-500`,
-    iconSize: 'w-[15px] h-[15px]',
-    heightClass: 'h-[38px]',
-    isHovered: isHelpHovered,
-    setHovered: setIsHelpHovered,
-  },
+  // {
+  //   icon: HelpIcon,
+  //   label: '도움말',
+  //   path: '/help',
+  //   textClass: `${primaryTextColor}/50 body-large font-500`,
+  //   hoverTextClass: `${primaryTextColor} body-large font-500`,
+  //   iconSize: 'w-[15px] h-[15px]',
+  //   heightClass: 'h-[38px]',
+  //   isHovered: isHelpHovered,
+  //   setHovered: setIsHelpHovered,
+  // },
   {
     icon: LogoutIcon,
     label: '계정 로그인',

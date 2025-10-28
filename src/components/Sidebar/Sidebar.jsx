@@ -91,12 +91,12 @@ export default function Sidebar({
           activeItem={activeItem}
           isCollapsed={isCollapsed}
         />
-        <SidebarSection
+        {/* <SidebarSection
           title="설정"
           items={subNavigation}
           activeItem={activeItem}
           isCollapsed={isCollapsed}
-        />
+        /> */}
         <div className="flex-grow"></div>
         <nav className={`flex flex-col gap-2 ${isCollapsed ? 'w-full items-center' : 'w-[208px]'}`}>
           {bottomLinks.map((item, idx) => (
