@@ -1,4 +1,4 @@
-// src/features/Challenge/components/ChatArea.jsx
+// src/features/Challenge/components/ChatArea.jsx (수정)
 
 import React from 'react';
 import ChatBubble from './ChatBubble';
@@ -17,17 +17,24 @@ export default function ChatArea({
 }) {
   const { openResetModal, openSubmitModal } = useModalStore();
 
-  const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]';
+  const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]'; // 💡 유동적인 아이콘 크기 클래스 정의
+
+  const flexibleIconClasses = 'max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain'; // max-width/height로 최대 크기 제한, vw/vh로 유동성 부여
 
   return (
-    <div className={`flex flex-col  flex-grow h-full ${className}`}>
-      {/* ChatArea 내부 메인 컨테이너에 h-full을 추가하여 높이를 상속받습니다. */}
+    <div className={`flex flex-col flex-grow h-full ${className}`}>
       <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden h-full">
         {/* Chat Display Area (남은 공간) - flex-1 & overflow-y-auto */}
         <div className="flex-1 p-6 relative overflow-y-auto">
           {chatMessages.length === 0 ? (
+            // 1. 메시지가 없을 때 (Empty State)
             <div className="flex flex-col items-center justify-center h-full text-center p-4">
-              <img src={ArenaIcon} alt="ARENA Logo" className="w-[246.5px] h-[361.5px] mb-4" />
+              <img
+                src={ArenaIcon}
+                alt="ARENA Logo"
+                // 💡 [수정]: 유동적인 크기 클래스 적용
+                className={`${flexibleIconClasses} mb-4`}
+              />
 
               <p className="heading-3 font-300 text-[#000000] mt-4">
                 AI와 대화를 시작하세요. <br /> 프롬프트를 입력하여 챌린지를 시작하세요.
@@ -35,11 +42,12 @@ export default function ChatArea({
             </div>
           ) : (
             <>
+              {/* 2. 메시지가 있을 때 (Background) */}
               <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
                 <img
                   src={ArenaIcon}
-                  alt="ARENA Logo"
-                  className="w-[246.5px] h-[361.5px] opacity-30"
+                  alt="ARENA Logo" // 💡 [수정]: 유동적인 크기 클래스 적용 및 투명도 유지
+                  className={`${flexibleIconClasses} opacity-30`}
                 />
               </div>
 
@@ -52,7 +60,6 @@ export default function ChatArea({
             </>
           )}
         </div>
-
         {/* Input and Action Area (고정 높이) - flex-shrink-0 */}
         <div className="h-[210px] md:h-[237px] p-4 md:p-6 bg-purple-50/20 shadow-[0px_-3px_10px_rgba(0,0,0,0.25)] rounded-b-[20px] flex flex-col justify-end gap-3 flex-shrink-0">
           {/* Textarea and Send Button */}
