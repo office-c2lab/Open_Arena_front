@@ -87,11 +87,11 @@ export default function ChatArea({
           {/* Reset and Submit Buttons */}
           <div className="flex justify-between flex-shrink-0 gap-16">
             <button
-              className="flex items-center justify-center flex-1 h-[44px] bg-[#D9DADB] rounded-lg gap-2 cursor-pointer hover:bg-[#BFC0C4]"
+              className="flex items-center justify-center flex-1 h-[44px] bg-[#D9DADB] hover:bg-[#BFC0C4] rounded-lg gap-2 cursor-pointer "
               onClick={openResetModal}
             >
               <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
-              <span className="heading-3 font-700 text-white leading-[26px] ">
+              <span className="heading-3 font-700 text-[#515151] leading-[26px] ">
                 대화 내용 초기화
               </span>
             </button>

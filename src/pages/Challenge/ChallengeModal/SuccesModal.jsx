@@ -69,12 +69,12 @@ export default function SuccessModal() {
           <button
             onClick={handleRestart}
             className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px] box-border
-      border border-[#E4E8F0] bg-[#E4E8F066] hover:bg-[#BFC0C466] transition duration-200 cursor-pointer"
+      border border-[#E4E8F0] bg-[#D9DADB] hover:bg-[#BFC0C4] transition duration-200 cursor-pointer"
             style={{
               padding: '12px 42px',
             }}
           >
-            <span className="heading-2 font-300 text-[#515151]">챌린지 화면으로 돌아가기</span>
+            <span className="heading-2 font-500 text-[#515151]">챌린지 화면으로 돌아가기</span>
           </button>
           {/* 2. 다른 문제 풀기 */}
           <button
@@ -83,7 +83,7 @@ export default function SuccessModal() {
       hover:opacity-90 transition duration-200 cursor-pointer"
             style={{ padding: '12px', backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
-            <span className="heading-2 font-300 text-white">다른 문제 풀기</span>
+            <span className="heading-2 font-500 text-white">다른 문제 풀기</span>
           </button>
         </div>
         {/* 하단 여백 (25px) */}

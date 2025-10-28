@@ -90,7 +90,7 @@ const SubmitModal = () => {
       bg-[#FF6289] rounded-[29.25px] cursor-pointer 
       hover:bg-pink-600 transition duration-200"
         >
-          <span className="heading-3 font-500  text-white">제출하기</span>
+          <span className="heading-3 font-700  text-white">제출하기</span>
         </button>
       </div>
     </div>
