@@ -18,6 +18,7 @@ export default function AppRouter() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<MainPage />} />
+      <Route path="*" element={<NotFound />} />{/* 404 */}
       {/* DefaultLayout 하위 Route */}
       <Route element={<DefaultLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
@@ -25,9 +26,7 @@ export default function AppRouter() {
         <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
         <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
-        <Route path="*" element={<NotFound />} />
-
-        {/* DefaultLayout 안에서 처리할 404 */}
+        
       </Route>
 
       {/* ChallengeLayout 하위 Route */}
