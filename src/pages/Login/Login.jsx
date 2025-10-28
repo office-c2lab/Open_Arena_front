@@ -46,7 +46,7 @@ export default function Login() {
             </div>
 
             {/* 아이디 저장 */}
-            <div className="flex justify-end mb-6">
+            {/* <div className="flex justify-end mb-6">
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -58,7 +58,7 @@ export default function Login() {
                   아이디 저장
                 </label>
               </div>
-            </div>
+            </div> */}
 
             {/* 비밀번호 입력 */}
             <div className="flex flex-col">
@@ -72,17 +72,17 @@ export default function Login() {
                   className={`${inputFieldStyle} pr-8`}
                   placeholder="비밀번호"
                 />
-                <img
+                {/* <img
                   src={PasswordToggle}
                   alt="toggle"
                   className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6B6B6B] cursor-pointer"
-                />
+                /> */}
               </div>
             </div>
           </form>
 
           {/* 옵션 및 링크 */}
-          <div className="flex flex-col mt-8 items-center space-y-4">
+          {/* <div className="flex flex-col mt-8 items-center space-y-4">
             <div className="flex flex-col items-center">
               <a href="#" className={linkStyle}>
                 아이디 / 비밀번호 찾기
@@ -96,7 +96,7 @@ export default function Login() {
               </a>
               <div className="w-[75px] border-t border-[#6B6B6B] mt-1"></div>
             </div>
-          </div>
+          </div> */}
         </main>
 
         {/* Footer: 로그인 버튼 */}
