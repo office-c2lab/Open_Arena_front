@@ -77,7 +77,7 @@ export default function AttemptHistoryPanel({ PurpleDownIcon }) {
           <div className="flex items-center space-x-2">
             <button
               onClick={handleHelpClick}
-              className="h-10 px-2 bg-[#837BBD] rounded-[5px] flex items-center justify-center gap-1 shadow-md transition-colors hover:bg-[#837BBD]/90"
+              className="h-10 px-2 bg-[#837BBD] rounded-[5px] flex items-center justify-center gap-1 shadow-md transition-colors hover:bg-[#837BBD]/90 cursor-pointer"
               aria-label="도움말 열기"
             >
               <img src={HelpIcon} alt="Help Icon" className="w-4 h-4" />

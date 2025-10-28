@@ -74,7 +74,7 @@ const SubmitModal = () => {
         </div>
         {/* 경고 메시지 */}
         <p // 피그마 명세: left: 41px, top: 324px, width: 321px
-          className="absolute w-[321px] left-[41px] top-[324px]
+          className="absolute w-[340px] left-[31px] top-[324px]
       text-center heading-3 font-500  
       text-black m-0 whitespace-pre-wrap"
         >

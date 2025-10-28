@@ -17,7 +17,9 @@ export default function ChatArea({
 }) {
   const { openResetModal, openSubmitModal } = useModalStore();
 
-  const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]';
+  const sendButtonColorClass = inputValue.trim()
+    ? 'bg-[#FF6289] cursor-pointer hover:bg-[#e6597c]'
+    : 'bg-[#D9DADB]';
   const flexibleIconClasses = 'max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain';
 
   return (
@@ -75,7 +77,7 @@ export default function ChatArea({
             ></textarea>
 
             <button
-              className={`flex-shrink-0 w-10 h-10 ${sendButtonColorClass} rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-colors duration-200`}
+              className={`flex-shrink-0 w-10 h-10 ${sendButtonColorClass} rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-colors duration-200 `}
               disabled={!inputValue.trim()}
               onClick={handleSendMessage}
             >
@@ -85,18 +87,20 @@ export default function ChatArea({
           {/* Reset and Submit Buttons */}
           <div className="flex justify-between flex-shrink-0 gap-16">
             <button
-              className="flex items-center justify-center flex-1 h-[44px] bg-[#D9DADB] rounded-lg gap-2"
+              className="flex items-center justify-center flex-1 h-[44px] bg-[#D9DADB] rounded-lg gap-2 cursor-pointer hover:bg-[#BFC0C4]"
               onClick={openResetModal}
             >
               <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
-              <span className="heading-3 font-700 text-white leading-[26px]">대화 내용 초기화</span>
+              <span className="heading-3 font-700 text-white leading-[26px] ">
+                대화 내용 초기화
+              </span>
             </button>
 
             <button
-              className="flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center"
+              className="flex-1 h-[44px] bg-[#FF6289] hover:bg-[#e6597c] rounded-lg flex justify-center items-center cursor-pointer"
               onClick={openSubmitModal}
             >
-              <span className="heading-3 font-700 text-white leading-[26px]">제출하기</span>
+              <span className="heading-3 font-700 text-white leading-[26px] ">제출하기</span>
             </button>
           </div>
         </div>

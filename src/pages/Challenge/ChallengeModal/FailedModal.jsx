@@ -72,9 +72,8 @@ export default function FailedModal() {
           <button
             onClick={handleRestart}
             className="flex items-center justify-center w-[278px] h-[61px] rounded-[20px] box-border
-      border border-[#E4E8F0] hover:bg-gray-100 transition duration-200"
+      border border-[#E4E8F0] bg-[#E4E8F066] hover:bg-[#BFC0C466] transition duration-200 cursor-pointer "
             style={{
-              background: 'rgba(228, 232, 240, 0.4)',
               padding: '12px 42px',
             }}
           >
@@ -84,7 +83,7 @@ export default function FailedModal() {
           <button
             onClick={handleContinue}
             className="flex items-center justify-center w-[278px] h-[61px] bg-[#FF6289] rounded-[20px]
-      hover:bg-[#e6597c] transition duration-200"
+      hover:bg-[#e6597c] transition duration-200 cursor-pointer"
             style={{ padding: '12px' }}
           >
             <span className="heading-2 font-300 text-white">대화 계속 하기</span>
@@ -93,7 +92,7 @@ export default function FailedModal() {
           <button
             onClick={handleHelp}
             className="flex items-center justify-center w-[278px] h-[61px] rounded-[20px] box-border
-      border border-[#FF6289] bg-white hover:bg-pink-50 transition duration-200"
+      border border-[#FF6289] bg-white hover:bg-pink-50 transition duration-200 cursor-pointer"
             style={{ padding: '12px 36px' }}
           >
             <span className="heading-2 font-300 text-[#FF6289]">도움 요청</span>

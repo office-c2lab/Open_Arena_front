@@ -69,9 +69,8 @@ export default function SuccessModal() {
           <button
             onClick={handleRestart}
             className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px] box-border
-      border border-[#E4E8F0] hover:bg-gray-100 transition duration-200"
+      border border-[#E4E8F0] bg-[#E4E8F066] hover:bg-[#BFC0C466] transition duration-200 cursor-pointer"
             style={{
-              background: 'rgba(228, 232, 240, 0.4)',
               padding: '12px 42px',
             }}
           >
@@ -81,7 +80,7 @@ export default function SuccessModal() {
           <button
             onClick={handleContinue}
             className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px]
-      hover:opacity-90 transition duration-200"
+      hover:opacity-90 transition duration-200 cursor-pointer"
             style={{ padding: '12px', backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
             <span className="heading-2 font-300 text-white">다른 문제 풀기</span>

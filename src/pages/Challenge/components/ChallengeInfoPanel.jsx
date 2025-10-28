@@ -35,7 +35,7 @@ export default function ChallengeInfoPanel({
               <button
                 key={tab.id}
                 onClick={e => handleTabClick(e, tab.id)}
-                className={`py-2 px-2 body-large font-500 rounded-lg transition-colors duration-200
+                className={`py-2 px-2 body-large font-500 rounded-lg transition-colors duration-200 cursor-pointer
  ${tab.titleColor} 
  ${
    activeTab === tab.id
