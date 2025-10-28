@@ -50,66 +50,67 @@ export const useSidebarStore = create(
       // 1. 상태 (State)
       // --------------------
       lastSelectedChallengeCategory: null,
-      isCollapsed: false, // 💡 [핵심] 사이드바 콜랩스 상태 (기본값: 펼침)
+      isCollapsed: false,
 
       activeItem: '대시보드',
       isAIDropdownOpen: false,
       isSettingsDropdownOpen: false, // --------------------
       // 2. 액션 (Actions)
       // --------------------
-      // 💡 [핵심] 콜랩스 상태 토글 액션
-
       toggleCollapsed: () => set(state => ({ isCollapsed: !state.isCollapsed })),
 
       setActiveItemByPath: (pathname, search = '') => {
-        const { lastSelectedChallengeCategory } = get();
+        // 💡 [추가] 현재 드롭다운 상태를 가져옵니다.
+        const { lastSelectedChallengeCategory, isAIDropdownOpen: currentDropdownState } = get();
         const label = getActiveLabelByPath(pathname, search, lastSelectedChallengeCategory);
         const isChallengeSubMenu = CHALLENGE_SUB_MENUS.includes(label);
-        const isChallengeMain = label === '챌린지'; // 💡 [수정] 챌린지 상세 페이지 진입 시 로직 추가
+        const isChallengeMain = label === '챌린지';
 
         const isChallengeDetailPage = pathname.startsWith('/challenge/');
 
         if (isChallengeDetailPage) {
           set({
             activeItem: label,
-            isCollapsed: true, // 💡 챌린지 상세 페이지 진입 시 사이드바 접기
-            isAIDropdownOpen: false, // 드롭다운 닫기
-            isSettingsDropdownOpen: false, // 드롭다운 닫기
+            isCollapsed: true,
+            isAIDropdownOpen: false,
+            isSettingsDropdownOpen: false,
           });
-          return; // 챌린지 상세 페이지 처리가 완료되었으므로 함수 종료
+          return;
         }
 
         if (isChallengeMain || isChallengeSubMenu) {
+          // 💡 [수정] 챌린지 서브 메뉴라면 열고, 상위 메뉴('챌린지')라면 현재 드롭다운 상태를 유지합니다.
+          const shouldOpenAIDropdown = isChallengeSubMenu || currentDropdownState;
+
           set({
             activeItem: label,
-            isAIDropdownOpen: true,
+            isAIDropdownOpen: shouldOpenAIDropdown, // 💡 수정된 로직 적용
             isSettingsDropdownOpen: false,
-            // 챌린지/카테고리 페이지에서는 isCollapsed 상태를 변경하지 않음
           });
         } else if (label === '설정') {
           set({
             activeItem: label,
             isSettingsDropdownOpen: true,
             isAIDropdownOpen: false,
-            // 설정 페이지에서는 isCollapsed 상태를 변경하지 않음
           });
         } else {
           set({
             activeItem: label,
             isAIDropdownOpen: false,
             isSettingsDropdownOpen: false,
-            // 대시보드/리더보드 등 일반 페이지에서도 isCollapsed 상태를 변경하지 않음
           });
         }
       },
 
       handleItemClick: (label, isDropdown) => {
-        set({ activeItem: label });
-
+        // 💡 [핵심 수정] 드롭다운 메뉴가 아닐 때만 activeItem을 변경합니다.
+        if (label !== '챌린지' && label !== '설정') {
+          set({ activeItem: label });
+        }
         if (label === '챌린지') {
           set(prev => ({
             isSettingsDropdownOpen: false,
-            isAIDropdownOpen: !prev.isAIDropdownOpen,
+            isAIDropdownOpen: !prev.isAIDropdownOpen, // 드롭다운 토글만 수행
             lastSelectedChallengeCategory: null,
           }));
         } else if (label === '설정') {
