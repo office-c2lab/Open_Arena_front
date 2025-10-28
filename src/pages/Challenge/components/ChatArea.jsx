@@ -17,24 +17,19 @@ export default function ChatArea({
 }) {
   const { openResetModal, openSubmitModal } = useModalStore();
 
-  const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]'; // 💡 유동적인 아이콘 크기 클래스 정의
-
-  const flexibleIconClasses = 'max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain'; // max-width/height로 최대 크기 제한, vw/vh로 유동성 부여
+  const sendButtonColorClass = inputValue.trim() ? 'bg-[#FF6289] cursor-pointer' : 'bg-[#D9DADB]';
+  const flexibleIconClasses = 'max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain';
 
   return (
     <div className={`flex flex-col flex-grow h-full ${className}`}>
       <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden h-full">
         {/* Chat Display Area (남은 공간) - flex-1 & overflow-y-auto */}
-        <div className="flex-1 p-6 relative overflow-y-auto">
+        {/* 💡 [수정 포인트]: 채팅 영역은 이제 'relative'만 유지하고, overflow-y-auto는 내부 메시지 목록으로 이동하거나, 현재처럼 유지 */}
+        <div className="flex-1 p-6 relative overflow-hidden">
           {chatMessages.length === 0 ? (
             // 1. 메시지가 없을 때 (Empty State)
             <div className="flex flex-col items-center justify-center h-full text-center p-4">
-              <img
-                src={ArenaIcon}
-                alt="ARENA Logo"
-                // 💡 [수정]: 유동적인 크기 클래스 적용
-                className={`${flexibleIconClasses} mb-4`}
-              />
+              <img src={ArenaIcon} alt="ARENA Logo" className={`${flexibleIconClasses} mb-4`} />
 
               <p className="heading-3 font-300 text-[#000000] mt-4">
                 AI와 대화를 시작하세요. <br /> 프롬프트를 입력하여 챌린지를 시작하세요.
@@ -43,15 +38,17 @@ export default function ChatArea({
           ) : (
             <>
               {/* 2. 메시지가 있을 때 (Background) */}
+              {/* absolute inset-0 으로 부모 요소(.flex-1.p-6) 내에 고정 */}
               <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
                 <img
                   src={ArenaIcon}
-                  alt="ARENA Logo" // 💡 [수정]: 유동적인 크기 클래스 적용 및 투명도 유지
+                  alt="ARENA Logo"
                   className={`${flexibleIconClasses} opacity-30`}
                 />
               </div>
 
-              <div className="relative z-10 pt-4">
+              {/* 💡 [핵심 수정]: 메시지 목록에만 스크롤을 적용하고 z-index를 높여 배경 위에 표시 */}
+              <div className="relative z-10 pt-4 h-full overflow-y-auto">
                 {chatMessages.map(msg => (
                   <ChatBubble key={msg.id} sender={msg.sender} content={msg.content} />
                 ))}
