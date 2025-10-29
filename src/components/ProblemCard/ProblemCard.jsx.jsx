@@ -1,4 +1,4 @@
-// src/components/ProblemCard/ProblemCard.jsx (수정)
+// src/components/ProblemCard/ProblemCard.jsx
 
 import React, { useState } from 'react';
 import medicalImage from '../../assets/images/medical.png';
@@ -10,6 +10,7 @@ import financeImage from '../../assets/images/finance.png';
 import SolveProblemButton from '../Button/SolveProblemButton';
 import DifficultyTag from '../Tag/DifficultyTag';
 import CategoryTag from '../Tag/CategoryTag';
+import Skeleton from '../Skeleton/Skeleton'; // Skeleton 컴포넌트 import
 
 const getCategoryImage = category => {
   switch (category) {
@@ -28,7 +29,52 @@ const getCategoryImage = category => {
   }
 };
 
-const ProblemCard = ({ challenge, onSolveClick }) => {
+// ====================================================
+// ProblemCardSkeleton 컴포넌트
+// ====================================================
+const ProblemCardSkeleton = () => {
+  const cardClasses = `w-[339px] bg-white shadow-xl rounded-xl flex flex-col overflow-hidden relative`;
+  const imageContainerClasses = `relative w-full h-[198px] overflow-hidden`;
+  const contentClasses = `p-6 flex flex-col gap-2.5`;
+  const tagsContainerClasses = `flex space-x-1.5 items-start`;
+
+  return (
+    <div className={cardClasses.trim()}>
+      {/* 이미지 영역 스켈레톤 */}
+      <div className={imageContainerClasses.trim()}>
+        <Skeleton className="w-full h-full" /> 
+      </div>
+
+      {/* 내용 영역 스켈레톤 */}
+      <div className={contentClasses.trim()}>
+        {/* 태그 영역 스켈레톤 */}
+        <div className={tagsContainerClasses.trim()}>
+          <Skeleton className="h-6 w-16 rounded-full" /> 
+          <Skeleton className="h-6 w-16 rounded-full" /> 
+        </div>
+        
+        {/* 제목 영역 스켈레톤 */}
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-6 w-11/12" />
+        </div>
+        
+        {/* 버튼 영역 스켈레톤 */}
+        <Skeleton className="h-10 w-full mt-2 rounded-lg" />
+      </div>
+    </div>
+  );
+};
+// ====================================================
+
+
+const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
+  
+  // 1. 조건부 렌더링: 로딩 중이면 스켈레톤 반환
+  if (isLoading) {
+    return <ProblemCardSkeleton />;
+  }
+
+  // 2. 실제 데이터 렌더링 로직
   const { title, difficulty, category } = challenge;
 
   const [isHovered, setIsHovered] = useState(false);
@@ -42,8 +88,8 @@ const ProblemCard = ({ challenge, onSolveClick }) => {
   const imageContainerClasses = `relative w-full h-[198px] overflow-hidden`;
 
   const imageClasses = `w-full h-full object-cover 
-                        transition-transform duration-300 ease-in-out 
-                        ${isHovered ? 'scale-220' : 'scale-200'}`;
+                         transition-transform duration-300 ease-in-out 
+                         ${isHovered ? 'scale-220' : 'scale-200'}`;
 
   const contentClasses = `p-6 flex flex-col gap-2.5`;
   const tagsContainerClasses = `flex space-x-1.5 items-start`;
@@ -60,16 +106,14 @@ const ProblemCard = ({ challenge, onSolveClick }) => {
       onMouseLeave={handleMouseLeave}
     >
       {/* 🖼️ Image Area & Overlay Container */}
-      {/* 💡 [수정]: imageContainer에 overflow-hidden을 추가하여 확대된 이미지가 튀어나오지 않게 함 */}
       <div className={imageContainerClasses.trim()}>
-        {/* 💡 [수정]: imageClasses에 호버 시 scale-110 적용 */}
         <img
           src={currentImageSrc}
           alt={`문제 ${title}의 ${category} 이미지`}
           className={imageClasses.trim()}
         />
 
-        {/* 💡 Hover Overlay (호버 시에만 렌더링) */}
+        {/* 💡 Hover Overlay */}
         {isHovered && (
           <div className={overlayClasses}>
             <p className={textBlock1Classes}>
@@ -85,7 +129,7 @@ const ProblemCard = ({ challenge, onSolveClick }) => {
         )}
       </div>
 
-      {/* 📝 Content Area (나머지 부분 유지) */}
+      {/* 📝 Content Area */}
       <div className={contentClasses.trim()}>
         <div className={tagsContainerClasses.trim()}>
           <DifficultyTag>{difficulty}</DifficultyTag>
