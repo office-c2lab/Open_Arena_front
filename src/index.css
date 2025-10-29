@@ -43,6 +43,13 @@
     font-size: 12px;
     line-height: 8px;
   }
+
+  .shimmer-effect {
+  /* 💡 바탕색을 #DEDEDE 또는 #CCCCCC로, 흐르는 빛을 #EBEBEB로 조정 */
+  background: linear-gradient(to right, #DEDEDE 4%, #EBEBEB 25%, #DEDEDE 36%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s infinite linear;
+}
 }
 
 * {
@@ -94,5 +101,15 @@ body {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* index.css 파일의 @keyframes 섹션에 추가 */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
   }
 }
