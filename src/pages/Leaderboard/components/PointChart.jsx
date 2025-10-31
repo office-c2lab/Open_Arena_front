@@ -22,7 +22,7 @@ const PointChartSkeleton = () => {
     
     return (
         <div // 실제 차트 컨테이너 크기 사용
-            className="w-[1027px] h-[595px] rounded-[10px] z-20 p-6 bg-white/80 shadow-lg flex flex-col"
+            className="w-full max-w-[1027px] h-[595px] rounded-[10px] z-20 p-6 bg-white/80 shadow-lg flex flex-col"
         >
             {/* 중앙: 차트 본체 스켈레톤 (가장 큰 영역) */}
             <div className="flex-1 p-4 border border-gray-300 rounded-md flex items-center justify-center">
@@ -54,7 +54,7 @@ const PointChart = ({ isLoading = false }) => {
     
     return (
         <div // Tailwind 클래스 수정: drop-shadow 스타일을 shadow-lg로 대체
-            className="w-[1027px] h-[595px] rounded-[10px] z-20 p-6 bg-white/80 shadow-lg"
+            className="w-full max-w-[1027px] h-[595px] rounded-[10px] z-20 p-6 bg-white/80 shadow-lg"
         >
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart

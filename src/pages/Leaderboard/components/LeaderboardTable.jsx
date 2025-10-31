@@ -34,7 +34,7 @@ const LeaderboardTableSkeleton = ({ rows = 8 }) => {
 
     return (
         <div 
-            className="relative w-[1027px] h-auto rounded-[10px] bg-white/80 z-20"
+            className="relative w-full max-w-[1027px] h-auto rounded-[10px] bg-white/80 z-20"
             style={{ filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))' }}
         >
             <div 
@@ -98,7 +98,7 @@ const LeaderboardTable = ({ isLoading = false }) => {
     
 	return (
 		<div
-			className="relative w-[1027px] h-auto rounded-[10px] bg-white/80 z-20"
+			className="relative w-full max-w-[1027px] h-auto rounded-[10px] bg-white/80 z-20"
 			style={{ filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))' }}
 		>
 			<div

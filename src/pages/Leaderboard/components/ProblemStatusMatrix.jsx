@@ -111,7 +111,7 @@ const ProblemStatusMatrixSkeleton = ({ rows = 15 }) => {
 
     return (
         <div // 실제 매트릭스 컨테이너 크기 사용
-            className="relative w-[1027px] h-[640px] bg-white/80 rounded-[10px] p-2 overflow-auto"
+            className="relative w-full max-w-[1027px] h-[640px] bg-white/80 rounded-[10px] p-2 overflow-auto"
             style={{
                 boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                 backdropFilter: 'blur(5px)',
@@ -169,7 +169,7 @@ const ProblemStatusMatrix = ({ isLoading = false }) => {
     
     return (
         <div
-            className="relative w-[1027px] h-[640px] bg-white/80 rounded-[10px] p-2 overflow-auto"
+            className="relative w-full max-w-[1027px] h-[640px] bg-white/80 rounded-[10px] p-2 overflow-auto"
             style={{
                 boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                 backdropFilter: 'blur(5px)',
