@@ -14,6 +14,15 @@ export const useChatMessages = (sessionId) => {
     // sessionId가 유효할 때만 fetchMessages 실행
     queryFn: () => fetchMessages(sessionId),
     enabled: !!sessionId, 
+    
+    // =========================================================
+    // 💡 메시지 로드 성공 시 콘솔 출력 (추가된 부분)
+    onSuccess: (data) => {
+      console.log('--- [useChatMessages 훅] 로드된 메시지 목록 ---');
+      console.log(data); 
+    },
+    // =========================================================
+    
     // ⚠️ 참고: defaultOptions에서 staleTime을 5분으로 설정했으므로, 
     // 5분 내에는 캐시된 데이터를 사용합니다.
   });
