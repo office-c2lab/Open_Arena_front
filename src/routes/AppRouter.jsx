@@ -1,3 +1,5 @@
+// /src/routes/AppRouter.jsx
+
 import { Routes, Route } from 'react-router-dom';
 import DefaultLayout from '../ui/DefaultLayout';
 import ChallengeLayout from '../ui/ChallengeLayout';
@@ -8,17 +10,20 @@ import Leaderboard from '../pages/Leaderboard/Leaderboard';
 import AdminLeaderboard from '../pages/Leaderboard/AdminLeaderboard';
 
 import Tutorial from '../pages/Tutorial/Tutorial';
-import NotFound from '../pages/NotFound/NotFound'; // ← 404 페이지 추가
+import NotFound from '../pages/NotFound/NotFound'; 
 import Kategorie from '../pages/Kategorie/Kategorie';
-import Challenge from '../pages/Challenge/Challenge';
+
+// 💡 Challenge 대신 ChallengePage 임포트 (경로를 확인해주세요)
 import MainPage from '../pages/MainPage/MainPage';
+import ChallengePage from '../pages/Challenge/ChallengePage';
 
 export default function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<MainPage />} />
-      <Route path="*" element={<NotFound />} />{/* 404 */}
+      <Route path="*" element={<NotFound />} />
+      
       {/* DefaultLayout 하위 Route */}
       <Route element={<DefaultLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
@@ -26,12 +31,12 @@ export default function AppRouter() {
         <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
         <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
-        
       </Route>
 
       {/* ChallengeLayout 하위 Route */}
       <Route element={<ChallengeLayout />}>
-        <Route path="/challenge/*" element={<Challenge />} />
+        {/* 💡 challengeId 파라미터를 명시하고 ChallengePage로 연결 */}
+        <Route path="/challenge/:challengeId" element={<ChallengePage />} /> 
       </Route>
     </Routes>
   );
