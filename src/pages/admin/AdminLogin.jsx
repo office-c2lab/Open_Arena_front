@@ -63,7 +63,7 @@ export default function Login() {
             {/* 비밀번호 입력 */}
             <div className="flex flex-col">
               <label htmlFor="pw-input" className={inputLabelStyle}>
-                관리자 비밀번호
+                관리자 비밀번호 아 제발
               </label>
               <div className="relative">
                 <input
