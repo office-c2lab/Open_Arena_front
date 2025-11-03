@@ -1,15 +1,14 @@
-// /src/pages/Challenge/Challenge.jsx
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { TABS, CHALLENGE_HEADER_INFO } from '../data/challengeData';
 
 // 💡 React Query 훅 임포트
 import { useSendMessage } from '@/hooks/useChatMutation'; 
 import { useChatMessages } from '@/hooks/useChatQuery'; 
+import { useJudgeMutation } from '@/hooks/useJudgeMutation'; 
 
 // 💡 모달/세션 스토어 임포트
 import useModalStore from '@/stores/useModalStore';
-import useChatSessionStore from '@/stores/useChatSessionStore'; // 💡 세션 스토어
+import useChatSessionStore from '@/stores/useChatSessionStore'; 
 import { successPanelsData, failedPanelsData } from '../data/challengeModalData';
 
 // assets 경로가 '@'로 설정되어 있다고 가정합니다.
@@ -30,230 +29,248 @@ import SuccessModal from '../ChallengeModal/SuccesModal';
 
 // ----------------------------------------------------------------------
 
-// 💡 prop 제거! ChallengePage에서 prop을 전달하지 않습니다.
-export default function Challenge() { 
+// 💡 API 호출에 필요한 ID 정의
+const PROBLEM_ID = 1; 
+const TEAM_ID = 1;  
+
+// 💡 [수정] ChallengePage에서 onResetChatSession prop 받기
+export default function Challenge({ onResetChatSession }) { 
+
+// 💡 0-1. Zustand 스토어에서 sessionId 가져오기
+const sessionId = useChatSessionStore(state => state.sessionId);
+
+// --------------------------------------------------------
+// 💡 0-2. API 훅 사용 (React Query)
+// --------------------------------------------------------
+// 1. 초기 메시지 목록 조회 (GET /messages) - sessionId가 변경되면 자동 재실행
+const { 
+ data: initialMessages, 
+ isLoading: isMessagesLoading, 
+ isError: isMessagesError, 
+ refetch: refetchMessages 
+} = useChatMessages(sessionId); 
+
+// 2. 메시지 전송 Mutation (POST /send)
+const { 
+ mutate: sendMutate, 
+ isPending: isSending, 
+} = useSendMessage();
+ 
+ // 3. Judge Mutation (POST /judge)
+const { 
+ mutate: judgeMutate, 
+ isPending: isJudging, 
+} = useJudgeMutation(); 
+
+// --------------------------------------------------------
+// 💡 1. 상태 및 스토어 구독
+// --------------------------------------------------------
+const isDebugModalOpen = useModalStore(state => state.isDebugModalOpen);
+const isResetModalOpen = useModalStore(state => state.isResetModalOpen);
+const isSubmitModalOpen = useModalStore(state => state.isSubmitModalOpen);
+const isLoadingModalOpen = useModalStore(state => state.isLoadingModalOpen);
+const isFailedModalOpen = useModalStore(state => state.isFailedModalOpen);
+const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
+
+const {
+ setResetChatAction,
+ setSubmitAction,
+ closeLoadingModal,
+ openFailedModal,
+ openSuccessModal,
+ setChallengeResults,
+} = useModalStore();
+
+const [activeTab, setActiveTab] = useState(TABS[0].id);
+const activeTabContent = TABS.find(tab => tab.id === activeTab);
+
+const [inputValue, setInputValue] = useState('');
+const [chatMessages, setChatMessages] = useState([]); 
+const chatEndRef = useRef(null);
+
+// --------------------------------------------------------
+// 💡 1-1. 초기 메시지 로드 및 상태 초기화
+// --------------------------------------------------------
+useEffect(() => {
+if (!isMessagesLoading && !isMessagesError && initialMessages) {
+setChatMessages(initialMessages); 
+console.log(`✅ [Chat] 초기 메시지 로드 완료. (Session ID: ${sessionId})`);
+} else if (!isMessagesLoading && initialMessages && initialMessages.length === 0) {
+ // 새 세션이 생성되었을 때 메시지 목록이 비어있음을 명시적으로 확인
+ setChatMessages([]);
+ console.log(`✅ [Chat] 새 세션 시작. 메시지 목록 초기화됨. (Session ID: ${sessionId})`);
+}
+}, [isMessagesLoading, isMessagesError, initialMessages, sessionId]);
+
+// --------------------------------------------------------
+// 💡 2. 초기화/제출 로직 (useCallback 적용)
+// --------------------------------------------------------
+// ResetModal에서 호출될 실제 초기화 로직
+const handleResetChat = useCallback(() => {
+ // ⚠️ [핵심 수정] ChallengePage에서 받은 세션 초기화/새 생성 함수 호출
+ onResetChatSession(); 
+
+ // UI 상태를 즉시 초기화
+ setChatMessages([]);
+ setInputValue(''); 
+ console.log('✅ 대화 내용 초기화 로직 실행. ChallengePage에 새 세션 생성을 요청했습니다.');
+}, [onResetChatSession]); // 💡 의존성 배열에 onResetChatSession 추가
+
+// SubmitModal에서 호출될 실제 비동기 제출 로직 (API 연동으로 대체)
+const handleSubmit = useCallback(() => {
+ console.log('챌린지 제출 로직 실행됨. /judge API 호출 시작');
+ 
+ // 1. judgeMutate 실행
+ judgeMutate({ 
+ problem_id: PROBLEM_ID, 
+ team_id: TEAM_ID, 
+ session_id: sessionId 
+ }, {
+ onSuccess: (data) => {
+  console.log('✅ Judge API 응답 성공:', data);
+
+  // 2. 로딩 모달 닫기
+  closeLoadingModal();
+
+  // 3. 응답 데이터(data.votes)를 기반으로 결과 패널 데이터 생성
+  const results = data.votes.map((vote, index) => {
+  const isSuccess = vote.verdict === 'success';
+  const baseData = isSuccess ? successPanelsData[index % successPanelsData.length] : failedPanelsData[index % failedPanelsData.length];
+  return {
+   status: vote.verdict, 
+   data: { 
+   ...baseData,
+   title: vote.model, 
+   content: vote.raw_summary || baseData.content, 
+   },
+  };
+  });
+  setChallengeResults(results);
+
+  // 4. 최종 결과에 따른 모달 결정
+  const finalVerdict = data.verdict; 
   
-  // 💡 0-1. Zustand 스토어에서 sessionId 가져오기
-  const sessionId = useChatSessionStore(state => state.sessionId);
-
-  // --------------------------------------------------------
-  // 💡 0-2. API 훅 사용 (React Query)
-  // --------------------------------------------------------
-  // 1. 초기 메시지 목록 조회 (GET /messages)
-  const { 
-    data: initialMessages, 
-    isLoading: isMessagesLoading, // 메시지 목록 로딩 상태 (초기 로딩)
-    isError: isMessagesError, 
-    refetch: refetchMessages 
-  } = useChatMessages(sessionId); // 💡 스토어에서 가져온 sessionId 사용
-
-  // 2. 메시지 전송 Mutation (POST /send)
-  const { 
-    mutate: sendMutate, 
-    isPending: isSending, // 메시지 전송 중 상태 (응답 대기)
-  } = useSendMessage();
-
-  // --------------------------------------------------------
-  // 💡 1. 상태 및 스토어 구독
-  // --------------------------------------------------------
-  const isDebugModalOpen = useModalStore(state => state.isDebugModalOpen);
-  const isResetModalOpen = useModalStore(state => state.isResetModalOpen);
-  const isSubmitModalOpen = useModalStore(state => state.isSubmitModalOpen);
-  const isLoadingModalOpen = useModalStore(state => state.isLoadingModalOpen);
-  const isFailedModalOpen = useModalStore(state => state.isFailedModalOpen);
-  const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
-
-  const {
-    setResetChatAction,
-    setSubmitAction,
-    closeLoadingModal,
-    openFailedModal,
-    openSuccessModal,
-    setChallengeResults,
-  } = useModalStore();
-
-  const [activeTab, setActiveTab] = useState(TABS[0].id);
-  const activeTabContent = TABS.find(tab => tab.id === activeTab);
-
-  const [inputValue, setInputValue] = useState('');
-  const [chatMessages, setChatMessages] = useState([]); 
-  const chatEndRef = useRef(null);
-
-  // --------------------------------------------------------
-  // 💡 1-1. 초기 메시지 로드 및 상태 초기화
-  // --------------------------------------------------------
- useEffect(() => {
-  if (!isMessagesLoading && !isMessagesError && initialMessages) {
-   setChatMessages(initialMessages); 
-   console.log(`✅ [Chat] 초기 메시지 로드 완료.`);
-      
-      // =========================================================
-      // 💡 추가된 부분: 메시지 데이터 콘솔 출력
-      console.log('--- [Challenge.jsx] 로드된 메시지 목록 ---');
-      console.log(initialMessages); 
-      // =========================================================
+  if (finalVerdict === 'success') {
+  console.log(`챌린지 최종 결과: 성공!`);
+  openSuccessModal();
+  } else {
+  console.log(`챌린지 최종 결과: 실패!`);
+  openFailedModal();
   }
- }, [isMessagesLoading, isMessagesError, initialMessages]);
-
-  // --------------------------------------------------------
-  // 💡 2. 초기화/제출 로직 (useCallback 적용)
-  // --------------------------------------------------------
-  // ResetModal에서 호출될 실제 초기화 로직
-  const handleResetChat = useCallback(() => {
-    // ⚠️ TODO: 채팅 리셋 API 호출 로직 추가 (선택 사항)
-    setChatMessages([]);
-    console.log('대화 내용이 Challenge.jsx에서 실제로 초기화되었습니다.');
-  }, []);
-
-  // SubmitModal에서 호출될 실제 비동기 제출 로직 (현재는 시뮬레이션)
-  const handleSubmit = useCallback(async () => {
-    console.log('챌린지 제출 로직 실행됨. (3초 로딩 시뮬레이션 시작)');
-    
-    // 1. 비동기 작업 시뮬레이션 (3초 대기)
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    // 2. 로딩 모달 닫기
-    closeLoadingModal();
-
-    // 3. 💡 3개 AI 모델의 무작위 성공/실패 결과 생성
-    const results = [];
-    let successCount = 0;
-    const totalModels = 3;
-
-    for (let i = 0; i < totalModels; i++) {
-      const isSuccess = Math.random() < 0.5;
-      const status = isSuccess ? 'success' : 'failed';
-      if (isSuccess) successCount++;
-      const data = isSuccess ? successPanelsData[i] : failedPanelsData[i];
-      results.push({
-        status,
-        data: {
-          ...data,
-          isFirstPanel: data.isFirstPanel,
-        },
-      });
-    }
-    
-    // 4. 💡 챌린지 결과 스토어에 저장
-    setChallengeResults(results);
-
-    // 5. 💡 성공 모델 수에 따라 최종 모달 결정
-    if (successCount >= 2) {
-      console.log(`챌린지 최종 결과: 성공! (${successCount}/${totalModels} 성공)`);
-      openSuccessModal();
-    } else {
-      console.log(`챌린지 최종 결과: 실패! (${successCount}/${totalModels} 성공)`);
-      openFailedModal();
-    }
-  }, [closeLoadingModal, openFailedModal, openSuccessModal, setChallengeResults]);
-
-  // --------------------------------------------------------
-  // 💡 3. 컴포넌트 마운트 시 초기화/제출 로직을 스토어에 등록
-  // --------------------------------------------------------
-  useEffect(() => {
-    setResetChatAction(handleResetChat);
-    setSubmitAction(handleSubmit);
-
-    return () => {
-      setResetChatAction(() => { console.error('Reset action not registered.'); });
-      setSubmitAction(() => { console.error('Submit action not registered.'); });
-    };
-  }, [setResetChatAction, handleResetChat, setSubmitAction, handleSubmit]);
-
-  // --------------------------------------------------------
-  // 💡 4. 일반 핸들러 (handleSendMessage API 통합)
-  // --------------------------------------------------------
-  useEffect(() => {
-    if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages]);
-
-  const handleInputChange = e => setInputValue(e.target.value);
-
-  const handleTabClick = (e, tabId) => {
-    e.preventDefault();
-    setActiveTab(tabId);
-  };
-
-  const handleSendMessage = () => {
-    const trimmedInput = inputValue.trim();
-    // isSending 상태를 사용하여 전송 중 중복 클릭 방지
-    if (!trimmedInput || isSending) return; 
-
-    // 1. 사용자 메시지를 먼저 채팅창에 즉시 반영 (낙관적 업데이트)
-    const userMessage = { id: Date.now(), sender: 'user', content: trimmedInput, role: 'user' };
-    setChatMessages(prev => [...prev, userMessage]); 
-    const inputBeforeClear = inputValue; 
-    setInputValue(''); 
-
-    // 2. API 전송 (sendMutate 실행)
-    sendMutate({ sessionId, message: trimmedInput }, { // 💡 스토어에서 가져온 sessionId 사용
-      onSuccess: () => {
-        // ✅ 성공 시, 서버에서 최신 메시지 목록을 다시 가져와 상태를 동기화
-        console.log('✅ AI 응답 성공. 메시지 목록 재조회 시작.');
-        refetchMessages(); 
-      },
-      onError: (err) => {
-        // ❌ 502 Bad Gateway 발생 시 에러 메시지 표시
-        console.error('❌ 메시지 전송 실패:', err);
-        const errorMessage = { id: Date.now() + 1, sender: 'system', content: `메시지 전송 실패 (502 예상): ${err.message}`, role: 'system' };
-        
-        // 실패 시, 낙관적 업데이트 메시지 제거 후 에러 메시지 추가
-        setChatMessages(prev => [...prev.slice(0, prev.length - 1), errorMessage]); 
-        setInputValue(inputBeforeClear); 
-      }
-    });
-  };
+ },
+ onError: (error) => {
+  console.error('❌ Judge API 호출 실패:', error);
   
-  // --------------------------------------------------------
-  // 💡 5. 최종 로딩 상태 및 렌더링 수정 (로딩 분리 적용)
-  // --------------------------------------------------------
-  // ✅ 1. 양옆 패널 로딩: 초기 메시지 로드 (isMessagesLoading) 시에만 로딩 상태
-  const isPanelLoading = isMessagesLoading; 
+  closeLoadingModal();
+  alert(`챌린지 제출 실패: ${error.message}`);
+ }
+ });
+}, [sessionId, closeLoadingModal, openFailedModal, openSuccessModal, setChallengeResults, judgeMutate]);
 
-  // ✅ 2. 입력창 비활성화: 초기 로딩 중이거나 (isMessagesLoading), 메시지 전송 중일 때 (isSending)
-  const isInputDisabled = isMessagesLoading || isSending; 
 
-  return (
-    <div className="flex w-full h-full gap-4 md:gap-6">
-      {/* 1. 좌측 챌린지 정보 패널 */}
-      <ChallengeInfoPanel
-        TABS={TABS}
-        activeTab={activeTab}
-        activeTabContent={activeTabContent}
-        handleTabClick={handleTabClick}
-        CHALLENGE_HEADER_INFO={CHALLENGE_HEADER_INFO}
-        isLoading={isPanelLoading} // 💡 초기 진입 시 로딩 (isMessagesLoading)
-      />
+// --------------------------------------------------------
+// 💡 3. 컴포넌트 마운트 시 초기화/제출 로직을 스토어에 등록
+// --------------------------------------------------------
+useEffect(() => {
+ setResetChatAction(handleResetChat);
+ setSubmitAction(handleSubmit);
 
-      {/* 2. 중앙 AI 채팅 및 입력 영역 */}
-      <ChatArea
-    ArenaIcon={ArenaIcon}
-    SendIcon={SendIcon}
-    ResetIcon={ResetIcon}
-    chatMessages={chatMessages}
-    chatEndRef={chatEndRef}
-    inputValue={inputValue}
-    handleInputChange={handleInputChange}
-    handleSendMessage={handleSendMessage}
-    inputDisabled={isInputDisabled} // 💡 초기 로딩 및 전송 중 비활성화
-    isMessagesLoading={isPanelLoading} // 💡 초기 로딩 시 채팅 영역 로딩
-   />
+ return () => {
+ setResetChatAction(() => { console.error('Reset action not registered.'); });
+ setSubmitAction(() => { console.error('Submit action not registered.'); });
+ };
+}, [setResetChatAction, handleResetChat, setSubmitAction, handleSubmit]);
 
-      {/* 3. 우측 시도 기록 패널 */}
-      <AttemptHistoryPanel 
-        PurpleDownIcon={PurpleDownIcon} 
-        isLoading={isPanelLoading} // 💡 초기 진입 시 로딩 (isMessagesLoading)
-      />
+// --------------------------------------------------------
+// 💡 4. 일반 핸들러 (handleSendMessage API 통합)
+// --------------------------------------------------------
+useEffect(() => {
+ if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+}, [chatMessages]);
 
-      {/* ========================================================== */}
-      {/* 💡 4. 모달 조건부 렌더링 영역 */}
-      {/* ========================================================== */}
-      {isDebugModalOpen && <DebugModal />}
-      {isResetModalOpen && <ResetModal />}
-      {isSubmitModalOpen && <SubmitModal />}
-      {isLoadingModalOpen && <LoadingModal />}
-      {isFailedModalOpen && <FailedModal />}
-      {isSuccessModalOpen && <SuccessModal />}
-    </div>
-  );
+const handleInputChange = e => setInputValue(e.target.value);
+
+const handleTabClick = (e, tabId) => {
+ e.preventDefault();
+ setActiveTab(tabId);
+};
+
+const handleSendMessage = () => {
+ const trimmedInput = inputValue.trim();
+ if (!trimmedInput || isSending) return; 
+
+ // 1. 사용자 메시지를 먼저 채팅창에 즉시 반영 (낙관적 업데이트)
+ const userMessage = { id: Date.now(), sender: 'user', content: trimmedInput, role: 'user' };
+ setChatMessages(prev => [...prev, userMessage]); 
+ const inputBeforeClear = inputValue; 
+ setInputValue(''); 
+
+ // 2. API 전송 (sendMutate 실행)
+ sendMutate({ sessionId, message: trimmedInput }, { 
+ onSuccess: () => {
+  console.log('✅ AI 응답 성공. 메시지 목록 재조회 시작.');
+  refetchMessages(); 
+ },
+ onError: (err) => {
+  console.error('❌ 메시지 전송 실패:', err);
+  const errorMessage = { id: Date.now() + 1, sender: 'system', content: `메시지 전송 실패: ${err.message}`, role: 'system' };
+  
+  setChatMessages(prev => [...prev.slice(0, prev.length - 1), errorMessage]); 
+  setInputValue(inputBeforeClear); 
+ }
+ });
+};
+
+// --------------------------------------------------------
+// 💡 5. 최종 로딩 상태 및 렌더링 수정
+// --------------------------------------------------------
+// ✅ 1. 양옆 패널 로딩: 초기 메시지 로드 (isMessagesLoading) 시에만 로딩 상태
+const isPanelLoading = isMessagesLoading; 
+
+// ✅ 2. 입력창 비활성화: 초기 로딩 중이거나, 메시지 전송 중일 때, 심사 중일 때
+const isInputDisabled = isMessagesLoading || isSending || isJudging; 
+
+return (
+ <div className="flex w-full h-full gap-4 md:gap-6">
+ {/* 1. 좌측 챌린지 정보 패널 */}
+ <ChallengeInfoPanel
+  TABS={TABS}
+  activeTab={activeTab}
+  activeTabContent={activeTabContent}
+  handleTabClick={handleTabClick}
+  CHALLENGE_HEADER_INFO={CHALLENGE_HEADER_INFO}
+  isLoading={isPanelLoading} 
+ />
+
+ {/* 2. 중앙 AI 채팅 및 입력 영역 */}
+ <ChatArea
+ ArenaIcon={ArenaIcon}
+ SendIcon={SendIcon}
+ ResetIcon={ResetIcon}
+ chatMessages={chatMessages}
+ chatEndRef={chatEndRef}
+ inputValue={inputValue}
+ handleInputChange={handleInputChange}
+ handleSendMessage={handleSendMessage}
+ inputDisabled={isInputDisabled} 
+ isMessagesLoading={isPanelLoading} 
+/>
+
+ {/* 3. 우측 시도 기록 패널 */}
+ <AttemptHistoryPanel 
+  PurpleDownIcon={PurpleDownIcon} 
+  isLoading={isPanelLoading} 
+ />
+
+ {/* ========================================================== */}
+ {/* 💡 4. 모달 조건부 렌더링 영역 */}
+ {/* ========================================================== */}
+ {isDebugModalOpen && <DebugModal />}
+ {isResetModalOpen && <ResetModal />}
+ {isSubmitModalOpen && <SubmitModal />}
+ {isLoadingModalOpen && <LoadingModal />}
+ {isFailedModalOpen && <FailedModal />}
+ {isSuccessModalOpen && <SuccessModal />}
+ </div>
+);
 }

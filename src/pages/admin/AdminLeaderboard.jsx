@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react'; // 💡 useState, useEffect 임포트
 import Banner from '../../components/Banner/Banner';
-import LeaderboardTable from './components/LeaderboardTable';
-import PointChart from './components/PointChart'; 
-import ProblemStatusMatrix from './components/ProblemStatusMatrix';
+import ProblemStatusMatrix from '../Leaderboard/components/ProblemStatusMatrix';
+import PointChart from '../Leaderboard/components/PointChart';
+import LeaderboardTable from '../Leaderboard/components/LeaderboardTable';
+
 
 // =======================================================
 // 메인 리더보드 페이지

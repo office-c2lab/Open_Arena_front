@@ -7,8 +7,8 @@ import ChallengeLayout from '../ui/ChallengeLayout';
 import Login from '../pages/Login/Login';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import Leaderboard from '../pages/Leaderboard/Leaderboard';
-import AdminLeaderboard from '../pages/Leaderboard/AdminLeaderboard';
-
+import AdminLeaderboard from '../pages/admin/AdminLeaderboard';
+import AdminLogin from '../pages/admin/AdminLogin';
 import Tutorial from '../pages/Tutorial/Tutorial';
 import NotFound from '../pages/NotFound/NotFound'; 
 import Kategorie from '../pages/Kategorie/Kategorie';
@@ -21,6 +21,7 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/" element={<MainPage />} />
       <Route path="*" element={<NotFound />} />
       
@@ -28,9 +29,10 @@ export default function AppRouter() {
       <Route element={<DefaultLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
         <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
+        <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
+        
       </Route>
 
       {/* ChallengeLayout 하위 Route */}
