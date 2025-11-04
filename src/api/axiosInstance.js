@@ -7,7 +7,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   
   // CORS 요청 시 쿠키(인증 정보)를 포함하여 전송하도록 설정
-  withCredentials: true,
+  // withCredentials: true,
 });
 
 export default api;
