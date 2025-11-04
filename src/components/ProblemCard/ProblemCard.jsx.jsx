@@ -76,7 +76,7 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
 
  // 2. 실제 데이터 렌더링 로직
  // ⭐️ sub_description을 challenge 객체에서 구조 분해 할당으로 받습니다.
- const { title, difficulty, category, sub_description } = challenge;
+ const { title, difficulty, category, sub_description, goal } = challenge;
 
  const [isHovered, setIsHovered] = useState(false);
 
@@ -98,7 +98,7 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
 
  const overlayClasses = `absolute inset-0 flex flex-col justify-start p-6 text-white pointer-events-none transition-opacity duration-300 bg-black/40`;
  const textBlock1Classes = `body-medium font-300 text-gray-200`;
- const textBlock2Classes = ` body-medium font-700 text-red-500 mt-10`;
+ const textBlock2Classes = ` body-medium font-700 text-red-500 mt-2`;
 
  return (
   <div
@@ -124,7 +124,7 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
 
                 {/* ⭐️ 목표 문구는 title을 활용하여 동적으로 생성했습니다. */}
       <p className={textBlock2Classes}>
-       AI에게 “{title} 도전 성공!” 이라는 문구를 출력하도록 만드세요.
+       {goal}
       </p>
      </div>
     )}
