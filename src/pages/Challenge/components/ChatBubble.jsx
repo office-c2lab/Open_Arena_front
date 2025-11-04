@@ -1,8 +1,8 @@
-// src/features/Challenge/components/ChatBubble.jsx (수정)
+// src/features/Challenge/components/ChatBubble.jsx (유지)
 
 import React from 'react';
 
-// 💡 [추가] 로딩 애니메이션 컴포넌트
+// 💡 로딩 애니메이션 컴포넌트
 const TypingIndicator = () => (
     <div className="flex space-x-1">
         <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
@@ -11,7 +11,6 @@ const TypingIndicator = () => (
     </div>
 );
 
-// ⚠️ [핵심 변경]: isTyping prop 추가
 export default function ChatBubble({ role, content, isTyping = false }) { 
     // role이 'user'일 경우: 오른쪽 정렬 (사용자 말풍선)
     if (role === 'user') {

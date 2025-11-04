@@ -1,10 +1,9 @@
-// src/features/Challenge/components/ChatArea.jsx (수정)
+// src/features/Challenge/components/ChatArea.jsx (유지)
 
 import React from 'react';
 import ChatBubble from './ChatBubble';
 import useModalStore from '@/stores/useModalStore';
 
-// 💡 [수정] isSending prop 추가
 export default function ChatArea({
     ArenaIcon,
     SendIcon,
@@ -16,23 +15,13 @@ export default function ChatArea({
     handleSendMessage,
     className = '',
     isMessagesLoading,
-    inputDisabled, // 💡 inputDisabled prop이 isSending 상태를 포함함
+    inputDisabled, // inputDisabled prop이 isSending 상태를 포함함
 }) {
     const { openResetModal, openSubmitModal } = useModalStore();
 
-    // inputDisabled가 isSending을 포함하므로, isSending 상태를 따로 prop으로 받지 않고
-    // inputDisabled 상태를 활용하여 로딩 말풍선을 조건부 렌더링 할 수 있습니다. 
-    // 하지만, isMessagesLoading (초기 로딩)과 isSending (전송 중)을 명확히 분리하기 위해
-    // Challenge.jsx에서 isSending을 직접 prop으로 전달하거나, 
-    // isInputDisabled가 isSending만을 의미하도록 조정하는 것이 좋습니다.
-
-    // 🚀 [가정] Challenge.jsx에서 inputDisabled가 isSending 상태를 포함하고, 
-    // isMessagesLoading은 초기 로딩만 담당한다고 가정하고,
-    // 채팅 전송 중인 상태를 'isSendingOnly'로 분리하여 사용합니다.
-
     // isMessagesLoading이 true가 아니면서 inputDisabled가 true인 경우 (대부분 isSending 때문)
+    // 💡 ChatArea 내부에서 메시지 전송 중 상태를 판단하는 로직
     const isSendingOnly = inputDisabled && !isMessagesLoading; 
-
 
     const sendButtonColorClass = inputValue.trim()
         ? 'bg-[#FF6289] cursor-pointer hover:bg-[#e6597c]'
@@ -45,7 +34,7 @@ export default function ChatArea({
                 {/* Chat Display Area (남은 공간) - flex-1 & overflow-y-auto */}
                 <div className="flex-1 p-6 relative overflow-hidden">
                     
-                    {/* 💡 [수정] 메시지 로딩 중일 때 로딩 UI 표시 */}
+                    {/* 💡 메시지 로딩 중일 때 로딩 UI 표시 */}
                     {isMessagesLoading ? (
                         <div className="flex flex-col items-center justify-center h-full text-center p-4">
                             <p className="heading-3 font-700 text-[#FF6289]">
@@ -77,7 +66,7 @@ export default function ChatArea({
                                     <ChatBubble key={msg.id} role={msg.role} content={msg.content} />
                                 ))}
 
-                                {/* 🚀 [핵심 추가] AI 응답 대기 중일 때 로딩 버블 표시 */}
+                                {/* 🚀 AI 응답 대기 중일 때 로딩 버블 표시 */}
                                 {isSendingOnly && (
                                     <ChatBubble role="assistant" content="AI가 응답을 생성 중입니다..." isTyping={true} />
                                 )}
@@ -102,12 +91,12 @@ export default function ChatArea({
                                     handleSendMessage();
                                 }
                             }}
-                            disabled={inputDisabled} // 💡 isMessagesLoading 또는 isSending일 때 비활성화
+                            disabled={inputDisabled} // isMessagesLoading 또는 isSending일 때 비활성화
                         ></textarea>
 
                         <button
                             className={`flex-shrink-0 w-10 h-10 ${sendButtonColorClass} rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-colors duration-200 ${inputDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            disabled={!inputValue.trim() || inputDisabled} // 💡 비활성화 상태 추가
+                            disabled={!inputValue.trim() || inputDisabled} // 비활성화 상태 추가
                             onClick={handleSendMessage}
                         >
                             <img src={SendIcon} alt="Send" className="w-5 h-5" />
@@ -118,7 +107,7 @@ export default function ChatArea({
                         <button
                             className={`flex items-center justify-center flex-1 h-[44px] bg-[#D9DADB] hover:bg-[#BFC0C4] rounded-lg gap-2 cursor-pointer ${inputDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                             onClick={openResetModal}
-                            disabled={inputDisabled} // 💡 비활성화 상태 추가
+                            disabled={inputDisabled} // 비활성화 상태 추가
                         >
                             <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
                             <span className="heading-3 font-700 text-[#515151] leading-[26px] ">
@@ -129,7 +118,7 @@ export default function ChatArea({
                         <button
                             className={`flex-1 h-[44px] bg-[#FF6289] hover:bg-[#e6597c] rounded-lg flex justify-center items-center cursor-pointer ${inputDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                             onClick={openSubmitModal}
-                            disabled={inputDisabled} // 💡 비활성화 상태 추가
+                            disabled={inputDisabled} // 비활성화 상태 추가
                         >
                             <span className="heading-3 font-700 text-white leading-[26px] ">제출하기</span>
                         </button>
