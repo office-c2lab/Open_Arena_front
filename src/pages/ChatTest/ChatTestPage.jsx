@@ -1,118 +1,121 @@
-// src/features/Challenge/ui/ChallengePage.jsx
+import React, { useState } from 'react';
+import { useAuthStore } from '@/stores/authStore';
+import {
+  useCreateSession,
+  useSendMessage,
+  useSessionMessages,
+} from '@/hooks/useChat';
 
-import React, { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import { useCreateChatSession } from '../../hooks/useChatMutation'; 
-import useChatSessionStore from '../../stores/useChatSessionStore'; 
-import Challenge from '../Challenge/ui/Challenge';
+const FALLBACK_TEAM_ID = 1;
+const DEFAULT_PROBLEM_ID = 1;
 
+export default function ChatTester() {
+  const loggedInTeamId = useAuthStore((state) => state.teamInfo?.id);
+  const [teamId, setTeamId] = useState(loggedInTeamId ?? FALLBACK_TEAM_ID);
+  const [problemId, setProblemId] = useState(DEFAULT_PROBLEM_ID);
+  const [sessionTitle, setSessionTitle] = useState('New Test Session');
+  const [sessionId, setSessionId] = useState(null);
+  const [messageContent, setMessageContent] = useState('');
 
-export default function ChallengePage() {
-    const { challengeId } = useParams(); 
-    
-    // ⚠️ 테스트용 problem_id와 team_id (하드코딩 유지)
-    const [problemId] = useState(1);
-    const [teamId] = useState(2);
+  // 세션 생성
+  const createSessionMutation = useCreateSession((data) => {
+    setSessionId(data.id);
+    setTeamId(data.team_id);
+    setProblemId(data.problem_id);
+  });
 
-    // 💡 Zustand 스토어 상태 및 액션
-    const { 
-        sessionId, 
-        isSessionLoading, 
-        setSessionId, 
-        loadSessionId,
-        resetSessionState 
-    } = useChatSessionStore();
+  // 메시지 전송
+  const sendMessageMutation = useSendMessage(sessionId, (newSessionId) =>
+    setSessionId(newSessionId)
+  );
 
-    // 💡 React Query 세션 생성 훅
-    const { 
-        mutate, 
-        data: newSessionData, 
-        isPending: isCreationPending, 
-        isError, 
-        error 
-    } = useCreateChatSession(); 
+  // 메시지 조회
+  const { data: messages, isLoading, error } = useSessionMessages(sessionId, {
+    team_id: teamId,
+    problem_id: problemId,
+  });
 
-    // ==========================================================
-    // 💡 [핵심] 강제 새 세션 생성 로직 (ResetModal에서 호출)
-    // ==========================================================
-    const handleForceNewSession = useCallback(() => {
-        if (!challengeId) return;
+  // 핸들러
+  const handleCreateSession = () => {
+    createSessionMutation.mutate({
+      team_id: teamId,
+      problem_id: problemId,
+      title: sessionTitle,
+    });
+  };
 
-        // 1. 기존 세션 상태를 로컬 스토리지에서 제거하고 Zustand 상태 초기화
-        resetSessionState(); 
-
-        // 2. 새 세션 생성 API 강제 호출
-        console.log(`[Session] 대화 내용 초기화 버튼 클릭. 새 세션 생성 요청 시작: ${challengeId}`);
-        mutate({ 
-            problem_id: problemId, 
-            team_id: teamId, 
-            title: `챌린지 세션: ${challengeId}` 
-        });
-
-    }, [challengeId, mutate, problemId, teamId, resetSessionState]);
-
-
-    // ==========================================================
-    // 💡 1. 로컬 스토리지에서 세션 로드 또는 생성 요청 (useEffect)
-    // ==========================================================
-    useEffect(() => {
-        if (challengeId) {
-            const loadedId = loadSessionId(challengeId);
-            
-            // 로드된 ID가 없으면, 세션 생성 요청 시작
-            if (!loadedId) {
-                console.log(`[Session] ChallengePage 진입. 기존 세션 없음. 새로운 세션 생성 요청 시작: ${challengeId}`);
-                mutate({ 
-                    problem_id: problemId, 
-                    team_id: teamId,      
-                    title: `챌린지 세션: ${challengeId}` 
-                });
-            } else {
-                console.log(`[Session] ChallengePage 진입. 기존 세션 ID (${loadedId}) 발견. 재사용.`);
-            }
-        }
-        
-        // 클린업: challengeId가 바뀔 때 상태 초기화
-        return () => resetSessionState();
-    }, [challengeId, mutate, problemId, teamId, loadSessionId, resetSessionState]); 
-    
-    // ==========================================================
-    // 💡 2. 뮤테이션 성공 시 세션 ID를 스토어 및 로컬 스토리지에 저장 (useEffect)
-    // ==========================================================
-    useEffect(() => {
-        if (newSessionData?.sessionId && newSessionData.sessionId !== sessionId) {
-            console.log(`[API] ✅ 세션 생성 성공: ID ${newSessionData.sessionId}. 스토어 업데이트.`);
-            // 성공적으로 세션을 생성하면 스토어와 로컬 스토리지에 저장
-            setSessionId(challengeId, newSessionData.sessionId);
-        }
-    }, [newSessionData, setSessionId, challengeId, sessionId]);
-    
-    
-    // --- 로딩 및 에러 상태 처리 ---
-    
-    // 전체 로딩 상태: 로컬 스토리지 로딩 중이거나, 새로운 세션 생성 API 대기 중
-    const overallLoading = isSessionLoading || isCreationPending;
-    
-    if (overallLoading || !challengeId) {
-        return <div className="p-8 h-screen flex items-center justify-center text-xl">
-            {isCreationPending ? '새로운 세션 생성 중...' : '챌린지 세션 준비 중...'}
-        </div>;
+  const handleSendMessage = () => {
+    if (!messageContent.trim()) {
+      alert('메시지 내용을 입력해주세요.');
+      return;
     }
+    const sessionIdToSend = sessionId ?? 0;
+    sendMessageMutation.mutate({
+      content: messageContent,
+      session_id: sessionIdToSend,
+      team_id: teamId,
+      problem_id: problemId,
+    });
+    setMessageContent('');
+  };
 
-    if (isError) {
-        return <div className="p-8 h-screen flex items-center justify-center text-red-500 text-xl">
-            ❌ 세션 생성 실패: {error.message}
-        </div>;
-    }
-    
-    // --- 성공 시 Challenge 컴포넌트 렌더링 ---
-    
-    if (sessionId) {
-        console.log(`✅ [Session] 최종 세션 ID 획득 완료: ${sessionId}. Challenge UI 로드.`);
-        return <Challenge onResetChatSession={handleForceNewSession} />;
-    }
-    
-    return <div className="p-8 h-screen flex items-center justify-center text-yellow-500 text-xl">
-        세션 정보를 가져올 수 없습니다.
-    </div>;
+  return (
+    <div style={{ display: 'flex', gap: '20px', padding: '20px', fontFamily: 'sans-serif' }}>
+      {/* 세션 생성 */}
+      <fieldset style={{ width: 300, border: '1px solid #ccc', padding: 15 }}>
+        <legend style={{ fontWeight: 'bold' }}>1. 세션 생성</legend>
+        <label>팀 ID: <input value={teamId} onChange={(e) => setTeamId(Number(e.target.value))} /></label>
+        <label>문제 ID: <input value={problemId} onChange={(e) => setProblemId(Number(e.target.value))} /></label>
+        <label>제목: <input value={sessionTitle} onChange={(e) => setSessionTitle(e.target.value)} /></label>
+        <button onClick={handleCreateSession} disabled={createSessionMutation.isPending}>
+          {createSessionMutation.isPending ? '생성 중...' : '세션 생성'}
+        </button>
+      </fieldset>
+
+      {/* 메시지 전송 */}
+      <fieldset style={{ width: 400, border: '1px solid #ccc', padding: 15 }}>
+        <legend style={{ fontWeight: 'bold' }}>2. 메시지 전송</legend>
+        <p>Session ID: {sessionId ?? '없음 (0으로 새로 생성)'}</p>
+        <textarea
+          rows={3}
+          style={{ width: '100%', marginTop: 5 }}
+          value={messageContent}
+          onChange={(e) => setMessageContent(e.target.value)}
+        />
+        <button
+          onClick={handleSendMessage}
+          disabled={sendMessageMutation.isPending || !messageContent.trim()}
+        >
+          {sendMessageMutation.isPending ? '전송 중...' : '전송'}
+        </button>
+      </fieldset>
+
+      {/* 메시지 조회 */}
+      <fieldset style={{ flex: 1, border: '1px solid #ccc', padding: 15 }}>
+        <legend style={{ fontWeight: 'bold' }}>3. 메시지 조회</legend>
+        {isLoading && <p>로딩 중...</p>}
+        {error && <p style={{ color: 'red' }}>에러: {error.message}</p>}
+        {messages && (
+          <div>
+            <h4>대화 내용</h4>
+            {messages.messages.map((msg) => (
+              <div
+                key={msg.id}
+                style={{
+                  textAlign: msg.role === 'user' ? 'right' : 'left',
+                  background: msg.role === 'user' ? '#e1f5fe' : '#f0f0f0',
+                  padding: 6,
+                  margin: '6px 0',
+                  borderRadius: 6,
+                }}
+              >
+                <strong>{msg.role === 'user' ? '🧑 사용자' : '🤖 AI'}</strong>
+                <p style={{ margin: 0 }}>{msg.content}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </fieldset>
+    </div>
+  );
 }

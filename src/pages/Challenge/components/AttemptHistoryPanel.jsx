@@ -1,12 +1,12 @@
-// src/features/Challenge/components/AttemptHistoryPanel.jsx (최종 수정 전체 코드)
+// src/features/Challenge/components/AttemptHistoryPanel.jsx
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import AttemptHistoryCard, { AttemptHistoryCardSkeleton } from './AttemptHistoryCard'; // 💡 스켈레톤 import
+import AttemptHistoryCard, { AttemptHistoryCardSkeleton } from './AttemptHistoryCard';
 import PointInfoCard from './PointInfoCard';
 import useModalStore from '@/stores/useModalStore';
+import useChatSessionStore from '@/stores/useChatSessionStore'; 
 import HelpIcon from '@/assets/icons/helpModal.svg';
-import { DUMMY_ATTEMPTS } from '@/pages/Challenge/data/dummyAttempts';
-import Skeleton from '../../../components/Skeleton/Skeleton'; // 💡 Skeleton import 가정
+import Skeleton from '../../../components/Skeleton/Skeleton';
 
 const SKELETON_CARD_COUNT = 4; // 로딩 시 표시할 스켈레톤 카드 개수
 
@@ -23,20 +23,44 @@ const DUMMY_BALANCE = {
     currentPoint: 150,
 };
 
-export default function AttemptHistoryPanel({ PurpleDownIcon, isLoading }) { // 💡 isLoading prop 추가
+// 💡 sessions, problemId, teamId prop 추가
+export default function AttemptHistoryPanel({ PurpleDownIcon, isLoading, sessions = [], problemId, teamId }) { 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState(FILTER_OPTIONS[0]);
     const dropdownRef = useRef(null);
-
+    
     const { openDebugModal } = useModalStore();
+    const { setSessionId, sessionId: currentActiveSessionId } = useChatSessionStore(); 
+    
     const handleHelpClick = () => {
         openDebugModal();
     };
 
-    const filteredAttempts = DUMMY_ATTEMPTS.filter(attempt => {
-        if (selectedFilter.key === 'ALL') return true;
-        return attempt.filterKey === selectedFilter.key;
-    });
+    // 💡 sessions prop을 사용하여 카드 데이터 매핑
+    const totalAttempts = sessions.length; // 총 시도 횟수를 미리 계산
+
+    const filteredAttempts = sessions
+        // 세션 목록을 최신순으로 정렬 (id가 높은 것이 최신이라고 가정)
+        .map((session, index) => ({
+            id: session.id,
+            title: session.title,
+            // ✅ 수정: 최신이 N번, 오래됨이 1번이 되도록 번호를 매깁니다.
+            // sessions가 이미 [최신, ..., 오래됨] 순서라고 가정합니다.
+            attemptNumber: totalAttempts - index, 
+            // 🚨 백엔드 데이터에 isSubmitted/isSuccess 정보가 없으므로 임시 값 사용
+            isSubmitted: false, 
+            isSuccess: false, 
+            promptSummary: session.title || '새로운 세션',
+            isActive: session.id === currentActiveSessionId,
+            filterKey: 'NOT_SUBMITTED', // 임시 필터 키
+        }))
+        // 🚨 필터링 로직 (현재 sessions 데이터로는 ALL만 의미 있음)
+        .filter(attempt => {
+            if (selectedFilter.key === 'ALL') return true;
+            // 실제 필터링 로직은 백엔드 데이터가 확정되면 구현 필요
+            return attempt.filterKey === selectedFilter.key;
+        }); // 💡 .reverse()를 제거합니다. 목록은 이미 최신 순서입니다.
+
 
     const toggleDropdown = useCallback(() => {
         setIsDropdownOpen(prev => !prev);
@@ -48,9 +72,21 @@ export default function AttemptHistoryPanel({ PurpleDownIcon, isLoading }) { // 
         console.log(`필터 선택됨: ${filter.label}`);
     }, []);
 
-    const handleCardClick = useCallback(attempt => {
-        console.log(`${attempt.attemptNumber}번째 시도 기록 보기`);
-    }, []);
+    // 💡 카드 클릭 시 세션 ID를 변경하고, 변경된 세션 ID와 함께 로컬 스토리지에 저장합니다.
+    const handleCardClick = useCallback((sessionIdToActivate) => {
+        if (!problemId || !teamId) {
+            console.error("Problem ID or Team ID is missing for session activation.");
+            return;
+        }
+
+        if (sessionIdToActivate !== currentActiveSessionId) {
+            // setSessionId(PROBLEM_KEY, sessionId, teamId) 호출
+            setSessionId(`problem-${problemId}`, sessionIdToActivate, teamId);
+            console.log(`✅ 세션 ID 전환: ${currentActiveSessionId} -> ${sessionIdToActivate} (Problem: ${problemId}, Team: ${teamId})`);
+        } else {
+            console.log(`❕ 세션 ID: ${sessionIdToActivate} (이미 활성화됨)`);
+        }
+    }, [currentActiveSessionId, setSessionId, problemId, teamId]); 
 
     useEffect(() => {
         const handleClickOutside = event => {
@@ -71,17 +107,14 @@ export default function AttemptHistoryPanel({ PurpleDownIcon, isLoading }) { // 
             <div className="flex-shrink-0 w-full mb-4">
                 <PointInfoCard 
                     currentBalance={DUMMY_BALANCE.currentPoint}
-                    isLoading={isLoading} // ✅ 스켈레톤 유지 (데이터 영역)
+                    isLoading={isLoading}
                 />
             </div>
             {/* 2. 최근 시도 패널 (남은 공간 모두 차지) */}
             <div className="flex flex-col shadow-xl rounded-[20px] overflow-hidden flex-1 bg-[rgba(235,232,254,0.1)] h-full">
                 {/* Header - flex-shrink-0 */}
                 <div className="w-full h-[70px] p-3 md:p-4 shadow-sm bg-white rounded-t-[20px] flex items-center justify-between flex-shrink-0">
-                    {/* ❌ "최근 시도" 제목 스켈레톤 제거 */}
-                    <span className="heading-2 font-500 text-[#837BBD]">최근 시도</span>
-                    
-                    {/* ❌ "관리자 호출" 버튼 스켈레톤 제거 */}
+                    <span className="heading-2 font-500 text-[#837BBD]">최근 시도 ({sessions.length})</span>
                     <div className="flex items-center space-x-2">
                         <button
                             onClick={handleHelpClick}
@@ -98,15 +131,11 @@ export default function AttemptHistoryPanel({ PurpleDownIcon, isLoading }) { // 
                     className="p-3 md:p-4 flex justify-end flex-shrink-0 bg-[rgba(235,232,254,0.1)] relative"
                     ref={dropdownRef}
                 >
-                    {/* ❌ 드롭다운 스켈레톤 제거 -> 항상 원본 드롭다운 렌더링 */}
                     <div
                         className="flex items-center justify-between w-[126px] h-[39px] px-4 py-[10px] bg-white shadow-[0px_0px_2px_rgba(0,0,0,0.25)] rounded-[10px] cursor-pointer flex-shrink-0"
                         onClick={toggleDropdown}
-                        // 💡 로딩 중에는 클릭을 막을 수 있음 (선택 사항)
-                        // disabled={isLoading} 
                     >
                         <span className="body-large font-700 text-[#837BBD]">{selectedFilter.label}</span>
-
                         <img
                             src={PurpleDownIcon}
                             alt="Dropdown"
@@ -136,7 +165,6 @@ export default function AttemptHistoryPanel({ PurpleDownIcon, isLoading }) { // 
                 {/* Attempts list - flex-1 & overflow-y-auto */}
                 <div className="flex flex-1 flex-col items-center overflow-y-auto px-4 py-1 gap-4">
                     {isLoading ? (
-                        // ✅ 시도 기록 목록은 API 데이터 로딩의 핵심 영역이므로 스켈레톤 유지
                         [...Array(SKELETON_CARD_COUNT)].map((_, index) => (
                             <AttemptHistoryCardSkeleton key={index} />
                         ))
@@ -145,10 +173,11 @@ export default function AttemptHistoryPanel({ PurpleDownIcon, isLoading }) { // 
                             <AttemptHistoryCard
                                 key={attempt.id}
                                 attemptNumber={attempt.attemptNumber}
-                                isSubmitted={attempt.isSubmitted}
-                                isSuccess={attempt.isSuccess}
+                                isSubmitted={attempt.isSubmitted} 
+                                isSuccess={attempt.isSuccess} 
                                 promptSummary={attempt.promptSummary}
-                                onClick={() => handleCardClick(attempt)}
+                                isActive={attempt.isActive}
+                                onClick={() => handleCardClick(attempt.id)} 
                             />
                         ))
                     ) : (
