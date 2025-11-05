@@ -16,11 +16,13 @@ import Kategorie from '../pages/Kategorie/Kategorie';
 // 💡 Challenge 대신 ChallengePage 임포트 (경로를 확인해주세요)
 import MainPage from '../pages/MainPage/MainPage';
 import Challenge from '../pages/Challenge/ui/Challenge';
+import ChatTestPage from '../pages/ChatTestPage';
 
 export default function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/test" element={<ChatTestPage />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/" element={<MainPage />} />
       <Route path="*" element={<NotFound />} />
@@ -38,6 +40,7 @@ export default function AppRouter() {
       <Route element={<ChallengeLayout />}>
         {/* 💡 challengeId 파라미터를 명시하고 ChallengePage로 연결 */}
         <Route path="/challenge/:problemId" element={<Challenge />} /> 
+        
       </Route>
     </Routes>
   );

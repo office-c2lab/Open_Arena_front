@@ -42,18 +42,23 @@ const ChallengeSection = () => {
                 const data = response.data; 
                 
                 // ⚠️ API 응답 데이터에 difficulty와 id를 추가하는 로직 (수정됨: id를 숫자로)
-                let index = 0;
-                const problemsWithMeta = data.map(problem => {
-                    index++;
+                
+                const problemsWithMeta = data.map((problem, mapIndex) => {
                     return {
                         ...problem,
-                        // 임시 난이도 할당
-                        difficulty: difficulties[index % difficulties.length],
-                        // ⭐️ 임시 ID 할당 (문자열에서 숫자로 변경)
-                        id: index, // 이전: id: `problem-${index}`,
+                        // ✅ API에서 받은 고유 ID (숫자)를 그대로 사용
+                        id: problem.id, 
+                        // 순서에 따른 난이도 할당 (0, 1, 2, 0, 1, 2...)
+                        difficulty: difficulties[mapIndex % difficulties.length],
+                        // 기존에 사용하던 id: `problem-${index}` 로직 제거
                     };
                 });
-                
+                console.log("✅ API에서 받은 문제 목록 (ID 및 난이도 포함):", problemsWithMeta.map(p => ({
+                    id: p.id,
+                    title: p.title,
+                    difficulty: p.difficulty,
+                    category: p.category
+                })));
                 setChallenges(problemsWithMeta);
 
             } catch (err) {
@@ -82,15 +87,15 @@ const ChallengeSection = () => {
     }, [currentCategory, challenges, isLoading, error]);
 
     // --- ProblemCard Solve 버튼 액션 핸들러 (이전과 동일) ---
-    const handleSolveProblem = useCallback(
-        // challengeId는 이제 숫자 타입으로 들어올 것으로 예상됩니다.
-        challengeId => { 
-            console.log(`Problem ID: ${challengeId} - 문제풀기 버튼 클릭!`);
-            // 라우팅 시에도 숫자 ID를 사용합니다.
-            navigate(`/challenge/${challengeId}`);
-        },
-        [navigate]
-    );
+   const handleSolveProblem = useCallback(
+    // challengeId 대신 problemId를 사용
+    problemId => { 
+        console.log(`Problem ID: ${problemId} - 문제풀기 버튼 클릭!`);
+        // 라우팅 시에도 problemId를 사용합니다.
+        navigate(`/challenge/${problemId}`);
+    },
+    [navigate]
+);
 
     const titleText = currentCategory ? `${currentCategory} 챌린지 목록` : '전체 챌린지 목록';
 

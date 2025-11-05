@@ -202,6 +202,7 @@ export default function Challenge() {
         ResetIcon={ResetIcon}
         inputDisabled={isInputDisabled}
         problemId={currentProblemId} // 문제 아이디 전달
+        teamId={currentTeamId}
       />
 
       {/* 우측 시도 기록 */}
