@@ -1,11 +1,10 @@
-// src/hooks/useJudgeMutation.js
-
+// useJudgeMutation.js
 import { useMutation } from '@tanstack/react-query';
-import { judgeChallenge } from '@/api/judgeApi'; // 💡 1번에서 생성한 API 함수 임포트
+import { submitForJudgement } from '@/api/judgeApi'; // 이름 맞춰서 import
 
 export const useJudgeMutation = () => {
-    return useMutation({
-        mutationFn: judgeChallenge,
-        // onSuccess/onError 처리는 Challenge.jsx에서 모달 제어를 위해 수행합니다.
-    });
+  return useMutation({
+    mutationFn: submitForJudgement, // 여기서도 이름 일치
+    // onSuccess/onError는 Challenge.jsx에서 처리
+  });
 };
