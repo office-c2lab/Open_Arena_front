@@ -1,19 +1,18 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { TABS } from '../data/challengeData';
+// src/features/Challenge/ui/Challenge.jsx
+import React, { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 // React Query 훅
-import { useSendMessage } from '@/hooks/useChatMutation';
-import { useChatMessages } from '@/hooks/useChatQuery';
-import { useJudgeMutation } from '@/hooks/useJudgeMutation';
 import { useProblemBundleQuery } from '@/hooks/useProblemBundleQuery';
-import { useQueryClient } from '@tanstack/react-query';
+import { useJudgeMutation } from '@/hooks/useJudgeMutation';
 
 // Zustand 스토어
 import useModalStore from '@/stores/useModalStore';
-import useChatSessionStore from '@/stores/useChatSessionStore';
 import { useAuthStore } from '@/stores/authStore';
 
+// 데이터
+import { TABS } from '../data/challengeData';
 import { successPanelsData, failedPanelsData } from '../data/challengeModalData';
 
 // Assets
@@ -33,68 +32,26 @@ import SubmitModal from '../ChallengeModal/SubmitMoadl';
 import FailedModal from '../ChallengeModal/FailedModal';
 import SuccessModal from '../ChallengeModal/SuccesModal';
 
-// ----------------------------------------------------------------------
-
-export default function Challenge({ onResetChatSession }) {
+export default function Challenge() {
   const { problemId } = useParams();
   const currentProblemId = parseInt(problemId, 10) || 1;
+
   const queryClient = useQueryClient();
 
-  // 💡 teamId from AuthStore
-  const currentTeamId = useAuthStore((state) => state.teamInfo?.team_id) || 1;
-
-  const sessionId = useChatSessionStore((state) => state.sessionId);
+  // teamId 가져오기
+  const currentTeamId = useAuthStore((state) => state.teamInfo?.id) || 1;
 
   // ----------------------------------------------------------------------
-  // API hooks
+  // API Hooks
   // ----------------------------------------------------------------------
-
   const { data: problemBundleData, isLoading: isProblemBundleLoading } =
     useProblemBundleQuery(currentProblemId, currentTeamId);
-
-  const {
-    data: fetchedMessages = [],
-    isLoading: isMessagesLoading,
-    isError: isMessagesError,
-  } = useChatMessages(sessionId, currentTeamId, currentProblemId);
-
-  const { mutate: sendMutate, isPending: isSending } = useSendMessage(sessionId, {
-    onMutate: async ({ messageBody }) => {
-      await queryClient.cancelQueries({
-        queryKey: ['chatMessages', sessionId, currentTeamId, currentProblemId],
-      });
-
-      const userMessage = {
-        id: Date.now(),
-        role: 'user',
-        content: messageBody.content,
-      };
-      setChatMessages((prev) => [...prev, userMessage]);
-      setInputValue('');
-
-      return { userMessageId: userMessage.id };
-    },
-    onError: (err, variables, context) => {
-      console.error('❌ 메시지 전송 실패 (롤백):', err);
-      setChatMessages((prev) => prev.filter((msg) => msg.id !== context.userMessageId));
-      const errorMessage = {
-        id: Date.now() + 1,
-        role: 'assistant',
-        content: `⚠️ 전송 실패: ${err.message}`,
-      };
-      setChatMessages((prev) => [...prev, errorMessage]);
-    },
-    onSettled: () => {
-      if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    },
-  });
 
   const { mutate: judgeMutate, isPending: isJudging } = useJudgeMutation();
 
   // ----------------------------------------------------------------------
   // Zustand store + state
   // ----------------------------------------------------------------------
-
   const {
     isDebugModalOpen,
     isResetModalOpen,
@@ -111,44 +68,21 @@ export default function Challenge({ onResetChatSession }) {
   } = useModalStore();
 
   const [activeTab, setActiveTab] = useState(TABS[0].id);
-  const [inputValue, setInputValue] = useState('');
-  const [chatMessages, setChatMessages] = useState([]);
-  const chatEndRef = useRef(null);
-
-  const scrollToBottom = useCallback(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
-  useEffect(() => {
-    if (!isMessagesLoading && !isMessagesError && fetchedMessages.length > 0) {
-      setChatMessages(fetchedMessages);
-      console.log(`✅ [Chat] 메시지 로드 완료. Session ID: ${sessionId}`);
-      scrollToBottom();
-    } else if (!isMessagesLoading && fetchedMessages.length === 0) {
-      setChatMessages([]);
-      console.log(`✅ [Chat] 새 세션 시작. Session ID: ${sessionId}`);
-    }
-  }, [isMessagesLoading, isMessagesError, fetchedMessages, sessionId, scrollToBottom]);
 
   // ----------------------------------------------------------------------
   // Reset & Submit handlers
   // ----------------------------------------------------------------------
-
-  const handleResetChat = useCallback(() => {
-    onResetChatSession();
-    setChatMessages([]);
-    setInputValue('');
+  const handleResetChat = () => {
     console.log('✅ 대화 내용 초기화 완료.');
-  }, [onResetChatSession]);
+  };
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = () => {
     console.log('챌린지 제출 로직 실행됨.');
 
     judgeMutate(
       {
         problem_id: currentProblemId,
         team_id: currentTeamId,
-        session_id: sessionId,
       },
       {
         onSuccess: (data) => {
@@ -184,31 +118,17 @@ export default function Challenge({ onResetChatSession }) {
         },
       }
     );
-  }, [
-    sessionId,
-    closeLoadingModal,
-    openFailedModal,
-    openSuccessModal,
-    setChallengeResults,
-    judgeMutate,
-    currentTeamId,
-    currentProblemId,
-  ]);
+  };
 
-  useEffect(() => {
+  // 모달 액션 등록
+  useMemo(() => {
     setResetChatAction(handleResetChat);
     setSubmitAction(handleSubmit);
-
-    return () => {
-      setResetChatAction(() => console.warn('Reset action not registered.'));
-      setSubmitAction(() => console.warn('Submit action not registered.'));
-    };
-  }, [setResetChatAction, handleResetChat, setSubmitAction, handleSubmit]);
+  }, []);
 
   // ----------------------------------------------------------------------
   // useMemo: 문제 데이터 가공
   // ----------------------------------------------------------------------
-
   const { CHALLENGE_HEADER_INFO, activeTabContent, PROBLEM_API_URL, SESSIONS_LIST } =
     useMemo(() => {
       if (!problemBundleData) {
@@ -251,37 +171,16 @@ export default function Challenge({ onResetChatSession }) {
       };
     }, [problemBundleData, activeTab]);
 
-  // ----------------------------------------------------------------------
-  // Input handlers
-  // ----------------------------------------------------------------------
-
-  const handleInputChange = (e) => setInputValue(e.target.value);
-
   const handleTabClick = (e, tabId) => {
     e.preventDefault();
     setActiveTab(tabId);
   };
 
-  const handleSendMessage = () => {
-    const trimmedInput = inputValue.trim();
-    if (!trimmedInput || isSending) return;
-
-    sendMutate({
-      sessionId,
-      messageBody: {
-        content: trimmedInput,
-        team_id: currentTeamId,
-        problem_id: currentProblemId,
-},
-    });
-  };
-
   // ----------------------------------------------------------------------
   // Render
   // ----------------------------------------------------------------------
-
-  const isPanelLoading = isMessagesLoading || isProblemBundleLoading;
-  const isInputDisabled = isMessagesLoading || isSending || isJudging || isProblemBundleLoading;
+  const isPanelLoading = isProblemBundleLoading;
+  const isInputDisabled = isJudging || isProblemBundleLoading;
 
   return (
     <div className="flex w-full h-full gap-4 md:gap-6">
@@ -301,17 +200,8 @@ export default function Challenge({ onResetChatSession }) {
         ArenaIcon={ArenaIcon}
         SendIcon={SendIcon}
         ResetIcon={ResetIcon}
-        chatMessages={chatMessages}
-        chatEndRef={chatEndRef}
-        inputValue={inputValue}
-        handleInputChange={handleInputChange}
-        handleSendMessage={handleSendMessage}
         inputDisabled={isInputDisabled}
-        isMessagesLoading={isPanelLoading}
-        teamId={currentTeamId}
-        problemId={currentProblemId}
-        sessionId={sessionId}
-        setSessionId={useChatSessionStore((state) => state.setSessionId)}
+        problemId={currentProblemId} // 문제 아이디 전달
       />
 
       {/* 우측 시도 기록 */}

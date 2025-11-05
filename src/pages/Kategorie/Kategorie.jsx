@@ -41,7 +41,7 @@ const ChallengeSection = () => {
                 // axios는 응답 데이터를 자동으로 .data에 넣어줍니다.
                 const data = response.data; 
                 
-                // ⚠️ API 응답 데이터에 difficulty와 id를 추가하는 로직 (이전과 동일)
+                // ⚠️ API 응답 데이터에 difficulty와 id를 추가하는 로직 (수정됨: id를 숫자로)
                 let index = 0;
                 const problemsWithMeta = data.map(problem => {
                     index++;
@@ -49,9 +49,8 @@ const ChallengeSection = () => {
                         ...problem,
                         // 임시 난이도 할당
                         difficulty: difficulties[index % difficulties.length],
-                        // 임시 ID 할당 (문제 해결 버튼에 필요)
-                        // 'title'을 기반으로 하는 것이 더 안전할 수 있지만, 여기서는 index 사용
-                        id: `problem-${index}`, 
+                        // ⭐️ 임시 ID 할당 (문자열에서 숫자로 변경)
+                        id: index, // 이전: id: `problem-${index}`,
                     };
                 });
                 
@@ -84,8 +83,10 @@ const ChallengeSection = () => {
 
     // --- ProblemCard Solve 버튼 액션 핸들러 (이전과 동일) ---
     const handleSolveProblem = useCallback(
-        challengeId => {
+        // challengeId는 이제 숫자 타입으로 들어올 것으로 예상됩니다.
+        challengeId => { 
             console.log(`Problem ID: ${challengeId} - 문제풀기 버튼 클릭!`);
+            // 라우팅 시에도 숫자 ID를 사용합니다.
             navigate(`/challenge/${challengeId}`);
         },
         [navigate]
@@ -98,7 +99,7 @@ const ChallengeSection = () => {
           <div>
             <Banner />
           </div>
-                  
+            
             
             <h1
                 className="heading-1 font-700 text-left max-w-[1080px] w-full mx-auto"
@@ -137,7 +138,7 @@ const ChallengeSection = () => {
                             <ProblemCard
                                 key={challenge.id}
                                 challenge={challenge} 
-                                onSolveClick={() => handleSolveProblem(challenge.id)}
+                                onSolveClick={() => handleSolveProblem(challenge.id)} // 숫자 ID 전달
                                 isLoading={false} 
                             />
                         ))
