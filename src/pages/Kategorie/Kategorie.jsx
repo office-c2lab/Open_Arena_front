@@ -41,20 +41,24 @@ const ChallengeSection = () => {
                 // axios는 응답 데이터를 자동으로 .data에 넣어줍니다.
                 const data = response.data; 
                 
-                // ⚠️ API 응답 데이터에 difficulty와 id를 추가하는 로직 (이전과 동일)
-                let index = 0;
-                const problemsWithMeta = data.map(problem => {
-                    index++;
+                // ⚠️ API 응답 데이터에 difficulty와 id를 추가하는 로직 (수정됨: id를 숫자로)
+                
+                const problemsWithMeta = data.map((problem, mapIndex) => {
                     return {
                         ...problem,
-                        // 임시 난이도 할당
-                        difficulty: difficulties[index % difficulties.length],
-                        // 임시 ID 할당 (문제 해결 버튼에 필요)
-                        // 'title'을 기반으로 하는 것이 더 안전할 수 있지만, 여기서는 index 사용
-                        id: `problem-${index}`, 
+                        // ✅ API에서 받은 고유 ID (숫자)를 그대로 사용
+                        id: problem.id, 
+                        // 순서에 따른 난이도 할당 (0, 1, 2, 0, 1, 2...)
+                        difficulty: difficulties[mapIndex % difficulties.length],
+                        // 기존에 사용하던 id: `problem-${index}` 로직 제거
                     };
                 });
-                
+                console.log("✅ API에서 받은 문제 목록 (ID 및 난이도 포함):", problemsWithMeta.map(p => ({
+                    id: p.id,
+                    title: p.title,
+                    difficulty: p.difficulty,
+                    category: p.category
+                })));
                 setChallenges(problemsWithMeta);
 
             } catch (err) {
@@ -83,13 +87,15 @@ const ChallengeSection = () => {
     }, [currentCategory, challenges, isLoading, error]);
 
     // --- ProblemCard Solve 버튼 액션 핸들러 (이전과 동일) ---
-    const handleSolveProblem = useCallback(
-        challengeId => {
-            console.log(`Problem ID: ${challengeId} - 문제풀기 버튼 클릭!`);
-            navigate(`/challenge/${challengeId}`);
-        },
-        [navigate]
-    );
+   const handleSolveProblem = useCallback(
+    // challengeId 대신 problemId를 사용
+    problemId => { 
+        console.log(`Problem ID: ${problemId} - 문제풀기 버튼 클릭!`);
+        // 라우팅 시에도 problemId를 사용합니다.
+        navigate(`/challenge/${problemId}`);
+    },
+    [navigate]
+);
 
     const titleText = currentCategory ? `${currentCategory} 챌린지 목록` : '전체 챌린지 목록';
 
@@ -98,7 +104,7 @@ const ChallengeSection = () => {
           <div>
             <Banner />
           </div>
-                  
+            
             
             <h1
                 className="heading-1 font-700 text-left max-w-[1080px] w-full mx-auto"
@@ -137,7 +143,7 @@ const ChallengeSection = () => {
                             <ProblemCard
                                 key={challenge.id}
                                 challenge={challenge} 
-                                onSolveClick={() => handleSolveProblem(challenge.id)}
+                                onSolveClick={() => handleSolveProblem(challenge.id)} // 숫자 ID 전달
                                 isLoading={false} 
                             />
                         ))

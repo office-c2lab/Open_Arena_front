@@ -1,22 +1,12 @@
-// src/api/judgeApi.js
-
-import api from "./axiosInstance"; 
+import api from './axiosInstance'; // axios 기본 설정 인스턴스
 
 /**
- * 🧑‍⚖️ 챌린지 심사 요청 API (POST /judge)
+ * 챌린지 제출 요청
+ * @param {number} sessionId - 현재 챌린지 세션 ID
+ * @param {object} body - 추가 제출 데이터 (필요 시)
+ * @returns {Promise}
  */
-export const judgeChallenge = async ({ problem_id, team_id, session_id }) => {
-    try {
-        const response = await api.post("/judge", {
-            problem_id,
-            team_id,
-            session_id,
-        });
-        // ✅ 성공 메시지 추가
-        console.log(`[API] ✅ 심사 요청 성공: 세션 ${session_id}`);
-        return response.data; // 서버 응답 (200 Successful Response)
-    } catch (error) {
-        console.error("[API] ❌ 심사 요청 실패:", error);
-        throw error;
-    }
+export const submitForJudgement = (sessionId, body = {}) => {
+  return api.post(`/judge/sessions/${sessionId}/submit`, body)
+    .then(res => res.data);
 };

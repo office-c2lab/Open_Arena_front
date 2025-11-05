@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react';
 import useModalStore from '@/stores/useModalStore';
-import { SuccessSummaryPanel, FailedSummaryPanel } from './SummaryPanels'; // 💡 [수정] 분리된 파일에서 import
+import { SuccessSummaryPanel, FailedSummaryPanel } from './SummaryPanels'; // 분리된 파일에서 import
 
 // 성공 테마 색상 (버튼에 필요)
 const SUCCESS_COLOR_PRIMARY = '#04B07B';
@@ -16,22 +16,30 @@ export default function SuccessModal() {
   // --------------------------------------------------------
   const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
   const challengeResults = useModalStore(state => state.challengeResults);
-  const { closeSuccessModal, resetChatAction } = useModalStore(); // 💡 액션 핸들러 정의
+  const { closeSuccessModal, resetChatAction } = useModalStore(); // 액션 핸들러 정의
 
   const handleRestart = useCallback(() => {
     closeSuccessModal();
-    resetChatAction();
+    // 챌린지 재시작 버튼을 누르면 대화 내용을 초기화합니다.
+    resetChatAction(); 
   }, [closeSuccessModal, resetChatAction]);
 
   const handleContinue = useCallback(() => {
+    // 다른 문제 풀기 버튼을 누르면 모달만 닫습니다. (현재 문제의 대화는 유지)
     closeSuccessModal();
-  }, [closeSuccessModal]); // (이하 렌더링 코드)
+    // TODO: 필요하다면 라우팅 로직 추가
+  }, [closeSuccessModal]);
 
-  if (!isSuccessModalOpen) return null; // 💡 성공 모달: 성공한 패널을 먼저 보여주고, 실패한 패널을 나중에 보여줍니다.
+  if (!isSuccessModalOpen) return null;
 
+  // --------------------------------------------------------
+  // 💡 2. 패널 정렬 로직 수정 (FAILED, REVIEW 등 모든 비-SUCCESS 상태 처리)
+  // --------------------------------------------------------
   const sortedPanels = [
+    // 1. 성공(success) 패널을 최우선으로 배치
     ...challengeResults.filter(result => result.status === 'success'),
-    ...challengeResults.filter(result => result.status === 'failed'),
+    // 2. 그 외 모든 상태 (failed, REVIEW, unsubmitted 등)를 후순위로 배치
+    ...challengeResults.filter(result => result.status !== 'success'), 
   ];
 
   return (
@@ -47,6 +55,7 @@ export default function SuccessModal() {
         <div className="flex flex-col gap-4 w-[877px]">
           {sortedPanels.map((result, index) => {
             const data = result.data;
+            // status가 'success'면 SuccessSummaryPanel, 아니면 FailedSummaryPanel (FAILED, REVIEW 등 포함)
             const Component =
               result.status === 'success' ? SuccessSummaryPanel : FailedSummaryPanel;
 
@@ -57,36 +66,42 @@ export default function SuccessModal() {
                 animalName={data.animalName}
                 description={data.description}
                 imageStyle={data.imageStyle}
-                isFirstPanel={data.isFirstPanel} // SuccessSummaryPanel에 필요한 title prop을 추가합니다.
-                title={data.title}
+                isFirstPanel={data.isFirstPanel} // isFirstPanel은 SuccessSummaryPanel에서만 사용
+                title={data.title} // 모델명
+                verdict={result.status} // 💡 [추가] FailedSummaryPanel에서 사용될 verdict (FAILED/REVIEW 구분용)
               />
             );
           })}
         </div>
+        
         {/* 패널과 버튼 사이 간격 (mt-6 = 24px) */}
         <div className={`flex justify-between w-[862px] mt-10`}>
-          {/* 1. 챌린지 화면으로 돌아가기 */}
+          {/* 1. 챌린지 화면으로 돌아가기 (재시작) */}
           <button
+            type="button"
             onClick={handleRestart}
             className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px] box-border
-      border border-[#E4E8F0] bg-[#D9DADB] hover:bg-[#BFC0C4] transition duration-200 cursor-pointer"
+            border border-[#E4E8F0] bg-[#D9DADB] hover:bg-[#BFC0C4] transition duration-200 cursor-pointer"
             style={{
               padding: '12px 42px',
             }}
           >
             <span className="heading-2 font-500 text-[#515151]">챌린지 화면으로 돌아가기</span>
           </button>
-          {/* 2. 다른 문제 풀기 */}
+          
+          {/* 2. 다른 문제 풀기 (모달만 닫기) */}
           <button
+            type="button"
             onClick={handleContinue}
             className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px]
-      hover:opacity-90 transition duration-200 cursor-pointer"
+            hover:opacity-90 transition duration-200 cursor-pointer"
             style={{ padding: '12px', backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
             <span className="heading-2 font-500 text-white">다른 문제 풀기</span>
           </button>
         </div>
         {/* 하단 여백 (25px) */}
+        <div className="h-[25px] w-full" />
       </div>
     </div>
   );
