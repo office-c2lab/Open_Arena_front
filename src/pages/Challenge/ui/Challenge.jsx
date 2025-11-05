@@ -108,8 +108,9 @@ export default function Challenge() {
 
           setChallengeResults(results);
 
-          if (data.verdict === 'success') openSuccessModal();
-          else openFailedModal();
+         // 💡 [수정] data.verdict 대신 data.status를 사용하여 모달을 엽니다.
+          if (data.status === 'success') openSuccessModal();
+          else openFailedModal();
         },
         onError: (error) => {
           console.error('❌ Judge 실패:', error);
