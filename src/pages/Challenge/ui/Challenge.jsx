@@ -214,13 +214,21 @@ export default function Challenge() {
         teamId={currentTeamId}
       />
 
-      {/* 모달 */}
-      {isDebugModalOpen && <DebugModal />}
-      {isResetModalOpen && <ResetModal />}
-      {isSubmitModalOpen && <SubmitModal />}
-      {isLoadingModalOpen && <LoadingModal />}
-      {isFailedModalOpen && <FailedModal />}
-      {isSuccessModalOpen && <SuccessModal />}
-    </div>
+     {/* 모달 */}
+      {isDebugModalOpen && <DebugModal />}
+      {isResetModalOpen && <ResetModal />}
+      {isSubmitModalOpen && <SubmitModal />}
+      
+      {/* 💡 수정: isOpen 및 onClose prop 전달 */}
+      {isLoadingModalOpen && (
+        <LoadingModal 
+          isOpen={isLoadingModalOpen} // Zustand 상태를 모달에 전달
+          onClose={closeLoadingModal} // 닫기 함수 전달
+        />
+      )}
+      
+      {isFailedModalOpen && <FailedModal />}
+      {isSuccessModalOpen && <SuccessModal />}
+    </div>
   );
 }
