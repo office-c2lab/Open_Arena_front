@@ -109,7 +109,7 @@ export const bottomLinksData = (
   {
     icon: LogoutIcon,
     label: '계정 로그인',
-    path: '/login',
+    path: '/',
     textClass: 'text-[#CC8889] body-large font-500',
     hoverTextClass: 'text-[#FF084A] body-large font-500',
     iconSize: 'w-[15px] h-[15px]',
