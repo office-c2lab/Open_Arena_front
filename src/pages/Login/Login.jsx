@@ -37,10 +37,10 @@ export default function Login() {
       loginToStore(data); 
       
       console.log('로그인 성공:', data);
-      alert(`${data.teamname}님 환영합니다!`);
+      // alert(`${data.teamname}님 환영합니다!`);
       
       // 🚀 2. 대시보드로 이동
-      navigate('/'); 
+      navigate('/dashboard'); 
     },
     onError: (error) => {
       // 🚨 로그인 실패 시 처리

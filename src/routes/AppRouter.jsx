@@ -21,10 +21,10 @@ import ChatTestPage from '../pages/ChatTestPage';
 export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/test" element={<ChatTestPage />} />
       <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/" element={<MainPage />} />
+      {/* <Route path="/" element={<MainPage />} /> */}
       <Route path="*" element={<NotFound />} />
       
       {/* DefaultLayout 하위 Route */}

@@ -1,106 +1,119 @@
 import { create } from 'zustand';
 
 /**
- * Zustand 모달 상태 관리 스토어
+ * ✅ 안정화된 Zustand 모달 상태 관리 스토어
+ * - closeAllModals() 남용 제거
+ * - 로딩 → 성공/실패 전환 시 안전한 상태 유지
  */
 const useModalStore = create((set, get) => ({
-    // --------------------------------------------------------
-    // 💡 1. 상태 정의
-    // --------------------------------------------------------
-    isDebugModalOpen: false,
+  // --------------------------------------------------------
+  // 1️⃣ 상태 정의
+  // --------------------------------------------------------
+  isDebugModalOpen: false,
+  isResetModalOpen: false,
+  isSubmitModalOpen: false,
+  isLoadingModalOpen: false,
+  isFailedModalOpen: false,
+  isSuccessModalOpen: false,
+
+  // 제출 결과 데이터
+  challengeResults: [],
+
+  // 등록된 콜백 (Reset / Submit)
+  resetChatAction: () => {
+    console.error('Reset action not yet registered in store.');
+  },
+  submitAction: () => {
+    console.error('Submit action not yet registered in store.');
+  },
+
+  // --------------------------------------------------------
+  // 2️⃣ 액션 정의
+  // --------------------------------------------------------
+
+  // 콜백 등록
+  setResetChatAction: (action) => set({ resetChatAction: action }),
+  setSubmitAction: (action) => set({ submitAction: action }),
+
+  // 챌린지 결과 저장
+  setChallengeResults: (results) => set({ challengeResults: results }),
+
+  // --------------------------------------------------------
+  // 3️⃣ 모달 제어 액션
+  // --------------------------------------------------------
+
+  /** 모든 모달 닫기 */
+  closeAllModals: () =>
+    set({
+      isDebugModalOpen: false,
+      isResetModalOpen: false,
+      isSubmitModalOpen: false,
+      isLoadingModalOpen: false,
+      isFailedModalOpen: false,
+      isSuccessModalOpen: false,
+    }),
+
+  // 디버그 모달
+  openDebugModal: () => set({
+    isDebugModalOpen: true,
     isResetModalOpen: false,
     isSubmitModalOpen: false,
     isLoadingModalOpen: false,
     isFailedModalOpen: false,
     isSuccessModalOpen: false,
-    
-    // 💡 추가된 상태: 챌린지 제출 결과 (각 모델별 status 및 데이터)
-    challengeResults: [], // [ { status: 'success', data: { ... } }, ... ]
+  }),
+  closeDebugModal: () => set({ isDebugModalOpen: false }),
 
-    /**
-     * Challenge.jsx의 handleResetChat 함수를 저장하는 상태
-     */
-    resetChatAction: () => {
-        console.error('Reset action not yet registered in store.');
-    },
+  // 초기화 모달
+  openResetModal: () => set({
+    isResetModalOpen: true,
+    isDebugModalOpen: false,
+    isSubmitModalOpen: false,
+    isLoadingModalOpen: false,
+    isFailedModalOpen: false,
+    isSuccessModalOpen: false,
+  }),
+  closeResetModal: () => set({ isResetModalOpen: false }),
 
-    /**
-     * Challenge.jsx의 handleSubmit 함수를 저장하는 상태
-     */
-    submitAction: () => {
-        console.error('Submit action not yet registered in store.');
-    },
+  // 제출 모달
+  openSubmitModal: () => set({
+    isSubmitModalOpen: true,
+    isDebugModalOpen: false,
+    isResetModalOpen: false,
+    isLoadingModalOpen: false,
+    isFailedModalOpen: false,
+    isSuccessModalOpen: false,
+  }),
+  closeSubmitModal: () => set({ isSubmitModalOpen: false }),
 
-    // --------------------------------------------------------
-    // 💡 2. 액션 정의
-    // --------------------------------------------------------
+  // 로딩 모달
+  openLoadingModal: () => set({
+    isLoadingModalOpen: true,
+    isDebugModalOpen: false,
+    isResetModalOpen: false,
+    isSubmitModalOpen: false,
+    isFailedModalOpen: false,
+    isSuccessModalOpen: false,
+  }),
+  closeLoadingModal: () => set({ isLoadingModalOpen: false }),
 
-    /**
-     * Challenge.jsx에서 handleResetChat을 스토어에 등록하는 액션
-     */
-    setResetChatAction: action => set({ resetChatAction: action }),
+  // 실패 모달
+  openFailedModal: () => set({
+    isFailedModalOpen: true,
+    isLoadingModalOpen: false,
+    isSubmitModalOpen: false,
+    isSuccessModalOpen: false,
+  }),
+  closeFailedModal: () => set({ isFailedModalOpen: false }),
 
-    /**
-     * Challenge.jsx에서 handleSubmit을 스토어에 등록하는 액션
-     */
-    setSubmitAction: action => set({ submitAction: action }),
-
-    // 💡 추가된 액션: 챌린지 결과를 스토어에 설정
-    setChallengeResults: (results) => set({ challengeResults: results }),
-
-
-    // 모든 모달 닫기 함수 (내부 사용)
-    closeAllModals: () =>
-        set({
-            isDebugModalOpen: false,
-            isResetModalOpen: false,
-            isSubmitModalOpen: false,
-            isLoadingModalOpen: false,
-            isFailedModalOpen: false,
-            isSuccessModalOpen: false,
-        }),
-
-    // 디버그 모달
-    openDebugModal: () => {
-        get().closeAllModals();
-        set({ isDebugModalOpen: true });
-    },
-    closeDebugModal: () => set({ isDebugModalOpen: false }),
-
-    // 초기화 모달
-    openResetModal: () => {
-        get().closeAllModals();
-        set({ isResetModalOpen: true });
-    },
-    closeResetModal: () => set({ isResetModalOpen: false }),
-
-    // 제출 모달
-    openSubmitModal: () => {
-        get().closeAllModals();
-        set({ isSubmitModalOpen: true });
-    },
-    closeSubmitModal: () => set({ isSubmitModalOpen: false }),
-
-    // 로딩 모달
-    openLoadingModal: () => {
-        get().closeAllModals();
-        set({ isLoadingModalOpen: true });
-    },
-    closeLoadingModal: () => set({ isLoadingModalOpen: false }),
-
-    // 실패 모달
-    openFailedModal: () => {
-        get().closeAllModals();
-        set({ isFailedModalOpen: true });
-    },
-    closeFailedModal: () => set({ isFailedModalOpen: false }),
-
-    // 성공 모달
-    openSuccessModal: () => {
-        get().closeAllModals();
-        set({ isSuccessModalOpen: true });
-    },
-    closeSuccessModal: () => set({ isSuccessModalOpen: false }),
+  // 성공 모달
+  openSuccessModal: () => set({
+    isSuccessModalOpen: true,
+    isLoadingModalOpen: false,
+    isSubmitModalOpen: false,
+    isFailedModalOpen: false,
+  }),
+  closeSuccessModal: () => set({ isSuccessModalOpen: false }),
 }));
 
 export default useModalStore;
