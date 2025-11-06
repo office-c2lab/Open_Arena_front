@@ -131,7 +131,7 @@ export default function ChatArea({ ArenaIcon, SendIcon, ResetIcon, inputDisabled
             <div className="flex flex-col items-center justify-center h-full text-center p-4">
               <img src={ArenaIcon} alt="ARENA Logo" className="max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain mb-4" />
               <p className="heading-3 font-300 text-[#000000] mt-4 mb-6">
-                AI와 대화를 시작하세요. <br /> 아래 버튼을 눌러 **새로운 세션**을 생성하세요.
+                AI와 대화를 시작하세요. <br /> 아래 버튼을 눌러 새로운 세션을 생성하세요.
               </p>
               <button
                 onClick={handleCreateSession}
