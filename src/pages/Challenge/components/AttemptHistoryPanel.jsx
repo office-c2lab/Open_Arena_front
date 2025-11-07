@@ -78,13 +78,13 @@ export default function AttemptHistoryPanel({ PurpleDownIcon, isLoading, session
         {/* 헤더 */}
         <div className="w-full h-[70px] p-3 md:p-4 shadow-sm bg-white rounded-t-[20px] flex items-center justify-between">
           <span className="heading-2 font-500 text-[#837BBD]">최근 시도 ({sessions.length})</span>
-          <button
+          {/* <button
             onClick={handleHelpClick}
             className="h-10 px-2 bg-[#837BBD] rounded-[5px] flex items-center justify-center gap-1 shadow-md hover:bg-[#837BBD]/90"
           >
             <img src={HelpIcon} alt="Help" className="w-4 h-4" />
             <span className="text-white body-medium font-500">관리자 호출</span>
-          </button>
+          </button> */}
         </div>
 
         {/* 필터 */}
