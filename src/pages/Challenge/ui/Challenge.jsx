@@ -26,7 +26,7 @@ import PurpleDownIcon from '@/assets/icons/purple-downbtn.svg';
 
 // Components
 import ChallengeInfoPanel from '../components/ChallengeInfoPanel';
-import ChatArea from '../components/ChatArea';
+import ChatArea from '../components/ChatArea/ChatArea';
 import AttemptHistoryPanel from '../components/AttemptHistoryPanel';
 import LoadingModal from '../../../components/Loading/LoadingModal';
 import DebugModal from '../ChallengeModal/DebugModal';
