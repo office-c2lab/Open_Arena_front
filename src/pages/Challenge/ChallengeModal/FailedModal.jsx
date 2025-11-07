@@ -106,7 +106,7 @@ export default function FailedModal() {
           </button>
           
           {/* 3. 도움 요청 (Frame 2087327752) */}
-          <button
+          {/* <button
             type="button"
             onClick={handleHelp}
             className="flex items-center justify-center w-[278px] h-[61px] rounded-[20px] box-border
@@ -114,7 +114,7 @@ export default function FailedModal() {
             style={{ padding: '12px 36px' }}
           >
             <span className="heading-2 font-500 text-[#FF6289]">도움 요청</span>
-          </button>
+          </button> */}
         </div>
         
         {/* 하단 여백 (25px) */}
