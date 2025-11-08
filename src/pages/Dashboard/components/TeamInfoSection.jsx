@@ -4,13 +4,13 @@ import TeamInfoCard from './TeamInfoCard';
 
 export default function TeamInfoSection({ isLoading = false, solvedCount = 0, totalScore = 0 }) {
   return (
-    <div className="flex justify-center w-full max-w-[1027px] mx-auto">
+    <div className="flex justify-center w-full max-w-[1060px] mx-auto">
       <TeamInfoCard
         title="해결한 챌린지"
         value={solvedCount}
         iconType="ai"
         valueColor="#0EA5E9"
-        cardStyle={{ marginRight: '27px' }}
+        cardStyle={{ marginRight: '40px' }}
         isLoading={isLoading}
       />
       <TeamInfoCard

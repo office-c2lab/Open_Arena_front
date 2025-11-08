@@ -40,7 +40,7 @@ const Dashboard = () => {
       <Banner />
 
       {/* 팀 정보 */}
-      <div className="w-full max-w-[1027px] flex flex-col items-start mx-auto">
+      <div className="w-full max-w-[1060px] flex flex-col items-start mx-auto">
         <h1 className="heading-1 font-700 mb-5 text-[#FF4854]">{teamName}</h1>
 
         <TeamInfoSection isLoading={isLoading} solvedCount={solvedCount} totalScore={totalScore} />
