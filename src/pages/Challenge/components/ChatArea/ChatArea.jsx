@@ -19,8 +19,10 @@ export default function ChatArea({
   const { openResetModal, openSubmitModal } = useModalStore();
 
   // ✅ 세션 및 메시지 관련 훅
-  const { sessionId, clearSession, createSessionMutation, handleSessionClick } =
-    useChatSession(teamId, problemId);
+  const { sessionId, clearSession, createSessionMutation, handleSessionClick } = useChatSession(
+    teamId,
+    problemId
+  );
   const [inputValue, setInputValue] = useState('');
   const { messages, isMessagesLoading, sendMessageMutation } = useChatMessages(
     sessionId,
@@ -39,7 +41,7 @@ export default function ChatArea({
     if (!trimmed || sendMessageMutation.isPending) return;
 
     if (!sessionId) {
-      const newSession = await createSessionMutation.mutateAsync('자동 생성된 세션');
+      const newSession = await createSessionMutation.mutateAsync('');
       const newSessionId = newSession?.id ?? newSession;
       if (newSessionId) await sendMessageMutation.mutateAsync(trimmed);
     } else {
@@ -49,12 +51,9 @@ export default function ChatArea({
 
   // ✅ 상태 계산
   const displayMessages = Array.isArray(messages) ? messages : [];
-  const isAiTyping = displayMessages.some((msg) => msg.isTyping);
+  const isAiTyping = displayMessages.some(msg => msg.isTyping);
   const isChatAreaDisabled =
-    inputDisabled ||
-    sendMessageMutation.isPending ||
-    isAiTyping ||
-    createSessionMutation.isPending;
+    inputDisabled || sendMessageMutation.isPending || isAiTyping || createSessionMutation.isPending;
   const isInitialState =
     !sessionId && displayMessages.length === 0 && !createSessionMutation.isPending;
 

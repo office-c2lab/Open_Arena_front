@@ -1,111 +1,94 @@
 // src/features/challenge/ChallengeModals/SuccessModal.jsx
-
 import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useModalStore from '@/stores/useModalStore';
-import { SuccessSummaryPanel, FailedSummaryPanel } from './SummaryPanels'; // 분리된 파일에서 import
+import { useSessionStore } from '@/stores/useSessionStore'; // ⭐ 세션 스토어
+import { SuccessSummaryPanel, FailedSummaryPanel } from './SummaryPanels';
 
-// 성공 테마 색상 (버튼에 필요)
 const SUCCESS_COLOR_PRIMARY = '#04B07B';
 
-/**
-* 챌린지 성공 결과 모달 컴포넌트
-*/
 export default function SuccessModal() {
- // --------------------------------------------------------
- // 💡 1. Zustand 스토어에서 상태, 액션, 결과를 가져오기
- // --------------------------------------------------------
- const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
- const challengeResults = useModalStore(state => state.challengeResults);
- const { closeSuccessModal, resetChatAction } = useModalStore(); // 액션 핸들러 정의
+  const navigate = useNavigate();
+  const clearSession = useSessionStore(state => state.clearSession); // ⭐ 세션 초기화 액션
+  const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
+  const challengeResults = useModalStore(state => state.challengeResults);
+  const { closeSuccessModal, resetChatAction } = useModalStore();
 
- const handleRestart = useCallback(() => {
-  closeSuccessModal();
-  // 챌린지 재시작 버튼을 누르면 대화 내용을 초기화합니다.
-  resetChatAction(); 
- }, [closeSuccessModal, resetChatAction]);
+  // ✅ 챌린지 화면으로 돌아가기
+  const handleRestart = useCallback(() => {
+    closeSuccessModal();
+    resetChatAction();
+    clearSession(); // ⭐ 세션 초기화 추가
+  }, [closeSuccessModal, resetChatAction, clearSession]);
 
- const handleContinue = useCallback(() => {
-  // 다른 문제 풀기 버튼을 누르면 모달만 닫습니다. (현재 문제의 대화는 유지)
-  closeSuccessModal();
-  // TODO: 필요하다면 라우팅 로직 추가
- }, [closeSuccessModal]);
+  // ✅ 다른 문제 풀기
+  const handleContinue = useCallback(() => {
+    closeSuccessModal();
+    clearSession();
+    navigate('/kategorie');
+  }, [closeSuccessModal, clearSession, navigate]);
 
- if (!isSuccessModalOpen) return null;
+  if (!isSuccessModalOpen) return null;
 
- // --------------------------------------------------------
- // 💡 2. 패널 정렬 로직 수정 (FAILED, REVIEW 등 모든 비-SUCCESS 상태 처리)
- // --------------------------------------------------------
- const sortedPanels = [
-  // 1. 성공(passed) 패널을 최우선으로 배치
-  // ⭐️ [수정]: status를 소문자로 변환하여 'passed'와 비교
-  ...challengeResults.filter(result => result.status.toLowerCase() === 'passed'),
-  // 2. 그 외 모든 상태 (failed, REVIEW 등)를 후순위로 배치
-  // ⭐️ [수정]: status가 'passed'가 아닌 것을 필터링
-  ...challengeResults.filter(result => result.status.toLowerCase() !== 'passed'), 
- ];
+  const sortedPanels = [
+    ...challengeResults.filter(result => result.status.toLowerCase() === 'passed'),
+    ...challengeResults.filter(result => result.status.toLowerCase() !== 'passed'),
+  ];
 
- return (
-  // Overlay: Flexbox를 사용하여 중앙 배치
-  <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]">
-   <div // Modal Container: (990px x 680px)
-    className="w-[990px] h-[680px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center"
-    style={{ boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' }}
-   >
-    {/* 상단 여백 (30px) */}
-    <div className="h-[30px] w-full" />
-    {/* === 3개 요약 패널 그룹 (중앙 배치) === */}
-    <div className="flex flex-col gap-4 w-[877px]">
-     {sortedPanels.map((result, index) => {
-      const data = result.data;
-      
-      // ⭐️ [수정]: status가 'passed'면 SuccessSummaryPanel
-      const Component =
-       result.status.toLowerCase() === 'passed' ? SuccessSummaryPanel : FailedSummaryPanel;
+  return (
+    <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]">
+      <div
+        className="w-[990px] h-[680px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center"
+        style={{ boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' }}
+      >
+        <div className="h-[30px] w-full" />
+        <div className="flex flex-col gap-4 w-[877px]">
+          {sortedPanels.map((result, index) => {
+            const data = result.data;
+            const Component =
+              result.status.toLowerCase() === 'passed' ? SuccessSummaryPanel : FailedSummaryPanel;
 
-      return (
-       <Component
-        key={index}
-        imageSrc={data.imageSrc}
-        animalName={data.animalName}
-        description={data.description}
-        imageStyle={data.imageStyle}
-        isFirstPanel={data.isFirstPanel} 
-        title={data.title} // 모델명
-        verdict={result.status} // FAILED/REVIEW 구분용 (SummaryPanels.jsx에서 사용)
-       />
-      );
-     })}
+            return (
+              <Component
+                key={index}
+                imageSrc={data.imageSrc}
+                animalName={data.animalName}
+                description={data.description}
+                imageStyle={data.imageStyle}
+                isFirstPanel={data.isFirstPanel}
+                title={data.title}
+                verdict={result.status}
+              />
+            );
+          })}
+        </div>
+
+        <div className="flex justify-between w-[862px] mt-10">
+          {/* 챌린지 화면으로 돌아가기 */}
+          <button
+            type="button"
+            onClick={handleRestart}
+            className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px]
+            border border-[#E4E8F0] bg-[#D9DADB] hover:bg-[#BFC0C4] transition duration-200 cursor-pointer"
+            style={{ padding: '12px 42px' }}
+          >
+            <span className="heading-2 font-500 text-[#515151]">챌린지 화면으로 돌아가기</span>
+          </button>
+
+          {/* 다른 문제 풀기 */}
+          <button
+            type="button"
+            onClick={handleContinue}
+            className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px]
+            hover:opacity-90 transition duration-200 cursor-pointer"
+            style={{ padding: '12px', backgroundColor: SUCCESS_COLOR_PRIMARY }}
+          >
+            <span className="heading-2 font-500 text-white">다른 문제 풀기</span>
+          </button>
+        </div>
+
+        <div className="h-[25px] w-full" />
+      </div>
     </div>
-    
-    {/* 패널과 버튼 사이 간격 (mt-6 = 24px) */}
-    <div className={`flex justify-between w-[862px] mt-10`}>
-     {/* 1. 챌린지 화면으로 돌아가기 (재시작) */}
-     <button
-      type="button"
-      onClick={handleRestart}
-      className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px] box-border
-      border border-[#E4E8F0] bg-[#D9DADB] hover:bg-[#BFC0C4] transition duration-200 cursor-pointer"
-      style={{
-       padding: '12px 42px',
-      }}
-     >
-      <span className="heading-2 font-500 text-[#515151]">챌린지 화면으로 돌아가기</span>
-     </button>
-     
-     {/* 2. 다른 문제 풀기 (모달만 닫기) */}
-     <button
-      type="button"
-      onClick={handleContinue}
-      className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px]
-      hover:opacity-90 transition duration-200 cursor-pointer"
-      style={{ padding: '12px', backgroundColor: SUCCESS_COLOR_PRIMARY }}
-     >
-      <span className="heading-2 font-500 text-white">다른 문제 풀기</span>
-     </button>
-    </div>
-    {/* 하단 여백 (25px) */}
-    <div className="h-[25px] w-full" />
-   </div>
-  </div>
- );
+  );
 }

@@ -1,14 +1,16 @@
 import React from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function ChatControls({
   ResetIcon,
   openResetModal,
   openSubmitModal,
   clearSession,
-  queryClient,
   isDisabled,
   sessionId,
 }) {
+  const queryClient = useQueryClient(); // <- 여기서 가져오기
+
   return (
     <div className="flex justify-between flex-shrink-0 gap-16">
       <button
@@ -17,7 +19,7 @@ export default function ChatControls({
         }`}
         onClick={() => {
           clearSession();
-          queryClient.removeQueries({ queryKey: ['chatMessages'] });
+          queryClient.removeQueries({ queryKey: ['chatMessages'] }); // 정상 동작
           openResetModal();
         }}
         disabled={isDisabled}
