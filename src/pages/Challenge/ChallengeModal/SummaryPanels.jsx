@@ -12,7 +12,7 @@ const FAILED_COLOR_BACKGROUND = 'rgba(255, 8, 74, 0.2)'; // #FF084A, opacity 0.2
 
 // 💡 [추가] REVIEW (재검토/오류) 테마 색상
 const REVIEW_COLOR_PRIMARY = '#FFA500'; // 주황색
-const REVIEW_COLOR_BACKGROUND = 'rgba(255, 165, 0, 0.2)'; 
+const REVIEW_COLOR_BACKGROUND = 'rgba(255, 165, 0, 0.2)';
 
 // === 단일 성공 요약 패널 컴포넌트 ===
 /**
@@ -102,7 +102,7 @@ export const FailedSummaryPanel = ({
     backgroundColor: isReview ? REVIEW_COLOR_BACKGROUND : FAILED_COLOR_BACKGROUND,
     statusText: isReview ? '재검토' : '실패',
   };
-  
+
   const animalNameColor = panelTheme.primaryColor;
 
   return (
@@ -132,8 +132,8 @@ export const FailedSummaryPanel = ({
           />
         </div>
         {/* 4. '실패/재검토' 텍스트 (동적 표시) */}
-        <p 
-          className={`heading-2 font-700`} 
+        <p
+          className={`heading-2 font-700`}
           style={{ marginBottom: '0px', color: panelTheme.primaryColor }} // 동적 텍스트 색상
         >
           {panelTheme.statusText} {/* '실패' 또는 '재검토' */}
