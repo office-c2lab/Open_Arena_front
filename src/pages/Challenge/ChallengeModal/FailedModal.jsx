@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query'; // ✅ 추가
+import { useQueryClient } from '@tanstack/react-query';
 import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
 import { SuccessSummaryPanel, FailedSummaryPanel } from './SummaryPanels';
 
 export default function FailedModal() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); // ✅ React Query 인스턴스
+  const queryClient = useQueryClient();
   const isFailedModalOpen = useModalStore(state => state.isFailedModalOpen);
   const challengeResults = useModalStore(state => state.challengeResults);
   const { closeFailedModal, resetChatAction } = useModalStore();
@@ -17,9 +17,7 @@ export default function FailedModal() {
   const handleRestart = useCallback(() => {
     closeFailedModal();
     resetChatAction();
-    clearSession(); // 세션 초기화
-
-    // ✅ 문제 리스트 리렌더링 유도
+    clearSession();
     queryClient.invalidateQueries(['problemBundle']);
   }, [closeFailedModal, resetChatAction, clearSession, queryClient]);
 
@@ -27,7 +25,7 @@ export default function FailedModal() {
   const handleContinue = useCallback(() => {
     closeFailedModal();
     clearSession();
-    queryClient.invalidateQueries(['problemBundle']); // ✅ 추가
+    queryClient.invalidateQueries(['problemBundle']);
     navigate('/kategorie');
   }, [closeFailedModal, clearSession, queryClient, navigate]);
 
@@ -40,15 +38,19 @@ export default function FailedModal() {
 
   return (
     <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]">
-      {/* 모달 내용 */}
       <div className="w-[990px] h-[680px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center shadow-lg">
         <div className="h-[30px]" />
 
+        {/* === 결과 패널 === */}
         <div className="flex flex-col gap-4 w-[877px]">
           {sortedPanels.map((result, index) => {
             const data = result.data;
+            const verdict = (result.status || '').toUpperCase(); // ✅ 대문자 통일
+
             const Component =
-              result.status === 'success' ? SuccessSummaryPanel : FailedSummaryPanel;
+              verdict === 'SUCCESS' || verdict === 'PASSED'
+                ? SuccessSummaryPanel
+                : FailedSummaryPanel;
 
             return (
               <Component
@@ -59,12 +61,13 @@ export default function FailedModal() {
                 imageStyle={data.imageStyle}
                 isFirstPanel={data.isFirstPanel}
                 title={data.title}
-                verdict={result.status}
+                verdict={verdict} // ✅ 'FAILED' or 'REVIEW' 전달
               />
             );
           })}
         </div>
 
+        {/* === 버튼 그룹 === */}
         <div className="flex justify-between w-[862px] mt-10">
           <button
             type="button"
