@@ -10,7 +10,7 @@ export default function ProblemList({ isLoading = false, problems = [] }) {
     <div
       className="rounded-[10px] overflow-hidden mx-auto"
       style={{
-        maxWidth: '1028px',
+        maxWidth: '1060px',
         backgroundColor: 'rgba(255,255,255,0.8)',
         boxShadow: '0 4px 4px rgba(0,0,0,0.25)',
       }}
@@ -19,7 +19,7 @@ export default function ProblemList({ isLoading = false, problems = [] }) {
         className="flex flex-wrap justify-center"
         style={{
           padding: '29px 23px',
-          columnGap: '10px',
+          columnGap: '15px',
           rowGap: '10px',
         }}
       >
