@@ -1,15 +1,16 @@
-// src/features/challenge/ChallengeModals/SuccessModal.jsx
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query'; // ✅ 추가
 import useModalStore from '@/stores/useModalStore';
-import { useSessionStore } from '@/stores/useSessionStore'; // ⭐ 세션 스토어
+import { useSessionStore } from '@/stores/useSessionStore';
 import { SuccessSummaryPanel, FailedSummaryPanel } from './SummaryPanels';
 
 const SUCCESS_COLOR_PRIMARY = '#04B07B';
 
 export default function SuccessModal() {
   const navigate = useNavigate();
-  const clearSession = useSessionStore(state => state.clearSession); // ⭐ 세션 초기화 액션
+  const queryClient = useQueryClient(); // ✅ 추가
+  const clearSession = useSessionStore(state => state.clearSession);
   const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
   const challengeResults = useModalStore(state => state.challengeResults);
   const { closeSuccessModal, resetChatAction } = useModalStore();
@@ -18,15 +19,17 @@ export default function SuccessModal() {
   const handleRestart = useCallback(() => {
     closeSuccessModal();
     resetChatAction();
-    clearSession(); // ⭐ 세션 초기화 추가
-  }, [closeSuccessModal, resetChatAction, clearSession]);
+    clearSession();
+    queryClient.invalidateQueries(['problemBundle']); // ✅ 추가
+  }, [closeSuccessModal, resetChatAction, clearSession, queryClient]);
 
   // ✅ 다른 문제 풀기
   const handleContinue = useCallback(() => {
     closeSuccessModal();
     clearSession();
+    queryClient.invalidateQueries(['problemBundle']); // ✅ 추가
     navigate('/kategorie');
-  }, [closeSuccessModal, clearSession, navigate]);
+  }, [closeSuccessModal, clearSession, queryClient, navigate]);
 
   if (!isSuccessModalOpen) return null;
 
@@ -37,17 +40,14 @@ export default function SuccessModal() {
 
   return (
     <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]">
-      <div
-        className="w-[990px] h-[680px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center"
-        style={{ boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' }}
-      >
-        <div className="h-[30px] w-full" />
+      {/* 모달 내용 */}
+      <div className="w-[990px] h-[680px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center shadow-lg">
+        <div className="h-[30px]" />
         <div className="flex flex-col gap-4 w-[877px]">
           {sortedPanels.map((result, index) => {
             const data = result.data;
             const Component =
               result.status.toLowerCase() === 'passed' ? SuccessSummaryPanel : FailedSummaryPanel;
-
             return (
               <Component
                 key={index}
@@ -64,30 +64,23 @@ export default function SuccessModal() {
         </div>
 
         <div className="flex justify-between w-[862px] mt-10">
-          {/* 챌린지 화면으로 돌아가기 */}
           <button
             type="button"
             onClick={handleRestart}
-            className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px]
-            border border-[#E4E8F0] bg-[#D9DADB] hover:bg-[#BFC0C4] transition duration-200 cursor-pointer"
-            style={{ padding: '12px 42px' }}
+            className="w-[400px] h-[61px] bg-[#D9DADB] rounded-[20px] hover:bg-[#BFC0C4]"
           >
             <span className="heading-2 font-500 text-[#515151]">챌린지 화면으로 돌아가기</span>
           </button>
 
-          {/* 다른 문제 풀기 */}
           <button
             type="button"
             onClick={handleContinue}
-            className="flex items-center justify-center w-[400px] h-[61px] rounded-[20px]
-            hover:opacity-90 transition duration-200 cursor-pointer"
-            style={{ padding: '12px', backgroundColor: SUCCESS_COLOR_PRIMARY }}
+            className="w-[400px] h-[61px] rounded-[20px] hover:opacity-90"
+            style={{ backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
             <span className="heading-2 font-500 text-white">다른 문제 풀기</span>
           </button>
         </div>
-
-        <div className="h-[25px] w-full" />
       </div>
     </div>
   );
