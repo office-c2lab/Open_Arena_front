@@ -20,7 +20,7 @@ export default function ChatControls({
       {/* 문제 다시 풀기 버튼 */}
       <button
         className={`flex items-center justify-center flex-1 h-[44px] rounded-lg gap-2 transition-colors
-          ${isSuccess ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#D9DADB] hover:bg-[#BFC0C4]'}`}
+          ${isSuccess ? 'bg-gray-200  cursor-not-allowed' : 'bg-[#D9DADB] hover:bg-[#BFC0C4]'}`}
         onClick={() => {
           if (isSuccess) return; // 성공 문제는 클릭 막기
           clearSession();
