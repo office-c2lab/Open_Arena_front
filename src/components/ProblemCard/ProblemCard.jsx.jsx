@@ -40,14 +40,14 @@ const ProblemCardSkeleton = () => {
     <div className={cardClasses.trim()}>
       {/* 이미지 영역 스켈레톤 */}
       <div className={imageContainerClasses.trim()}>
-        <Skeleton className="w-full h-full" /> 
+        <Skeleton className="w-full h-full" />
       </div>
 
       {/* 내용 영역 스켈레톤 */}
       <div className={contentClasses.trim()}>
         <div className={tagsContainerClasses.trim()}>
-          <Skeleton className="h-6 w-16 rounded-full" /> 
-          <Skeleton className="h-6 w-16 rounded-full" /> 
+          <Skeleton className="h-6 w-16 rounded-full" />
+          <Skeleton className="h-6 w-16 rounded-full" />
         </div>
         <div className="flex flex-col gap-2">
           <Skeleton className="h-6 w-11/12" />
