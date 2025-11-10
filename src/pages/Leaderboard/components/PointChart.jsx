@@ -1,91 +1,65 @@
-// src/pages/Leaderboard/components/PointChart.jsx
-
 import React from 'react';
 import {
-	LineChart,
-	Line,
-	XAxis,
-	YAxis,
-	CartesianGrid,
-	Tooltip,
-	Legend,
-	ResponsiveContainer,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts';
-import { CHART_TIME_SERIES_DATA, TEAM_COLORS } from '../data/leaderboardData';
-import Skeleton from '../../../components/Skeleton/Skeleton'; // Skeleton import
+import { useScoreSeriesQuery } from '@/hooks/useScoreSeriesQuery';
+import Skeleton from '../../../components/Skeleton/Skeleton';
 
-// 💡 PointChartSkeleton 컴포넌트 정의 (수정)
-const PointChartSkeleton = () => {
-    // 💡 범례 및 X축 레이블 스켈레톤을 10개로 통일
-    const SKELETON_COUNT = 10;
-    const skeletons = Array.from({ length: SKELETON_COUNT }, (_, i) => i);
-    
-    return (
-        <div // 실제 차트 컨테이너 크기 사용
-            className="w-full max-w-[1027px] h-[595px] rounded-[10px] z-20 p-6 bg-white/80 shadow-lg flex flex-col"
-        >
-            {/* 중앙: 차트 본체 스켈레톤 (가장 큰 영역) */}
-            <div className="flex-1 p-4 border border-gray-300 rounded-md flex items-center justify-center">
-                {/* 차트 영역 전체를 덮는 스켈레톤 */}
-                <Skeleton className="w-full h-full" />
-            </div>
+const PointChartSkeleton = () => (
+  <div className="w-full max-w-[1027px] h-[595px] p-6 bg-white/80 shadow-lg rounded-[10px] flex flex-col">
+    <div className="flex-1 p-4 border border-gray-300 rounded-md flex items-center justify-center">
+      <Skeleton className="w-full h-full" />
+    </div>
+    <div className="flex justify-between mt-4">
+      {Array.from({ length: 10 }).map((_, idx) => (
+        <Skeleton key={idx} className="h-3 w-8" />
+      ))}
+    </div>
+  </div>
+);
 
-            {/* 💡 하단: X축 레이블 스켈레톤 - 10개 생성 */}
-            <div className="flex justify-between mt-4">
-                {/* X축 레이블은 끝에 맞춰 균등 배치 */}
-                {skeletons.map((_, index) => (
-                    <Skeleton key={`xaxis-${index}`} className="h-3 w-8" />
-                ))}
-            </div>
-        </div>
-    );
-};
+const PointChart = () => {
+  const { data, isLoading, error } = useScoreSeriesQuery(5000); // 5초 폴링
 
+  if (isLoading || data.length === 0) return <PointChartSkeleton />;
+  if (error) return <div className="text-red-500">데이터 로드 실패</div>;
 
-const PointChart = ({ isLoading = false }) => {
-    const teamKeys = Object.keys(TEAM_COLORS);
-    const sortedTeamKeys = teamKeys.sort();
+  // ✅ 마지막 데이터 기준으로 팀 이름 추출
+  const latest = data[data.length - 1];
+  const teamNames = Object.keys(latest).filter(key => key !== 'time');
 
-    // 💡 로딩 중일 때 스켈레톤 렌더링
-    if (isLoading) {
-        // 이제 PointChartSkeleton은 prop 없이 10개의 스켈레톤을 렌더링합니다.
-        return <PointChartSkeleton />; 
-    }
-    
-    return (
-        <div // Tailwind 클래스 수정: drop-shadow 스타일을 shadow-lg로 대체
-            className="w-full max-w-[1027px] h-[595px] rounded-[10px] z-20 p-6 bg-white/80 shadow-lg"
-        >
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                    data={CHART_TIME_SERIES_DATA}
-                    margin={{
-                        top: 20,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                    {sortedTeamKeys.map(key => (
-                        <Line
-                            key={key}
-                            type="monotone"
-                            dataKey={key}
-                            name={key.replace('_', ' ')}
-                            stroke={TEAM_COLORS[key]}
-                            activeDot={{ r: 6 }}
-                            strokeWidth={3}
-                        />
-                    ))}
-                </LineChart>
-            </ResponsiveContainer>
-        </div>
-    );
+  // ✅ 0점이 아닌 팀만 필터링
+  const visibleTeams = teamNames.filter(team => latest[team] > 0);
+
+  const colors = [
+    '#FFBA57', '#9E9E9E', '#CE7430', '#4CAF50', '#2196F3',
+    '#FF9800', '#9C27B0', '#00BCD4', '#E91E63', '#607D8B',
+  ];
+
+  return (
+    <div className="w-full max-w-[1027px] h-[595px] rounded-[10px] z-20 p-6 bg-white/80 shadow-lg">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" />
+          <YAxis domain={[0, 'dataMax + 20']} />
+          <Tooltip />
+          <Legend />
+          {/* ✅ 점수가 0이 아닌 팀만 표시 */}
+          {visibleTeams.map((team, idx) => (
+            <Line
+              key={team}
+              type="monotone"
+              dataKey={team}
+              stroke={colors[idx % colors.length]}
+              strokeWidth={2.5}
+              activeDot={{ r: 6 }}
+            />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
 };
 
 export default PointChart;
