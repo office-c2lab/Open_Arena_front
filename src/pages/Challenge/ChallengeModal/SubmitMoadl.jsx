@@ -1,10 +1,12 @@
+// src/features/challenge/ChallengeModals/SubmitModal.jsx
 import React, { useCallback, useState } from 'react';
 import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
 import api from '@/api/axiosInstance';
 import { successPanelsData, failedPanelsData } from '../data/challengeModalData';
 import CancelSvg from '../../../assets/icons/cancel.svg';
-import ArenaSvg from '../../../assets/icons/arena.svg'; // ✅ 대소문자 수정
+import ArenaSvg from '../../../assets/icons/arena.svg';
+import toast from 'react-hot-toast'; // ✅ 토스트 추가
 
 const CancelIcon = ({ onClick }) => (
   <div
@@ -28,15 +30,21 @@ const SubmitModal = ({ setProgress }) => {
   } = useModalStore();
   const { sessionId } = useSessionStore();
 
+  // ✅ 제출 로직
   const submitForJudgement = useCallback(async () => {
     if (!sessionId) {
-      alert('제출할 세션 정보가 없습니다.');
+      toast.error('❌ 제출할 세션 정보가 없습니다.');
       return closeSubmitModal();
     }
+
     if (cooldown > 0) {
-      alert(`⏳ ${cooldown}초 후에 다시 시도해주세요.`);
+      toast(`⏳ ${cooldown}초 후에 다시 시도해주세요.`, {
+        icon: '⏳',
+        style: { background: '#333', color: '#fff' },
+      });
       return;
     }
+
     try {
       closeSubmitModal();
       openLoadingModal();
@@ -82,16 +90,23 @@ const SubmitModal = ({ setProgress }) => {
       setProgress(0);
       closeLoadingModal();
 
+      // ✅ 429 (Too Many Requests) 처리
       if (err.response?.status === 429) {
         const retryAfter = err.response?.data?.detail?.retry_after_sec || 15;
         const message = err.response?.data?.detail?.message;
-        alert(`${message}\n(${retryAfter}초 후 다시 시도 가능)`);
+
+        toast.error(`${message} (${retryAfter}초 후 재시도 가능)`, {
+          icon: '🚫',
+          duration: 7000,
+          style: { background: '#222', color: '#fff' },
+        });
 
         setCooldown(retryAfter);
         const countdown = setInterval(() => {
           setCooldown(prev => {
             if (prev <= 1) {
               clearInterval(countdown);
+              toast.success('✅ 다시 제출할 수 있습니다!');
               return 0;
             }
             return prev - 1;
@@ -101,7 +116,7 @@ const SubmitModal = ({ setProgress }) => {
       }
 
       openFailedModal();
-      alert(`제출 실패: ${err.message}`);
+      toast.error(`❌ 제출 실패: ${err.message}`);
     }
   }, [
     sessionId,
@@ -122,22 +137,27 @@ const SubmitModal = ({ setProgress }) => {
       <div className="relative w-[403.65px] h-[586.46px] bg-white rounded-[16px] box-border">
         <CancelIcon onClick={closeSubmitModal} />
 
+        {/* 로고 */}
         <div className="absolute left-[30px] top-[17px] w-[105px] h-[42px] flex items-center">
           <div className="w-[29px] h-[42px] flex justify-center items-center">
             <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
           </div>
           <span className="ml-[9px] heading-3 font-700 text-[#FF084A]">ARENA</span>
         </div>
- <div className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[148px] h-[218px] flex justify-center items-center">
+
+        {/* 중앙 아이콘 */}
+        <div className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[148px] h-[218px] flex justify-center items-center">
           <img src={ArenaSvg} alt="제출 아이콘" className="w-full h-full opacity-30" />
         </div>
 
+        {/* 안내문 */}
         <div className="absolute w-[340px] left-[31px] top-[340px] text-center body-large font-500 text-black m-0 whitespace-pre-wrap">
           <p>제출하면 세 개의 JUDGE AI 모델의 판단 결과를 제공합니다.</p>
           <p>대화 내용은 저장되어 챌린지 화면 우측에서 확인하실 수 있습니다.</p>
           <p>결과에 따라 다음 제출까지 약 15초의 대기시간이 부여됩니다.</p>
         </div>
 
+        {/* 제출 버튼 */}
         <button
           type="button"
           onClick={submitForJudgement}
