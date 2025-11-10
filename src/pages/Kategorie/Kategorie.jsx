@@ -1,17 +1,17 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-// 데이터 임포트
-import challengeData from '@/data/challengedata.json';
+// ⭐️ axiosInstance 임포트
+import api from '@/api/axiosInstance'; 
 
 // 컴포넌트 임포트
 import Banner from '../../components/Banner/Banner';
 import ProblemCard from '../../components/ProblemCard/ProblemCard.jsx';
 
-// 임시 난이도 배열
-const difficulties = ['초급', '중급', '고급'];
+// API 정보 (baseURL은 axiosInstance에 설정되어 있으므로 경로만 사용)
+const API_PATH = '/problem/all'; 
 
-// 스켈레톤 카드의 개수를 정의합니다.
+// 스켈레톤 카드 개수
 const SKELETON_COUNT = 9; 
 
 const ChallengeSection = () => {
@@ -19,52 +19,74 @@ const ChallengeSection = () => {
   const [searchParams] = useSearchParams();
   const currentCategory = searchParams.get('category');
 
-  // 로딩 상태 관리
+  // 로딩 상태
   const [isLoading, setIsLoading] = useState(true);
+  // 문제 목록
+  const [challenges, setChallenges] = useState([]); 
+  // 에러 상태
+  const [error, setError] = useState(null); 
 
-  // 데이터 로딩 시뮬레이션 및 로딩 상태 변경
+  // 🔽 API 호출 로직
   useEffect(() => {
-    // 실제 API 호출 로직이 이 위치에 들어갑니다.
-    // 여기서는 로딩 스켈레톤을 1.5초간 보여준 후 데이터 로드가 완료되었다고 가정합니다.
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500); 
+    const fetchProblems = async () => {
+      setIsLoading(true);
+      setError(null);
 
-    return () => clearTimeout(timer); // 클린업 함수
-  }, [currentCategory]);
+      try {
+        // ⭐️ api 인스턴스 사용
+        const response = await api.get(API_PATH);
+        const data = response.data;
 
+        // 📡 원본 데이터 출력
+        console.log("📡 원본 API 응답 데이터:", data);
 
-  // --- 데이터 가공 및 필터링 ---
+        // ✅ score 포함 데이터 가공
+        const problemsWithMeta = data.map(problem => ({
+          ...problem,
+          id: problem.id,
+          score: problem.score,
+        }));
+
+        // 콘솔로 간결하게 표시
+        console.log(
+          "✅ API에서 받은 문제 목록 (ID 및 점수 포함):",
+          problemsWithMeta.map(p => ({
+            id: p.id,
+            title: p.title,
+            score: p.score,
+            category: p.category,
+          }))
+        );
+
+        setChallenges(problemsWithMeta);
+      } catch (err) {
+        console.error("문제 목록을 불러오는 중 오류 발생:", err);
+        setError("문제 목록을 불러오는 데 실패했습니다. 서버 상태를 확인해주세요.");
+        setChallenges([]); 
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProblems();
+  }, []);
+
+  // --- 데이터 필터링 ---
   const processedChallenges = useMemo(() => {
-    // 로딩 중일 때는 데이터 처리를 건너뛰고 빈 배열을 반환합니다.
-    if (isLoading) return []; 
-      
-    let index = 0;
-    const allChallenges = [];
-
-    for (const [categoryName, sectionData] of Object.entries(challengeData)) {
-      sectionData.challenges.forEach(challenge => {
-        allChallenges.push({
-          ...challenge,
-          category: categoryName,
-          difficulty: difficulties[index % difficulties.length],
-        });
-        index++;
-      });
-    }
-
+    if (isLoading || error) return [];
+    
     if (currentCategory) {
-      return allChallenges.filter(challenge => challenge.category === currentCategory);
+      return challenges.filter(challenge => challenge.category === currentCategory);
     }
 
-    return allChallenges;
-  }, [currentCategory, isLoading]);
+    return challenges;
+  }, [currentCategory, challenges, isLoading, error]);
 
-  // --- ProblemCard Solve 버튼 액션 핸들러 (라우팅) ---
+  // --- Solve 버튼 액션 ---
   const handleSolveProblem = useCallback(
-    challengeId => {
-      console.log(`Problem ID: ${challengeId} - 문제풀기 버튼 클릭!`);
-      navigate(`/challenge/${challengeId}`);
+    problemId => { 
+      console.log(`Problem ID: ${problemId} - 문제풀기 버튼 클릭!`);
+      navigate(`/challenge/${problemId}`);
     },
     [navigate]
   );
@@ -76,7 +98,7 @@ const ChallengeSection = () => {
       <div>
         <Banner />
       </div>
-      
+
       <h1
         className="heading-1 font-700 text-left max-w-[1080px] w-full mx-auto"
         style={{ color: '#FF4854' }}
@@ -84,32 +106,38 @@ const ChallengeSection = () => {
         {titleText}
       </h1>
       
-      {/* 챌린지 카드 리스트 렌더링 영역 */}
+      {/* 챌린지 카드 리스트 */}
       <div className="w-full p-4 flex justify-center">
         <div
           className={`
-          grid 
-          grid-cols-[repeat(auto-fit,minmax(339px,1fr))] 
-          gap-3
-          justify-items-center 
-          mx-auto 
-          max-w-[1080px] 
-          w-full
+            grid 
+            grid-cols-[repeat(auto-fit,minmax(339px,1fr))] 
+            gap-3
+            justify-items-center 
+            mx-auto 
+            max-w-[1080px] 
+            w-full
           `}
         >
           {/* 조건부 렌더링 */}
           {isLoading ? (
-            // 로딩 중일 때: 스켈레톤 카드를 SKELETON_COUNT만큼 반복하여 렌더링
             [...Array(SKELETON_COUNT)].map((_, index) => (
               <ProblemCard key={index} isLoading={true} />
             ))
+          ) : error ? (
+            <p className="text-lg text-red-600 col-span-full">오류: {error}</p>
+          ) : processedChallenges.length === 0 ? (
+            <p className="text-lg text-gray-500 col-span-full">
+              {currentCategory
+                ? `${currentCategory}에 해당하는 문제가 없습니다.`
+                : '등록된 문제가 없습니다.'}
+            </p>
           ) : (
-            // 로딩 완료 후: 실제 데이터를 매핑하여 렌더링
             processedChallenges.map(challenge => (
               <ProblemCard
                 key={challenge.id}
-                challenge={challenge}
-                onSolveClick={() => handleSolveProblem(challenge.id)}
+                challenge={challenge} 
+                onSolveClick={() => handleSolveProblem(challenge.id)} 
                 isLoading={false} 
               />
             ))

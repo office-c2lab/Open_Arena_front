@@ -3,62 +3,64 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSidebarStore } from '../../stores/useSidebarStore';
+import { useAuthStore } from '@/stores/authStore';
 
-// 하위 컴포넌트 (가정)
+// 하위 컴포넌트
 import SidebarHeader from './components/SidebarHeader';
 import SidebarSection from './components/SidebarSection';
 import BottomLinkItem from './components/BottomLinkItem';
 import SidebarProfile from './components/SidebarProfile';
-// 가정: 데이터는 이미 정의되어 있음
-import { mainNavigationData, subNavigationData, bottomLinksData } from './data/sidebarData';
+
+// 데이터
+import { mainNavigationData, bottomLinksData } from './data/sidebarData';
 
 export default function Sidebar({
   isChallengeLayout = false,
-  isOpen = true, // isCollapsed 상태를 Store에서 관리하므로 isOpen의 역할이 줄어들 수 있음.
-  toggleSidebar = () => {}, // toggleCollapsed 상태를 Store에서 관리하므로 사용하지 않을 수 있음.
+  isOpen = true,
+  toggleSidebar = () => {},
 }) {
-  // 💡 [핵심] Store에서 isCollapsed 상태와 토글 액션 구독
-  const {
-    isCollapsed,
-    toggleCollapsed, // Store의 액션 사용
-    activeItem,
-    isAIDropdownOpen,
-    isSettingsDropdownOpen,
-    setActiveItemByPath,
-  } = useSidebarStore();
+  // 🧩 Zustand 사이드바 상태
+  const { isCollapsed, toggleCollapsed, activeItem, isAIDropdownOpen, setActiveItemByPath } =
+    useSidebarStore();
 
+  // 🧭 현재 경로에 따라 활성화 메뉴 동기화
   const location = useLocation();
   useEffect(() => {
     setActiveItemByPath(location.pathname, location.search);
   }, [location.pathname, location.search, setActiveItemByPath]);
 
-  // 로컬 상태 (호버)
+  // 🪄 hover 상태 관리
   const [isHelpHovered, setIsHelpHovered] = useState(false);
   const [isLogoutHovered, setIsLogoutHovered] = useState(false);
 
-  // 데이터 구성 (가정)
+  // ⭐ 로그인 상태 / 팀 정보 가져오기
+  const { teamInfo, isLoggedIn } = useAuthStore();
+
+  // ✅ 로그인 상태에 따라 표시할 이름 및 역할 결정
+  const teamName = teamInfo?.teamname || '로그인 필요'; // ← 백엔드 응답에 맞게 teamname
+  const role = isLoggedIn ? '팀 계정' : '게스트';
+
+  // 📂 네비게이션 데이터 구성
   const mainNavigation = mainNavigationData(isAIDropdownOpen);
-  const subNavigation = subNavigationData(isSettingsDropdownOpen);
   const bottomLinks = bottomLinksData(
     isHelpHovered,
     setIsHelpHovered,
     isLogoutHovered,
-    setIsLogoutHovered
+    setIsLogoutHovered,
+    isLoggedIn // ✅ 로그인 상태 전달
   );
 
-  // 5. 동적 클래스 계산
+  // 🎨 스타일 관련 클래스
   const fixedPositionClasses = 'fixed top-0 z-50';
-  // 💡 [핵심] isCollapsed 상태에 따른 동적 너비 적용 (256px = w-[256px], 80px = w-20)
   const dynamicWidthClasses = isCollapsed ? 'w-20' : 'w-[256px]';
   const transitionClasses = 'transition-all duration-300 ease-in-out';
-  const dynamicTransform = '';
   const visibilityClass = isOpen
     ? 'opacity-100 pointer-events-auto'
     : 'opacity-0 pointer-events-none';
-
   const borderClasses = isChallengeLayout && !isOpen ? 'border-r-0' : 'border-r border-white/10';
   const shadowClass = isOpen ? 'shadow-xl' : '';
 
+  // 🧱 JSX 구조
   return (
     <aside
       className={`
@@ -69,41 +71,43 @@ export default function Sidebar({
         ${transitionClasses} 
         ${borderClasses}
         ${shadowClass} 
-        ${dynamicTransform}
         ${visibilityClass}
         h-full
       `}
-      style={{
-        left: '0px',
-      }}
+      style={{ left: '0px' }}
     >
       <div className={`flex flex-col gap-6 h-full ${isCollapsed ? 'p-2' : 'p-6'}`}>
-        {/* SidebarHeader에 Store의 isCollapsed 상태와 토글 액션을 전달 */}
+        {/* 🔹 헤더 */}
         <SidebarHeader
           isChallengeLayout={isChallengeLayout}
-          // toggleSidebar={toggleSidebar} // 이제 Store의 액션을 사용하므로 필요 없을 수 있습니다.
           isCollapsed={isCollapsed}
-          setIsCollapsed={toggleCollapsed} // 💡 [핵심] Store의 toggleCollapsed 액션을 전달
+          setIsCollapsed={toggleCollapsed}
         />
+
+        {/* 🔹 메인 메뉴 섹션 */}
         <SidebarSection
           title="메뉴"
           items={mainNavigation}
           activeItem={activeItem}
           isCollapsed={isCollapsed}
         />
-        {/* <SidebarSection
-          title="설정"
-          items={subNavigation}
-          activeItem={activeItem}
-          isCollapsed={isCollapsed}
-        /> */}
-        <div className="flex-grow"></div>
+
+        {/* 🔹 빈 공간 (메뉴 - 하단 간격 확보) */}
+        <div className="flex-grow" />
+
+        {/* 🔹 하단 링크 (로그인 / 로그아웃 버튼 등) */}
         <nav className={`flex flex-col gap-2 ${isCollapsed ? 'w-full items-center' : 'w-[208px]'}`}>
           {bottomLinks.map((item, idx) => (
             <BottomLinkItem key={idx} item={item} isCollapsed={isCollapsed} />
           ))}
         </nav>
-        <SidebarProfile isCollapsed={isCollapsed} name={'사용자'} role={'프로덕트 매니저'} />
+
+        {/* 🔹 프로필 영역 (팀명 / 로그인 상태 표시) */}
+        <SidebarProfile
+          isCollapsed={isCollapsed}
+          name={teamName} // 팀명
+          role={role} // 로그인 상태별 텍스트
+        />
       </div>
     </aside>
   );

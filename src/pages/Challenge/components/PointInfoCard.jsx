@@ -1,53 +1,63 @@
-// src/features/Challenge/components/PointInfoCard.jsx (justify-between 적용 수정 버전)
-
+// src/features/Challenge/components/PointInfoCard.jsx
 import React from 'react';
-// 💡 아이콘 임포트
+import Skeleton from '../../../components/Skeleton/Skeleton';
 import PointSvg from '../../../assets/icons/Point.svg';
+import { useParams } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore';
+import { useProblemBundle } from '@/hooks/useProblemBundle'; // ✅ API 훅 사용
 
-// === 색상 정의 ===
 const COLOR_BLACK = '#000000';
-const COLOR_PINK = '#FF93AC'; // jam:coin Vector 색상 (아이콘 배경)
 
-/**
- * 포인트 잔액 정보 카드 컴포넌트
- * (피그마 Rectangle 23938 기반)
- * @param {object} props
- * @param {number|string} props.currentBalance - 현재 포인트 잔액 값 (예: 150)
- */
-const PointInfoCard = ({ currentBalance }) => {
+const PointInfoCardSkeleton = () => (
+  <div
+    className="w-full h-[80px] flex justify-start items-center p-4 flex-shrink-0 
+               bg-white rounded-[20px] shadow-lg animate-pulse"
+    style={{ boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.25)' }}
+  >
+    <div
+      className="w-[49px] h-[49px] flex justify-center items-center rounded-[10px] flex-shrink-0"
+      style={{ background: COLOR_BLACK }}
+    >
+      <img src={PointSvg} alt="Point Icon" className="w-[28px] h-[28px]" />
+    </div>
+    <div className="flex flex-row ml-4 items-center flex-1 justify-between">
+      <span className="heading-3 font-500 text-black">포인트</span>
+      <Skeleton className="h-8 w-20 rounded" />
+    </div>
+  </div>
+);
+
+export default function PointInfoCard() {
+  const { problemId } = useParams();
+  const currentProblemId = parseInt(problemId, 10);
+  const teamId = useAuthStore((state) => state.teamInfo?.id) || 1;
+
+  // ✅ 문제 데이터 불러오기 (React Query 캐시 재사용)
+  const { data, isLoading } = useProblemBundle(currentProblemId, teamId);
+
+  const score = data?.problem?.score ?? 0;
+
+  if (isLoading) return <PointInfoCardSkeleton />;
+
   return (
-    // Card Container: width: 295px, height: 100px
     <div
       className="w-full h-[80px] flex justify-start items-center p-4 flex-shrink-0 
                  bg-white rounded-[20px] shadow-lg"
       style={{ boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.25)' }}
     >
-      {/* 1. 아이콘 영역 (Rectangle 23942: 49px x 49px) */}
       <div
         className="w-[49px] h-[49px] flex justify-center items-center rounded-[10px] flex-shrink-0"
         style={{ background: COLOR_BLACK }}
       >
-        {/* 아이콘 이미지 (jam:coin Vector 색상 적용 - 원형 배경 추가) */}
-
-        {/* 💡 임포트된 아이콘 사용 */}
         <img src={PointSvg} alt="Point Icon" className="w-[28px] h-[28px]" />
       </div>
 
-      {/* 2. 텍스트 및 잔액 정보 영역 */}
-      {/* 💡 flex-row와 justify-between을 적용하여 남은 공간을 모두 분리 간격으로 사용 */}
       <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-        {/* 'Point' 텍스트 */}
-        {/* 💡 mr-16 같은 간격 클래스 제거 */}
-        <span className="body-large font-300 text-black">포인트</span>
-
-        {/* 잔액 값 */}
+        <span className="heading-3 font-500 text-black">포인트</span>
         <div className="flex items-baseline">
-          {/* 잔액 (Heading1 - 700, 36px) */}
-          <span className="heading-1 font-700 text-black">{currentBalance}</span>
+          <span className="heading-1 font-700 text-black">{score}</span>
         </div>
       </div>
     </div>
   );
-};
-
-export default PointInfoCard;
+}
