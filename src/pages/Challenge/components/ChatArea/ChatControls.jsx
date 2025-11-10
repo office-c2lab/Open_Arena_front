@@ -28,7 +28,7 @@ export default function ChatControls({
       >
         <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
         <span className="heading-3 font-700 text-[#515151] leading-[26px]">
-          문제 다시 풀기
+          새로운 대화 시작
         </span>
       </button>
 

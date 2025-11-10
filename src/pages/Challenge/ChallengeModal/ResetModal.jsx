@@ -54,7 +54,7 @@ const ResetModal = () => {
 
         {/* 메시지 */}
         <p className="absolute w-[301.76px] left-1/2 -translate-x-1/2 top-[334.91px] text-center heading-3 font-500 text-black m-0">
-          현재 입력한 내용과 진행 중인 모든 작업이 즉시 삭제되며, 되돌릴 수 없습니다.
+          현재 입력한 내용과 진행 중인 모든 작업이 즉시 중지되며, 되돌릴 수 없습니다.
         </p>
 
         {/* 버튼 */}
@@ -66,7 +66,7 @@ const ResetModal = () => {
             bg-[#FF4854] rounded-[29.25px] cursor-pointer
             hover:bg-red-600 transition duration-200"
         >
-          <span className="heading-3 font-500 text-white">대화 내용 초기화</span>
+          <span className="heading-3 font-500 text-white">새로운 대화 시작</span>
         </button>
       </div>
     </div>
