@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+const buildTimestamp = new Date().getTime(); // 💡 현재 시간으로 해시 강제 변경
+
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -13,10 +15,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // ✅ JS/CSS/자산 파일에 해시 붙이기 (브라우저 캐시 방지)
-        entryFileNames: 'assets/[name]-[hash].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]',
+        // 💡 매 빌드마다 새로운 파일명 생성
+        entryFileNames: `assets/[name]-${buildTimestamp}.js`,
+        chunkFileNames: `assets/[name]-${buildTimestamp}.js`,
+        assetFileNames: `assets/[name]-${buildTimestamp}.[ext]`,
       },
     },
   },
