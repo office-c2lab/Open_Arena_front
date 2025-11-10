@@ -95,11 +95,16 @@ const SubmitModal = ({ setProgress }) => {
         const retryAfter = err.response?.data?.detail?.retry_after_sec || 15;
         const message = err.response?.data?.detail?.message;
 
-        toast.error(`${message} (${retryAfter}초 후 재시도 가능)`, {
-          icon: '🚫',
-          duration: 7000,
-          style: { background: '#222', color: '#fff' },
-        });
+       toast.error(`${message}\n(${retryAfter}초 후 재시도 가능)`, {
+  icon: '🚫',
+  duration: 7000,
+  style: { 
+    background: '#222', 
+    color: '#fff', 
+    whiteSpace: 'pre-line', // ✅ 줄바꿈 적용
+  },
+});
+
 
         setCooldown(retryAfter);
         const countdown = setInterval(() => {
