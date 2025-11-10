@@ -1,5 +1,4 @@
 import React from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useSessionStore } from '@/stores/useSessionStore';
 
 export default function ChatControls({
@@ -8,14 +7,12 @@ export default function ChatControls({
   openSubmitModal,
   isDisabled,
   sessionId,
-  hasSuccessSession = false, // ✅ 추가: 전체 문제 성공 여부
+  hasSuccessSession = false, // ✅ 전체 문제 성공 여부
 }) {
-  const queryClient = useQueryClient();
-  const { clearSession, sessionStatus } = useSessionStore();
+  const { sessionStatus } = useSessionStore();
 
   // ✅ 현재 세션이 성공했거나 다른 세션 중 성공한 게 있는 경우 모두 잠금
-  const isSuccess =
-    sessionStatus === 'success' || hasSuccessSession;
+  const isSuccess = sessionStatus === 'success' || hasSuccessSession;
 
   return (
     <div className="flex justify-between flex-shrink-0 gap-16">
@@ -25,10 +22,7 @@ export default function ChatControls({
           ${isSuccess ? 'bg-gray-200 cursor-not-allowed' : 'bg-[#D9DADB] hover:bg-[#BFC0C4]'}`}
         onClick={() => {
           if (isSuccess) return; // ✅ 성공 문제는 클릭 막기
-          clearSession();
-          queryClient.removeQueries({ queryKey: ['chatMessages'] });
-          queryClient.invalidateQueries(['problemBundle']);
-          openResetModal();
+          openResetModal(); // ✅ 이제 여기서는 모달만 띄운다
         }}
         disabled={isSuccess}
       >
