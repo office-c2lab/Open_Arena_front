@@ -107,9 +107,9 @@ export default function LoadingModal({ isOpen, onClose }) {
                   }}
                   transition={{
                     delay,
-                    duration: 5,
+                    duration: 3,
                     repeat: Infinity,
-                    repeatDelay: 1.2,
+                    repeatDelay: 0.5,
                     ease: 'easeInOut',
                   }}
                 >
