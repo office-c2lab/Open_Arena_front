@@ -132,9 +132,10 @@ const SubmitModal = ({ setProgress }) => {
           <img src={ArenaSvg} alt="제출 아이콘" className="w-full h-full opacity-30" />
         </div>
 
-        <div className="absolute w-[340px] left-[31px] top-[340px] text-center heading-3 font-500 text-black m-0 whitespace-pre-wrap">
-          <p>제출하면 세 개의 JUDGE AI 모델이 각각 판단하여 성공/실패 결과를 제공합니다.</p>
+        <div className="absolute w-[340px] left-[31px] top-[340px] text-center body-large font-500 text-black m-0 whitespace-pre-wrap">
+          <p>제출하면 세 개의 JUDGE AI 모델의 판단 결과를 제공합니다.</p>
           <p>대화 내용은 저장되어 챌린지 화면 우측에서 확인하실 수 있습니다.</p>
+          <p>결과에 따라 다음 제출까지 약 15초의 대기시간이 부여됩니다.</p>
         </div>
 
         <button
