@@ -42,7 +42,7 @@ const SubmitModal = ({ setProgress }) => {
       let fake = 0;
       const interval = setInterval(() => {
         fake += 0.02; // 2%씩 증가
-        setProgress(Math.min(fake, 0.99)); // 최대 95%까지만
+        setProgress(Math.min(fake, 0.95)); // 최대 95%까지만
       }, 100);
 
       const endpoint = `/judge/sessions/${sessionId}/submit`;
