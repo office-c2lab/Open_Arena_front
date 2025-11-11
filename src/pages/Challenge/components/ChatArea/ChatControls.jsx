@@ -18,7 +18,7 @@ export default function ChatControls({
     <div className="flex justify-between flex-shrink-0 gap-16">
       {/* 문제 다시 풀기 버튼 */}
       <button
-        className={`flex items-center justify-center flex-1 h-[44px] rounded-lg gap-2 transition-colors
+        className={`min-w-[165px] flex items-center justify-center flex-1 h-[44px] rounded-lg gap-2 transition-colors
           ${isSuccess ? 'bg-gray-200 cursor-not-allowed' : 'bg-[#D9DADB] hover:bg-[#BFC0C4]'}`}
         onClick={() => {
           if (isSuccess) return; // ✅ 성공 문제는 클릭 막기
@@ -34,7 +34,7 @@ export default function ChatControls({
 
       {/* 제출하기 버튼 */}
       <button
-        className={`flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center transition-opacity ${
+        className={`min-w-[165px] flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center transition-opacity ${
           isDisabled || !sessionId
             ? 'opacity-50 cursor-not-allowed'
             : 'hover:bg-[#e6597c]'
