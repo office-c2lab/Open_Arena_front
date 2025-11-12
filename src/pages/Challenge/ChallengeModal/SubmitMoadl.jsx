@@ -159,7 +159,7 @@ const SubmitModal = ({ setProgress }) => {
         <div className="absolute w-[340px] left-[31px] top-[340px] text-center body-large font-500 text-black m-0 whitespace-pre-wrap">
           <p>제출하면 세 개의 JUDGE AI 모델의 판단 결과를 제공합니다.</p>
           <p>대화 내용은 저장되어 챌린지 화면 우측에서 확인하실 수 있습니다.</p>
-          <p>결과에 따라 다음 제출까지 약 15초의 대기시간이 부여됩니다.</p>
+          <p>제출 요청 시 해당 계정이 다음 제출까지 약 30초의 대기시간이 부여됩니다.</p>
         </div>
 
         {/* 제출 버튼 */}
