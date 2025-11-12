@@ -4,8 +4,8 @@ import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
 import api from '@/api/axiosInstance';
 import { successPanelsData, failedPanelsData } from '../data/challengeModalData';
-import CancelSvg from '../../../assets/icons/cancel.svg';
-import ArenaSvg from '../../../assets/icons/arena.svg';
+import CancelSvg from '@/assets/icons/cancel.svg';
+import ArenaSvg from '@/assets/icons/Arena.svg';
 import toast from 'react-hot-toast'; // ✅ 토스트 추가
 
 const CancelIcon = ({ onClick }) => (
