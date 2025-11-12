@@ -24,6 +24,7 @@ export default function AppRouter() {
       <Route path="/" element={<Login />} />
       <Route path="/test" element={<ChatTestPage />} />
       <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
       {/* <Route path="/" element={<MainPage />} /> */}
       <Route path="*" element={<NotFound />} />
       
@@ -33,7 +34,6 @@ export default function AppRouter() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
-        <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
       </Route>
 
       {/* ChallengeLayout 하위 Route */}
