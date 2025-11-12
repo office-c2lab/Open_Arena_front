@@ -8,7 +8,7 @@ import { useProblemBundleQuery } from '@/hooks/useProblemBundleQuery';
 // Zustand 스토어
 import useModalStore from '@/stores/useModalStore';
 import { useAuthStore } from '@/stores/authStore';
-import { useSessionStore } from '@/stores/useSessionStore'; // ✅ 세션 관리용
+import { useSessionStore } from '@/stores/useSessionStore';
 
 // 데이터
 import { TABS } from '../data/challengeData';
@@ -54,6 +54,9 @@ export default function Challenge() {
   const { setSessionId, setSessionStatus } = useSessionStore();
 
   const [activeTab, setActiveTab] = useState(TABS[0].id);
+
+  // ✅ 로딩 진행률 상태 추가
+  const [progress, setProgress] = useState(0);
 
   // ----------------------------------------------------------------------
   // API Hooks
@@ -106,16 +109,12 @@ export default function Challenge() {
       };
     }, [problemBundleData, activeTab]);
 
-  // ----------------------------------------------------------------------
   // ✅ 성공 세션 자동 고정
-  // ----------------------------------------------------------------------
   useEffect(() => {
     if (!SESSIONS_LIST || SESSIONS_LIST.length === 0) return;
-
     const successSession = SESSIONS_LIST.find(
       s => s.status?.toLowerCase() === 'success'
     );
-
     if (successSession) {
       setSessionId(successSession.id);
       setSessionStatus('success');
@@ -123,16 +122,11 @@ export default function Challenge() {
     }
   }, [SESSIONS_LIST, setSessionId, setSessionStatus]);
 
-  // ----------------------------------------------------------------------
-  // ✅ 문제 전체 잠금 여부 계산 (성공 세션 존재 여부)
-  // ----------------------------------------------------------------------
+  // ✅ 문제 전체 잠금 여부 계산
   const hasSuccessSession = useMemo(() => {
     return SESSIONS_LIST?.some(s => s.status?.toLowerCase() === 'success');
   }, [SESSIONS_LIST]);
 
-  // ----------------------------------------------------------------------
-  // 기타 UI 로직
-  // ----------------------------------------------------------------------
   const handleTabClick = (e, tabId) => {
     e.preventDefault();
     setActiveTab(tabId);
@@ -173,7 +167,7 @@ export default function Challenge() {
         inputDisabled={isInputDisabled}
         problemId={currentProblemId}
         teamId={currentTeamId}
-        hasSuccessSession={hasSuccessSession} // ✅ 문제 전체 잠금 여부 전달
+        hasSuccessSession={hasSuccessSession}
       />
 
       {/* 우측 시도 기록 */}
@@ -188,9 +182,9 @@ export default function Challenge() {
       {/* 모달 */}
       {isDebugModalOpen && <DebugModal />}
       {isResetModalOpen && <ResetModal />}
-      {isSubmitModalOpen && <SubmitModal />}
+      {isSubmitModalOpen && <SubmitModal setProgress={setProgress} />}
       {isLoadingModalOpen && (
-        <LoadingModal isOpen={isLoadingModalOpen} onClose={closeLoadingModal} />
+        <LoadingModal isOpen={isLoadingModalOpen} progress={progress} onClose={closeLoadingModal} />
       )}
       {isFailedModalOpen && <FailedModal />}
       {isSuccessModalOpen && <SuccessModal />}

@@ -27,9 +27,15 @@ export default function ChatControls({
         disabled={isSuccess}
       >
         <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
-        <span className="heading-3 font-700 text-[#515151] leading-[26px]">
-          새로운 대화 시작
-        </span>
+        <span
+  className="
+    font-700 text-[#515151] leading-[26px]
+    text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px]
+  "
+>
+  새로운 대화 시작
+</span>
+
       </button>
 
       {/* 제출하기 버튼 */}
@@ -42,9 +48,15 @@ export default function ChatControls({
         onClick={openSubmitModal}
         disabled={isDisabled || !sessionId}
       >
-        <span className="heading-3 font-700 text-white leading-[26px]">
-          제출하기
-        </span>
+        <span
+  className="
+    font-700 text-white leading-[26px]
+    text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px]
+  "
+>
+  제출하기
+</span>
+
       </button>
     </div>
   );

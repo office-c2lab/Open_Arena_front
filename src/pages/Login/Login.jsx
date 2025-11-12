@@ -77,16 +77,29 @@ export default function Login() {
       >
         {/* Header Area */}
         <header className="px-8 pt-8 pb-4 border-b border-[#D9DADB] rounded-t-[16px]">
-          <div className="flex items-center">
-            <img 
-              src={BackBtn} 
-              alt="back" 
-              className="w-[10px] h-[18px] cursor-pointer" 
-              onClick={() => navigate(-1)} // 뒤로가기 기능 추가
-            />
-            <h1 className="heading-3 font-500 text-black ml-4">로그인</h1>
-          </div>
-        </header>
+  <div className="flex items-center justify-between">
+    {/* 왼쪽 영역: 뒤로가기 + 로그인 텍스트 */}
+    <div className="flex items-center">
+      {/* <img
+        src={BackBtn}
+        alt="back"
+        className="w-[10px] h-[18px] cursor-pointer"
+        onClick={() => navigate(-1)} // 뒤로가기 기능
+      /> */}
+      <h1 className="heading-3 font-500 text-black">로그인</h1>
+      {/* ml-4 주석처리 */}
+    </div>
+
+    {/* 오른쪽 영역: 관리자 로그인 버튼 */}
+    <button
+      onClick={() => navigate('/admin/login')}
+      className="px-4 py-2  text-white heading-4 font-500 rounded-lg transition-colors cursor-pointer"
+    >
+      관리자 로그인
+    </button>
+  </div>
+</header>
+
 
         {/* Main Content Area */}
         <main className="flex flex-col p-8 md:p-10">
@@ -136,7 +149,7 @@ export default function Login() {
           <button
             onClick={handleSubmit} // 👈 로그인 API 호출 핸들러 연결
             disabled={isPending} // 👈 로딩 중 비활성화
-            className={`w-full h-[58px] rounded-[16px] text-white heading-3 font-500 transition-colors
+            className={`w-full h-[58px] rounded-[16px] text-white heading-3 font-500 transition-colors cursor-pointer
               ${isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#FF4854] hover:bg-red-600'}`
             }
           >

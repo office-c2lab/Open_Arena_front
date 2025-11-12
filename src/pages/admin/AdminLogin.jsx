@@ -24,7 +24,12 @@ export default function Login() {
         {/* Header Area */}
         <header className="px-8 pt-8 pb-4 border-b border-[#D9DADB] rounded-t-[16px]">
           <div className="flex items-center">
-            <img src={BackBtn} alt="back" className="w-[10px] h-[18px] cursor-pointer" />
+           <img
+        src={BackBtn}
+        alt="back"
+        className="w-[10px] h-[18px] cursor-pointer"
+        onClick={() => navigate(-1)} // 뒤로가기 기능
+      />
             <h1 className="heading-3 font-500 text-black ml-4">관리자 로그인</h1>
           </div>
         </header>
@@ -102,7 +107,7 @@ export default function Login() {
         {/* Footer: 로그인 버튼 */}
         <footer className="px-8 pt-4 pb-8 mt-8">
           <button
-            onClick={() => navigate('/')} // ← 클릭 시 대시보드 이동
+            onClick={() => navigate('/admin/leaderboard')} // ← 클릭 시 대시보드 이동
             className="w-full h-[58px] bg-[#FF4854] rounded-[16px] 
                        text-white heading-3 font-500 hover:bg-red-600 transition-colors"
           >

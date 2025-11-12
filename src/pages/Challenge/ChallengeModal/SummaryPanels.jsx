@@ -70,7 +70,7 @@ export const SuccessSummaryPanel = ({ imageSrc, animalName, title, description, 
           {title} {/* 💡 Success에서는 title이 모델명입니다. */}
         </p>
         {/* 6. 설명 텍스트 - 중앙 배치 */}
-        <p className="body-large font-700 text-center text-black w-[680px] h-[90px] overflow-auto mt-[10px] px-4">
+        <p className="heading-3 font-700 text-center text-black w-[680px] h-[90px] overflow-auto mt-[40px] px-4">
           {description}
         </p>
       </div>
