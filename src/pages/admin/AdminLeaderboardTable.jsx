@@ -45,9 +45,10 @@ export default function AdminLeaderboardTable() {
   const [highlightedTeam, setHighlightedTeam] = useState(null);
   const lastScoresRef = useRef({});
 
-  // 🔥 관리자용 리더보드 데이터
+  // 🔥 관리자용 API
   const { data, isLoading, error } = useAdminLeaderboardQuery(teamId);
 
+  // 점수 변화 감지
   useEffect(() => {
     if (!data || !data.top) return;
 
@@ -68,7 +69,6 @@ export default function AdminLeaderboardTable() {
   if (error) return <div className="text-red-500">데이터 불러오기 실패</div>;
 
   const leaderboard = data.top || [];
-  const myTeam = data.me || null;
 
   return (
     <div className="relative w-full max-w-[1027px] rounded-[10px] bg-white/80 shadow-md">
@@ -80,23 +80,21 @@ export default function AdminLeaderboardTable() {
         <div className={`${COL_WIDTHS.solved} text-center`}>해결 문제</div>
       </div>
 
-      {/* 본문 */}
+      {/* 팀 목록만 랜더링 (내 팀 제거됨) */}
       {leaderboard.map((row, idx) => {
         const isHighlighted = highlightedTeam === row.teamname;
 
         return (
           <div
             key={idx}
-            className={`flex items-center h-[79px] border-b border-[#FF4854]/30 heading-3 font-700 transition-all duration-500
-              ${isHighlighted ? "bg-[#FFF5E1]" : "text-[#010101]"}`}
+            className={`
+              flex items-center h-[79px] border-b border-[#FF4854]/30 heading-3 font-700 transition-all duration-500
+              ${isHighlighted ? "bg-[#FFF5E1]" : "text-[#010101]"}
+            `}
           >
             <div className={`${COL_WIDTHS.rank} flex justify-center items-center`}>
               {row.rank <= 3 ? (
-                <img
-                  src={MEDAL_ICON_MAP[row.rank]}
-                  alt="medal"
-                  className="w-[45px] h-[45px]"
-                />
+                <img src={MEDAL_ICON_MAP[row.rank]} className="w-[45px] h-[45px]" />
               ) : (
                 <span>{row.rank}</span>
               )}
@@ -104,24 +102,10 @@ export default function AdminLeaderboardTable() {
 
             <div className={`${COL_WIDTHS.team} text-center`}>{row.teamname}</div>
             <div className={`${COL_WIDTHS.score} text-center`}>{row.score}</div>
-            <div className={`${COL_WIDTHS.solved} text-center`}>
-              {row.solved_count}
-            </div>
+            <div className={`${COL_WIDTHS.solved} text-center`}>{row.solved_count}</div>
           </div>
         );
       })}
-
-      {/* 내 팀 정보 */}
-      {myTeam && (
-        <div className="flex items-center h-[79px] bg-[#FFF0F3] border-t border-[#FF4854] text-[#FF4854] heading-3 font-700">
-          <div className={`${COL_WIDTHS.rank} text-center`}>{myTeam.rank}</div>
-          <div className={`${COL_WIDTHS.team} text-center`}>{myTeam.teamname}</div>
-          <div className={`${COL_WIDTHS.score} text-center`}>{myTeam.score}</div>
-          <div className={`${COL_WIDTHS.solved} text-center`}>
-            {myTeam.solved_count}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
