@@ -66,7 +66,7 @@ const SubmitModal = ({ setProgress }) => {
       closeLoadingModal();
 
       const results = (resultData.results || []).map((vote, index) => {
-        const isSuccess = vote.verdict.toLowerCase() === 'passed';
+        const isSuccess = (vote.verdict || '').toUpperCase() === 'PASSED';
         const baseData = isSuccess
           ? successPanelsData[index % successPanelsData.length]
           : failedPanelsData[index % failedPanelsData.length];
@@ -84,7 +84,6 @@ const SubmitModal = ({ setProgress }) => {
 
       if (resultData.status === 'success') openSuccessModal();
       else openFailedModal();
-
     } catch (err) {
       console.error('❌ 제출 실패', err);
       setProgress(0);
@@ -95,16 +94,15 @@ const SubmitModal = ({ setProgress }) => {
         const retryAfter = err.response?.data?.detail?.retry_after_sec || 15;
         const message = err.response?.data?.detail?.message;
 
-       toast.error(`${message}\n(${retryAfter}초 후 재시도 가능)`, {
-  icon: '🚫',
-  duration: 7000,
-  style: { 
-    background: '#222', 
-    color: '#fff', 
-    whiteSpace: 'pre-line', // ✅ 줄바꿈 적용
-  },
-});
-
+        toast.error(`${message}\n(${retryAfter}초 후 재시도 가능)`, {
+          icon: '🚫',
+          duration: 7000,
+          style: {
+            background: '#222',
+            color: '#fff',
+            whiteSpace: 'pre-line', // ✅ 줄바꿈 적용
+          },
+        });
 
         setCooldown(retryAfter);
         const countdown = setInterval(() => {
@@ -169,10 +167,7 @@ const SubmitModal = ({ setProgress }) => {
           className={`absolute w-[343.2px] h-[60.45px] left-[30.22px] top-[496.28px]
             flex justify-center items-center 
             rounded-[29.25px] cursor-pointer transition duration-200
-            ${cooldown > 0
-              ? 'bg-gray-300 cursor-not-allowed'
-              : 'bg-[#FF6289] hover:bg-pink-600'
-            }`}
+            ${cooldown > 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#FF6289] hover:bg-pink-600'}`}
           disabled={!sessionId || cooldown > 0}
         >
           <span className="heading-3 font-700 text-white">
