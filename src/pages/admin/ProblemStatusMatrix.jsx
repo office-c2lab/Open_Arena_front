@@ -1,5 +1,5 @@
 import React from 'react';
-import Skeleton from '../../../components/Skeleton/Skeleton';
+import Skeleton from '../../components/Skeleton/Skeleton';
 import { useSolveMatrixQuery } from '@/hooks/useSolveMatrixQuery';
 
 const TEAM_COL_WIDTH = '120px';

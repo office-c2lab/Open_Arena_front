@@ -3,7 +3,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts';
 import { useScoreSeriesQuery } from '@/hooks/useScoreSeriesQuery';
-import Skeleton from '../../../components/Skeleton/Skeleton';
+import Skeleton from '../../components/Skeleton/Skeleton';
 
 const PointChartSkeleton = () => (
   <div className="w-full max-w-[1027px] h-[595px] p-6 bg-white/80 shadow-lg rounded-[10px] flex flex-col">

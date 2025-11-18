@@ -17,6 +17,7 @@ import Kategorie from '../pages/Kategorie/Kategorie';
 import MainPage from '../pages/MainPage/MainPage';
 import Challenge from '../pages/Challenge/ui/Challenge';
 import ChatTestPage from '../pages/ChatTestPage';
+import LeaderboardMatrix from '../pages/admin/LeaderboardMatrix';
 
 export default function AppRouter() {
   return (
@@ -25,6 +26,7 @@ export default function AppRouter() {
       <Route path="/test" element={<ChatTestPage />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
+       <Route path="/admin/matrix" element={<LeaderboardMatrix />} />
       {/* <Route path="/" element={<MainPage />} /> */}
       <Route path="*" element={<NotFound />} />
       
