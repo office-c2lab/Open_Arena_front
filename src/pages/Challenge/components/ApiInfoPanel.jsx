@@ -35,7 +35,7 @@ export default function ApiInfoPanel({ isLoading, apiUrl, method, headerName, ap
   if (isLoading) return <ApiInfoPanelSkeleton />;
 
   // 예시 Request Body
-  const requestBodyExample = '{\n  "content": "대화 입력"\n}';
+  const requestBodyExample = '{ "content": "대화 입력" }';
 
   return (
     <div
