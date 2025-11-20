@@ -169,7 +169,7 @@ whitespace-nowrap flex-shrink-0`}
                 </div>
 
                 {/* ⭐ API 패널 — 문제 설명 탭에서 표시 */}
-                {activeTab === 'description' && (
+                {activeTab === 'description' && problemApiUrl && (
                   <ApiInfoPanel
                     isLoading={false}
                     apiUrl={problemApiUrl}
