@@ -4,7 +4,6 @@ import { Routes, Route } from "react-router-dom";
 
 import RootRedirect from "./RootRedirect";
 import LoginRedirect from "./LoginRedirect";
-import AdminRoute from "./AdminRoute";
 
 import DefaultLayout from "../ui/DefaultLayout";
 import ChallengeLayout from "../ui/ChallengeLayout";
@@ -39,27 +38,9 @@ export default function AppRouter() {
 
       <Route path="/test" element={<ChatTestPage />} />
 
-      {/* 🔐 관리자 로그인은 보호 X */}
       <Route path="/admin/login" element={<AdminLogin />} />
-
-      {/* 🔐 관리자 보호 페이지 */}
-      <Route
-        path="/admin/leaderboard"
-        element={
-          <AdminRoute>
-            <AdminLeaderboard />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/matrix"
-        element={
-          <AdminRoute>
-            <LeaderboardMatrix />
-          </AdminRoute>
-        }
-      />
+      <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
+       <Route path="/admin/matrix" element={<LeaderboardMatrix />} />
 
       {/* DefaultLayout 하위 */}
       <Route element={<DefaultLayout />}>

@@ -20,3 +20,6 @@ export const refreshToken = () => {
 export const logoutApi = () => {
   return api.post('/auth/logout').then(res => res.data);
 };
+
+export const adminLogin = (payload) =>
+  api.post("/auth/admin-login", payload).then((res) => res.data);
