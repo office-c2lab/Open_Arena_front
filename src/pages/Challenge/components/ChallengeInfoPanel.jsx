@@ -102,7 +102,8 @@ export default function ChallengeInfoPanel({
       style={{ width, transition: isResizing ? 'none' : 'width 0.2s ease' }}
       className="relative flex flex-col flex-shrink-0 h-full"
     >
-      <div className="bg-white shadow-xl rounded-[20px] overflow-hidden flex flex-col h-full">
+      <div className="bg-white shadow-xl rounded-l-[20px]
+ overflow-hidden flex flex-col h-full">
         {/* 문제 헤더 */}
         <div
           className="flex flex-col h-[110px] shadow-sm bg-white rounded-t-[20px] flex-shrink-0"
@@ -186,12 +187,13 @@ whitespace-nowrap flex-shrink-0`}
 
       {/* 리사이즈 핸들 */}
       <div
-        onMouseDown={() => setIsResizing(true)}
-        className={`absolute right-0 top-0 w-[14px] h-full cursor-ew-resize 
+  onMouseDown={() => setIsResizing(true)}
+  className={`absolute right-0 top-0 w-[14px] h-full cursor-ew-resize 
     ${isResizing ? 'bg-gray-500' : 'bg-gray-400 hover:bg-gray-500'}
     transition-colors rounded-r-[16px] flex items-center justify-center
     translate-x-[10px]`}
-      >
+>
+
         <div className="flex flex-col items-center justify-center gap-[5px]">
           <span className="w-[2px] h-[8px] bg-white rounded-full" />
           <span className="w-[2px] h-[8px] bg-white rounded-full" />

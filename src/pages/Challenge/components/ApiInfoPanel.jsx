@@ -39,7 +39,7 @@ export default function ApiInfoPanel({ isLoading, apiUrl, method, headerName, ap
 
   return (
     <div
-      className="flex flex-col items-start w-full p-[11px] gap-3 flex-shrink-0 mt-4"
+      className="flex flex-col items-start w-full p-[10px] gap-2 flex-shrink-0 mt-4"
       style={{
         background: API_BG_COLOR,
         border: `1px solid ${API_BORDER_COLOR}`,
@@ -58,9 +58,9 @@ export default function ApiInfoPanel({ isLoading, apiUrl, method, headerName, ap
         <p>
           <b>API Key:</b> {apiKey ?? '정보 없음'}
         </p>
-        <br />
+
         <p className="font-600">예시 Request Body</p>
-        <pre className="p-2 rounded text-sm overflow-x-auto">{requestBodyExample}</pre>
+        <pre className="rounded text-sm overflow-x-auto">{requestBodyExample}</pre>
       </div>
     </div>
   );
