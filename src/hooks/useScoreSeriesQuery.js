@@ -4,7 +4,7 @@ import { fetchScoreSeries, fetchScoreHead } from '@/api/leaderboardApi';
 /**
  * ⏱ 실시간 점수 시계열 데이터 폴링 훅 (0점에서 시작 + 직선 방지)
  */
-export function useScoreSeriesQuery(interval = 5000, forceRefreshMs = 10000) {
+export function useScoreSeriesQuery(interval = 1500, forceRefreshMs = 8000) {
   const [seriesData, setSeriesData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

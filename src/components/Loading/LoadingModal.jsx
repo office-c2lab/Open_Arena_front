@@ -25,7 +25,7 @@ export default function LoadingModal({ isOpen }) {
     let progress = 0;
     const target = 0.95; // ✅ 95%까지만
     const interval = setInterval(() => {
-      progress += 0.0075; // 천천히 올라감
+      progress += 0.005; // 천천히 올라감
       smoothProgress.set(Math.min(progress, target));
       if (progress >= target) clearInterval(interval);
     }, 30); // 0.0025씩 30ms마다 → 약 6초 걸림

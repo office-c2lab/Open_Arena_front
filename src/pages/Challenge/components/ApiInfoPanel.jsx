@@ -52,16 +52,13 @@ export default function ApiInfoPanel({ isLoading, apiUrl, method, headerName, ap
         <p>
           <b>URL:</b> {apiUrl ?? '정보 없음'}
         </p>
-
         <p>
           <b>Headers:</b> {headerName ?? '정보 없음'}
         </p>
         <p>
           <b>API Key:</b> {apiKey ?? '정보 없음'}
         </p>
-
         <br />
-
         <p className="font-600">예시 Request Body</p>
         <pre className="p-2 rounded text-sm overflow-x-auto">{requestBodyExample}</pre>
       </div>

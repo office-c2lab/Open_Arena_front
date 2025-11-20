@@ -48,7 +48,7 @@ export default function ChallengeInfoPanel({
   problemApiHeaderName,
   problemApiKey,
 }) {
-  const [width, setWidth] = useState(295);
+  const [width, setWidth] = useState(310);
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef(null);
 
@@ -188,8 +188,9 @@ whitespace-nowrap flex-shrink-0`}
       <div
         onMouseDown={() => setIsResizing(true)}
         className={`absolute right-0 top-0 w-[14px] h-full cursor-ew-resize 
-          ${isResizing ? 'bg-gray-500' : 'bg-gray-400 hover:bg-gray-500'}
-          transition-colors rounded-r-[16px] flex items-center justify-center`}
+    ${isResizing ? 'bg-gray-500' : 'bg-gray-400 hover:bg-gray-500'}
+    transition-colors rounded-r-[16px] flex items-center justify-center
+    translate-x-[10px]`}
       >
         <div className="flex flex-col items-center justify-center gap-[5px]">
           <span className="w-[2px] h-[8px] bg-white rounded-full" />
