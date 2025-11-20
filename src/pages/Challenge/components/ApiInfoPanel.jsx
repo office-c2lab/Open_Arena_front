@@ -54,7 +54,7 @@ export default function ApiInfoPanel({ isLoading, apiUrl, method, headerName, ap
         </p>
 
         <p>
-          <b>Header Name:</b> {headerName ?? '정보 없음'}
+          <b>Headers:</b> {headerName ?? '정보 없음'}
         </p>
         <p>
           <b>API Key:</b> {apiKey ?? '정보 없음'}

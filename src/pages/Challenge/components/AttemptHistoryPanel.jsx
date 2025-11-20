@@ -89,9 +89,9 @@ export default function AttemptHistoryPanel({
       if (clickedSessionId !== currentActiveSessionId) {
         setSessionId(clickedSessionId);
         setSessionStatus(clickedStatus); // ✅ 상태 저장
-        console.log(
-          `✅ 세션 전환: ${currentActiveSessionId} -> ${clickedSessionId} (${clickedStatus})`
-        );
+        // console.log(
+        //   `✅ 세션 전환: ${currentActiveSessionId} -> ${clickedSessionId} (${clickedStatus})`
+        // );
       }
     },
     [currentActiveSessionId, setSessionId, setSessionStatus, problemId, teamId]

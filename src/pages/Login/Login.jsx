@@ -36,7 +36,7 @@ export default function Login() {
       // 🚀 1. 로그인 성공 시 응답 데이터를 Zustand 스토어에 저장
       loginToStore(data);
 
-      console.log('로그인 성공:', data);
+      // console.log('로그인 성공:', data);
       // alert(`${data.teamname}님 환영합니다!`);
 
       // 🚀 2. 대시보드로 이동

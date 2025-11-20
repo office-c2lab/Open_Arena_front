@@ -123,7 +123,7 @@ export default function Challenge() {
     if (successSession) {
       setSessionId(successSession.id);
       setSessionStatus('success');
-      console.log('✅ 성공 세션 고정:', successSession.id);
+      // console.log('✅ 성공 세션 고정:', successSession.id);
     }
   }, [SESSIONS_LIST, setSessionId, setSessionStatus]);
 
@@ -137,7 +137,7 @@ export default function Challenge() {
   };
 
   const handleResetChat = () => {
-    console.log('대화 초기화 완료');
+    // console.log('대화 초기화 완료');
   };
 
   useMemo(() => {

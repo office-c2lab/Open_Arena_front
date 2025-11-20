@@ -60,12 +60,12 @@ export function useScoreSeriesQuery(interval = 5000, forceRefreshMs = 10000) {
 
           setSeriesData([basePoint]); // 초기 0점
           hasInitializedRef.current = true;
-          console.log('🟢 초기 0점 데이터 세팅 완료');
+          // console.log('🟢 초기 0점 데이터 세팅 완료');
         }
 
         // ✅ 변화가 없으면 패스
         if (!hasChange || asof === lastAsOfRef.current) {
-          console.log('⏸ 점수 변화 없음 — 업데이트 생략');
+          // console.log('⏸ 점수 변화 없음 — 업데이트 생략');
           return;
         }
 
