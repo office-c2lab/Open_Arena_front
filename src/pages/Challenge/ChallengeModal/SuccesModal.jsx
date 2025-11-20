@@ -1,11 +1,12 @@
 // src/features/challenge/ChallengeModals/SuccessModal.jsx
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
-import { SuccessSummaryPanel, FailedSummaryPanel } from './SummaryPanels';
+import ArenaGreen from '@/assets/icons/arenagreen.svg';
+import confetti from 'canvas-confetti';
 
 const SUCCESS_COLOR_PRIMARY = '#04B07B';
 
@@ -14,10 +15,37 @@ export default function SuccessModal() {
   const queryClient = useQueryClient();
   const clearSession = useSessionStore(state => state.clearSession);
   const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
-  const challengeResults = useModalStore(state => state.challengeResults);
   const { closeSuccessModal, resetChatAction } = useModalStore();
 
-  // ✅ 챌린지 화면으로 돌아가기
+  // 모달 열릴 때 Confetti 발사
+  useEffect(() => {
+    if (isSuccessModalOpen) {
+      const duration = 1.2 * 1000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 8,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#04B07B', '#ffffff', '#00D4A6'],
+        });
+        confetti({
+          particleCount: 8,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#04B07B', '#ffffff', '#00D4A6'],
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+  }, [isSuccessModalOpen]);
+
   const handleRestart = useCallback(() => {
     closeSuccessModal();
     resetChatAction();
@@ -25,7 +53,6 @@ export default function SuccessModal() {
     queryClient.invalidateQueries(['problemBundle']);
   }, [closeSuccessModal, resetChatAction, clearSession, queryClient]);
 
-  // ✅ 다른 문제 풀기
   const handleContinue = useCallback(() => {
     closeSuccessModal();
     clearSession();
@@ -35,55 +62,35 @@ export default function SuccessModal() {
 
   if (!isSuccessModalOpen) return null;
 
-  // ✅ 상태 정규화 (passed / success / fail 등 대응)
-  const normalizedPanels = challengeResults.map(result => {
-    const normalizedStatus = result.status?.toLowerCase();
-    const isSuccess = normalizedStatus === 'passed' || normalizedStatus === 'success';
-    const verdictLabel = isSuccess ? '성공' : '실패';
-
-    return {
-      ...result,
-      normalizedStatus,
-      isSuccess,
-      verdictLabel,
-    };
-  });
-
-  // ✅ 순서 고정 (서버 응답 순서 그대로 표시)
-  const displayPanels = normalizedPanels;
-
   return (
-    <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]">
-      <div className="w-[990px] h-[680px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center shadow-lg">
-        <div className="h-[30px]" />
+    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-[1000]">
+      <div className="w-[990px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center shadow-lg py-10">
+        {/* === 최종 성공 박스 === */}
+        <div
+          className="w-full max-w-[877px] bg-white rounded-[20px] flex flex-col items-center 
+                     justify-center shadow-lg border-2 px-10 py-8 gap-4"
+          style={{ borderColor: SUCCESS_COLOR_PRIMARY }}
+        >
+          <h2 className="heading-1 font-700" style={{ color: SUCCESS_COLOR_PRIMARY }}>
+            챌린지 성공!
+          </h2>
 
-        {/* === 결과 패널 목록 === */}
-        <div className="flex flex-col gap-4 w-[877px]">
-          {displayPanels.map((result, index) => {
-            const data = result.data;
-            const Component = result.isSuccess ? SuccessSummaryPanel : FailedSummaryPanel;
+          <img src={ArenaGreen} alt="성공 아이콘" className="w-[250px] h-[250px]" />
 
-            return (
-              <Component
-                key={index}
-                imageSrc={data.imageSrc}
-                animalName={data.animalName}
-                description={data.description}
-                imageStyle={data.imageStyle}
-                isFirstPanel={data.isFirstPanel}
-                title={data.title}
-                verdict={result.verdictLabel} // ✅ 성공/실패 텍스트 일치
-              />
-            );
-          })}
+          <p className="body-large font-500 text-[#444] text-center leading-relaxed">
+            3개의 Judge AI 중 2개 이상이 성공으로 판단했습니다.
+            <br />
+            다음 문제에도 도전해보세요!
+          </p>
         </div>
 
         {/* === 버튼 그룹 === */}
-        <div className="flex justify-between w-[862px] mt-10">
+        <div className="w-full max-w-[862px] flex justify-between mt-12">
           <button
             type="button"
             onClick={handleRestart}
-            className="w-[400px] h-[61px] bg-[#D9DADB] rounded-[20px] hover:bg-[#BFC0C4]"
+            className="w-[48%] h-[61px] bg-[#D9DADB] rounded-[20px] 
+                       hover:bg-[#BFC0C4] transition-colors flex items-center justify-center"
           >
             <span className="heading-2 font-500 text-[#515151]">챌린지 화면으로 돌아가기</span>
           </button>
@@ -91,14 +98,13 @@ export default function SuccessModal() {
           <button
             type="button"
             onClick={handleContinue}
-            className="w-[400px] h-[61px] rounded-[20px] hover:opacity-90"
+            className="w-[48%] h-[61px] rounded-[20px] flex items-center justify-center 
+                       text-white transition-opacity hover:opacity-90"
             style={{ backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
-            <span className="heading-2 font-500 text-white">다른 문제 풀기</span>
+            <span className="heading-2 font-500">다른 문제 풀기</span>
           </button>
         </div>
-
-        <div className="h-[25px]" />
       </div>
     </div>
   );
