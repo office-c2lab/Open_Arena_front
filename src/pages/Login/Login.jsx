@@ -109,7 +109,7 @@ export default function Login() {
                 id="id-input"
                 type="text"
                 className={inputFieldStyle}
-                placeholder="이메일"
+                placeholder="아이디"
                 value={formData.login_id} // 👈 상태 연결
                 onChange={handleChange} // 👈 핸들러 연결
               />
