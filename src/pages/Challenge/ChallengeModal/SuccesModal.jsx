@@ -17,33 +17,60 @@ export default function SuccessModal() {
   const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
   const { closeSuccessModal, resetChatAction } = useModalStore();
 
-  // 모달 열릴 때 Confetti 발사
+  // 🎉 모달 열릴 때 confetti 실행 (모달 위 canvas 생성)
   useEffect(() => {
-    if (isSuccessModalOpen) {
-      const duration = 1.2 * 1000;
-      const end = Date.now() + duration;
+    if (!isSuccessModalOpen) return;
 
-      (function frame() {
-        confetti({
-          particleCount: 8,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-          colors: ['#04B07B', '#ffffff', '#00D4A6'],
-        });
-        confetti({
-          particleCount: 8,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: ['#04B07B', '#ffffff', '#00D4A6'],
-        });
+    // 1) 모달 위에서 confetti 터지게 canvas 생성
+    const canvas = document.createElement('canvas');
+    canvas.id = 'success-confetti-canvas';
+    canvas.style.position = 'fixed';
+    canvas.style.top = 0;
+    canvas.style.left = 0;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = 2000; // ★ 모달보다 위에서 confetti 터짐
 
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      })();
-    }
+    document.body.appendChild(canvas);
+
+    // 2) confetti 인스턴스 생성
+    const myConfetti = confetti.create(canvas, { resize: true });
+
+    // 3) 짧고 화려하게 터지는 애니메이션
+    const duration = 5000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+      myConfetti({
+        particleCount: 10,
+        angle: 60,
+        spread: 60,
+        origin: { x: 0 },
+        colors: ['#04B07B', '#ffffff', '#00D4A6'],
+      });
+
+      myConfetti({
+        particleCount: 10,
+        angle: 120,
+        spread: 60,
+        origin: { x: 1 },
+        colors: ['#04B07B', '#ffffff', '#00D4A6'],
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    })();
+
+    // 4) confetti 끝나면 canvas 자동 삭제
+    setTimeout(() => {
+      canvas.remove();
+    }, duration + 300);
+
+    return () => {
+      canvas.remove();
+    };
   }, [isSuccessModalOpen]);
 
   const handleRestart = useCallback(() => {
@@ -65,6 +92,7 @@ export default function SuccessModal() {
   return (
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-[1000]">
       <div className="w-[990px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center shadow-lg py-10">
+
         {/* === 최종 성공 박스 === */}
         <div
           className="w-full max-w-[877px] bg-white rounded-[20px] flex flex-col items-center 
