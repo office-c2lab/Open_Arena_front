@@ -22,8 +22,7 @@ export default function Tutorial() {
         <div className="bg-white rounded-xl shadow-md w-full max-w-[1058px] p-8 mx-auto">
           <h2 className="heading-1 font-700 text-[#FF4854] mb-15">튜토리얼</h2>
           <p className="heading-2 font-300 text-[#0F172A] w-full max-w-[847px]">
-            튜토리얼 트랙에 오신 것을 환영합니다. AI 레드 팀핑을 막 시작하고 계신다면, 바로 이곳이
-            여러분을 위한 곳입니다! 프롬프트의 기본부터 모든 관련 개념에 대해 알려드리겠습니다.
+            튜토리얼 트랙에 오신 것을 환영합니다!
           </p>
         </div>
 
