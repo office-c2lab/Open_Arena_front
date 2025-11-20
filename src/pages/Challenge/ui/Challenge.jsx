@@ -55,7 +55,7 @@ export default function Challenge() {
 
   const [activeTab, setActiveTab] = useState(TABS[0].id);
 
-  // ✅ 로딩 진행률 상태 추가
+  // 로딩 진행률
   const [progress, setProgress] = useState(0);
 
   // ----------------------------------------------------------------------
@@ -63,6 +63,9 @@ export default function Challenge() {
   // ----------------------------------------------------------------------
   const { data: problemBundleData, isLoading: isProblemBundleLoading } =
     useProblemBundleQuery(currentProblemId, currentTeamId);
+
+  // ⭐ API 상세 정보 준비
+  const apiInfo = problemBundleData?.problem_api || {};
 
   // ----------------------------------------------------------------------
   // 문제 데이터 가공
@@ -109,12 +112,14 @@ export default function Challenge() {
       };
     }, [problemBundleData, activeTab]);
 
-  // ✅ 성공 세션 자동 고정
+  // 성공 세션 고정
   useEffect(() => {
     if (!SESSIONS_LIST || SESSIONS_LIST.length === 0) return;
+
     const successSession = SESSIONS_LIST.find(
       s => s.status?.toLowerCase() === 'success'
     );
+
     if (successSession) {
       setSessionId(successSession.id);
       setSessionStatus('success');
@@ -122,7 +127,6 @@ export default function Challenge() {
     }
   }, [SESSIONS_LIST, setSessionId, setSessionStatus]);
 
-  // ✅ 문제 전체 잠금 여부 계산
   const hasSuccessSession = useMemo(() => {
     return SESSIONS_LIST?.some(s => s.status?.toLowerCase() === 'success');
   }, [SESSIONS_LIST]);
@@ -133,7 +137,7 @@ export default function Challenge() {
   };
 
   const handleResetChat = () => {
-    console.log('✅ 대화 내용 초기화 완료.');
+    console.log('대화 초기화 완료');
   };
 
   useMemo(() => {
@@ -148,7 +152,8 @@ export default function Challenge() {
   // ----------------------------------------------------------------------
   return (
     <div className="flex w-full h-full gap-4 md:gap-6">
-      {/* 좌측 문제 정보 패널 */}
+
+      {/* 왼쪽: 문제 정보 패널 */}
       <ChallengeInfoPanel
         TABS={TABS}
         activeTab={activeTab}
@@ -156,10 +161,15 @@ export default function Challenge() {
         handleTabClick={handleTabClick}
         CHALLENGE_HEADER_INFO={CHALLENGE_HEADER_INFO}
         isLoading={isPanelLoading}
-        problemApiUrl={PROBLEM_API_URL}
+        
+        // ⭐ 추가된 props
+        problemApiUrl={apiInfo?.url}
+        problemApiMethod={apiInfo?.method}
+        problemApiHeaderName={apiInfo?.header_name}
+        problemApiKey={apiInfo?.api_key}
       />
 
-      {/* 중앙 챗 영역 */}
+      {/* 중앙: 챗 */}
       <ChatArea
         ArenaIcon={ArenaIcon}
         SendIcon={SendIcon}
@@ -170,7 +180,7 @@ export default function Challenge() {
         hasSuccessSession={hasSuccessSession}
       />
 
-      {/* 우측 시도 기록 */}
+      {/* 오른쪽: 히스토리 */}
       <AttemptHistoryPanel
         PurpleDownIcon={PurpleDownIcon}
         isLoading={isPanelLoading}
