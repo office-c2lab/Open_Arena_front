@@ -36,16 +36,3 @@ export const fetchScoreHead = async () => {
   const res = await api.get('/admin/score-series/head');
   return res.data;
 };
-
-/* -----------------------------------------------------
-    관리자용 리더보드 공개 여부 조회 / 토글 추가!
------------------------------------------------------ */
-
-/**
- *  리더보드 공개 여부 조회 (GET)
- * @returns {Promise<{leaderboard_enabled: boolean}>}
- */
-export const fetchLeaderboardSetting = async () => {
-  const res = await api.get('/admin/arena/leaderboard-setting');
-  return res.data;
-};
