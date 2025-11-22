@@ -15,6 +15,3 @@ export const fetchProblemBundle = async ({ problem_id, team_id }) => {
     // axios는 .data에 응답 본문을 담으므로 이를 반환
     return response.data;
 };
-
-// (참고: 필요하다면 이곳에 fetchProblems 함수도 정의할 수 있습니다.)
-// export const fetchProblems = async () => { ... };
