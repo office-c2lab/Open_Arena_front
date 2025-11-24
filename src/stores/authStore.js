@@ -18,7 +18,7 @@ export const useAuthStore = create(
 
       logout: async () => {
         try {
-          await logoutApi(); // 서버에 실제 로그아웃 요청
+          await logoutApi(); //  서버에 실제 로그아웃 요청
         } catch (err) {
           console.error('로그아웃 API 오류:', err);
         }
