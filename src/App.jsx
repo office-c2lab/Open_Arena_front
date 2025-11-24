@@ -1,11 +1,14 @@
 import Sidebar from './components/Sidebar/Sidebar';
 import AppRouter from './routes/AppRouter';
+import AppInitializer from './AppInitializer'; // ← 이거 추가!
 
 export default function App() {
   return (
     <div className="relative w-screen h-screen bg-gray-100">
-      <Sidebar />
-      <AppRouter />
+      <AppInitializer>
+        <Sidebar />
+        <AppRouter />
+      </AppInitializer>
     </div>
   );
 }

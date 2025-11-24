@@ -1,35 +1,37 @@
 // src/AppInitializer.jsx
-import { useEffect } from 'react';
-import { refreshToken } from '@/api/auth';
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
+import { refreshToken } from '@/api/auth';
 
-export default function AppInitializer() {
-  const { isLoggedIn } = useAuthStore();
-  const isHydrated = useAuthStore.persist?.hasHydrated?.() ?? true;
+export default function AppInitializer({ children }) {
+  const { setLoggedOut } = useAuthStore();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    //  persist 초기화 이전에는 실행 금지
-    if (!isHydrated) return;
+    async function init() {
+      const hasRefresh = document.cookie.includes('refresh_token=');
 
-    //  로그인 안 되어 있으면 refresh 호출 금지
-    if (!isLoggedIn) return;
+      // 🔥 처음 방문: refresh_token 없으면 아무것도 하지 않음
+      if (!hasRefresh) {
+        setLoading(false);
+        return;
+      }
 
-    refreshToken()
-      .then(() => console.log('Access token 자동 재발급 성공'))
-      .catch(() => console.log('자동 로그인 실패: 로그인 필요'));
+      try {
+        await refreshToken(); // access_token만 갱신
+        // ❗ teamInfo/adminInfo는 유지됨 (중요!)
+      } catch (err) {
+        // refresh 실패할 때만 로그아웃 처리
+        setLoggedOut();
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    //  25분마다 refreshToken 자동 실행 (30분 만료 전에 갱신)
-    const interval = setInterval(
-      () => {
-        refreshToken()
-          .then(() => console.log('주기적 토큰 재발급 성공'))
-          .catch(() => console.log('주기적 재발급 실패'));
-      },
-      1000 * 60 * 25
-    ); // 25분
+    init();
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [isLoggedIn, isHydrated]);
+  if (loading) return <div>Loading...</div>;
 
-  return null;
+  return children;
 }
