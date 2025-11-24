@@ -64,14 +64,33 @@ const SubmitModal = ({ setProgress }) => {
 
       const resultData = res.data;
       closeLoadingModal();
+      // console.group('%c🔍 JUDGE 결과 전체 확인', 'color:#FF4848; font-size:14px;');
+      // console.log('📦 resultData:', resultData);
+      // console.log('📊 개별 모델 결과:', resultData.results);
+      // resultData.results?.forEach((r, i) => {
+      //   console.log(`%c[${i + 1}번 모델 결과]`, 'color:#00A8FF; font-weight:bold; font-size:12px;');
+      //   console.log('모델명(model):', r.model);
+      //   console.log('판정(verdict):', r.verdict);
+      //   console.log('출력(output):', r.output);
+      // });
+      // console.groupEnd();
 
       const results = (resultData.results || []).map((vote, index) => {
-        const isSuccess = vote.verdict.toLowerCase() === 'passed';
+        const rawVerdict = (vote.verdict || '').toUpperCase();
+
+        // verdict 정규화
+        let normalizedVerdict = 'failed';
+        if (rawVerdict === 'PASSED') normalizedVerdict = 'success';
+        else if (rawVerdict === 'REVIEW') normalizedVerdict = 'review';
+
+        const isSuccess = normalizedVerdict === 'success';
+
         const baseData = isSuccess
           ? successPanelsData[index % successPanelsData.length]
           : failedPanelsData[index % failedPanelsData.length];
+
         return {
-          status: vote.verdict,
+          status: normalizedVerdict, // ★ success / failed / review 로 통일
           data: {
             ...baseData,
             title: baseData.animalName,
@@ -80,11 +99,11 @@ const SubmitModal = ({ setProgress }) => {
           },
         };
       });
+
       setChallengeResults(results);
 
       if (resultData.status === 'success') openSuccessModal();
       else openFailedModal();
-
     } catch (err) {
       console.error('❌ 제출 실패', err);
       setProgress(0);
@@ -95,16 +114,15 @@ const SubmitModal = ({ setProgress }) => {
         const retryAfter = err.response?.data?.detail?.retry_after_sec || 15;
         const message = err.response?.data?.detail?.message;
 
-       toast.error(`${message}\n(${retryAfter}초 후 재시도 가능)`, {
-  icon: '🚫',
-  duration: 7000,
-  style: { 
-    background: '#222', 
-    color: '#fff', 
-    whiteSpace: 'pre-line', // ✅ 줄바꿈 적용
-  },
-});
-
+        toast.error(`${message}\n(${retryAfter}초 후 재시도 가능)`, {
+          icon: '🚫',
+          duration: 7000,
+          style: {
+            background: '#222',
+            color: '#fff',
+            whiteSpace: 'pre-line', // ✅ 줄바꿈 적용
+          },
+        });
 
         setCooldown(retryAfter);
         const countdown = setInterval(() => {
@@ -169,10 +187,7 @@ const SubmitModal = ({ setProgress }) => {
           className={`absolute w-[343.2px] h-[60.45px] left-[30.22px] top-[496.28px]
             flex justify-center items-center 
             rounded-[29.25px] cursor-pointer transition duration-200
-            ${cooldown > 0
-              ? 'bg-gray-300 cursor-not-allowed'
-              : 'bg-[#FF6289] hover:bg-pink-600'
-            }`}
+            ${cooldown > 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#FF6289] hover:bg-pink-600'}`}
           disabled={!sessionId || cooldown > 0}
         >
           <span className="heading-3 font-700 text-white">

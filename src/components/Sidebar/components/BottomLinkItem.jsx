@@ -5,20 +5,27 @@ import { useAuthStore } from '@/stores/authStore';
 
 export default function BottomLinkItem({ item, isCollapsed }) {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const logout = useAuthStore(state => state.logout);
 
-  const handleClick = e => {
+  const handleClick = async e => {
     if (item.label === '로그아웃') {
       e.preventDefault(); // 기본 이동 막기
-      logout();
-      navigate('/'); // 홈이나 로그인 페이지로 이동
+
+      try {
+        await logout();   // ⭐ 반드시 await 필요 (쿠키 삭제까지 기다림)
+      } catch (err) {
+        console.error('로그아웃 실패:', err);
+      }
+
+      navigate('/'); // 로그인 페이지로 이동
+      return;
     }
   };
 
   return (
     <Link
       to={item.path}
-      onClick={handleClick} // ✅ 클릭 시 처리 추가
+      onClick={handleClick}
       className={`flex items-center w-full ${item.heightClass} rounded-[8px] transition-colors cursor-pointer hover:bg-gray-100
         ${isCollapsed ? 'justify-center px-0 gap-0' : 'px-3 gap-3'}
       `}
@@ -33,10 +40,11 @@ export default function BottomLinkItem({ item, isCollapsed }) {
           !item.isHovered && item.label !== '계정 로그인'
             ? { opacity: 0.5 }
             : item.label === '계정 로그인' && !item.isHovered
-              ? { opacity: 0.8 }
-              : {}
+            ? { opacity: 0.8 }
+            : {}
         }
       />
+
       {!isCollapsed && (
         <span className={item.isHovered ? item.hoverTextClass : item.textClass}>{item.label}</span>
       )}

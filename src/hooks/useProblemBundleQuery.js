@@ -11,22 +11,22 @@ import api from '@/api/axiosInstance'; // axiosInstance 임포트 가정
  * @returns {object} React Query 결과 객체
  */
 export const useProblemBundleQuery = (problemId, teamId) => {
-    // problemId와 teamId가 유효한 값일 때만 쿼리를 실행합니다.
-    const isEnabled = problemId > 0 && teamId > 0;
+  // problemId와 teamId가 유효한 값일 때만 쿼리를 실행합니다.
+  const isEnabled = problemId > 0 && teamId > 0;
 
-    return useQuery({
-        queryKey: ['problemBundle', problemId, teamId],
-        queryFn: async () => {
-            console.log(`[API] /problem/bundle 호출 시작 (Problem: ${problemId}, Team: ${teamId})`);
-            const response = await api.post('/problem/bundle', {
-                problem_id: problemId,
-                team_id: teamId
-            });
-            console.log(`[API] /problem/bundle 응답 성공`);
-            return response.data;
-        },
-        enabled: isEnabled,
-        // 데이터가 자주 변경되지 않으므로 5분 동안 fresh 상태 유지
-        staleTime: 1000 * 60 * 5, 
-    });
+  return useQuery({
+    queryKey: ['problemBundle', problemId, teamId],
+    queryFn: async () => {
+      //   console.log(`[API] /problem/bundle 호출 시작 (Problem: ${problemId}, Team: ${teamId})`);
+      const response = await api.post('/problem/bundle', {
+        problem_id: problemId,
+        team_id: teamId,
+      });
+      //   console.log(`[API] /problem/bundle 응답 성공`);
+      return response.data;
+    },
+    enabled: isEnabled,
+    // 데이터가 자주 변경되지 않으므로 5분 동안 fresh 상태 유지
+    staleTime: 1000 * 60 * 5,
+  });
 };

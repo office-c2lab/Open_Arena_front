@@ -1,5 +1,5 @@
 import React from 'react';
-import Skeleton from '../../../components/Skeleton/Skeleton';
+import Skeleton from '../../components/Skeleton/Skeleton';
 import { useSolveMatrixQuery } from '@/hooks/useSolveMatrixQuery';
 
 const TEAM_COL_WIDTH = '120px';
@@ -159,7 +159,7 @@ const ProblemStatusMatrixSkeleton = ({ rows = 10, cols = 20 }) => {
 
   return (
     <div
-      className="relative w-full max-w-[1027px] h-[640px] bg-white/80 rounded-[10px] overflow-auto"
+      className="relative w-full h-[640px] bg-white/80 rounded-[10px] overflow-auto"
       style={{
         padding: '8px',
         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
@@ -281,7 +281,7 @@ export default function ProblemStatusMatrix() {
 
   return (
     <div
-      className="relative w-full max-w-[1027px] h-[640px] bg-white/80 rounded-[10px] overflow-auto"
+      className="relative w-full h-[640px] bg-white/80 rounded-[10px] overflow-auto"
       style={{
         padding: '8px',
         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',

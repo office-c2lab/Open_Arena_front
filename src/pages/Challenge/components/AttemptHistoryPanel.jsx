@@ -4,6 +4,7 @@ import PointInfoCard from './PointInfoCard';
 import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
 import HelpIcon from '@/assets/icons/helpModal.svg';
+import TokenInfoCard from './TokenInfoCard';
 
 const SKELETON_CARD_COUNT = 4;
 
@@ -14,7 +15,7 @@ const FILTER_OPTIONS = [
   { key: 'NOT_SUBMITTED', label: '미제출' },
 ];
 
-const DUMMY_BALANCE = { currentToken: 70, maxToken: 100, currentPoint: 150 };
+const DUMMY_BALANCE = { currentToken: 60, maxToken: 100, currentPoint: 150 };
 
 export default function AttemptHistoryPanel({
   PurpleDownIcon,
@@ -89,9 +90,9 @@ export default function AttemptHistoryPanel({
       if (clickedSessionId !== currentActiveSessionId) {
         setSessionId(clickedSessionId);
         setSessionStatus(clickedStatus); // ✅ 상태 저장
-        console.log(
-          `✅ 세션 전환: ${currentActiveSessionId} -> ${clickedSessionId} (${clickedStatus})`
-        );
+        // console.log(
+        //   `✅ 세션 전환: ${currentActiveSessionId} -> ${clickedSessionId} (${clickedStatus})`
+        // );
       }
     },
     [currentActiveSessionId, setSessionId, setSessionStatus, problemId, teamId]
@@ -111,6 +112,13 @@ export default function AttemptHistoryPanel({
     <div className="flex flex-col flex-shrink-0 w-[240px] lg:w-[295px] h-full">
       <div className="flex-shrink-0 w-full mb-4">
         <PointInfoCard currentBalance={DUMMY_BALANCE.currentPoint} isLoading={isLoading} />
+      </div>
+      <div className="flex-shrink-0 w-full mb-4">
+        <TokenInfoCard
+          currentBalance={DUMMY_BALANCE.currentToken}
+          maxValue={DUMMY_BALANCE.maxToken}
+          isLoading={isLoading}
+        />
       </div>
 
       <div className="flex flex-col shadow-xl rounded-[20px] overflow-hidden flex-1 bg-[rgba(235,232,254,0.1)] h-full">

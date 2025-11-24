@@ -41,9 +41,14 @@ export default function ChallengeInfoPanel({
   handleTabClick,
   CHALLENGE_HEADER_INFO,
   isLoading,
+
+  // ⭐ 추가된 props (problem_api 정보)
   problemApiUrl,
+  problemApiMethod,
+  problemApiHeaderName,
+  problemApiKey,
 }) {
-  const [width, setWidth] = useState(295);
+  const [width, setWidth] = useState(310);
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef(null);
 
@@ -65,7 +70,6 @@ export default function ChallengeInfoPanel({
     };
   }, [isResizing]);
 
-  // ✅ width 기반 반응형 스타일 계산
   const gap = Math.min((width - 295) / 50 + 0.25, 2);
   const padding = Math.min((width - 295) / 100 + 0.75, 1.5);
   const lineHeight = Math.min((width - 295) / 200 + 1.6, 1.9);
@@ -82,7 +86,6 @@ export default function ChallengeInfoPanel({
           onMouseDown={() => setIsResizing(true)}
           className={`absolute right-0 top-0 w-[10px] h-full cursor-ew-resize bg-gray-400 transition-colors rounded-r-[16px] flex items-center justify-center`}
         >
-          {/* 세로 햄버거 아이콘 */}
           <div className="flex flex-col items-center justify-center gap-[5px]">
             <span className="w-[2px] h-[8px] bg-white rounded-full" />
             <span className="w-[2px] h-[8px] bg-white rounded-full" />
@@ -99,17 +102,16 @@ export default function ChallengeInfoPanel({
       style={{ width, transition: isResizing ? 'none' : 'width 0.2s ease' }}
       className="relative flex flex-col flex-shrink-0 h-full"
     >
-      <div className="bg-white shadow-xl rounded-[20px] overflow-hidden flex flex-col h-full">
-        {/* 헤더 */}
+      <div className="bg-white shadow-xl rounded-l-[20px]
+ overflow-hidden flex flex-col h-full">
+        {/* 문제 헤더 */}
         <div
           className="flex flex-col h-[110px] shadow-sm bg-white rounded-t-[20px] flex-shrink-0"
           style={{ padding: `${padding * 1.25}rem` }}
         >
-          <div className="flex justify-between items-start">
-            <span className="heading-2 font-500 text-[#34C759] mb-2">
-              {CHALLENGE_HEADER_INFO?.title}
-            </span>
-          </div>
+          <span className="heading-2 font-500 text-[#34C759] mb-2">
+            {CHALLENGE_HEADER_INFO?.title}
+          </span>
           <span className="body-large font-500 text-[#010101]">
             {CHALLENGE_HEADER_INFO?.subtitle}
           </span>
@@ -143,39 +145,39 @@ whitespace-nowrap flex-shrink-0`}
             ))}
           </div>
 
-          {/* ✅ 배경색 복원: Tailwind + 안전한 inline style */}
+          {/* 탭 콘텐츠 */}
           {activeTabContent && (
             <div
               className={`border-b-4 ${activeTabContent.borderColor} flex-grow flex flex-col h-full ${activeTabContent.bgColor}`}
               style={{
-                ...(activeTabContent.bgColor
-                  ? { backgroundColor: activeTabContent.bgColor }
-                  : {}),
+                ...(activeTabContent.bgColor ? { backgroundColor: activeTabContent.bgColor } : {}),
                 padding: `${padding * 1.25}rem`,
                 transition: 'all 0.2s ease',
               }}
             >
               <div className="flex flex-col flex-grow overflow-y-auto justify-between">
                 <div className="flex flex-col flex-shrink-0">
-                  <span
-                    className={`heading-3 font-500 ${activeTabContent.titleColor} block mb-1`}
-                  >
+                  <span className={`heading-3 font-500 ${activeTabContent.titleColor} block mb-1`}>
                     {activeTabContent.title}
                   </span>
 
                   <p
                     className="body-large font-500 text-[#4C4C4C] whitespace-pre-wrap"
-                    style={{
-                      lineHeight,
-                      transition: 'line-height 0.2s ease',
-                    }}
+                    style={{ lineHeight }}
                   >
                     {activeTabContent.content}
                   </p>
                 </div>
 
-                {activeTab === 'description' && (
-                  <ApiInfoPanel isLoading={false} apiUrl={problemApiUrl} />
+                {/* ⭐ API 패널 — 문제 설명 탭에서 표시 */}
+                {activeTab === 'description' && problemApiUrl && (
+                  <ApiInfoPanel
+                    isLoading={false}
+                    apiUrl={problemApiUrl}
+                    method={problemApiMethod}
+                    headerName={problemApiHeaderName}
+                    apiKey={problemApiKey}
+                  />
                 )}
               </div>
             </div>
@@ -183,21 +185,21 @@ whitespace-nowrap flex-shrink-0`}
         </div>
       </div>
 
-      {/* 🧩 리사이저 핸들 + 세로 햄버거 아이콘 */}
+      {/* 리사이즈 핸들 */}
       <div
   onMouseDown={() => setIsResizing(true)}
   className={`absolute right-0 top-0 w-[14px] h-full cursor-ew-resize 
     ${isResizing ? 'bg-gray-500' : 'bg-gray-400 hover:bg-gray-500'}
-    transition-colors rounded-r-[16px] flex items-center justify-center`}
+    transition-colors rounded-r-[16px] flex items-center justify-center
+    translate-x-[10px]`}
 >
-  {/* 세로 햄버거 아이콘 */}
-  <div className="flex flex-col items-center justify-center gap-[5px]">
-    <span className="w-[2px] h-[8px] bg-white rounded-full" />
-    <span className="w-[2px] h-[8px] bg-white rounded-full" />
-    <span className="w-[2px] h-[8px] bg-white rounded-full" />
-  </div>
-</div>
 
+        <div className="flex flex-col items-center justify-center gap-[5px]">
+          <span className="w-[2px] h-[8px] bg-white rounded-full" />
+          <span className="w-[2px] h-[8px] bg-white rounded-full" />
+          <span className="w-[2px] h-[8px] bg-white rounded-full" />
+        </div>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import api from '@/api/axiosInstance';
 
 /**
- * 🏆 팀별 리더보드 데이터 조회
+ *  팀별 리더보드 데이터 조회 (사용자용)
  */
 export const fetchLeaderboard = async (teamId, limit = 8) => {
   const res = await api.get('/dashboard/leaderboard', {
@@ -12,7 +12,7 @@ export const fetchLeaderboard = async (teamId, limit = 8) => {
 };
 
 /**
- * 📊 관리자용 팀별 문제풀이 현황 조회
+ *  관리자용 팀별 문제풀이 현황 조회
  */
 export const fetchSolveMatrix = async (label = 'title') => {
   const res = await api.get('/admin/solve-matrix', {
@@ -22,8 +22,7 @@ export const fetchSolveMatrix = async (label = 'title') => {
 };
 
 /**
- * 📈 관리자용 실시간 점수 시계열 데이터 조회
- * @returns {Promise<{asof: string, top_teams: Array}>}
+ *  관리자용 실시간 점수 시계열 데이터 조회
  */
 export const fetchScoreSeries = async () => {
   const res = await api.get('/admin/score-series');
@@ -31,8 +30,7 @@ export const fetchScoreSeries = async () => {
 };
 
 /**
- * 🕒 관리자용 최신 success 변경 감지 (폴링용)
- * @returns {Promise<{last_success_at: string}>}
+ *  관리자용 최신 success 변경 감지 (폴링용)
  */
 export const fetchScoreHead = async () => {
   const res = await api.get('/admin/score-series/head');
