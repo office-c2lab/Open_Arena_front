@@ -12,7 +12,7 @@ export const useAuthStore = create(
 
       login: teamData =>
         set({
-          teamInfo: teamData,
+          teamInfo: teamData, //여기에 accessToken 포함된 객체가 들어옴
           isLoggedIn: true,
         }),
 

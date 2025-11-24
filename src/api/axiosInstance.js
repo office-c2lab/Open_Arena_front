@@ -5,7 +5,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
   timeout: 1200000,
-  withCredentials: true,
+  withCredentials: true, //쿠키(Refresh Token) 보내기 위해 꼭 필요
 });
 
 /*  Authorization 헤더 제거됨 */
