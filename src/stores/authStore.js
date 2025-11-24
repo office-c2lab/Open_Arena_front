@@ -1,16 +1,16 @@
 // src/stores/authStore.js
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { logoutApi } from '@/api/auth'; 
+import { logoutApi } from '@/api/auth';
 import { useSessionStore } from '@/stores/useSessionStore';
 
 export const useAuthStore = create(
   persist(
-    (set) => ({
+    set => ({
       teamInfo: null,
       isLoggedIn: false,
 
-      login: (teamData) =>
+      login: teamData =>
         set({
           teamInfo: teamData,
           isLoggedIn: true,
@@ -18,12 +18,12 @@ export const useAuthStore = create(
 
       logout: async () => {
         try {
-          await logoutApi();   // ⭐ 서버에 실제 로그아웃 요청
+          await logoutApi(); // 서버에 실제 로그아웃 요청
         } catch (err) {
           console.error('로그아웃 API 오류:', err);
         }
 
-        // ⭐ Zustand 스토어 초기화
+        //  Zustand 스토어 초기화
         set({
           teamInfo: null,
           isLoggedIn: false,

@@ -23,7 +23,7 @@ import LeaderboardMatrix from "../pages/admin/LeaderboardMatrix";
 export default function AppRouter() {
   return (
     <Routes>
-      {/* 🔥 "/" → 로그인 여부에 따라 자동 라우팅 */}
+      {/*  "/" → 로그인 여부에 따라 자동 라우팅 */}
       <Route path="/" element={<RootRedirect />} />
 
       {/* 로그인 페이지 → 로그인 상태면 Dashboard로 */}

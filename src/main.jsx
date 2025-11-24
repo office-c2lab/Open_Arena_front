@@ -6,7 +6,7 @@ import { Toaster } from 'react-hot-toast';
 
 import './index.css';
 import AppRouter from './routes/AppRouter.jsx';
-import AppInitializer from './AppInitializer.jsx'; // ⭐ 추가
+import AppInitializer from './AppInitializer.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +20,7 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      {/* ⭐ 앱 시작 시 자동 실행 */}
+      {/*  앱 시작 시 자동 실행 */}
       <AppInitializer />
 
       <AppRouter />
