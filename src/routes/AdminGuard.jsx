@@ -1,12 +1,34 @@
 // src/routes/AdminGuard.jsx
-import { Navigate } from "react-router-dom";
+import { Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { adminRefreshToken } from '@/api/auth';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function AdminGuard({ children }) {
-  const hasAdminToken = document.cookie.includes("admin_token=");
+  const { isAdminLoggedIn, adminLoginState, adminLogout } = useAuthStore();
+  const [loading, setLoading] = useState(true);
 
-  if (!hasAdminToken) {
-    return <Navigate to="/admin/login" replace />;
-  }
+  useEffect(() => {
+    const hasAdminCookie =
+      document.cookie.includes('admin_access_token=') ||
+      document.cookie.includes('admin_refresh_token=');
+
+    if (!hasAdminCookie) {
+      setLoading(false);
+      return;
+    }
+
+    adminRefreshToken()
+      .then(data => {
+        adminLoginState(data);
+      })
+      .catch(() => adminLogout())
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
+  if (!isAdminLoggedIn) return <Navigate to="/admin/login" replace />;
 
   return children;
 }

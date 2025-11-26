@@ -6,6 +6,7 @@ import ProtectedRoute from './ProtectedRoute';
 
 import DefaultLayout from '../ui/DefaultLayout';
 import ChallengeLayout from '../ui/ChallengeLayout';
+import AdminGuard from './AdminGuard';
 
 import Login from '../pages/Login/Login';
 import Dashboard from '../pages/Dashboard/Dashboard';
@@ -40,8 +41,24 @@ export default function AppRouter() {
 
       {/* 관리자 페이지 (관리자 인증은 따로 만들면 됨) */}
       <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
-      <Route path="/admin/matrix" element={<LeaderboardMatrix />} />
+
+      <Route
+        path="/admin/leaderboard"
+        element={
+          <AdminGuard>
+            <AdminLeaderboard />
+          </AdminGuard>
+        }
+      />
+
+      <Route
+        path="/admin/matrix"
+        element={
+          <AdminGuard>
+            <LeaderboardMatrix />
+          </AdminGuard>
+        }
+      />
 
       {/*  DefaultLayout 하위는 모두 보호 */}
       <Route

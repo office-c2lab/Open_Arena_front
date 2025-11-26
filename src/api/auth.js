@@ -18,8 +18,17 @@ export const refreshToken = () => {
 };
 
 export const logoutApi = () => {
-  return api.post('/auth/logout').then(res => res.data);
+  return api.post('/auth/logout', {}, { withCredentials: true })
+            .then(res => res.data);
 };
+
 
 export const adminLogin = (payload) =>
   api.post("/auth/admin-login", payload).then((res) => res.data);
+
+export const adminRefreshToken = () =>
+  api.post("/auth/admin-refresh").then((res) => res.data);
+
+export const adminLogoutApi = () =>
+  api.post('/auth/admin-logout').then(res => res.data);
+

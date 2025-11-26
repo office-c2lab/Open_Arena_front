@@ -28,7 +28,7 @@ export default function Login() {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: data => {
-      loginToStore(data);
+      loginToStore(data); //스토어에 저장
       navigate('/dashboard');
     },
     onError: error => {

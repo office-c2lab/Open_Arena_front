@@ -1,7 +1,9 @@
 // src/components/Sidebar/components/BottomLinkItem.jsx
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
+import { logoutApi } from '@/api/auth'; // ⭐ 추가!
 
 export default function BottomLinkItem({ item, isCollapsed }) {
   const navigate = useNavigate();
@@ -12,12 +14,17 @@ export default function BottomLinkItem({ item, isCollapsed }) {
       e.preventDefault(); // 기본 이동 막기
 
       try {
-        await logout();   // ⭐ 반드시 await 필요 (쿠키 삭제까지 기다림)
+        // 🔥 1) 백엔드에 실제 로그아웃 요청 (쿠키 삭제)
+        await logoutApi();
       } catch (err) {
-        console.error('로그아웃 실패:', err);
+        console.error('백엔드 로그아웃 실패:', err);
       }
 
-      navigate('/'); // 로그인 페이지로 이동
+      // 🔥 2) 클라이언트 상태 초기화
+      logout();
+
+      // 🔥 3) 로그인/홈으로 이동
+      navigate('/login');
       return;
     }
   };
@@ -40,8 +47,8 @@ export default function BottomLinkItem({ item, isCollapsed }) {
           !item.isHovered && item.label !== '계정 로그인'
             ? { opacity: 0.5 }
             : item.label === '계정 로그인' && !item.isHovered
-            ? { opacity: 0.8 }
-            : {}
+              ? { opacity: 0.8 }
+              : {}
         }
       />
 

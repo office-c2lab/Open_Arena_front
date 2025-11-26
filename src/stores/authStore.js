@@ -1,40 +1,60 @@
 // src/stores/authStore.js
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { logoutApi } from '@/api/auth';
-import { useSessionStore } from '@/stores/useSessionStore';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import {
+  logoutApi,
+  adminLogoutApi,
+} from "@/api/auth";
 
 export const useAuthStore = create(
   persist(
-    set => ({
+    (set) => ({
+      //---------------------------------------------------
+      // ⭐ 일반 유저(팀)
+      //---------------------------------------------------
       teamInfo: null,
       isLoggedIn: false,
 
-      login: teamData =>
-        set({
-          teamInfo: teamData,
-          isLoggedIn: true,
-        }),
+      login: (team) =>
+        set({ teamInfo: team, isLoggedIn: true }),
 
       logout: async () => {
         try {
-          await logoutApi(); //  서버에 실제 로그아웃 요청
-        } catch (err) {
-          console.error('로그아웃 API 오류:', err);
-        }
+          await logoutApi();
+        } catch (_) {}
+        set({ teamInfo: null, isLoggedIn: false });
+      },
 
-        //  Zustand 스토어 초기화
+      //---------------------------------------------------
+      // ⭐ 관리자
+      //---------------------------------------------------
+      adminInfo: null,
+      isAdminLoggedIn: false,
+
+      adminLoginState: (admin) =>
+        set({ adminInfo: admin, isAdminLoggedIn: true }),
+
+      adminLogout: async () => {
+        try {
+          await adminLogoutApi();
+        } catch (_) {}
+        set({ adminInfo: null, isAdminLoggedIn: false });
+      },
+
+      //---------------------------------------------------
+      // ⭐ 공통 초기화
+      //---------------------------------------------------
+      setLoggedOut: () =>
         set({
           teamInfo: null,
           isLoggedIn: false,
-        });
-
-        // 세션 초기화
-        useSessionStore.getState().clearSession();
-      },
+          adminInfo: null,
+          isAdminLoggedIn: false,
+        }),
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
+      getStorage: () => localStorage,
     }
   )
 );
