@@ -6,7 +6,7 @@ export default function App() {
   return (
     <div className="relative w-screen h-screen bg-gray-100">
       <AppInitializer>
-        <Sidebar />
+        {/* <Sidebar /> */}
         <AppRouter />
       </AppInitializer>
     </div>
