@@ -17,17 +17,15 @@ export default function ChatArea({
   problemId,
   teamId,
   sessions = [],
-  hasSuccessSession = false, // ✅ 추가: 전체 문제 성공 여부
+  hasSuccessSession = false, // 전달은 받지만 사용하지 않음
 }) {
   const { openResetModal, openSubmitModal } = useModalStore();
   const { sessionStatus } = useSessionStore();
   const queryClient = useQueryClient();
 
-  // ✅ 세션 및 메시지 관련 훅
-  const { sessionId, clearSession, createSessionMutation, handleSessionClick } = useChatSession(
-    teamId,
-    problemId
-  );
+  // 세션 훅
+  const { sessionId, clearSession, createSessionMutation, handleSessionClick } =
+    useChatSession(teamId, problemId);
 
   const [inputValue, setInputValue] = useState('');
 
@@ -44,7 +42,7 @@ export default function ChatArea({
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // ✅ 메시지 전송 로직
+  // 메시지 전송
   const handleSend = async () => {
     const trimmed = inputValue.trim();
     if (!trimmed || sendMessageMutation.isPending) return;
@@ -62,27 +60,28 @@ export default function ChatArea({
     }
   };
 
-  // ✅ 상태 계산
   const displayMessages = Array.isArray(messages) ? messages : [];
   const isAiTyping = displayMessages.some(msg => msg.isTyping);
 
-  // ✅ 세션 상태 또는 전체 성공 여부 시 입력 막기
+  // ❗ 전체 성공 여부를 제거하고 세션 상태만으로 disable
   const isChatAreaDisabled =
     inputDisabled ||
     sendMessageMutation.isPending ||
     isAiTyping ||
     createSessionMutation.isPending ||
     sessionStatus === 'success' ||
-    sessionStatus === 'fail' ||
-    hasSuccessSession; // ✅ ← 전체 문제 성공 시 완전 잠금
+    sessionStatus === 'fail';
 
   const isInitialState =
     !sessionId && displayMessages.length === 0 && !createSessionMutation.isPending;
 
-  // ✅ 렌더
   return (
     <div className="flex flex-col flex-grow h-full">
-      <SessionList sessions={sessions} sessionId={sessionId} onSessionClick={handleSessionClick} />
+      <SessionList
+        sessions={sessions}
+        sessionId={sessionId}
+        onSessionClick={handleSessionClick}
+      />
 
       <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden h-full">
         <ChatMessages
@@ -101,7 +100,6 @@ export default function ChatArea({
             SendIcon={SendIcon}
             isDisabled={isChatAreaDisabled}
             sessionStatus={sessionStatus}
-            hasSuccessSession={hasSuccessSession} // ✅ 전달
           />
 
           <ChatControls
@@ -111,7 +109,6 @@ export default function ChatArea({
             clearSession={clearSession}
             isDisabled={isChatAreaDisabled}
             sessionId={sessionId}
-            hasSuccessSession={hasSuccessSession}
           />
         </div>
       </div>

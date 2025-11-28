@@ -5,6 +5,6 @@ import api from "./axiosInstance";
 export const fetchLeaderboardSetting = () =>
   api.get("/dashboard/arena").then(res => res.data);
 
-// 토글 실행
+// 어드민 리더보드 딸깍이 > 사용자 리더보드 온오프
 export const toggleLeaderboardSetting = () =>
   api.post("/admin/arena/leaderboard-setting/toggle").then(res => res.data);
