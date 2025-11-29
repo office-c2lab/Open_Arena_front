@@ -4,7 +4,7 @@ import api from '@/api/axiosInstance';
 /**
  *  팀별 리더보드 데이터 조회 (사용자용)
  */
-export const fetchLeaderboard = async (teamId, limit = 8) => {
+export const fetchLeaderboard = async (teamId, limit = 12) => {
   const res = await api.get('/dashboard/leaderboard', {
     params: { team_id: teamId, limit },
   });

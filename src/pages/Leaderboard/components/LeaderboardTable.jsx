@@ -11,7 +11,7 @@ import { useAuthStore } from '@/stores/authStore';
 const MEDAL_ICON_MAP = { 1: medalGold, 2: medalSilver, 3: medalBronze };
 const COL_WIDTHS = { rank: 'w-[11%]', team: 'w-[24%]', score: 'w-[30%]', solved: 'flex-1' };
 
-const LeaderboardTableSkeleton = ({ rows = 8 }) => (
+const LeaderboardTableSkeleton = ({ rows = 12 }) => (
   <div className="relative w-full max-w-[1027px] rounded-[10px] bg-white/80 shadow-md">
     <div className="flex items-center h-[79px] heading-3 border-b border-[#FF4854] text-[#FF4854] font-500">
       <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
@@ -32,7 +32,7 @@ const LeaderboardTableSkeleton = ({ rows = 8 }) => (
 );
 
 export default function LeaderboardTable() {
-  const teamId = useAuthStore(state => state.teamInfo?.id || 1);
+  const teamId = useAuthStore(state => state.teamInfo?.id || undefined);
 
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

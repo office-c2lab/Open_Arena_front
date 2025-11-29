@@ -15,7 +15,7 @@ export default function ChatControls({
       {/* 새로운 대화 시작 버튼 — 항상 활성화! */}
       <button
         className={`flex items-center justify-center flex-1 h-[44px] rounded-lg gap-2 transition-colors
-          bg-[#D9DADB] hover:bg-[#BFC0C4]`}
+          bg-[#D9DADB] hover:bg-[#BFC0C4] cursor-pointer`}
         onClick={() => {
           openResetModal(); // 무조건 새 대화 가능
         }}
@@ -36,7 +36,7 @@ export default function ChatControls({
         className={`flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center transition-opacity ${
           isDisabled || !sessionId
             ? 'opacity-50 cursor-not-allowed'
-            : 'hover:bg-[#e6597c]'
+            : 'hover:bg-[#e6597c] cursor-pointer'
         }`}
         onClick={openSubmitModal}
         disabled={isDisabled || !sessionId}

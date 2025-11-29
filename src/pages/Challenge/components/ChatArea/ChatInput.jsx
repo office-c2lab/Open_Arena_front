@@ -23,20 +23,20 @@ export default function ChatInput({
         <p className="text-gray-600 text-sm md:text-base leading-relaxed">
           {isSuccess ? (
             <>
-              이 문제는 이미{' '}
+              이 대화는 이미{' '}
               <b className="text-green-600">성공</b>하여 더 이상 대화를 이어갈 수 없습니다.
             </>
           ) : (
             <>
-              이 세션은 이미{' '}
-              <b className="text-red-500">실패</b>하였습니다.
+              이 대화는 이미{' '}
+              <b className="text-red-500">실패</b>하여 더 이상 대화를 이어갈 수 없습니다.
             </>
           )}
         </p>
 
         {isSuccess ? (
           <p className="text-gray-600 text-xs md:text-sm mt-2">
-            이미 <b>성공한 세션</b>은 다시 풀 수 없습니다.
+            하단의 <b>‘문제 다시 풀기’</b> 버튼을 클릭하여 새로 시도할 수 있습니다.
           </p>
         ) : (
           <p className="text-gray-600 text-xs md:text-sm mt-2">
@@ -71,7 +71,7 @@ export default function ChatInput({
       <button
         className={`flex-shrink-0 w-10 h-10 ${
           inputValue.trim()
-            ? 'bg-[#FF6289] hover:bg-[#e6597c]'
+            ? 'bg-[#FF6289] hover:bg-[#e6597c] cursor-pointer'
             : 'bg-[#D9DADB]'
         } rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-colors duration-200 ${
           isDisabled ? 'opacity-50 cursor-not-allowed' : ''

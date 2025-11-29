@@ -32,10 +32,10 @@ import SuccessModal from '../ChallengeModal/SuccesModal';
 
 export default function Challenge() {
   const { problemId } = useParams();
-  const currentProblemId = parseInt(problemId, 10) || 1;
+  const currentProblemId = parseInt(problemId, 10) || undefined;
   const queryClient = useQueryClient();
 
-  const currentTeamId = useAuthStore(state => state.teamInfo?.id) || 1;
+  const currentTeamId = useAuthStore(state => state.teamInfo?.id) || undefined;
 
   // ----------------------------------------------------------------------
   // Zustand Stores
@@ -112,21 +112,21 @@ export default function Challenge() {
       };
     }, [problemBundleData, activeTab]);
 
-  // 성공 세션 고정
-  useEffect(() => {
-    if (!SESSIONS_LIST || SESSIONS_LIST.length === 0) return;
+  // ❌ 성공 세션 자동 고정 로직 제거됨!
+  // useEffect(() => {
+  //   if (!SESSIONS_LIST || SESSIONS_LIST.length === 0) return;
+  //
+  //   const successSession = SESSIONS_LIST.find(
+  //     s => s.status?.toLowerCase() === 'success'
+  //   );
+  //
+  //   if (successSession) {
+  //     setSessionId(successSession.id);
+  //     setSessionStatus('success');
+  //   }
+  // }, [SESSIONS_LIST, setSessionId, setSessionStatus]);
 
-    const successSession = SESSIONS_LIST.find(
-      s => s.status?.toLowerCase() === 'success'
-    );
-
-    if (successSession) {
-      setSessionId(successSession.id);
-      setSessionStatus('success');
-      // console.log('✅ 성공 세션 고정:', successSession.id);
-    }
-  }, [SESSIONS_LIST, setSessionId, setSessionStatus]);
-
+  // 전체 문제 중 성공 세션 존재 여부 (ChatArea에서 상태 표현용)
   const hasSuccessSession = useMemo(() => {
     return SESSIONS_LIST?.some(s => s.status?.toLowerCase() === 'success');
   }, [SESSIONS_LIST]);

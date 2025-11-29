@@ -30,7 +30,7 @@ const PointInfoCardSkeleton = () => (
 export default function PointInfoCard() {
   const { problemId } = useParams();
   const currentProblemId = parseInt(problemId, 10);
-  const teamId = useAuthStore(state => state.teamInfo?.id) || 1;
+  const teamId = useAuthStore(state => state.teamInfo?.id) || undefined;
 
   // ✅ 문제 데이터 불러오기 (React Query 캐시 재사용)
   const { data, isLoading } = useProblemBundle(currentProblemId, teamId);
