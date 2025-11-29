@@ -1,34 +1,38 @@
 // src/api/auth.js
+import api from './axiosInstance';
 
-import api from './axiosInstance'; // 앞서 만드신 axios 인스턴스를 가져옵니다.
-
-/**
- * 로그인 요청 (POST /auth/login)
- * @param {object} credentials - { login_id, password }
- * @returns {Promise<object>} TeamOut 객체
- */
+/** ---------------------------
+ * 일반 로그인
+ * --------------------------- */
 export const login = async credentials => {
-  // api.post(엔드포인트, 요청 본문)
-  const response = await api.post('/auth/login', credentials);
-  return response.data; // 응답 데이터를 반환합니다.
+  const res = await api.post('/auth/login', credentials);
+  return res.data;
 };
 
-export const refreshToken = () => {
-  return api.post('/auth/refresh').then(res => res.data);
-};
+export const logoutApi = () =>
+  api.post('/auth/logout').then(res => res.data);
 
-export const logoutApi = () => {
-  return api.post('/auth/logout', {}, { withCredentials: true })
-            .then(res => res.data);
-};
+/** 현재 로그인된 유저 확인 */
+export const getMe = () =>
+  api.get('/auth/me').then(res => res.data);
 
+/** access_token 재발급 */
+export const refreshToken = () =>
+  api.post('/auth/refresh').then(res => res.data);
 
-export const adminLogin = (payload) =>
-  api.post("/auth/admin-login", payload).then((res) => res.data);
-
-export const adminRefreshToken = () =>
-  api.post("/auth/admin-refresh").then((res) => res.data);
+/** ---------------------------
+ * 관리자 인증
+ * --------------------------- */
+export const adminLogin = payload =>
+  api.post('/auth/admin-login', payload).then(res => res.data);
 
 export const adminLogoutApi = () =>
   api.post('/auth/admin-logout').then(res => res.data);
 
+/** 현재 관리자 로그인 상태 조회 */
+export const getAdminMe = () =>
+  api.get('/auth/admin-me').then(res => res.data);
+
+/** 관리자 토큰 재발급 */
+export const adminRefreshToken = () =>
+  api.post('/auth/admin-refresh').then(res => res.data);
