@@ -16,7 +16,14 @@ export const useAuthStore = create(
       isLoggedIn: false,
 
       login: (team) =>
-        set({ teamInfo: team, isLoggedIn: true }),
+        set({
+          teamInfo: {
+            ...team,
+            // ⭐ 서버가 teamname을 안 줄 경우 username을 teamname처럼 사용
+            teamname: team.teamname || team.username || team.login_id,
+          },
+          isLoggedIn: true,
+        }),
 
       logout: async () => {
         try {
@@ -32,7 +39,10 @@ export const useAuthStore = create(
       isAdminLoggedIn: false,
 
       adminLoginState: (admin) =>
-        set({ adminInfo: admin, isAdminLoggedIn: true }),
+        set({
+          adminInfo: admin,
+          isAdminLoggedIn: true,
+        }),
 
       adminLogout: async () => {
         try {

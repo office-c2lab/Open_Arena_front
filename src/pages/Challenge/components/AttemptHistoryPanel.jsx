@@ -1,9 +1,9 @@
+// src/features/Challenge/components/AttemptHistoryPanel.jsx
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import AttemptHistoryCard, { AttemptHistoryCardSkeleton } from './AttemptHistoryCard';
 import PointInfoCard from './PointInfoCard';
 import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
-import HelpIcon from '@/assets/icons/helpModal.svg';
 import TokenInfoCard from './TokenInfoCard';
 
 const SKELETON_CARD_COUNT = 4;
@@ -15,7 +15,11 @@ const FILTER_OPTIONS = [
   { key: 'NOT_SUBMITTED', label: '미제출' },
 ];
 
-const DUMMY_BALANCE = { currentToken: 60, maxToken: 100, currentPoint: 150 };
+// ⭐ 토큰 표시를 "사용한 토큰" 기준으로 바꾼 더미값
+const DUMMY_BALANCE = {
+  usedToken: 60,
+  currentPoint: 150,
+};
 
 export default function AttemptHistoryPanel({
   PurpleDownIcon,
@@ -63,7 +67,7 @@ export default function AttemptHistoryPanel({
 
       return {
         id: session.id,
-        status, // ✅ 상태 저장
+        status,
         title: session.title,
         attemptNumber: totalAttempts - index,
         isSubmitted,
@@ -89,10 +93,7 @@ export default function AttemptHistoryPanel({
       if (!problemId || !teamId) return;
       if (clickedSessionId !== currentActiveSessionId) {
         setSessionId(clickedSessionId);
-        setSessionStatus(clickedStatus); // ✅ 상태 저장
-        // console.log(
-        //   `✅ 세션 전환: ${currentActiveSessionId} -> ${clickedSessionId} (${clickedStatus})`
-        // );
+        setSessionStatus(clickedStatus);
       }
     },
     [currentActiveSessionId, setSessionId, setSessionStatus, problemId, teamId]
@@ -110,20 +111,23 @@ export default function AttemptHistoryPanel({
 
   return (
     <div className="flex flex-col flex-shrink-0 w-[240px] lg:w-[295px] h-full">
+      
+      {/* 포인트 카드 */}
       <div className="flex-shrink-0 w-full mb-4">
         <PointInfoCard currentBalance={DUMMY_BALANCE.currentPoint} isLoading={isLoading} />
       </div>
+
+      {/* 토큰 카드 (사용한 토큰만 표시) */}
       <div className="flex-shrink-0 w-full mb-4">
-        <TokenInfoCard
-          currentBalance={DUMMY_BALANCE.currentToken}
-          maxValue={DUMMY_BALANCE.maxToken}
-          isLoading={isLoading}
-        />
+        <TokenInfoCard usedToken={DUMMY_BALANCE.usedToken} isLoading={isLoading} />
       </div>
 
+      {/* 시도 기록 */}
       <div className="flex flex-col shadow-xl rounded-[20px] overflow-hidden flex-1 bg-[rgba(235,232,254,0.1)] h-full">
         <div className="w-full h-[70px] p-3 md:p-4 shadow-sm bg-white rounded-t-[20px] flex items-center justify-between">
-          <span className="heading-2 font-500 text-[#837BBD]">최근 시도 ({sessions.length})</span>
+          <span className="heading-2 font-500 text-[#837BBD]">
+            최근 시도 ({sessions.length})
+          </span>
         </div>
 
         <div className="p-3 md:p-4 flex justify-end relative" ref={dropdownRef}>
@@ -156,7 +160,6 @@ export default function AttemptHistoryPanel({
           )}
         </div>
 
-        {/* 카드 목록 */}
         <div className="flex flex-1 flex-col items-center overflow-y-auto px-4 py-1 gap-4">
           {isLoading ? (
             [...Array(SKELETON_CARD_COUNT)].map((_, i) => <AttemptHistoryCardSkeleton key={i} />)
@@ -169,7 +172,7 @@ export default function AttemptHistoryPanel({
                 isSuccess={attempt.isSuccess}
                 promptSummary={attempt.promptSummary}
                 isActive={attempt.isActive}
-                onClick={() => handleCardClick(attempt.id, attempt.status)} // ✅ status 전달
+                onClick={() => handleCardClick(attempt.id, attempt.status)}
               />
             ))
           ) : (
