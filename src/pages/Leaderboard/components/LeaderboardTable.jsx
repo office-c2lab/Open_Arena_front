@@ -21,7 +21,9 @@ const COL_WIDTHS = {
   solved: "flex-1",
 };
 
-/* Skeleton */
+/* =========================================================
+   Skeleton Loader
+   ========================================================= */
 const LeaderboardTableSkeleton = ({ rows = 12 }) => (
   <div className="relative w-full max-w-[1027px] rounded-[30px] bg-[#0B021C]/80 border-[2px] border-[#FF4854]/60 shadow-[0_0_40px_rgba(255,72,84,0.7)] overflow-hidden">
     <div className="flex items-center h-[79px] heading-3 font-700 border-b border-[#FF4854] text-[#FF4854] bg-[#1A0B15]/90 shadow-[0_0_15px_rgba(255,72,84,0.6)]">
@@ -54,17 +56,18 @@ const LeaderboardTableSkeleton = ({ rows = 12 }) => (
    LeaderboardTable
    ========================================================= */
 export default function LeaderboardTable() {
-  const teamId = useAuthStore((s) => s.teamInfo?.id);
+  // 로그인한 팀명
+  const myTeamName = useAuthStore((s) => s.teamInfo?.teamname);
 
-  // 🔥 공개 상태 조회
+  // 리더보드 설정 (공개 여부)
   const { data: settingData, isLoading: settingLoading } = useUserLeaderboardSetting();
   const leaderboardEnabled = settingData?.leaderboard_enabled ?? false;
 
-  // 🔥 리더보드 데이터 조회
-  const { data, isLoading, error } = useLeaderboardQuery(teamId);
+  // 리더보드 데이터
+  const { data, isLoading, error } = useLeaderboardQuery();
 
   /* -----------------------------------------
-      1) 공개 상태 체크 (OFF면 리턴)
+      1) 공개 여부 체크
   ----------------------------------------- */
   if (settingLoading) return <div className="text-white">리더보드 설정 확인 중...</div>;
 
@@ -86,14 +89,28 @@ export default function LeaderboardTable() {
   }
 
   /* -----------------------------------------
-      3) 정상 데이터 렌더링
+      3) 정상 데이터 처리
   ----------------------------------------- */
-  const leaderboard = data?.top ?? [];
-  const me = data?.me;
 
-  const rows = leaderboard.some((t) => t.teamname === me?.teamname)
+  // 백엔드는 배열만 반환함
+  const leaderboard = data ?? [];
+
+  // 내 팀이 리스트에 포함되어 있는지 체크
+  const isMyTeamIncluded = leaderboard.some((t) => t.teamname === myTeamName);
+
+  // 내 팀이 없으면 "내 팀" 항목을 추가
+  const rows = isMyTeamIncluded
     ? leaderboard
-    : [...leaderboard, { ...me, isMyTeamRow: true }];
+    : [
+        ...leaderboard,
+        {
+          rank: "-",
+          teamname: myTeamName,
+          score: 0,
+          solved_count: 0,
+          isMyTeamRow: true,
+        },
+      ];
 
   return (
     <div
@@ -111,12 +128,12 @@ export default function LeaderboardTable() {
         <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
         <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
         <div className={`${COL_WIDTHS.score} text-center`}>점수</div>
-        <div className={`${COL_WIDTHS.solved} text-center`}>해결</div>
+        <div className={`${COL_WIDTHS.solved} text-center`}>해결 문제 수</div>
       </div>
 
       {/* Body */}
       {rows.map((row, idx) => {
-        const isMe = row.teamname === me?.teamname;
+        const isMe = row.teamname === myTeamName || row.isMyTeamRow;
 
         return (
           <div
@@ -124,9 +141,14 @@ export default function LeaderboardTable() {
             className={`
               flex items-center h-[74px]
               border-b border-[#FF4854]/20
-              ${isMe ? "bg-[#FF4854]/20 text-[#FF4854] shadow-[0_0_12px_rgba(255,72,84,0.4)]" : "text-white bg-[#120812]/50"}
+              ${
+                isMe
+                  ? "bg-[#FF4854]/20 text-[#FF4854] shadow-[0_0_12px_rgba(255,72,84,0.4)]"
+                  : "text-white bg-[#120812]/50"
+              }
             `}
           >
+            {/* 순위 / 메달 */}
             <div className={`${COL_WIDTHS.rank} flex justify-center`}>
               {row.rank <= 3 ? (
                 <img src={MEDAL_ICON_MAP[row.rank]} className="w-[42px] h-[42px]" />
@@ -135,8 +157,13 @@ export default function LeaderboardTable() {
               )}
             </div>
 
+            {/* 팀명 */}
             <div className={`${COL_WIDTHS.team} text-center font-600`}>{row.teamname}</div>
+
+            {/* 점수 */}
             <div className={`${COL_WIDTHS.score} text-center font-600`}>{row.score}</div>
+
+            {/* 해결한 문제 수 */}
             <div className={`${COL_WIDTHS.solved} text-center font-600`}>{row.solved_count}</div>
           </div>
         );

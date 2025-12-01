@@ -4,12 +4,11 @@ import api from '@/api/axiosInstance';
 /**
  * 사용자 리더보드 조회
  */
-export const fetchLeaderboard = async (teamId, limit = 12) => {
-  const res = await api.get('/dashboard/leaderboard', {
-    params: { team_id: teamId, limit },
-  });
+export const fetchLeaderboard = async () => {
+  const res = await api.get('/dashboard/leaderboard');
   return res.data;
 };
+
 
 /**
  * 🔥 사용자 리더보드 공개 여부 조회
