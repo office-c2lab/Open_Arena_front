@@ -81,103 +81,108 @@ export default function UnifiedRankBoard() {
 
   return (
     <div className="w-full flex justify-center py-10 overflow-x-auto">
-      <div
-        className="
-          min-w-[1400px] max-w-[2000px]
-          mx-auto p-12 rounded-[40px]
-          bg-[#0B021C]/80 border-[3px] border-[#FF4854]
-          shadow-[0_0_55px_rgba(255,72,84,0.8)]
-        "
-      >
+
+      {/* 🔥 반응형 스케일 Wrapper */}
+      <div className="board-scale-wrapper">
+
         <div
-          className="grid gap-[6px]"
-          style={{
-            gridTemplateColumns: `200px repeat(${PROBLEM_COUNT}, minmax(28px, 1fr))`,
-          }}
+          className="
+            min-w-[1400px] max-w-[2000px]
+            mx-auto p-12 rounded-[40px]
+            bg-[#0B021C]/80 border-[3px] border-[#FF4854]
+            shadow-[0_0_55px_rgba(255,72,84,0.8)]
+          "
         >
-          {/* 문제번호 */}
           <div
-            className="
-              text-[#C56CFF] font-extrabold text-[22px]
-              flex items-center justify-center
-              bg-[#3A0A4C]/60 border border-[#C56CFF]/50
-              rounded-[14px] h-[50px]
-              shadow-[0_0_14px_rgba(197,108,255,0.5)]
-            "
+            className="grid gap-[6px]"
+            style={{
+              gridTemplateColumns: `200px repeat(${PROBLEM_COUNT}, minmax(28px, 1fr))`,
+            }}
           >
-            문제번호
-          </div>
-
-          {problems.map((p, idx) => (
+            {/* 문제번호 */}
             <div
-              key={p.id}
               className="
-                text-[#C56CFF] text-[16px] font-bold
+                text-[#C56CFF] font-extrabold text-[22px]
                 flex items-center justify-center
-                bg-[#2A063B]/50 rounded-[10px] h-[50px]
-                shadow-[0_0_10px_rgba(197,108,255,0.3)]
+                bg-[#3A0A4C]/60 border border-[#C56CFF]/50
+                rounded-[14px] h-[50px]
+                shadow-[0_0_14px_rgba(197,108,255,0.5)]
               "
             >
-              {String(idx + 1).padStart(2, "0")}
+              문제번호
             </div>
-          ))}
 
-          {/* 배점 */}
-          <div
-            className="
-              text-[#FF4854] font-extrabold text-[22px]
-              flex items-center justify-center
-              bg-[#3A0A2A]/60 border border-[#FF4854]/50
-              rounded-[14px] h-[50px]
-              shadow-[0_0_14px_rgba(255,72,84,0.5)]
-            "
-          >
-            배점
-          </div>
-
-          {problems.map((p) => (
-            <div
-              key={p.id}
-              className="
-                text-white text-[15px] font-bold
-                flex items-center justify-center
-                bg-[#1A0B15]/40 rounded-[10px] h-[50px]
-                border border-[#FF4854]/25
-              "
-            >
-              {p.score}
-            </div>
-          ))}
-
-          {/* 팀 rows */}
-          {teamNames.map((team, tIdx) => (
-            <React.Fragment key={`team-row-${tIdx}`}>
+            {problems.map((p, idx) => (
               <div
+                key={p.id}
                 className="
-                  text-white text-[18px] font-bold
-                  h-[44px] flex items-center justify-center
-                  bg-[#1A0B15]/70 border border-[#FF4854]/40 rounded-[12px]
-                  shadow-[0_0_12px_rgba(255,72,84,0.3)]
+                  text-[#C56CFF] text-[16px] font-bold
+                  flex items-center justify-center
+                  bg-[#2A063B]/50 rounded-[10px] h-[50px]
+                  shadow-[0_0_10px_rgba(197,108,255,0.3)]
                 "
               >
-                {team}
+                {String(idx + 1).padStart(2, "0")}
               </div>
+            ))}
 
-              {results[tIdx].map((state, pIdx) => (
-                <div key={`dot-${tIdx}-${pIdx}`} className="flex justify-center items-center">
-                  <div
-                    style={{
-                      width: 16,
-                      height: 16,
-                      borderRadius: "50%",
-                      ...(oxGradientMap[state] || oxGradientMap.pending),
-                      boxShadow: "0 0 6px rgba(255,255,255,0.25)",
-                    }}
-                  />
+            {/* 배점 */}
+            <div
+              className="
+                text-[#FF4854] font-extrabold text-[22px]
+                flex items-center justify-center
+                bg-[#3A0A2A]/60 border border-[#FF4854]/50
+                rounded-[14px] h-[50px]
+                shadow-[0_0_14px_rgba(255,72,84,0.5)]
+              "
+            >
+              배점
+            </div>
+
+            {problems.map((p) => (
+              <div
+                key={p.id}
+                className="
+                  text-white text-[15px] font-bold
+                  flex items-center justify-center
+                  bg-[#1A0B15]/40 rounded-[10px] h-[50px]
+                  border border-[#FF4854]/25
+                "
+              >
+                {p.score}
+              </div>
+            ))}
+
+            {/* 팀 rows */}
+            {teamNames.map((team, tIdx) => (
+              <React.Fragment key={`team-row-${tIdx}`}>
+                <div
+                  className="
+                    text-white text-[18px] font-bold
+                    h-[44px] flex items-center justify-center
+                    bg-[#1A0B15]/70 border border-[#FF4854]/40 rounded-[12px]
+                    shadow-[0_0_12px_rgba(255,72,84,0.3)]
+                  "
+                >
+                  {team}
                 </div>
-              ))}
-            </React.Fragment>
-          ))}
+
+                {results[tIdx].map((state, pIdx) => (
+                  <div key={`dot-${tIdx}-${pIdx}`} className="flex justify-center items-center">
+                    <div
+                      style={{
+                        width: 16,
+                        height: 16,
+                        borderRadius: "50%",
+                        ...(oxGradientMap[state] || oxGradientMap.pending),
+                        boxShadow: "0 0 6px rgba(255,255,255,0.25)",
+                      }}
+                    />
+                  </div>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -117,3 +117,31 @@ body {
     background-position: 468px 0;
   }
 }
+
+.board-scale-wrapper {
+  transform-origin: top center;
+}
+
+@media (max-width: 1600px) {
+  .board-scale-wrapper {
+    transform: scale(0.9);
+  }
+}
+
+@media (max-width: 1400px) {
+  .board-scale-wrapper {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 1200px) {
+  .board-scale-wrapper {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-width: 1000px) {
+  .board-scale-wrapper {
+    transform: scale(0.6);
+  }
+}

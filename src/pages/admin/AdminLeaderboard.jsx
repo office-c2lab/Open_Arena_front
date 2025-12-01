@@ -47,7 +47,7 @@ const Leaderboard = () => {
       >
         문제풀이 매트릭스 보기
       </button> */}
-      <div className='flex'>
+      <div className='flex gap-x-10'>
         <AdminLeaderboardToggle />
         <AdminMatrixToggle />
       </div>

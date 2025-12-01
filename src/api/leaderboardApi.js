@@ -24,7 +24,7 @@ export const fetchUserLeaderboardSetting = async () => {
  * 관리자용 문제풀이 매트릭스
  */
 export const fetchSolveMatrix = async (label = 'title') => {
-  const res = await api.get('/admin/solve-matrix', { params: { label } });
+  const res = await api.get('/admin/arena/solve-matrix', { params: { label } });
   return res.data;
 };
 
