@@ -42,88 +42,77 @@ export default function AdminProblemCreatePage() {
 
   return (
     <div className="p-10 w-full flex justify-center">
-      <div className="w-full max-w-4xl bg-[#0B021C]/70 p-10 rounded-[20px] border border-[#FF4854]/40 shadow-[0_0_30px_rgba(255,72,84,0.4)] text-white">
-        
-        <h1 className="text-3xl font-bold mb-8 text-[#FF4854]">
-          문제 생성
-        </h1>
+      <div
+        className="
+          w-full max-w-4xl 
+          bg-[#0B021C]/70 p-10 
+          rounded-[20px] 
+          border border-[#FF4854]/40 
+          shadow-[0_0_30px_rgba(255,72,84,0.4)] 
+          text-white
+        "
+      >
+        <h1 className="text-3xl font-bold mb-8 text-[#FF4854]">문제 생성</h1>
 
-        {/* ───── 섹션: 기본 정보 ───── */}
-        <div className="mb-10">
-          <h2 className="text-xl font-bold mb-4 text-[#FF4854]">기본 정보</h2>
+        {/* ────────────────────── */}
+        {/* 기본 정보 */}
+        {/* ────────────────────── */}
+        <Section title="기본 정보">
+          <Input label="문제 제목" name="title" value={form.title} onChange={handleChange} />
+          <Input label="카테고리" name="category" value={form.category} onChange={handleChange} />
+          <Input label="문제 코드" name="problem_code" value={form.problem_code} onChange={handleChange} />
+          <Input label="배점" name="score" type="number" value={form.score} onChange={handleChange} />
+          <Input label="부 제목" name="sub_title" value={form.sub_title} onChange={handleChange} />
+        </Section>
 
-          <div className="grid grid-cols-2 gap-6">
-            <Input label="문제 제목" name="title" value={form.title} onChange={handleChange} />
-            <Input label="부 제목" name="sub_title" value={form.sub_title} onChange={handleChange} />
-
-            <Input label="카테고리" name="category" value={form.category} onChange={handleChange} />
-            <Input label="문제 코드" name="problem_code" value={form.problem_code} onChange={handleChange} />
-
-            <Input 
-              label="배점" 
-              name="score" 
-              type="number" 
-              value={form.score} 
-              onChange={handleChange} 
-            />
-
-            <Input 
-              label="Chat Endpoint ID"
-              name="chat_endpoint_id"
-              type="number"
-              value={form.chat_endpoint_id}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-
-        {/* ───── 섹션: 문제 설명 ───── */}
-        <div className="mb-10">
-          <h2 className="text-xl font-bold mb-4 text-[#FF4854]">문제 설명</h2>
-
+        {/* ────────────────────── */}
+        {/* 문제 설명 */}
+        {/* ────────────────────── */}
+        <Section title="문제 설명">
           <TextArea label="문제 설명" name="description" value={form.description} onChange={handleChange} />
           <TextArea label="부 설명" name="sub_description" value={form.sub_description} onChange={handleChange} />
-        </div>
+        </Section>
 
-        {/* ───── 섹션: 목표 및 기준 ───── */}
-        <div className="mb-10">
-          <h2 className="text-xl font-bold mb-4 text-[#FF4854]">목표 및 기준</h2>
-
+        {/* ────────────────────── */}
+        {/* 목표 및 기준 */}
+        {/* ────────────────────── */}
+        <Section title="목표 및 기준">
           <TextArea label="목표" name="goal" value={form.goal} onChange={handleChange} />
           <TextArea label="성공 기준" name="success_criteria" value={form.success_criteria} onChange={handleChange} />
           <TextArea label="실패 기준" name="failure_criteria" value={form.failure_criteria} onChange={handleChange} />
-        </div>
+        </Section>
 
-        {/* ───── 섹션: 모델 설정 ───── */}
-        <div className="mb-10">
-          <h2 className="text-xl font-bold mb-4 text-[#FF4854]">모델 설정</h2>
-
-          <div className="grid grid-cols-2 gap-6">
-            <Input 
-              label="모델명" 
-              name="model_name" 
-              value={form.model_name} 
-              onChange={handleChange} 
-            />
-            <Input 
-              label="Temperature" 
-              type="number"
-              name="temperature" 
-              value={form.temperature} 
-              onChange={handleChange}
-            />
-          </div>
-
-          <TextArea 
+        {/* ────────────────────── */}
+        {/* 모델 설정 */}
+        {/* ────────────────────── */}
+        <Section title="모델 설정">
+          <Input label="모델명" name="model_name" value={form.model_name} onChange={handleChange} />
+          <Input
+            label="Temperature"
+            type="number"
+            name="temperature"
+            value={form.temperature}
+            onChange={handleChange}
+          />
+          <Input
+            label="Chat Endpoint ID"
+            type="number"
+            name="chat_endpoint_id"
+            value={form.chat_endpoint_id}
+            onChange={handleChange}
+          />
+          <TextArea
             label="시스템 프롬프트"
             name="system_prompt"
             value={form.system_prompt}
             onChange={handleChange}
             className="h-32"
           />
-        </div>
+        </Section>
 
-        {/* ───── 제출 버튼 ───── */}
+        {/* ────────────────────── */}
+        {/* 제출 버튼 */}
+        {/* ────────────────────── */}
         <button
           onClick={handleSubmit}
           disabled={isPending}
@@ -136,9 +125,19 @@ export default function AdminProblemCreatePage() {
   );
 }
 
-/* --------------------------------------
- * 🧩 재사용 가능한 Input & TextArea 컴포넌트
- * -------------------------------------- */
+/* -----------------------------------
+   재사용 섹션 / Input / TextArea
+------------------------------------ */
+
+function Section({ title, children }) {
+  return (
+    <div className="mb-10">
+      <h2 className="text-xl font-bold mb-4 text-[#FF4854]">{title}</h2>
+      <div className="flex flex-col gap-6">{children}</div>
+    </div>
+  );
+}
+
 function Input({ label, name, value, onChange, type = "text" }) {
   return (
     <div className="flex flex-col">
@@ -148,7 +147,13 @@ function Input({ label, name, value, onChange, type = "text" }) {
         name={name}
         value={value}
         onChange={onChange}
-        className="bg-[#1A0B15]/60 border border-[#FF4854]/30 rounded-lg px-4 py-2 focus:border-[#FF4854] outline-none transition"
+        className="
+          bg-[#1A0B15]/60 
+          border border-[#FF4854]/30 
+          rounded-lg px-4 py-2 
+          focus:border-[#FF4854] 
+          outline-none transition
+        "
       />
     </div>
   );
@@ -156,13 +161,20 @@ function Input({ label, name, value, onChange, type = "text" }) {
 
 function TextArea({ label, name, value, onChange, className = "" }) {
   return (
-    <div className="flex flex-col mb-4">
+    <div className="flex flex-col">
       <label className="font-semibold mb-1">{label}</label>
       <textarea
         name={name}
         value={value}
         onChange={onChange}
-        className={`bg-[#1A0B15]/60 border border-[#FF4854]/30 rounded-lg px-4 py-3 focus:border-[#FF4854] outline-none transition ${className}`}
+        className={`
+          bg-[#1A0B15]/60 
+          border border-[#FF4854]/30 
+          rounded-lg px-4 py-3 
+          focus:border-[#FF4854] 
+          outline-none transition 
+          ${className}
+        `}
       ></textarea>
     </div>
   );
