@@ -1,9 +1,9 @@
 // src/features/Challenge/components/TokenInfoCard.jsx
-import React from "react";
-import TokenSvg from "../../../assets/icons/Token.svg";
+import React from 'react';
+import TokenSvg from '../../../assets/icons/Token.svg';
 
-import { useSessionStore } from "@/stores/useSessionStore";
-import { useTokenUsage } from "@/hooks/useTokenUsage";
+import { useSessionStore } from '@/stores/useSessionStore';
+import { useTokenUsage } from '@/hooks/useTokenUsage';
 
 const TokenInfoCard = ({ problemId, teamId }) => {
   const { sessionId } = useSessionStore();
@@ -16,7 +16,7 @@ const TokenInfoCard = ({ problemId, teamId }) => {
   });
 
   // 숫자만 로딩 처리
-  const usedToken = isReady ? data?.token_used ?? 0 : null;
+  const usedToken = isReady ? (data?.token_used ?? 0) : null;
 
   return (
     <div
@@ -27,10 +27,9 @@ const TokenInfoCard = ({ problemId, teamId }) => {
         p-4 flex-shrink-0
         bg-white rounded-[20px] shadow-lg
       "
-      style={{ boxShadow: "0px 2px 10px rgba(0,0,0,0.25)" }}
+      style={{ boxShadow: '0px 2px 10px rgba(0,0,0,0.25)' }}
     >
       <div className="flex items-center">
-
         {/* 아이콘 */}
         <div
           className="
@@ -48,14 +47,13 @@ const TokenInfoCard = ({ problemId, teamId }) => {
           <span className="heading-3 font-500 text-black">사용한 토큰</span>
 
           <div className="flex items-baseline">
-            {(!isReady || isLoading) ? (
-              <span className="heading-1 font-700 text-gray-400"></span>
+            {!isReady || isLoading ? (
+              <span className="heading-1 font-700 text-gray-400">0</span>
             ) : (
               <span className="heading-1 font-700 text-black">{usedToken}</span>
             )}
           </div>
         </div>
-
       </div>
     </div>
   );
