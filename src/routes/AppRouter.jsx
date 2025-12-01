@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import RootRedirect from './RootRedirect';
 import LoginRedirect from './LoginRedirect';
@@ -35,6 +35,7 @@ export default function AppRouter() {
     <Routes>
       {/* "/" → 로그인 여부에 따라 이동 */}
       <Route path="/" element={<RootRedirect />} />
+      <Route path="/admin" element={<Navigate to="/admin/leaderboard" replace />} />
 
       {/* 로그인 페이지 */}
       <Route

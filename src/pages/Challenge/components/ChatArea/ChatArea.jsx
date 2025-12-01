@@ -1,3 +1,4 @@
+// src/features/Challenge/components/ChatArea/ChatArea.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import useModalStore from '@/stores/useModalStore';
@@ -47,23 +48,38 @@ export default function ChatArea({
     const trimmed = inputValue.trim();
     if (!trimmed || sendMessageMutation.isPending) return;
 
+    // ⭐ 세션이 없으면 새로 만들고 메시지 전송
     if (!sessionId) {
       const newSession = await createSessionMutation.mutateAsync('');
       const newSessionId = newSession?.id ?? newSession;
 
       if (newSessionId) {
+        // 문제 다시 불러오기
         queryClient.invalidateQueries(['problemBundle', problemId, teamId]);
+
+        // 첫 메시지 전송
         await sendMessageMutation.mutateAsync(trimmed);
+
+        // 🔥 토큰 사용량 즉시 갱신
+        queryClient.invalidateQueries(['tokenUsage']);
       }
-    } else {
-      sendMessageMutation.mutate(trimmed);
+    }
+
+    // ⭐ 기존 세션이 있을 때
+    else {
+      sendMessageMutation.mutate(trimmed, {
+        onSuccess: () => {
+          // 🔥 토큰 사용량 즉시 갱신
+          queryClient.invalidateQueries(['tokenUsage']);
+        },
+      });
     }
   };
 
   const displayMessages = Array.isArray(messages) ? messages : [];
   const isAiTyping = displayMessages.some(msg => msg.isTyping);
 
-  // ❗ 전체 성공 여부를 제거하고 세션 상태만으로 disable
+  // 입력 disabled 조건
   const isChatAreaDisabled =
     inputDisabled ||
     sendMessageMutation.isPending ||

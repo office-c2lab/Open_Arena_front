@@ -2,21 +2,17 @@
 
 import React from "react";
 import { oxGradientMap } from "@/styles/oxGradientMap";
-import {
-  mockProblemScores,
-  mockHackingBoard,
-} from "@/hooks/mock/arenaMockData";
+import { useSolveMatrix } from "@/hooks/useSolveMatrix";
 
-const colorMap = {
-  green: "success",
-  gray: "pending",
+const stateMap = {
+  true: "success",
+  false: "pending",
 };
 
 export default function UnifiedRankBoard() {
-  const problemData = mockProblemScores;
-  const board = mockHackingBoard;
+  const { data, isLoading, isError } = useSolveMatrix();
 
-  if (!problemData || !board) {
+  if (isLoading) {
     return (
       <div className="text-white text-center py-10 text-[20px]">
         Loading...
@@ -24,21 +20,23 @@ export default function UnifiedRankBoard() {
     );
   }
 
-  const problemScores = problemData.scores;
-  const teamNames = board.map((item) => item.username);
-  const results = board.map((item) =>
-    item.colors.map((c) => colorMap[c] || "pending")
+  if (isError || !data) {
+    return (
+      <div className="text-red-400 text-center py-10 text-[20px]">
+        Failed to load leaderboard.
+      </div>
+    );
+  }
+
+  const { teams, problems, matrix } = data;
+
+  const PROBLEM_COUNT = problems.length;
+  const teamNames = teams.map((t) => t.name);
+
+  // 각 팀 × 문제 상태 ("success" / "pending")
+  const results = matrix.map((row) =>
+    row.map((state) => stateMap[state] || "pending")
   );
-
-  const PROBLEM_COUNT = results[0]?.length || 0;
-
-  const safeScores =
-    PROBLEM_COUNT === problemScores.length
-      ? problemScores
-      : [
-          ...problemScores,
-          ...Array(Math.max(PROBLEM_COUNT - problemScores.length, 0)).fill("-"),
-        ];
 
   return (
     <div className="w-full flex justify-center py-10 overflow-x-auto">
@@ -50,18 +48,13 @@ export default function UnifiedRankBoard() {
           shadow-[0_0_55px_rgba(255,72,84,0.8)]
         "
       >
-        {/* =============================== */}
-        {/*            GRID LAYOUT           */}
-        {/* =============================== */}
         <div
           className="grid gap-[6px]"
           style={{
             gridTemplateColumns: `200px repeat(${PROBLEM_COUNT}, minmax(28px, 1fr))`,
           }}
         >
-          {/* ------------------------------- */}
-          {/*        문제번호 Row             */}
-          {/* ------------------------------- */}
+          {/* 문제번호 Row */}
           <div
             className="
               text-[#C56CFF] font-extrabold text-[22px]
@@ -74,9 +67,9 @@ export default function UnifiedRankBoard() {
             문제번호
           </div>
 
-          {Array.from({ length: PROBLEM_COUNT }).map((_, i) => (
+          {problems.map((p, idx) => (
             <div
-              key={i}
+              key={p.id}
               className="
                 text-[#C56CFF] text-[16px] font-bold
                 flex items-center justify-center
@@ -84,13 +77,11 @@ export default function UnifiedRankBoard() {
                 shadow-[0_0_10px_rgba(197,108,255,0.3)]
               "
             >
-              {String(i + 1).padStart(2, "0")}
+              {String(idx + 1).padStart(2, "0")}
             </div>
           ))}
 
-          {/* ------------------------------- */}
-          {/*            배점 Row             */}
-          {/* ------------------------------- */}
+          {/* 배점 Row */}
           <div
             className="
               text-[#FF4854] font-extrabold text-[22px]
@@ -103,9 +94,9 @@ export default function UnifiedRankBoard() {
             배점
           </div>
 
-          {safeScores.map((score, i) => (
+          {problems.map((p) => (
             <div
-              key={i}
+              key={p.id}
               className="
                 text-white text-[15px] font-bold
                 flex items-center justify-center
@@ -113,16 +104,13 @@ export default function UnifiedRankBoard() {
                 border border-[#FF4854]/25
               "
             >
-              {score}
+              {p.score}
             </div>
           ))}
 
-          {/* ------------------------------- */}
-          {/*            팀별 Rows            */}
-          {/* ------------------------------- */}
+          {/* 팀별 Rows */}
           {teamNames.map((team, tIdx) => (
             <React.Fragment key={`team-row-${tIdx}`}>
-              {/* 팀명 박스 */}
               <div
                 className="
                   text-white text-[18px] font-bold
@@ -134,12 +122,8 @@ export default function UnifiedRankBoard() {
                 {team}
               </div>
 
-              {/* 문제 dot들 */}
               {results[tIdx].map((state, pIdx) => (
-                <div
-                  key={`dot-${tIdx}-${pIdx}`}
-                  className="flex justify-center items-center"
-                >
+                <div key={`dot-${tIdx}-${pIdx}`} className="flex justify-center items-center">
                   <div
                     style={{
                       width: 16,

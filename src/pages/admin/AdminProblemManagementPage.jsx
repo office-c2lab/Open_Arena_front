@@ -29,7 +29,7 @@ export default function AdminProblemManagementPage() {
 
               <button
                 onClick={() => toggle.mutate(p.id)}
-                className={`px-3 py-1 text-sm rounded-lg ${
+                className={`px-3 py-1 text-sm rounded-lg  cursor-pointer ${
                   p.is_active ? "bg-green-600" : "bg-gray-600"
                 }`}
               >

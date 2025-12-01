@@ -15,12 +15,6 @@ const FILTER_OPTIONS = [
   { key: 'NOT_SUBMITTED', label: '미제출' },
 ];
 
-// ⭐ 토큰 표시를 "사용한 토큰" 기준으로 바꾼 더미값
-const DUMMY_BALANCE = {
-  usedToken: 60,
-  currentPoint: 150,
-};
-
 export default function AttemptHistoryPanel({
   PurpleDownIcon,
   isLoading,
@@ -55,14 +49,18 @@ export default function AttemptHistoryPanel({
           isSubmitted = true;
           isSuccess = false;
           promptSummary =
-            session.judge_reason?.split('\n')[0]?.slice(0, 50) || session.title || '실패한 시도';
+            session.judge_reason?.split('\n')[0]?.slice(0, 50) ||
+            session.title ||
+            '실패한 시도';
           break;
         default:
           filterKey = 'NOT_SUBMITTED';
           isSubmitted = false;
           isSuccess = false;
           promptSummary =
-            session.judge_reason?.split('\n')[0]?.slice(0, 50) || session.title || '새로운 대화';
+            session.judge_reason?.split('\n')[0]?.slice(0, 50) ||
+            session.title ||
+            '새로운 대화';
       }
 
       return {
@@ -91,6 +89,7 @@ export default function AttemptHistoryPanel({
   const handleCardClick = useCallback(
     (clickedSessionId, clickedStatus) => {
       if (!problemId || !teamId) return;
+
       if (clickedSessionId !== currentActiveSessionId) {
         setSessionId(clickedSessionId);
         setSessionStatus(clickedStatus);
@@ -111,15 +110,15 @@ export default function AttemptHistoryPanel({
 
   return (
     <div className="flex flex-col flex-shrink-0 w-[240px] lg:w-[295px] h-full">
-      
+
       {/* 포인트 카드 */}
       <div className="flex-shrink-0 w-full mb-4">
-        <PointInfoCard currentBalance={DUMMY_BALANCE.currentPoint} isLoading={isLoading} />
+        <PointInfoCard isLoading={isLoading} />
       </div>
 
-      {/* 토큰 카드 (사용한 토큰만 표시) */}
+      {/* ⭐ 토큰 카드 */}
       <div className="flex-shrink-0 w-full mb-4">
-        <TokenInfoCard usedToken={DUMMY_BALANCE.usedToken} isLoading={isLoading} />
+        <TokenInfoCard problemId={problemId} teamId={teamId} />
       </div>
 
       {/* 시도 기록 */}
@@ -185,6 +184,7 @@ export default function AttemptHistoryPanel({
             </div>
           )}
         </div>
+
       </div>
     </div>
   );

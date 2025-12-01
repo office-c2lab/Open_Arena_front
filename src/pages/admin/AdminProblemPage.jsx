@@ -9,10 +9,10 @@ export default function AdminProblemPage() {
   const [activeTab, setActiveTab] = useState(TABS[0]);
 
   return (
-    <div className="w-full max-w-6xl mx-auto mt-10">
+    <div className="w-full max-w-6xl mx-auto pt-10">
 
       {/*  탭 UI  */}
-      <div className="flex gap-4 mb-10 justify-center">
+      <div className="flex gap-4 mb-10 justify-center ">
         {TABS.map((tab) => {
           const isActive = activeTab === tab;
           return (
@@ -21,7 +21,7 @@ export default function AdminProblemPage() {
               onClick={() => setActiveTab(tab)}
               className={`
                 px-6 py-3 rounded-xl font-bold text-base transition-all duration-200
-                border
+                border  cursor-pointer
                 ${
                   isActive
                     ? "bg-[#FF4854] text-white border-[#FF4854] shadow-[0_0_15px_rgba(255,72,84,0.8)] scale-[1.05]"
