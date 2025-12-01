@@ -26,7 +26,7 @@ const ProblemStatusMatrixSkeleton = ({ rows = 12 }) => {
 };
 
 export default function ProblemStatusMatrix() {
-  const { data, isLoading, error } = useSolveMatrixQuery("title");
+  const { data, isLoading, error } = useSolveMatrixQuery('title');
 
   if (isLoading) return <ProblemStatusMatrixSkeleton />;
   if (error)
@@ -35,15 +35,15 @@ export default function ProblemStatusMatrix() {
         데이터를 불러오는 중 오류가 발생했습니다.
       </div>
     );
-  // console.log("📌 Solve Matrix API data:", data);
+  //console.log('📌 Solve Matrix API data:', data);
 
   const { teams, problems, matrix } = data;
 
   const PROBLEM_COUNT = problems.length;
-  const teamNames = teams.map((t) => t.name);
+  const teamNames = teams.map(t => t.name);
 
-  const results = matrix.map((row) =>
-    row.map((state) => stateMap[String(state)] || state || "pending")
+  const results = matrix.map(row =>
+    row.map(state => stateMap[String(state)] || state || 'pending')
   );
 
   return (
@@ -86,11 +86,10 @@ export default function ProblemStatusMatrix() {
                   shadow-[0_0_10px_rgba(197,108,255,0.3)]
                 "
               >
-                {String(idx + 1).padStart(2, "0")}
+                {String(idx + 1).padStart(2, '0')}
               </div>
             ))}
 
-            {/* 문제 이름 (현재 사용하지 않음 — 주석 유지)
             <div
               className="
                 text-[#FF4854] font-extrabold text-[22px]
@@ -103,7 +102,7 @@ export default function ProblemStatusMatrix() {
               문제 이름
             </div>
 
-            {problems.map((p) => (
+            {problems.map(p => (
               <div
                 key={p.id}
                 className="
@@ -115,9 +114,9 @@ export default function ProblemStatusMatrix() {
                   min-h-[60px]
                 "
               >
-                {p.label}
+                {p.title}
               </div>
-            ))} */}
+            ))}
 
             {/* 팀 / 문제 dot */}
             {teamNames.map((team, tIdx) => {
@@ -148,7 +147,7 @@ export default function ProblemStatusMatrix() {
                         style={{
                           width: 16,
                           height: 16,
-                          borderRadius: "50%",
+                          borderRadius: '50%',
                           ...(oxGradientMap[state] || oxGradientMap.pending),
                         }}
                       />
