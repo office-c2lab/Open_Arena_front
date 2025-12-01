@@ -1,41 +1,41 @@
-import React, { useState } from "react";
-import { useCreateProblem } from "@/hooks/useCreateProblem";
+import React, { useState } from 'react';
+import { useCreateProblem } from '@/hooks/useCreateProblem';
 
 export default function AdminProblemCreatePage() {
   const { mutateAsync: createProblem, isPending } = useCreateProblem();
 
   const [form, setForm] = useState({
-    title: "",
-    category: "",
-    problem_code: "",
+    title: '',
+    category: '',
+    problem_code: '',
     score: 0,
-    sub_title: "",
-    description: "",
-    sub_description: "",
-    goal: "",
-    success_criteria: "",
-    failure_criteria: "",
-    is_active: true,
-    model_name: "",
-    system_prompt: "",
+    sub_title: '',
+    description: '',
+    sub_description: '',
+    goal: '',
+    success_criteria: '',
+    failure_criteria: '',
+    is_active: false,
+    model_name: '',
+    system_prompt: '',
     temperature: 0,
     chat_endpoint_id: 0,
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value, type } = e.target;
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
-      [name]: type === "number" ? Number(value) : value,
+      [name]: type === 'number' ? Number(value) : value,
     }));
   };
 
   const handleSubmit = async () => {
     try {
       await createProblem(form);
-      alert("문제가 성공적으로 생성되었습니다!");
+      alert('문제가 성공적으로 생성되었습니다!');
     } catch (err) {
-      alert("문제 생성 실패");
+      alert('문제 생성 실패');
       console.error(err);
     }
   };
@@ -60,8 +60,19 @@ export default function AdminProblemCreatePage() {
         <Section title="기본 정보">
           <Input label="문제 제목" name="title" value={form.title} onChange={handleChange} />
           <Input label="카테고리" name="category" value={form.category} onChange={handleChange} />
-          <Input label="문제 코드" name="problem_code" value={form.problem_code} onChange={handleChange} />
-          <Input label="배점" name="score" type="number" value={form.score} onChange={handleChange} />
+          <Input
+            label="문제 코드"
+            name="problem_code"
+            value={form.problem_code}
+            onChange={handleChange}
+          />
+          <Input
+            label="배점"
+            name="score"
+            type="number"
+            value={form.score}
+            onChange={handleChange}
+          />
           <Input label="부 제목" name="sub_title" value={form.sub_title} onChange={handleChange} />
         </Section>
 
@@ -69,8 +80,18 @@ export default function AdminProblemCreatePage() {
         {/* 문제 설명 */}
         {/* ────────────────────── */}
         <Section title="문제 설명">
-          <TextArea label="문제 설명" name="description" value={form.description} onChange={handleChange} />
-          <TextArea label="부 설명" name="sub_description" value={form.sub_description} onChange={handleChange} />
+          <TextArea
+            label="문제 설명"
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+          />
+          <TextArea
+            label="부 설명"
+            name="sub_description"
+            value={form.sub_description}
+            onChange={handleChange}
+          />
         </Section>
 
         {/* ────────────────────── */}
@@ -78,8 +99,18 @@ export default function AdminProblemCreatePage() {
         {/* ────────────────────── */}
         <Section title="목표 및 기준">
           <TextArea label="목표" name="goal" value={form.goal} onChange={handleChange} />
-          <TextArea label="성공 기준" name="success_criteria" value={form.success_criteria} onChange={handleChange} />
-          <TextArea label="실패 기준" name="failure_criteria" value={form.failure_criteria} onChange={handleChange} />
+          <TextArea
+            label="성공 기준"
+            name="success_criteria"
+            value={form.success_criteria}
+            onChange={handleChange}
+          />
+          <TextArea
+            label="실패 기준"
+            name="failure_criteria"
+            value={form.failure_criteria}
+            onChange={handleChange}
+          />
         </Section>
 
         {/* ────────────────────── */}
@@ -118,7 +149,7 @@ export default function AdminProblemCreatePage() {
           disabled={isPending}
           className="mt-8 w-full py-4 bg-[#FF4854] rounded-[12px] text-2xl font-bold hover:bg-[#ff6075] transition"
         >
-          {isPending ? "생성 중..." : "문제 생성하기"}
+          {isPending ? '생성 중...' : '문제 생성하기'}
         </button>
       </div>
     </div>
@@ -138,7 +169,7 @@ function Section({ title, children }) {
   );
 }
 
-function Input({ label, name, value, onChange, type = "text" }) {
+function Input({ label, name, value, onChange, type = 'text' }) {
   return (
     <div className="flex flex-col">
       <label className="font-semibold mb-1">{label}</label>
@@ -159,7 +190,7 @@ function Input({ label, name, value, onChange, type = "text" }) {
   );
 }
 
-function TextArea({ label, name, value, onChange, className = "" }) {
+function TextArea({ label, name, value, onChange, className = '' }) {
   return (
     <div className="flex flex-col">
       <label className="font-semibold mb-1">{label}</label>
