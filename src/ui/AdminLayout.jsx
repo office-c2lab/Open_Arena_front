@@ -5,9 +5,11 @@ import FloatingMenu from '../components/FloatingMenu/FloatingMenu';
 
 export default function AdminLayout() {
   return (
-    <div className="relative w-full h-full">
-      {/* 공통 Header가 필요하면 여기에 */}
-      <Outlet />
+    <div className="relative w-full min-h-screen bg-[#F7F8FA]">
+      {/* 메인 Content */}
+      <div className="pb-20">  
+        <Outlet />
+      </div>
 
       {/* 공통 Floating Menu */}
       <FloatingMenu />

@@ -28,6 +28,7 @@ import AdminProblemToggleList from '../pages/admin/AdminProblemToggleList';
 
 import ArenaMockPage from '../pages/Leaderboard/ArenaMockPage';  // ✅ 추가
 import Leaderboard from '../pages/Leaderboard/ArenaMockPage';
+import AdminProblemPage from '../pages/admin/AdminProblemPage';
 
 export default function AppRouter() {
   return (
@@ -64,7 +65,7 @@ export default function AppRouter() {
       >
         <Route path="leaderboard" element={<AdminLeaderboard />} />
         <Route path="matrix" element={<ProblemStatusMatrix />} />
-        <Route path="problems" element={<AdminProblemToggleList />} />
+        <Route path="problems" element={<AdminProblemPage />} />
       </Route>
 
       {/* ---------------------------

@@ -16,3 +16,8 @@ export const toggleAdminProblemActive = (problemId) => {
 
 export const getAdminProblems = () =>
   api.get('/admin/problems/view').then(res => res.data);
+
+export const createProblem = async (payload) => {
+  const res = await api.post("/admin/problems", payload);
+  return res.data;
+};
