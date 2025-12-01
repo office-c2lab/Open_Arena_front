@@ -1,10 +1,10 @@
 // src/api/adminLeaderboardSettingApi.js
-import api from "./axiosInstance";
+import api from "@/api/axiosInstance";
 
-// 현재 공개 설정 조회
+// ⭐ 현재 공개 설정 조회
 export const fetchLeaderboardSetting = () =>
-  api.get("/dashboard/arena").then(res => res.data);
+  api.get("/admin/arena/leaderboard-setting").then(res => res.data);
 
-// 어드민 리더보드 딸깍이 > 사용자 리더보드 온오프
+// ⭐ 공개 설정 ON/OFF 토글
 export const toggleLeaderboardSetting = () =>
   api.post("/admin/arena/leaderboard-setting/toggle").then(res => res.data);
