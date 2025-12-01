@@ -9,15 +9,15 @@ import React from 'react';
 const getCategoryColors = category => {
   switch (category) {
     case '법률':
-      return 'text-indigo-500 border-indigo-500';
+      return 'text-yellow-400 border-yellow-400'; 
     case '군사':
-      return 'text-red-500 border-red-500';
+      return 'text-green-500 border-green-500'; 
     case '사회':
-      return 'text-blue-500 border-blue-500';
+      return 'text-pink-400 border-pink-400'; 
     case '일반':
-      return 'text-gray-500 border-gray-500';
+      return 'text-fuchsia-600 border-fuchsia-600';
     default:
-      return 'text-indigo-400 border-indigo-400';
+      return 'text-fuchsia-600 border-fuchsia-600';
   }
 };
 

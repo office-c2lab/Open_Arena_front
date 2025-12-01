@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import medicalImage from '../../assets/images/medical.png';
-import counselImage from '../../assets/images/counsel.png';
-import codingImage from '../../assets/images/coding.png';
+import medicalImage from '../../assets/images/qjqfbf.png';
+import counselImage from '../../assets/images/rnstk.png';
+import codingImage from '../../assets/images/tkghl.png';
 import generalImage from '../../assets/images/general.png';
 import financeImage from '../../assets/images/finance.png';
 
