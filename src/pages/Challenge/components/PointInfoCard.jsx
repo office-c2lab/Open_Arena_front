@@ -21,7 +21,7 @@ const PointInfoCardSkeleton = () => (
       <img src={PointSvg} alt="Point Icon" className="w-[28px] h-[28px]" />
     </div>
     <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-      <span className="heading-3 font-500 text-black">포인트</span>
+      <span className="heading-3 font-500 text-black">점수</span>
       <Skeleton className="h-8 w-20 rounded" />
     </div>
   </div>

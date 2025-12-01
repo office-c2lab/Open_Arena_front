@@ -1,18 +1,8 @@
-// src/pages/Leaderboard/components/LeaderboardTabs.jsx
+import React from "react";
 
-import React, { useState } from "react";
+const tabs = ["팀별 점수 차트", "통합 랭크보드"];
 
-const tabs = ["문제별 상세 현황","총점 변화 차트","통합 랭크보드",  ];
-
-// 통일된 레드 네온 스타일
-export default function LeaderboardTabs({ onChange }) {
-  const [activeTab, setActiveTab] = useState(tabs[0]);
-
-  const handleClick = (tab) => {
-    setActiveTab(tab);
-    onChange?.(tab);
-  };
-
+export default function LeaderboardTabs({ activeTab, onChange }) {
   return (
     <div className="flex justify-center mb-10">
       <div
@@ -31,7 +21,7 @@ export default function LeaderboardTabs({ onChange }) {
           return (
             <button
               key={tab}
-              onClick={() => handleClick(tab)}
+              onClick={() => onChange(tab)}
               className={`
                 px-6 py-2 rounded-full text-sm font-semibold 
                 transition-all duration-200 cursor-pointer
