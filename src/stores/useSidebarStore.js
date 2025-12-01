@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 // 챌린지의 하위 메뉴 목록 (활성화 상태 결정에 사용)
-const CHALLENGE_SUB_MENUS = ['코딩', '상담', '금융', '의료', '일반'];
+const CHALLENGE_SUB_MENUS = ['법률', '군사', '사회', '일반'];
 
 // 경로, 쿼리 파라미터, 그리고 마지막 선택된 카테고리로부터 활성 레이블을 결정하는 헬퍼 함수
 const getActiveLabelByPath = (pathname, search, lastSelectedCategory) => {

@@ -12,16 +12,16 @@ import Skeleton from '../Skeleton/Skeleton'; // Skeleton 컴포넌트 import
 // 🖼️ 카테고리별 이미지 매핑
 const getCategoryImage = category => {
   switch (category) {
-    case '의료':
+    case '법률':
       return medicalImage;
-    case '상담':
+    case '군사':
       return counselImage;
-    case '코딩':
+    case '사회':
       return codingImage;
     case '일반':
       return generalImage;
-    case '금융':
-      return financeImage;
+    // case '금융':
+    //   return financeImage;
     default:
       return generalImage;
   }

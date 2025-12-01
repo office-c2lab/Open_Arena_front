@@ -16,12 +16,12 @@ import SettingsIconWhite from '@/assets/icons/white-settings.svg';
 const primaryTextColor = 'text-[#0F172A]';
 
 export const aiSubMenu = [
-  { label: '코딩' },
-  { label: '상담' },
-  { label: '금융' },
-  { label: '의료' },
+  { label: '법률' },
+  { label: '군사' },
+  { label: '사회' },
   { label: '일반' },
 ];
+
 
 export const settingsSubMenu = [
   { label: '계정', path: '/settings/account' },
