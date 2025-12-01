@@ -40,13 +40,13 @@ const Leaderboard = () => {
         </div>
       </div>
 
-      {/* 페이지 스위치 버튼 */}
+      {/* 페이지 스위치 버튼
       <button
         onClick={() => navigate('/admin/matrix')}
         className="px-5 py-2 bg-[#FF4854] hover:bg-[#e13a47] text-white heading-3 font-500 rounded-lg"
       >
         문제풀이 매트릭스 보기
-      </button>
+      </button> */}
     </div>
   );
 };

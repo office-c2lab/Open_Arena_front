@@ -39,7 +39,9 @@ export const mainNavigationData = (isAIDropdownOpen) => [
     icon: ChartIcon,
     activeIcon: ChartIconWhite,
     label: '리더보드',
-    path: '/leaderboard',
+    // ⭐ 리더보드를 새 창으로 열기
+    onClick: () => window.open('/leaderboard', '_blank'),
+    openInNewTab: true, // UI에서 사용할 수 있게 플래그 추가(선택 사항)
   },
   {
     icon: PageIcon,

@@ -3,7 +3,7 @@ import React from 'react';
 import Banner from '@/components/Banner/Banner';
 import LeaderboardTable from './components/LeaderboardTable';
 
-export default function Leaderboard() {
+export default function Leaderboardago() {
   return (
     <div className="w-full h-full flex flex-col items-center p-6 gap-[40px]">
       <Banner />
