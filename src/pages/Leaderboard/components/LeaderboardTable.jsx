@@ -70,8 +70,8 @@ export default function LeaderboardTable() {
 
   if (!leaderboardEnabled) {
     return (
-      <div className="text-center text-red-400 text-[22px] font-bold py-10">
-        ⚠ 리더보드는 현재 <span className="text-[#FF4854]">비공개</span> 상태입니다.
+      <div className="text-gray-300 text-center py-10 text-[22px] font-bold">
+        공용 리더보드가 현재 비공개 상태입니다.
       </div>
     );
   }

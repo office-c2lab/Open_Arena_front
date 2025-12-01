@@ -3,6 +3,7 @@
 import React from "react";
 import { oxGradientMap } from "@/styles/oxGradientMap";
 import { useSolveMatrix } from "@/hooks/useSolveMatrix";
+import { useMatrixPublicSetting } from "@/hooks/useMatrixPublicSetting";
 
 const stateMap = {
   true: "success",
@@ -10,8 +11,46 @@ const stateMap = {
 };
 
 export default function UnifiedRankBoard() {
+  // 🔥 1) 공개 여부 조회
+  const {
+    data: publicSetting,
+    isLoading: isSettingLoading,
+    isError: isSettingError,
+  } = useMatrixPublicSetting();
+
+  // 🔥 2) Solve Matrix 조회
   const { data, isLoading, isError } = useSolveMatrix();
 
+  // ============================
+  //  A. 공개 여부 체크
+  // ============================
+  if (isSettingLoading) {
+    return (
+      <div className="text-white text-center py-10 text-[20px]">
+        리더보드 활성화 여부 확인 중...
+      </div>
+    );
+  }
+
+  if (isSettingError || !publicSetting) {
+    return (
+      <div className="text-red-400 text-center py-10 text-[20px]">
+        공개 여부 확인 실패
+      </div>
+    );
+  }
+
+  if (!publicSetting.enabled) {
+    return (
+      <div className="text-gray-300 text-center py-10 text-[22px] font-bold">
+        공용 리더보드가 현재 비공개 상태입니다.
+      </div>
+    );
+  }
+
+  // ============================
+  //  B. 매트릭스 데이터 로딩
+  // ============================
   if (isLoading) {
     return (
       <div className="text-white text-center py-10 text-[20px]">
@@ -28,12 +67,14 @@ export default function UnifiedRankBoard() {
     );
   }
 
+  // ============================
+  //  C. 정상 데이터 출력
+  // ============================
   const { teams, problems, matrix } = data;
 
   const PROBLEM_COUNT = problems.length;
   const teamNames = teams.map((t) => t.name);
 
-  // 각 팀 × 문제 상태 ("success" / "pending")
   const results = matrix.map((row) =>
     row.map((state) => stateMap[state] || "pending")
   );
@@ -54,7 +95,7 @@ export default function UnifiedRankBoard() {
             gridTemplateColumns: `200px repeat(${PROBLEM_COUNT}, minmax(28px, 1fr))`,
           }}
         >
-          {/* 문제번호 Row */}
+          {/* 문제번호 */}
           <div
             className="
               text-[#C56CFF] font-extrabold text-[22px]
@@ -81,7 +122,7 @@ export default function UnifiedRankBoard() {
             </div>
           ))}
 
-          {/* 배점 Row */}
+          {/* 배점 */}
           <div
             className="
               text-[#FF4854] font-extrabold text-[22px]
@@ -108,7 +149,7 @@ export default function UnifiedRankBoard() {
             </div>
           ))}
 
-          {/* 팀별 Rows */}
+          {/* 팀 rows */}
           {teamNames.map((team, tIdx) => (
             <React.Fragment key={`team-row-${tIdx}`}>
               <div

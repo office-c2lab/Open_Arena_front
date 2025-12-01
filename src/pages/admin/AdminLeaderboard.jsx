@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import PointChart from './PointChart';
 import AdminLeaderboardTable from './AdminLeaderboardTable';
 import AdminLeaderboardToggle from './AdminLeaderboardToggle';
+import AdminMatrixToggle from './AdminMatrixToggle';
 
 const Leaderboard = () => {
   const navigate = useNavigate();
@@ -33,7 +34,6 @@ const Leaderboard = () => {
           {/* ⬅ 타이틀 + 토글 한줄 정렬 (정확한 vertical-align 맞춤) */}
           <div className="flex items-center gap-4">
             <h1 className="heading-1 font-700 text-[#FF4854] whitespace-nowrap">팀별 순위 현황</h1>
-            <AdminLeaderboardToggle />
           </div>
 
           <AdminLeaderboardTable />
@@ -47,6 +47,10 @@ const Leaderboard = () => {
       >
         문제풀이 매트릭스 보기
       </button> */}
+      <div className='flex'>
+        <AdminLeaderboardToggle />
+        <AdminMatrixToggle />
+      </div>
     </div>
   );
 };
