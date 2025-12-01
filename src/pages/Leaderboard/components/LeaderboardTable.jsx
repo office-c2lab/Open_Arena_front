@@ -1,24 +1,24 @@
 // src/pages/Leaderboard/components/LeaderboardTable.jsx
 
-import React from "react";
-import medalGold from "@/assets/icons/medal_gold.svg";
-import medalSilver from "@/assets/icons/medal_silver.svg";
-import medalBronze from "@/assets/icons/medal_bronze.svg";
-import Skeleton from "@/components/Skeleton/Skeleton";
+import React from 'react';
+import medalGold from '@/assets/icons/medal_gold.svg';
+import medalSilver from '@/assets/icons/medal_silver.svg';
+import medalBronze from '@/assets/icons/medal_bronze.svg';
+import Skeleton from '@/components/Skeleton/Skeleton';
 
-import { useAuthStore } from "@/stores/authStore";
-import { useLeaderboardQuery } from "@/hooks/useLeaderboardQuery";
-import { useUserLeaderboardSetting } from "@/hooks/useUserLeaderboardSetting";
+import { useAuthStore } from '@/stores/authStore';
+import { useLeaderboardQuery } from '@/hooks/useLeaderboardQuery';
+import { useUserLeaderboardSetting } from '@/hooks/useUserLeaderboardSetting';
 
 // 메달 매핑
 const MEDAL_ICON_MAP = { 1: medalGold, 2: medalSilver, 3: medalBronze };
 
 // 열 너비
 const COL_WIDTHS = {
-  rank: "w-[11%]",
-  team: "w-[24%]",
-  score: "w-[30%]",
-  solved: "flex-1",
+  rank: 'w-[11%]',
+  team: 'w-[24%]',
+  score: 'w-[30%]',
+  solved: 'flex-1',
 };
 
 /* =========================================================
@@ -34,7 +34,10 @@ const LeaderboardTableSkeleton = ({ rows = 12 }) => (
     </div>
 
     {Array.from({ length: rows }).map((_, i) => (
-      <div key={i} className="flex items-center h-[70px] border-b border-[#FF4854]/20 bg-[#14020F]/60">
+      <div
+        key={i}
+        className="flex items-center h-[70px] border-b border-[#FF4854]/20 bg-[#14020F]/60"
+      >
         <div className={`${COL_WIDTHS.rank} flex justify-center`}>
           <Skeleton className="h-6 w-6 rounded-full bg-[#FF4854]/30" />
         </div>
@@ -57,9 +60,9 @@ const LeaderboardTableSkeleton = ({ rows = 12 }) => (
    ========================================================= */
 export default function LeaderboardTable() {
   // 로그인한 팀명
-  const myTeamName = useAuthStore((s) => s.teamInfo?.teamname);
+  const myTeamName = useAuthStore(s => s.teamInfo?.teamname);
 
-  // 리더보드 설정 (공개 여부)
+  // 리더보드 공개 설정
   const { data: settingData, isLoading: settingLoading } = useUserLeaderboardSetting();
   const leaderboardEnabled = settingData?.leaderboard_enabled ?? false;
 
@@ -95,22 +98,8 @@ export default function LeaderboardTable() {
   // 백엔드는 배열만 반환함
   const leaderboard = data ?? [];
 
-  // 내 팀이 리스트에 포함되어 있는지 체크
-  const isMyTeamIncluded = leaderboard.some((t) => t.teamname === myTeamName);
-
-  // 내 팀이 없으면 "내 팀" 항목을 추가
-  const rows = isMyTeamIncluded
-    ? leaderboard
-    : [
-        ...leaderboard,
-        {
-          rank: "-",
-          teamname: myTeamName,
-          score: 0,
-          solved_count: 0,
-          isMyTeamRow: true,
-        },
-      ];
+  // 내 팀 없어도 추가하지 않음!
+  const rows = leaderboard;
 
   return (
     <div
@@ -133,7 +122,7 @@ export default function LeaderboardTable() {
 
       {/* Body */}
       {rows.map((row, idx) => {
-        const isMe = row.teamname === myTeamName || row.isMyTeamRow;
+        const isMe = row.teamname === myTeamName;
 
         return (
           <div
@@ -143,8 +132,8 @@ export default function LeaderboardTable() {
               border-b border-[#FF4854]/20
               ${
                 isMe
-                  ? "bg-[#FF4854]/20 text-[#FF4854] shadow-[0_0_12px_rgba(255,72,84,0.4)]"
-                  : "text-white bg-[#120812]/50"
+                  ? 'bg-[#FF4854]/20 text-[#FF4854] shadow-[0_0_12px_rgba(255,72,84,0.4)]'
+                  : 'text-white bg-[#120812]/50'
               }
             `}
           >
@@ -163,7 +152,7 @@ export default function LeaderboardTable() {
             {/* 점수 */}
             <div className={`${COL_WIDTHS.score} text-center font-600`}>{row.score}</div>
 
-            {/* 해결한 문제 수 */}
+            {/* 해결 문제 수 */}
             <div className={`${COL_WIDTHS.solved} text-center font-600`}>{row.solved_count}</div>
           </div>
         );

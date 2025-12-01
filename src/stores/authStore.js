@@ -1,21 +1,18 @@
 // src/stores/authStore.js
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import {
-  logoutApi,
-  adminLogoutApi,
-} from "@/api/auth";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { logoutApi, adminLogoutApi } from '@/api/auth';
 
 export const useAuthStore = create(
   persist(
-    (set) => ({
+    set => ({
       //---------------------------------------------------
       // ⭐ 일반 유저(팀)
       //---------------------------------------------------
       teamInfo: null,
       isLoggedIn: false,
 
-      login: (team) =>
+      login: team =>
         set({
           teamInfo: {
             ...team,
@@ -38,7 +35,7 @@ export const useAuthStore = create(
       adminInfo: null,
       isAdminLoggedIn: false,
 
-      adminLoginState: (admin) =>
+      adminLoginState: admin =>
         set({
           adminInfo: admin,
           isAdminLoggedIn: true,
@@ -63,7 +60,7 @@ export const useAuthStore = create(
         }),
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       getStorage: () => localStorage,
     }
   )
