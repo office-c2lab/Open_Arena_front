@@ -5,7 +5,7 @@ import api from '@/api/axiosInstance';
  * 사용자 리더보드 조회
  */
 export const fetchLeaderboard = async () => {
-  const res = await api.get('/dashboard/leaderboard');
+  const res = await api.get('/common/leaderboard');
   return res.data;
 };
 
@@ -15,7 +15,7 @@ export const fetchLeaderboard = async () => {
  * GET /dashboard/arena/leaderboard-setting
  */
 export const fetchUserLeaderboardSetting = async () => {
-  const res = await api.get('/dashboard/arena/leaderboard-setting');
+  const res = await api.get('/common/leaderboard-setting');
   return res.data;  // { leaderboard_enabled: true/false }
 };
 
@@ -27,12 +27,9 @@ export const fetchSolveMatrix = async (label = 'title') => {
   return res.data;
 };
 
-export const fetchScoreSeries = async () => {
-  const res = await api.get('/admin/score-series');
-  return res.data;
-};
-
-export const fetchScoreHead = async () => {
-  const res = await api.get('/admin/score-series/head');
+export const fetchScoreSeriesTotal = async ({ start, end }) => {
+  const res = await api.get('/admin/score-series/total', {
+    params: { start, end }
+  });
   return res.data;
 };

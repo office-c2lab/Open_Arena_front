@@ -21,14 +21,14 @@ const PointChartSkeleton = () => (
 const PointChart = () => {
   const { data, isLoading, error } = useScoreSeriesQuery(5000); // 5초 폴링
 
-  if (isLoading || data.length === 0) return <PointChartSkeleton />;
+  if (isLoading || !data || data.length === 0) return <PointChartSkeleton />;
   if (error) return <div className="text-red-500">데이터 로드 실패</div>;
 
-  // ✅ 마지막 데이터 기준으로 팀 이름 추출
+  // 마지막 데이터 기준 팀 추출
   const latest = data[data.length - 1];
-  const teamNames = Object.keys(latest).filter(key => key !== 'time');
+  const teamNames = Object.keys(latest).filter(k => k !== 'time');
 
-  // ✅ 0점이 아닌 팀만 필터링
+  // 0점 팀 제외
   const visibleTeams = teamNames.filter(team => latest[team] > 0);
 
   const colors = [
@@ -45,7 +45,7 @@ const PointChart = () => {
           <YAxis domain={[0, 'dataMax + 20']} />
           <Tooltip />
           <Legend />
-          {/* ✅ 점수가 0이 아닌 팀만 표시 */}
+
           {visibleTeams.map((team, idx) => (
             <Line
               key={team}

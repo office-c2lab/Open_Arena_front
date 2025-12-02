@@ -6,7 +6,7 @@ export const useTeamDashboardQuery = (teamId) => {
   return useQuery({
     queryKey: ['teamDashboard', teamId],
     queryFn: () => fetchTeamDashboard(teamId),
-    enabled: !!teamId,
-    staleTime: 1000 * 60 * 5,
+    enabled: !!teamId,               // teamId 있을 때만 실행
+    staleTime: 1000 * 60 * 5,        // 5분 캐싱
   });
 };

@@ -6,6 +6,7 @@ import PointChart from './PointChart';
 import AdminLeaderboardTable from './AdminLeaderboardTable';
 import AdminLeaderboardToggle from './AdminLeaderboardToggle';
 import AdminMatrixToggle from './AdminMatrixToggle';
+import AdminTotalGraphToggle from './AdminTotalGraphToggle';
 
 const Leaderboard = () => {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const Leaderboard = () => {
       <div className='flex gap-x-10'>
         <AdminLeaderboardToggle />
         <AdminMatrixToggle />
+        <AdminTotalGraphToggle />
       </div>
     </div>
   );

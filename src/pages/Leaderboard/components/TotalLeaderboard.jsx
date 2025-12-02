@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from "recharts";
 
-import { useScoreSeriesQuery } from "@/hooks/useScoreSeriesQuery";
+import { useUserScoreSeriesTotal } from "@/hooks/useUserScoreSeriesTotal";
 
 // 🎨 Y축 TickBox — 레드 테마
 const YAxisTickBox = ({ x, y, payload }) => {
@@ -41,16 +41,35 @@ const YAxisTickBox = ({ x, y, payload }) => {
 };
 
 export default function TotalLeaderboard() {
-  const { data, isLoading, error } = useScoreSeriesQuery(1500);
+  // ⭐ 사용자용 토탈 그래프 훅으로 변경
+  const { data, enabled, isLoading, error } = useUserScoreSeriesTotal(1500);
 
-  if (isLoading || !data || data.length === 0)
+  // 에러 우선
+  if (error) {
     return (
-      <div className="text-white text-center text-xl mt-10">
-        Loading 점수 변화 그래프...
+      <div className="text-red-400 text-center text-xl mt-10">
+        데이터 로드 실패
       </div>
     );
+  }
 
-  if (error) return <div className="text-red-400 text-center">데이터 로드 실패</div>;
+  // 공개 OFF인 경우
+  if (enabled === false) {
+    return (
+      <div className="text-white text-center text-2xl mt-10">
+         토탈 점수 차트는 현재 비공개 상태입니다.
+      </div>
+    );
+  }
+
+  // 로딩
+  if (isLoading || !data || data.length === 0) {
+    return (
+      <div className="text-white text-center text-xl mt-10">
+        Loading 점수 변화 차트...
+      </div>
+    );
+  }
 
   // ------------------------ 마지막 기록 기준 팀 이름 추출
   const last = data[data.length - 1];
@@ -71,28 +90,21 @@ export default function TotalLeaderboard() {
   const formatFullTime = (iso) => new Date(iso).toLocaleString();
 
   // 🎨 ARENA Red-Pink 기반 차트 색상셋
-const colors = [
-  "#FF4854", // 1 - ARENA Red
-  "#FF6A75", // 2
-  "#FF7F8B", // 3
-  "#FFA5AC", // 4
-  "#FFC7D1", // 5 (연핑크)
-
-  "#FF3466", // 6 - 진한 핑크레드
-  "#FC3447", // 7
-  "#FF5F89", // 8
-  "#FF9BAF", // 9
-  "#FFB8C3", // 10
-
-  "#C736FF", // 11 - 네온 퍼플
-  "#9B30FF", // 12
-  "#7A2CFF", // 13
-  "#B66BFF", // 14
-  "#D8A6FF", // 15
-
-  "#FFCC4D", // 16 - 대비용 옐로우 (중요팀 강조 시 좋음)
-];
-
+  const colors = [
+    "#FF4854", // 1 - ARENA Red
+    "#FC3447", // 2
+    "#FF6A75", // 3
+    "#FF7F8B", // 4
+    "#FFA5AC", // 5
+    "#FFC7D1", // 6 (연핑크)
+    "#C736FF", // 7 - 네온 퍼플
+    "#9B30FF", // 8
+    "#7A2CFF", // 9
+    "#B66BFF", // 10
+    "#D8A6FF", // 11
+    "#FFCC4D", // 12
+    
+  ];
 
   return (
     <div className="w-full flex justify-center py-1 px-6">
