@@ -24,12 +24,13 @@ const PointChart = () => {
   if (isLoading || !data || data.length === 0) return <PointChartSkeleton />;
   if (error) return <div className="text-red-500">데이터 로드 실패</div>;
 
-  // 마지막 데이터 기준 팀 추출
-  const latest = data[data.length - 1];
-  const teamNames = Object.keys(latest).filter(k => k !== 'time');
+// 마지막 데이터 기준 팀 추출
+const latest = data[data.length - 1];
+const teamNames = Object.keys(latest).filter(k => k !== 'time');
 
-  // 0점 팀 제외
-  const visibleTeams = teamNames.filter(team => latest[team] > 0);
+// ⭐ 0점 팀도 모두 보여줌
+const visibleTeams = teamNames;
+
 
    const colors = [
     "#FF4854", // 1 - ARENA Red
