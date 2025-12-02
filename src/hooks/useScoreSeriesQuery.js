@@ -7,19 +7,20 @@ export function useScoreSeriesQuery(interval = 5000) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const START_KST = "2025-12-02T09:00:00+09:00";
-  const START_UTC = new Date(START_KST).toISOString();
+  // ⭐ 대회 시작 시간 (UTC 변환 ❌ 그대로 KST 사용)
+  const START = "2025-12-02T11:30:00+09:00";
 
   const load = async () => {
     try {
-      const end = new Date().toISOString();
-
+      // ⭐ end 생략 → 백엔드가 자동으로 현재 시각까지 처리
       const res = await fetchScoreSeriesTotal({
-        start: START_UTC,
-        end,
+        start: START,
       });
 
-      setSeriesData(res);
+      // 안전하게 시간 정렬
+      const sorted = res.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+      setSeriesData(sorted);
       setIsLoading(false);
     } catch (err) {
       console.error("score-series load error:", err);

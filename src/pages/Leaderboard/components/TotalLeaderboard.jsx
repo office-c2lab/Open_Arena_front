@@ -82,10 +82,12 @@ export default function TotalLeaderboard() {
     )
   );
 
-  const yMax = Math.ceil((maxScore + 100) / 200) * 200;
+ // ------------------------ Y축 최대값 계산 (100점 단위)
+const yMax = Math.ceil((maxScore + 100) / 100) * 100;
 
-  const yTicks = [];
-  for (let v = yMax; v >= 0; v -= 200) yTicks.push(v);
+const yTicks = [];
+for (let v = yMax; v >= 0; v -= 100) yTicks.push(v);
+
 
   const formatFullTime = (iso) => new Date(iso).toLocaleString();
 

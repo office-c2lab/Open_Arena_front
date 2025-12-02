@@ -31,9 +31,20 @@ const PointChart = () => {
   // 0점 팀 제외
   const visibleTeams = teamNames.filter(team => latest[team] > 0);
 
-  const colors = [
-    '#FFBA57', '#9E9E9E', '#CE7430', '#4CAF50', '#2196F3',
-    '#FF9800', '#9C27B0', '#00BCD4', '#E91E63', '#607D8B',
+   const colors = [
+    "#FF4854", // 1 - ARENA Red
+    "#FC3447", // 2
+    "#FF6A75", // 3
+    "#FF7F8B", // 4
+    "#FFA5AC", // 5
+    "#FFC7D1", // 6 (연핑크)
+    "#C736FF", // 7 - 네온 퍼플
+    "#9B30FF", // 8
+    "#7A2CFF", // 9
+    "#B66BFF", // 10
+    "#D8A6FF", // 11
+    "#FFCC4D", // 12
+    
   ];
 
   return (

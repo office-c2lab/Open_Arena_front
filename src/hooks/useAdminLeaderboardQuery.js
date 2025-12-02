@@ -2,10 +2,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchAdminLeaderboard } from "@/api/adminLeaderboardApi";
 
-export const useAdminLeaderboardQuery = (teamId) => {
+export const useAdminLeaderboardQuery = () => {
   return useQuery({
-    queryKey: ["adminLeaderboard", teamId],
-    queryFn: () => fetchAdminLeaderboard({ teamId }),
-    refetchInterval: 5000, // 5초 폴링 유지
+    queryKey: ["adminLeaderboard"],   // teamId 제거
+    queryFn: fetchAdminLeaderboard,   // 파라미터 제거
+    refetchInterval: 5000,            // 5초 폴링 유지
   });
 };
