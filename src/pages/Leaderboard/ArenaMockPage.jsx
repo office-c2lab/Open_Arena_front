@@ -18,7 +18,7 @@ export default function Leaderboard() {
         const nextIndex = (currentIndex + 1) % TAB_LIST.length;
         return TAB_LIST[nextIndex];
       });
-    }, 60000);
+    }, 600000);
 
     return () => clearInterval(interval);
   }, []);

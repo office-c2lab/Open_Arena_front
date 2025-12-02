@@ -6,6 +6,8 @@ import {
   useJudgeSessions,
   useJudgeMessages,
   useJudgeResult,
+  useMarkSessionFail,
+  useMarkSessionSuccess,
 } from "@/hooks/useAdminJudgeReview";
 
 export default function AdminConversationReviewPage() {
@@ -13,9 +15,9 @@ export default function AdminConversationReviewPage() {
   const [problemId, setProblemId] = useState(null);
   const [sessionId, setSessionId] = useState(null);
 
-  /* ---------------------------------------------
-     1) 팀 / 문제 / 세션 / 메시지 / 저지 결과
-  ---------------------------------------------- */
+  /* ============================================
+     1) 데이터 로드
+  ============================================ */
   const { data: teams = [] } = useJudgeTeams();
   const { data: problems = [] } = useJudgeProblems();
   const { data: sessions = [] } = useJudgeSessions(teamId, problemId);
@@ -24,16 +26,14 @@ export default function AdminConversationReviewPage() {
 
   return (
     <div className="w-full p-10 text-white flex flex-col gap-6">
-
       <h1 className="text-3xl font-bold text-[#FF4854]">
         관리자 세션 / 판정 관리 페이지
       </h1>
 
-      {/* ==============================
-          1) 상단 3패널 (팀 / 문제 / 세션)
-      =============================== */}
+      {/* ============================================
+          1) 팀 / 문제 / 세션 목록
+      ============================================ */}
       <div className="grid grid-cols-3 gap-4">
-
         {/* 팀 목록 */}
         <Column title="팀 목록">
           {teams.map((t) => (
@@ -83,9 +83,9 @@ export default function AdminConversationReviewPage() {
         </Column>
       </div>
 
-      {/* ==============================
+      {/* ============================================
           2) 세션 전체 대화
-      =============================== */}
+      ============================================ */}
       <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/10 h-[80vh] overflow-y-auto">
         <h2 className="text-xl font-bold text-[#FF4854] mb-4">세션 전체 대화</h2>
 
@@ -98,11 +98,10 @@ export default function AdminConversationReviewPage() {
         </div>
       </div>
 
-      {/* ==============================
-          3) Judge 결과 + 최종 판정 UI
-      =============================== */}
-      <JudgePanel judgeResult={judgeResult} />
-
+      {/* ============================================
+          3) Judge 결과 + 강제 성공/실패 버튼
+      ============================================ */}
+      <JudgePanel judgeResult={judgeResult} sessionId={sessionId} />
     </div>
   );
 }
@@ -111,7 +110,6 @@ export default function AdminConversationReviewPage() {
       ⭐ 공통 컴포넌트
 ======================================================= */
 
-// 🔥 스크롤 완전 적용된 Column
 function Column({ title, children }) {
   return (
     <div
@@ -121,7 +119,7 @@ function Column({ title, children }) {
         rounded-xl 
         p-4 
         border border-white/10
-        h-[55vh]                    /* ⬅ 고정 높이 */
+        h-[55vh]
       "
     >
       <div className="font-bold text-white mb-3">{title}</div>
@@ -133,7 +131,6 @@ function Column({ title, children }) {
           pr-2 
           scrollbar-thin 
           scrollbar-thumb-[#FF4854]/40 
-          scrollbar-track-transparent
         "
       >
         {children}
@@ -177,10 +174,16 @@ function ChatBubble({ msg }) {
 }
 
 /* =======================================================
-      ⭐ Judge 결과 패널
+      ⭐ Judge 결과 패널 + 성공/실패 버튼
 ======================================================= */
 
-function JudgePanel({ judgeResult }) {
+function JudgePanel({ judgeResult, sessionId }) {
+  const { mutate: markFail, isPending: failLoading } =
+    useMarkSessionFail(sessionId);
+
+  const { mutate: markSuccess, isPending: successLoading } =
+    useMarkSessionSuccess(sessionId);
+
   if (!judgeResult) {
     return (
       <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/20 text-gray-400">
@@ -193,12 +196,9 @@ function JudgePanel({ judgeResult }) {
 
   return (
     <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/20 flex flex-col gap-6">
-
       <h2 className="text-xl font-bold text-[#FF4854] mb-2">Judge 모델 결과</h2>
 
-      {/* ================================
-            🔥 모델별 3컬럼 UI
-      ================================= */}
+      {/* 모델별 결과 3컬럼 */}
       <div className="grid grid-cols-3 gap-4 h-[45vh]">
         {results.map((r, idx) => (
           <div
@@ -212,15 +212,12 @@ function JudgePanel({ judgeResult }) {
               overflow-y-auto 
               scrollbar-thin 
               scrollbar-thumb-[#FF4854]/40
-              scrollbar-track-transparent
             "
           >
-            {/* 모델명 */}
             <div className="font-bold text-[#FF4854] text-lg mb-4">
               {r.model}
             </div>
 
-            {/* verdict */}
             <div className="flex items-center gap-2 mb-4">
               <span className="text-sm opacity-70">판단:</span>
               <span
@@ -239,7 +236,6 @@ function JudgePanel({ judgeResult }) {
               </span>
             </div>
 
-            {/* 모델 output 전체 */}
             <div className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed">
               {r.output}
             </div>
@@ -247,9 +243,7 @@ function JudgePanel({ judgeResult }) {
         ))}
       </div>
 
-      {/* ======================================
-            🔥 최종 Judge 결과
-      ====================================== */}
+      {/* ⭐ 최종 판정 */}
       <div className="mt-4 p-4 rounded-lg bg-[#1A0B15] border border-white/10">
         <div className="text-lg font-bold mb-2">최종 판정</div>
         <div
@@ -268,6 +262,37 @@ function JudgePanel({ judgeResult }) {
           {judge_reason}
         </div>
       </div>
+
+      {/* ============================================
+          ⭐ 강제 성공/실패 버튼
+      ============================================ */}
+      {sessionId && (
+        <div className="flex gap-4 mt-4">
+          <button
+            onClick={() => markSuccess()}
+            disabled={successLoading}
+            className="
+              w-48 px-4 py-2 rounded-lg font-bold text-white 
+              bg-green-600 hover:bg-green-700 transition
+              disabled:opacity-40
+            "
+          >
+            {successLoading ? "처리 중..." : "강제 성공 처리"}
+          </button>
+
+          <button
+            onClick={() => markFail()}
+            disabled={failLoading}
+            className="
+              w-48 px-4 py-2 rounded-lg font-bold text-white 
+              bg-red-600 hover:bg-red-700 transition
+              disabled:opacity-40
+            "
+          >
+            {failLoading ? "처리 중..." : "강제 실패 처리"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
