@@ -68,14 +68,21 @@ export default function Challenge() {
   } = useProblemBundleQuery(currentProblemId, currentTeamId);
 
   // ⭐ 403 Forbidden 감지 → /403 페이지로 이동
-  useEffect(() => {
-    if (isProblemError) {
-      const status = problemError?.response?.status;
-      if (status === 403) {
-        navigate('/403', { replace: true });
-      }
+// ⭐ 403 또는 404 감지 → 페이지 이동
+useEffect(() => {
+  if (isProblemError) {
+    const status = problemError?.response?.status;
+
+    if (status === 403) {
+      navigate('/403', { replace: true });
     }
-  }, [isProblemError, problemError, navigate]);
+
+    if (status === 404) {
+      navigate('/404', { replace: true });
+    }
+  }
+}, [isProblemError, problemError, navigate]);
+
 
   // ⭐ API 상세 정보 준비
   const apiInfo = problemBundleData?.problem_api || {};
