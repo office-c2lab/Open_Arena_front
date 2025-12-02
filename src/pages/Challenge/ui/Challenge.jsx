@@ -158,7 +158,7 @@ export default function Challenge() {
         handleTabClick={handleTabClick}
         CHALLENGE_HEADER_INFO={CHALLENGE_HEADER_INFO}
         isLoading={isPanelLoading}
-        
+        problemCode={problemBundleData?.problem?.problem_code}
         problemApiUrl={apiInfo?.url}
         problemApiMethod={apiInfo?.method}
         problemApiHeaderName={apiInfo?.header_name}

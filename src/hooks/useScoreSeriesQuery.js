@@ -8,7 +8,7 @@ export function useScoreSeriesQuery(interval = 5000) {
   const [error, setError] = useState(null);
 
   // ⭐ 대회 시작 시간 (UTC 변환 ❌ 그대로 KST 사용)
-  const START = "2025-12-02T11:30:00+09:00";
+  const START = "2025-12-02T17:20:00+09:00";
 
   const load = async () => {
     try {

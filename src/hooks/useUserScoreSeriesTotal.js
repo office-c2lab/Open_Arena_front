@@ -11,7 +11,7 @@ export function useUserScoreSeriesTotal(interval = 5000) {
   const [error, setError] = useState(null);
 
   // ⭐ KST 11:30 시작
-  const START = "2025-12-02T11:30:00+09:00";
+  const START = "2025-12-02T17:20:00+09:00";
 
   const load = async () => {
     try {
