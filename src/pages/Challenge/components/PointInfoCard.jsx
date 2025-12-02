@@ -1,10 +1,12 @@
 // src/features/Challenge/components/PointInfoCard.jsx
+
 import React from 'react';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 import PointSvg from '../../../assets/icons/Point.svg';
 import { useParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
-import { useProblemBundle } from '@/hooks/useProblemBundle'; // ✅ API 훅 사용
+import { useProblemBundle } from '@/hooks/useProblemBundle';
+import { useProblemBestScore } from '@/hooks/useProblemBestScore';   // ⭐ 추가
 
 const COLOR_BLACK = '#000000';
 
@@ -32,12 +34,18 @@ export default function PointInfoCard() {
   const currentProblemId = parseInt(problemId, 10);
   const teamId = useAuthStore(state => state.teamInfo?.id) || undefined;
 
-  // ✅ 문제 데이터 불러오기 (React Query 캐시 재사용)
-  const { data, isLoading } = useProblemBundle(currentProblemId, teamId);
+  // 문제 기본 점수
+  const { data: problemData, isLoading: isProblemLoading } =
+    useProblemBundle(currentProblemId, teamId);
 
-  const score = data?.problem?.score ?? 0;
+  // ⭐ 최고 점수(best_score)
+  const { data: bestScoreData, isLoading: isBestLoading } =
+    useProblemBestScore(currentProblemId, teamId);
 
-  if (isLoading) return <PointInfoCardSkeleton />;
+  const score = problemData?.problem?.score ?? 0;
+  const bestScore = bestScoreData?.best_score ?? 0;   // ⭐ 0 또는 실제 점수
+
+  if (isProblemLoading || isBestLoading) return <PointInfoCardSkeleton />;
 
   return (
     <div
@@ -53,9 +61,20 @@ export default function PointInfoCard() {
       </div>
 
       <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-        <span className="heading-3 font-500 text-black">포인트</span>
+        <span className="heading-3 font-500 text-black">점수</span>
+
         <div className="flex items-baseline">
-          <span className="heading-1 font-700 text-black">{score}</span>
+          {/* 최고 점수 */}
+          <span className="heading-2 font-700 text-gray-600">
+            {bestScore}
+          </span>
+          
+
+          {/* / 구분 */}
+          <span className="heading-2 font-500 text-black mx-2">/</span>
+
+          {/* 문제 점수 */}
+          <span className="heading-2 font-700 text-black">{score}</span>
         </div>
       </div>
     </div>
