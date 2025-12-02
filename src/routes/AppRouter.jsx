@@ -31,6 +31,7 @@ import Leaderboard from '../pages/Leaderboard/ArenaMockPage';
 import AdminProblemPage from '../pages/admin/AdminProblemPage';
 import AdminConversationMockPage from '../pages/admin/AdminConversationMockPage';
 import FourZeroThree from '../pages/NotFound/FourZeroThree'; // ⭐ 403 추가
+import AdminJudgePromptEditor from '../pages/admin/AdminJudgePromptEditor';
 
 export default function AppRouter() {
   return (
@@ -70,6 +71,7 @@ export default function AppRouter() {
         <Route path="matrix" element={<ProblemStatusMatrix />} />
         <Route path="problems" element={<AdminProblemPage />} />
         <Route path="users" element={<AdminConversationMockPage />} />
+        <Route path="judge" element={<AdminJudgePromptEditor />} />
       </Route>
 
       {/* ---------------------------

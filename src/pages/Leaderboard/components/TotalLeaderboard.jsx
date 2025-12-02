@@ -97,8 +97,9 @@ export default function TotalLeaderboard() {
     '#5856D6',
     '#AF52DE',
     '#FF2D55',
-    '#8E8E93',
     '#FF6B6B',
+    '#8E8E93',
+    
   ];
 
   return (

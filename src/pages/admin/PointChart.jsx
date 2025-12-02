@@ -1,6 +1,13 @@
 import React from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from 'recharts';
 import { useScoreSeriesQuery } from '@/hooks/useScoreSeriesQuery';
 import Skeleton from '../../components/Skeleton/Skeleton';
@@ -24,28 +31,27 @@ const PointChart = () => {
   if (isLoading || !data || data.length === 0) return <PointChartSkeleton />;
   if (error) return <div className="text-red-500">데이터 로드 실패</div>;
 
-// 마지막 데이터 기준 팀 추출
-const latest = data[data.length - 1];
-const teamNames = Object.keys(latest).filter(k => k !== 'time');
+  // 마지막 데이터 기준 팀 추출
+  const latest = data[data.length - 1];
+  const teamNames = Object.keys(latest).filter(k => k !== 'time');
 
-// ⭐ 0점 팀도 모두 보여줌
-const visibleTeams = teamNames;
+  // ⭐ 0점 팀도 모두 보여줌
+  const visibleTeams = teamNames;
 
-
-   const colors = [
-    "#FF4854", // 1 - ARENA Red
-    "#FC3447", // 2
-    "#FF6A75", // 3
-    "#FF7F8B", // 4
-    "#FFA5AC", // 5
-    "#FFC7D1", // 6 (연핑크)
-    "#C736FF", // 7 - 네온 퍼플
-    "#9B30FF", // 8
-    "#7A2CFF", // 9
-    "#B66BFF", // 10
-    "#D8A6FF", // 11
-    "#FFCC4D", // 12
-    
+  // 새로운 색상 팔레트
+  const colors = [
+    '#FF3B30',
+    '#FF9500',
+    '#FFCC00',
+    '#4CD964',
+    '#34C759',
+    '#5AC8FA',
+    '#007AFF',
+    '#5856D6',
+    '#AF52DE',
+    '#FF2D55',
+    '#FF6B6B',
+    '#8E8E93',
   ];
 
   return (
