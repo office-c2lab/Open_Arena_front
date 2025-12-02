@@ -43,12 +43,12 @@ export const mainNavigationData = (isAIDropdownOpen) => [
     onClick: () => window.open('/leaderboard', '_blank'),
     openInNewTab: true, // UI에서 사용할 수 있게 플래그 추가(선택 사항)
   },
-  {
-    icon: PageIcon,
-    activeIcon: PageIconWhite,
-    label: '튜토리얼',
-    path: '/tutorial',
-  },
+  // {
+  //   icon: PageIcon,
+  //   activeIcon: PageIconWhite,
+  //   label: '튜토리얼',
+  //   path: '/tutorial',
+  // },
   {
     icon: AIIcon,
     activeIcon: AIIconWhite,
