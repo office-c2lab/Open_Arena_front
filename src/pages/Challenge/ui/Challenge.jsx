@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 
 // React Query 훅
@@ -31,6 +31,7 @@ import FailedModal from '../ChallengeModal/FailedModal';
 import SuccessModal from '../ChallengeModal/SuccesModal';
 
 export default function Challenge() {
+  const navigate = useNavigate(); // ⭐ 403 라우팅용
   const { problemId } = useParams();
   const currentProblemId = parseInt(problemId, 10) || undefined;
   const queryClient = useQueryClient();
@@ -54,15 +55,27 @@ export default function Challenge() {
   const { setSessionId, setSessionStatus } = useSessionStore();
 
   const [activeTab, setActiveTab] = useState(TABS[0].id);
-
-  // 로딩 진행률
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0); // 로딩 진행률
 
   // ----------------------------------------------------------------------
   // API Hooks
   // ----------------------------------------------------------------------
-  const { data: problemBundleData, isLoading: isProblemBundleLoading } =
-    useProblemBundleQuery(currentProblemId, currentTeamId);
+  const {
+    data: problemBundleData,
+    isLoading: isProblemBundleLoading,
+    isError: isProblemError,
+    error: problemError,
+  } = useProblemBundleQuery(currentProblemId, currentTeamId);
+
+  // ⭐ 403 Forbidden 감지 → /403 페이지로 이동
+  useEffect(() => {
+    if (isProblemError) {
+      const status = problemError?.response?.status;
+      if (status === 403) {
+        navigate('/403', { replace: true });
+      }
+    }
+  }, [isProblemError, problemError, navigate]);
 
   // ⭐ API 상세 정보 준비
   const apiInfo = problemBundleData?.problem_api || {};
@@ -112,20 +125,6 @@ export default function Challenge() {
       };
     }, [problemBundleData, activeTab]);
 
-  // ❌ 성공 세션 자동 고정 로직 제거됨!
-  // useEffect(() => {
-  //   if (!SESSIONS_LIST || SESSIONS_LIST.length === 0) return;
-  //
-  //   const successSession = SESSIONS_LIST.find(
-  //     s => s.status?.toLowerCase() === 'success'
-  //   );
-  //
-  //   if (successSession) {
-  //     setSessionId(successSession.id);
-  //     setSessionStatus('success');
-  //   }
-  // }, [SESSIONS_LIST, setSessionId, setSessionStatus]);
-
   // 전체 문제 중 성공 세션 존재 여부 (ChatArea에서 상태 표현용)
   const hasSuccessSession = useMemo(() => {
     return SESSIONS_LIST?.some(s => s.status?.toLowerCase() === 'success');
@@ -136,9 +135,7 @@ export default function Challenge() {
     setActiveTab(tabId);
   };
 
-  const handleResetChat = () => {
-    // console.log('대화 초기화 완료');
-  };
+  const handleResetChat = () => {};
 
   useMemo(() => {
     setResetChatAction(handleResetChat);
@@ -162,7 +159,6 @@ export default function Challenge() {
         CHALLENGE_HEADER_INFO={CHALLENGE_HEADER_INFO}
         isLoading={isPanelLoading}
         
-        // ⭐ 추가된 props
         problemApiUrl={apiInfo?.url}
         problemApiMethod={apiInfo?.method}
         problemApiHeaderName={apiInfo?.header_name}

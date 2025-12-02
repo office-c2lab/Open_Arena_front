@@ -25,7 +25,7 @@ export default function AdminConversationMockPage() {
     <div className="w-full p-10 text-white flex flex-col gap-6">
 
       <h1 className="text-3xl font-bold text-[#FF4854]">
-         관리자 세션 / 판정 관리 페이지
+        관리자 세션 / 판정 관리 페이지
       </h1>
 
       {/* ===== 상단 3패널 ===== */}
@@ -79,7 +79,7 @@ export default function AdminConversationMockPage() {
 
       {/* ===== 세션 전체 대화 ===== */}
       <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/10 h-[35vh] overflow-y-auto">
-        <h2 className="text-xl font-bold text-[#FF4854] mb-4"> 세션 전체 대화</h2>
+        <h2 className="text-xl font-bold text-[#FF4854] mb-4">세션 전체 대화</h2>
 
         {!sessionId && <Empty>세션을 선택하세요</Empty>}
 
@@ -92,7 +92,7 @@ export default function AdminConversationMockPage() {
 
       {/* ===== 세션 판정 ===== */}
       <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/20">
-        <h2 className="text-xl font-bold text-[#FF4854] mb-4"> 세션 최종 판정</h2>
+        <h2 className="text-xl font-bold text-[#FF4854] mb-4">세션 최종 판정</h2>
 
         {!selectedSession && <Empty>세션을 선택하세요</Empty>}
 
@@ -142,9 +142,8 @@ function Empty({ children }) {
 }
 
 /* ----------------------------------
-   말풍선: 사용자 오른쪽 / AI 왼쪽
+   말풍선
 ---------------------------------- */
-
 function ChatBubble({ msg }) {
   const isUser = msg.role === "user";
 
@@ -162,14 +161,69 @@ function ChatBubble({ msg }) {
 }
 
 /* ----------------------------------
-   판정 선택 + 저장 버튼 컴포넌트
+   ⭐ Judge 결과 3패널 + 판정 UI
 ---------------------------------- */
 
 function SessionJudgeEditor({ session, onSave }) {
   const [tempJudge, setTempJudge] = useState(session.judge);
 
+  // ⭐ Mock judge 결과
+  const judgeModels = [
+    {
+      id: 1,
+      name: "Judge Model A",
+      verdict: "success",
+      reason: "핵심 플래그 검증 로직이 모두 충족되었습니다.",
+    },
+    {
+      id: 2,
+      name: "Judge Model B",
+      verdict: "fail",
+      reason: "입력된 요청이 목표 조건에 완전히 도달하지 못했습니다.",
+    },
+    {
+      id: 3,
+      name: "Judge Model C",
+      verdict: "pending",
+      reason: "추가 시도가 필요합니다. 충분한 증거가 부족합니다.",
+    },
+  ];
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
+
+      {/* ⭐⭐⭐ Judge 모델 결과 패널 3개 */}
+      <div className="grid grid-cols-3 gap-4 h-[30vh]">
+        {judgeModels.map((jm) => (
+          <div
+            key={jm.id}
+            className="flex flex-col bg-[#0B021C]/70 rounded-xl p-4 border border-white/10"
+          >
+            <div className="font-bold text-[#FF4854] text-lg mb-2">
+              {jm.name}
+            </div>
+
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-sm opacity-70">판단:</span>
+              <span
+                className={`px-3 py-1 rounded-full text-white text-sm ${
+                  jm.verdict === "success"
+                    ? "bg-green-600"
+                    : jm.verdict === "fail"
+                    ? "bg-red-600"
+                    : "bg-gray-600"
+                }`}
+              >
+                {jm.verdict}
+              </span>
+            </div>
+
+            <div className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
+              {jm.reason}
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* 현재 판정 표시 */}
       <div className="text-lg font-bold flex items-center">

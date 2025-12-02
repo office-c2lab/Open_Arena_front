@@ -9,7 +9,7 @@ import AdminGuard from './AdminGuard';
 import DefaultLayout from '../ui/DefaultLayout';
 import ChallengeLayout from '../ui/ChallengeLayout';
 import AdminLayout from '../ui/AdminLayout';
-import LeaderboardLayout from '../ui/LeaderboardLayout';    // ✅ 추가
+import LeaderboardLayout from '../ui/LeaderboardLayout'; // ✅ 추가
 
 // Pages
 import Login from '../pages/Login/Login';
@@ -26,10 +26,11 @@ import NotFound from '../pages/NotFound/NotFound';
 import ProblemStatusMatrix from '../pages/admin/ProblemStatusMatrix';
 import AdminProblemToggleList from '../pages/admin/AdminProblemToggleList';
 
-import ArenaMockPage from '../pages/Leaderboard/ArenaMockPage';  // ✅ 추가
+import ArenaMockPage from '../pages/Leaderboard/ArenaMockPage'; // ✅ 추가
 import Leaderboard from '../pages/Leaderboard/ArenaMockPage';
 import AdminProblemPage from '../pages/admin/AdminProblemPage';
 import AdminConversationMockPage from '../pages/admin/AdminConversationMockPage';
+import FourZeroThree from '../pages/NotFound/FourZeroThree'; // ⭐ 403 추가
 
 export default function AppRouter() {
   return (
@@ -75,7 +76,7 @@ export default function AppRouter() {
           🔥 LeaderboardLayout (ARENA MOCK)
          --------------------------- */}
       <Route element={<LeaderboardLayout />}>
-        <Route path="/leaderboard" element={<Leaderboard />} />   {/* ✅ 추가됨 */}
+        <Route path="/leaderboard" element={<Leaderboard />} /> {/* ✅ 추가됨 */}
       </Route>
 
       {/* ---------------------------  
@@ -106,7 +107,8 @@ export default function AppRouter() {
       >
         <Route path="/challenge/:problemId" element={<Challenge />} />
       </Route>
-
+      {/* ⭐ 추가된 403 페이지 */}
+      <Route path="/403" element={<FourZeroThree />} />
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>

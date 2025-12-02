@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   LineChart,
   Line,
@@ -7,9 +7,9 @@ import {
   YAxis,
   ResponsiveContainer,
   Tooltip,
-} from "recharts";
+} from 'recharts';
 
-import { useUserScoreSeriesTotal } from "@/hooks/useUserScoreSeriesTotal";
+import { useUserScoreSeriesTotal } from '@/hooks/useUserScoreSeriesTotal';
 
 // 🎨 Y축 TickBox — 레드 테마
 const YAxisTickBox = ({ x, y, payload }) => {
@@ -19,19 +19,19 @@ const YAxisTickBox = ({ x, y, payload }) => {
     <foreignObject x={x - 150} y={y - 16} width={130} height={32}>
       <div
         style={{
-          width: "120px",
-          height: "32px",
-          background: "rgba(255,72,84,0.15)",
-          border: "1px solid #FF4854",
-          borderRadius: "7px",
-          boxShadow: "0px 4px 8px rgba(255,72,84,0.35)",
-          color: "#FF4854",
-          fontFamily: "Black Han Sans",
+          width: '120px',
+          height: '32px',
+          background: 'rgba(255,72,84,0.15)',
+          border: '1px solid #FF4854',
+          borderRadius: '7px',
+          boxShadow: '0px 4px 8px rgba(255,72,84,0.35)',
+          color: '#FF4854',
+          fontFamily: 'Black Han Sans',
           fontWeight: 900,
-          fontSize: "18px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          fontSize: '18px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         {payload.value}
@@ -41,71 +41,64 @@ const YAxisTickBox = ({ x, y, payload }) => {
 };
 
 export default function TotalLeaderboard() {
-  // ⭐ 사용자용 토탈 그래프 훅으로 변경
   const { data, enabled, isLoading, error } = useUserScoreSeriesTotal(1500);
 
-  // 에러 우선
-  if (error) {
+  // ⭐ 404 → 비공개 상태 메시지 출력
+  if (error?.response?.status === 404) {
     return (
-      <div className="text-red-400 text-center text-xl mt-10">
-        데이터 로드 실패
+      <div className="text-white text-center text-2xl mt-10">
+        토탈 점수 차트는 현재 비공개 상태입니다.
       </div>
     );
   }
 
-  // 공개 OFF인 경우
+  // ❌ 기타 에러
+  if (error) {
+    return <div className="text-red-400 text-center text-xl mt-10">데이터 로드 실패</div>;
+  }
+
+  // 공개 OFF (백엔드가 enabled=false 준 경우)
   if (enabled === false) {
     return (
       <div className="text-white text-center text-2xl mt-10">
-         토탈 점수 차트는 현재 비공개 상태입니다.
+        토탈 점수 차트는 현재 비공개 상태입니다.
       </div>
     );
   }
 
   // 로딩
   if (isLoading || !data || data.length === 0) {
-    return (
-      <div className="text-white text-center text-xl mt-10">
-        Loading 점수 변화 차트...
-      </div>
-    );
+    return <div className="text-white text-center text-xl mt-10">Loading 점수 변화 차트...</div>;
   }
 
-  // ------------------------ 마지막 기록 기준 팀 이름 추출
+  // 팀 목록 추출
   const last = data[data.length - 1];
-  const teamNames = Object.keys(last).filter((key) => key !== "time");
+  const teamNames = Object.keys(last).filter(key => key !== 'time');
 
-  // ------------------------ Y축 최대값 계산
-  const maxScore = Math.max(
-    ...data.flatMap((row) =>
-      teamNames.map((team) => Number(row[team]) || 0)
-    )
-  );
+  // 최대값 계산
+  const maxScore = Math.max(...data.flatMap(row => teamNames.map(team => Number(row[team]) || 0)));
 
- // ------------------------ Y축 최대값 계산 (100점 단위)
-const yMax = Math.ceil((maxScore + 100) / 100) * 100;
+  const yMax = Math.ceil((maxScore + 100) / 100) * 100;
+  const yTicks = [];
 
-const yTicks = [];
-for (let v = yMax; v >= 0; v -= 100) yTicks.push(v);
+  for (let v = yMax; v >= 0; v -= 100) yTicks.push(v);
 
+  const formatFullTime = iso => new Date(iso).toLocaleString();
 
-  const formatFullTime = (iso) => new Date(iso).toLocaleString();
-
-  // 🎨 ARENA Red-Pink 기반 차트 색상셋
+  // 새로운 색상 팔레트
   const colors = [
-    "#FF4854", // 1 - ARENA Red
-    "#FC3447", // 2
-    "#FF6A75", // 3
-    "#FF7F8B", // 4
-    "#FFA5AC", // 5
-    "#FFC7D1", // 6 (연핑크)
-    "#C736FF", // 7 - 네온 퍼플
-    "#9B30FF", // 8
-    "#7A2CFF", // 9
-    "#B66BFF", // 10
-    "#D8A6FF", // 11
-    "#FFCC4D", // 12
-    
+    '#FF3B30',
+    '#FF9500',
+    '#FFCC00',
+    '#4CD964',
+    '#34C759',
+    '#5AC8FA',
+    '#007AFF',
+    '#5856D6',
+    '#AF52DE',
+    '#FF2D55',
+    '#8E8E93',
+    '#FF6B6B',
   ];
 
   return (
@@ -121,21 +114,19 @@ for (let v = yMax; v >= 0; v -= 100) yTicks.push(v);
           shadow-[0_0_25px_rgba(255,72,84,0.45)]
         "
       >
-        {/* ---------- Legend ---------- */}
+        {/* Legend */}
         <div className="flex justify-center flex-wrap gap-10 mb-10">
           {teamNames.map((team, i) => (
             <div key={i} className="flex items-center gap-3">
               <div
-                className="w-[100px] h-[8px] rounded-full shadow-[0_0_10px_rgba(255,72,84,0.6)]"
-                style={{
-                  background: colors[i % colors.length],
-                }}
+                className="w-[100px] h-[8px] rounded-full"
+                style={{ background: colors[i % colors.length] }}
               />
               <span
                 className="text-white text-[20px]"
                 style={{
-                  fontFamily: "Black Han Sans",
-                  textShadow: "0 0 8px rgba(255,72,84,0.7)",
+                  fontFamily: 'Black Han Sans',
+                  textShadow: '0 0 8px rgba(255,72,84,0.7)',
                 }}
               >
                 {team}
@@ -144,20 +135,13 @@ for (let v = yMax; v >= 0; v -= 100) yTicks.push(v);
           ))}
         </div>
 
-        {/* ---------- Chart ---------- */}
+        {/* Chart */}
         <div className="flex gap-6">
           <div className="flex-1 h-[650px] relative">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ left: 160 }}>
                 <CartesianGrid stroke="#FF4854" strokeOpacity={0.25} />
-
-                <XAxis
-                  dataKey="time"
-                  tick={false}
-                  axisLine={false}
-                  tickLine={false}
-                />
-
+                <XAxis dataKey="time" tick={false} axisLine={false} />
                 <YAxis
                   domain={[0, yMax]}
                   ticks={yTicks}
@@ -165,27 +149,24 @@ for (let v = yMax; v >= 0; v -= 100) yTicks.push(v);
                   tickLine={false}
                   tick={<YAxisTickBox />}
                 />
-
                 <Tooltip
                   labelFormatter={formatFullTime}
                   contentStyle={{
-                    background: "#1A0B15",
-                    border: "1px solid #FF4854",
-                    borderRadius: "12px",
-                    color: "#FFF",
-                    boxShadow: "0 0 12px rgba(255,72,84,0.5)",
+                    background: '#1A0B15',
+                    border: '1px solid #FF4854',
+                    borderRadius: '12px',
+                    color: '#FFF',
                   }}
                 />
 
-                {/* ---------- 팀별 라인 ---------- */}
                 {teamNames.map((team, i) => (
                   <Line
                     key={team}
                     dataKey={team}
                     stroke={colors[i % colors.length]}
-                    strokeWidth={5}
+                    strokeWidth={4}
                     dot={{ r: 4, fill: colors[i % colors.length] }}
-                    activeDot={{ r: 7, stroke: "#FFF", strokeWidth: 2 }}
+                    activeDot={{ r: 7, stroke: '#FFF', strokeWidth: 2 }}
                   />
                 ))}
               </LineChart>
