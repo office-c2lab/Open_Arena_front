@@ -10,12 +10,13 @@ export function useUserScoreSeriesTotal(interval = 5000) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ⭐ KST 11:30 시작
+  // ⭐ KST 대회 시작 09:00
   const START = "2025-12-03T09:00:00+09:00";
+  // ⭐ 대회 종료 17:30
+  const END = "2025-12-03T17:30:00+09:00";
 
   const load = async () => {
     try {
-      // 공개 여부 조회
       const setting = await fetchUserTotalGraphSetting();
       setEnabled(setting.enabled);
 
@@ -25,12 +26,11 @@ export function useUserScoreSeriesTotal(interval = 5000) {
         return;
       }
 
-      // ⭐ end 없이 start만 전달 (백엔드가 end=now 자동 처리)
       let res = await fetchUserScoreSeriesTotal({
         start: START,
+        end: END, // ⭐ 추가!
       });
 
-      // 정렬 안전장치
       res = res.sort((a, b) => new Date(a.time) - new Date(b.time));
 
       setSeriesData(res);
