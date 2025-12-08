@@ -99,7 +99,6 @@ export default function TotalLeaderboard() {
     '#FF2D55',
     '#FF6B6B',
     '#8E8E93',
-    
   ];
 
   return (
@@ -166,8 +165,8 @@ export default function TotalLeaderboard() {
                     dataKey={team}
                     stroke={colors[i % colors.length]}
                     strokeWidth={4}
-                    dot={{ r: 4, fill: colors[i % colors.length] }}
-                    activeDot={{ r: 7, stroke: '#FFF', strokeWidth: 2 }}
+                    dot={false}
+                    activeDot={{ r: 5 }}
                   />
                 ))}
               </LineChart>

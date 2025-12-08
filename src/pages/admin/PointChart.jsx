@@ -71,7 +71,8 @@ const PointChart = () => {
               dataKey={team}
               stroke={colors[idx % colors.length]}
               strokeWidth={2.5}
-              activeDot={{ r: 6 }}
+              dot={false}
+              activeDot={{ r: 5 }}
             />
           ))}
         </LineChart>
