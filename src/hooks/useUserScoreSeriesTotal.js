@@ -11,9 +11,9 @@ export function useUserScoreSeriesTotal(interval = 5000) {
   const [error, setError] = useState(null);
 
   // ⭐ KST 대회 시작 09:00
-  const START = "2025-12-03T09:00:00+09:00";
+  const START = "2025-12-10T10:55:00+09:00";
   // ⭐ 대회 종료 17:30
-  const END = "2025-12-03T17:30:00+09:00";
+  // const END = "2025-12-03T17:30:00+09:00";
 
   const load = async () => {
     try {
@@ -28,7 +28,7 @@ export function useUserScoreSeriesTotal(interval = 5000) {
 
       let res = await fetchUserScoreSeriesTotal({
         start: START,
-        end: END, // ⭐ 추가!
+        // end: END,
       });
 
       res = res.sort((a, b) => new Date(a.time) - new Date(b.time));

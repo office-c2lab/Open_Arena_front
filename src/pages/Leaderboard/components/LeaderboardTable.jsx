@@ -17,11 +17,11 @@ const COL_WIDTHS = {
   team: 'w-[23%]',
   score: 'w-[18%]',
   solved: 'w-[12%]',
-  time: 'flex-1',  // ⭐ 해결 시간
+  time: 'flex-1', // 해결 시간
 };
 
-// 시간 포맷
-const formatTime = (iso) => {
+// 시간 포맷 함수
+const formatTime = iso => {
   if (!iso) return '-';
   const date = new Date(iso);
   return (
@@ -93,7 +93,10 @@ export default function LeaderboardTable() {
   if (isLoading) return <LeaderboardTableSkeleton />;
   if (error) return <div className="text-red-400 text-center">데이터 불러오기 실패</div>;
 
-  const rows = data ?? [];
+  /* ===========================================
+     ⭐⭐⭐ “클래스”로 시작하는 팀만 필터링
+  ============================================ */
+  let rows = (data ?? []).filter(row => row.teamname.startsWith("클래스"));
 
   return (
     <div
@@ -132,7 +135,7 @@ export default function LeaderboardTable() {
               }
             `}
           >
-            {/* 순위/메달 */}
+            {/* 순위 또는 메달 */}
             <div className={`${COL_WIDTHS.rank} flex justify-center`}>
               {row.rank <= 3 ? (
                 <img src={MEDAL_ICON_MAP[row.rank]} className="w-[42px] h-[42px]" />

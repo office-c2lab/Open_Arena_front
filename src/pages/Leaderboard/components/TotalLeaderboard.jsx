@@ -57,7 +57,7 @@ export default function TotalLeaderboard() {
     return <div className="text-red-400 text-center text-xl mt-10">데이터 로드 실패</div>;
   }
 
-  // 공개 OFF (백엔드가 enabled=false 준 경우)
+  // 공개 OFF
   if (enabled === false) {
     return (
       <div className="text-white text-center text-2xl mt-10">
@@ -71,35 +71,54 @@ export default function TotalLeaderboard() {
     return <div className="text-white text-center text-xl mt-10">Loading 점수 변화 차트...</div>;
   }
 
-  // 팀 목록 추출
+  // 팀 목록 추출 — 가장 최근 데이터 기준
   const last = data[data.length - 1];
-  const teamNames = Object.keys(last).filter(key => key !== 'time');
+
+  // ⭐⭐⭐ "클래스" 팀만 필터링
+  let teamNames = Object.keys(last)
+    .filter(key => key !== "time")
+    .filter(team => team.startsWith("클래스"));
 
   // 최대값 계산
-  const maxScore = Math.max(...data.flatMap(row => teamNames.map(team => Number(row[team]) || 0)));
+  const maxScore = Math.max(...data.flatMap(row =>
+    teamNames.map(team => Number(row[team]) || 0)
+  ));
 
   const yMax = Math.ceil((maxScore + 100) / 100) * 100;
   const yTicks = [];
-
   for (let v = yMax; v >= 0; v -= 100) yTicks.push(v);
 
   const formatFullTime = iso => new Date(iso).toLocaleString();
 
-  // 새로운 색상 팔레트
-  const colors = [
-    '#FF3B30',
-    '#FF9500',
-    '#FFCC00',
-    '#4CD964',
-    '#34C759',
-    '#5AC8FA',
-    '#007AFF',
-    '#5856D6',
-    '#AF52DE',
-    '#FF2D55',
-    '#FF6B6B',
-    '#8E8E93',
-  ];
+  // 색상 팔레트
+const colors = [
+  "#FF0000", // 1 - Pure Red
+  "#00FF00", // 2 - Pure Green
+  "#0000FF", // 3 - Pure Blue
+  "#FFFF00", // 4 - Yellow
+  "#FF00FF", // 5 - Magenta
+  "#00FFFF", // 6 - Cyan
+
+  "#FF7F00", // 7 - Orange
+  "#000000", // 8 - Chartreuse
+  "#00FF7F", // 9 - Spring Green
+  "#007FFF", // 10 - Azure
+  "#7F00FF", // 11 - Violet
+  "#FF007F", // 12 - Rose
+
+  "#8B0000", // 13 - Dark Red
+  "#006400", // 14 - Dark Green
+  "#00008B", // 15 - Dark Blue
+  "#8B8B00", // 16 - Dark Yellow/Olive
+  "#8B008B", // 17 - Dark Magenta
+  "#008B8B", // 18 - Dark Cyan
+
+  "#FFA500", // 19 - Strong Orange
+  "#ffffff", // 20 - Green Yellow
+  "#1E90FF", // 21 - Dodger Blue
+];
+
+
 
   return (
     <div className="w-full flex justify-center py-1 px-6">
@@ -149,6 +168,7 @@ export default function TotalLeaderboard() {
                   tickLine={false}
                   tick={<YAxisTickBox />}
                 />
+
                 <Tooltip
                   labelFormatter={formatFullTime}
                   contentStyle={{
@@ -169,6 +189,7 @@ export default function TotalLeaderboard() {
                     activeDot={{ r: 5 }}
                   />
                 ))}
+
               </LineChart>
             </ResponsiveContainer>
           </div>
