@@ -94,9 +94,20 @@ export default function LeaderboardTable() {
   if (error) return <div className="text-red-400 text-center">데이터 불러오기 실패</div>;
 
   /* ===========================================
-     ⭐⭐⭐ “클래스”로 시작하는 팀만 필터링
+     ⭐⭐⭐ “클래스”로 시작하는 팀만 필터링 후
+          점수 기반 정렬 + 새 rank 부여
   ============================================ */
-  let rows = (data ?? []).filter(row => row.teamname.startsWith("클래스"));
+  let rows = (data ?? [])
+    .filter(row => row.teamname.startsWith("클래스"))
+    .sort((a, b) => {
+      // 점수 높은 순 → 동일하면 해결 시간 빠른 순
+      if (b.score !== a.score) return b.score - a.score;
+      return new Date(a.last_solved_at) - new Date(b.last_solved_at);
+    })
+    .map((row, index) => ({
+      ...row,
+      displayedRank: index + 1 // 새 등수
+    }));
 
   return (
     <div
@@ -137,10 +148,10 @@ export default function LeaderboardTable() {
           >
             {/* 순위 또는 메달 */}
             <div className={`${COL_WIDTHS.rank} flex justify-center`}>
-              {row.rank <= 3 ? (
-                <img src={MEDAL_ICON_MAP[row.rank]} className="w-[42px] h-[42px]" />
+              {row.displayedRank <= 3 ? (
+                <img src={MEDAL_ICON_MAP[row.displayedRank]} className="w-[42px] h-[42px]" />
               ) : (
-                <span className="font-700">{row.rank}</span>
+                <span className="font-700">{row.displayedRank}</span>
               )}
             </div>
 

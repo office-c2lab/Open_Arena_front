@@ -92,31 +92,30 @@ export default function TotalLeaderboard() {
 
   // 색상 팔레트
 const colors = [
-  "#FF0000", // 1 - Pure Red
-  "#00FF00", // 2 - Pure Green
-  "#0000FF", // 3 - Pure Blue
-  "#FFFF00", // 4 - Yellow
-  "#FF00FF", // 5 - Magenta
-  "#00FFFF", // 6 - Cyan
-
-  "#FF7F00", // 7 - Orange
-  "#000000", // 8 - Chartreuse
-  "#00FF7F", // 9 - Spring Green
-  "#007FFF", // 10 - Azure
-  "#7F00FF", // 11 - Violet
+  "#FF0000", // 1 - Red
+  "#FF7F00", // 2 - Orange
+  "#FFFF00", // 3 - Yellow
+  "#7FFF00", // 4 - Yellow-Green
+  "#a76030ff", // 5 - Green
+  "#00FF7F", // 6 - Spring Green
+  "#00FFFF", // 7 - Cyan
+  "#007FFF", // 8 - Azure
+  "#0000FF", // 9 - Blue
+  "#7F00FF", // 10 - Violet
+  "#FF00FF", // 11 - Magenta
   "#FF007F", // 12 - Rose
-
-  "#8B0000", // 13 - Dark Red
-  "#006400", // 14 - Dark Green
-  "#00008B", // 15 - Dark Blue
-  "#8B8B00", // 16 - Dark Yellow/Olive
-  "#8B008B", // 17 - Dark Magenta
-  "#008B8B", // 18 - Dark Cyan
-
-  "#FFA500", // 19 - Strong Orange
-  "#ffffff", // 20 - Green Yellow
-  "#1E90FF", // 21 - Dodger Blue
+  "#A52A2A", // 13 - Brown
+  "#ac9200ff", // 14 - Gold
+  "#757574ff", // 15 - Turquoise
+  "#008080", // 16 - Teal
+  "#800080", // 17 - Purple
+  "#ffffff", // 18 - Crimson
+  "#116291ff", // 19 - Dark Turquoise
+  "#556B2F", // 20 - Olive Green
+  "#8B4513", // 21 - Saddle Brown
 ];
+
+
 
 
 
