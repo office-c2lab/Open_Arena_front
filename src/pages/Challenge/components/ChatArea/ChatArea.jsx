@@ -1,3 +1,4 @@
+// src/features/Challenge/components/ChatArea/ChatArea.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import useModalStore from '@/stores/useModalStore';
@@ -17,17 +18,15 @@ export default function ChatArea({
   problemId,
   teamId,
   sessions = [],
-  hasSuccessSession = false, // ✅ 추가: 전체 문제 성공 여부
+  hasSuccessSession = false, // 전달은 받지만 사용하지 않음
 }) {
   const { openResetModal, openSubmitModal } = useModalStore();
   const { sessionStatus } = useSessionStore();
   const queryClient = useQueryClient();
 
-  // ✅ 세션 및 메시지 관련 훅
-  const { sessionId, clearSession, createSessionMutation, handleSessionClick } = useChatSession(
-    teamId,
-    problemId
-  );
+  // 세션 훅
+  const { sessionId, clearSession, createSessionMutation, handleSessionClick } =
+    useChatSession(teamId, problemId);
 
   const [inputValue, setInputValue] = useState('');
 
@@ -44,45 +43,61 @@ export default function ChatArea({
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // ✅ 메시지 전송 로직
+  // 메시지 전송
   const handleSend = async () => {
     const trimmed = inputValue.trim();
     if (!trimmed || sendMessageMutation.isPending) return;
 
+    // ⭐ 세션이 없으면 새로 만들고 메시지 전송
     if (!sessionId) {
       const newSession = await createSessionMutation.mutateAsync('');
       const newSessionId = newSession?.id ?? newSession;
 
       if (newSessionId) {
+        // 문제 다시 불러오기
         queryClient.invalidateQueries(['problemBundle', problemId, teamId]);
+
+        // 첫 메시지 전송
         await sendMessageMutation.mutateAsync(trimmed);
+
+        // 🔥 토큰 사용량 즉시 갱신
+        queryClient.invalidateQueries(['tokenUsage']);
       }
-    } else {
-      sendMessageMutation.mutate(trimmed);
+    }
+
+    // ⭐ 기존 세션이 있을 때
+    else {
+      sendMessageMutation.mutate(trimmed, {
+        onSuccess: () => {
+          // 🔥 토큰 사용량 즉시 갱신
+          queryClient.invalidateQueries(['tokenUsage']);
+        },
+      });
     }
   };
 
-  // ✅ 상태 계산
   const displayMessages = Array.isArray(messages) ? messages : [];
   const isAiTyping = displayMessages.some(msg => msg.isTyping);
 
-  // ✅ 세션 상태 또는 전체 성공 여부 시 입력 막기
+  // 입력 disabled 조건
   const isChatAreaDisabled =
     inputDisabled ||
     sendMessageMutation.isPending ||
     isAiTyping ||
     createSessionMutation.isPending ||
     sessionStatus === 'success' ||
-    sessionStatus === 'fail' ||
-    hasSuccessSession; // ✅ ← 전체 문제 성공 시 완전 잠금
+    sessionStatus === 'fail';
 
   const isInitialState =
     !sessionId && displayMessages.length === 0 && !createSessionMutation.isPending;
 
-  // ✅ 렌더
   return (
     <div className="flex flex-col flex-grow h-full">
-      <SessionList sessions={sessions} sessionId={sessionId} onSessionClick={handleSessionClick} />
+      <SessionList
+        sessions={sessions}
+        sessionId={sessionId}
+        onSessionClick={handleSessionClick}
+      />
 
       <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden h-full">
         <ChatMessages
@@ -101,7 +116,6 @@ export default function ChatArea({
             SendIcon={SendIcon}
             isDisabled={isChatAreaDisabled}
             sessionStatus={sessionStatus}
-            hasSuccessSession={hasSuccessSession} // ✅ 전달
           />
 
           <ChatControls
@@ -111,7 +125,6 @@ export default function ChatArea({
             clearSession={clearSession}
             isDisabled={isChatAreaDisabled}
             sessionId={sessionId}
-            hasSuccessSession={hasSuccessSession}
           />
         </div>
       </div>

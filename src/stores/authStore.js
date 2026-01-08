@@ -1,22 +1,26 @@
 // src/stores/authStore.js
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import {
-  logoutApi,
-  adminLogoutApi,
-} from "@/api/auth";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { logoutApi, adminLogoutApi } from '@/api/auth';
 
 export const useAuthStore = create(
   persist(
-    (set) => ({
+    set => ({
       //---------------------------------------------------
       // ⭐ 일반 유저(팀)
       //---------------------------------------------------
       teamInfo: null,
       isLoggedIn: false,
 
-      login: (team) =>
-        set({ teamInfo: team, isLoggedIn: true }),
+      login: team =>
+        set({
+          teamInfo: {
+            ...team,
+            // ⭐ 서버가 teamname을 안 줄 경우 username을 teamname처럼 사용
+            teamname: team.teamname || team.username || team.login_id,
+          },
+          isLoggedIn: true,
+        }),
 
       logout: async () => {
         try {
@@ -31,8 +35,11 @@ export const useAuthStore = create(
       adminInfo: null,
       isAdminLoggedIn: false,
 
-      adminLoginState: (admin) =>
-        set({ adminInfo: admin, isAdminLoggedIn: true }),
+      adminLoginState: admin =>
+        set({
+          adminInfo: admin,
+          isAdminLoggedIn: true,
+        }),
 
       adminLogout: async () => {
         try {
@@ -53,7 +60,7 @@ export const useAuthStore = create(
         }),
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       getStorage: () => localStorage,
     }
   )

@@ -24,20 +24,23 @@ export default function Sidebar({ isChallengeLayout = false, isOpen = true }) {
   const [isHelpHovered, setIsHelpHovered] = useState(false);
   const [isLogoutHovered, setIsLogoutHovered] = useState(false);
 
-  // ⭐ 여기!! 팀 + 관리자 둘 다 가져와야 함
+  // ⭐ 팀 + 관리자 모두 확인
   const { teamInfo, isLoggedIn, adminInfo, isAdminLoggedIn } = useAuthStore();
 
-  // ⭐ 로그인 상태에 따라 Sidebar 표시 정보 변경
+  // ⭐ 기본값
   let displayName = '로그인 필요';
   let role = '게스트';
 
   const isAnyLoggedIn = isLoggedIn || isAdminLoggedIn;
 
+  // ⭐ 유저 로그인 시
   if (isLoggedIn) {
-    displayName = teamInfo?.teamname;
+    // teamname 없으면 username 사용!
+    displayName = teamInfo?.teamname || teamInfo?.username;
     role = '팀 계정';
   }
 
+  // ⭐ 관리자 로그인 시
   if (isAdminLoggedIn) {
     displayName = adminInfo?.username;
     role = '관리자';

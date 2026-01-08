@@ -1,28 +1,30 @@
 // src/AppInitializer.jsx
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
-import { refreshToken } from '@/api/auth';
+import { getMe, refreshToken } from '@/api/auth';
 
 export default function AppInitializer({ children }) {
-  const { setLoggedOut } = useAuthStore();
+  const { login, logout } = useAuthStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function init() {
-      const hasRefresh = document.cookie.includes('refresh_token=');
-
-      // 🔥 처음 방문: refresh_token 없으면 아무것도 하지 않음
-      if (!hasRefresh) {
-        setLoading(false);
-        return;
-      }
-
       try {
-        await refreshToken(); // access_token만 갱신
-        // ❗ teamInfo/adminInfo는 유지됨 (중요!)
+        // 1) access_token으로 상태 확인
+        const me = await getMe();
+        login(me);
       } catch (err) {
-        // refresh 실패할 때만 로그아웃 처리
-        setLoggedOut();
+        // 2) access_token 만료 → refresh 시도
+        try {
+          await refreshToken();
+
+          // refresh 성공 → 다시 me 호출
+          const me = await getMe();
+          login(me);
+        } catch {
+          // 3) refresh 실패 → 완전 로그아웃
+          logout();
+        }
       } finally {
         setLoading(false);
       }
@@ -32,6 +34,5 @@ export default function AppInitializer({ children }) {
   }, []);
 
   if (loading) return <div>Loading...</div>;
-
   return children;
 }

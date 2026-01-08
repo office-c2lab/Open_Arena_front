@@ -31,11 +31,20 @@ const ApiInfoPanelSkeleton = () => {
 // ------------------------------------------------------------------
 // 메인 컴포넌트
 // ------------------------------------------------------------------
-export default function ApiInfoPanel({ isLoading, apiUrl, method, headerName, apiKey }) {
+export default function ApiInfoPanel({
+  isLoading,
+  apiUrl,
+  method,
+  headerName,
+  apiKey,
+  problemCode,   // ⭐ 추가된 props
+}) {
   if (isLoading) return <ApiInfoPanelSkeleton />;
 
-  // 예시 Request Body
-  const requestBodyExample = '{ "content": "대화 입력" }';
+  const requestBodyExample = `{
+  "problem_id": "${problemCode ?? '문제코드 없음'}",
+  "content": "안녕하세요"
+}`;
 
   return (
     <div
@@ -49,18 +58,14 @@ export default function ApiInfoPanel({ isLoading, apiUrl, method, headerName, ap
       <h3 className="body-large font-700 text-[#837BBD]">문제 API</h3>
 
       <div className="body-medium font-500 whitespace-pre-wrap" style={{ color: API_TEXT_COLOR }}>
-        <p>
-          <b>URL:</b> {apiUrl ?? '정보 없음'}
-        </p>
-        <p>
-          <b>Headers:</b> {headerName ?? '정보 없음'}
-        </p>
-        <p>
-          <b>API Key:</b> {apiKey ?? '정보 없음'}
-        </p>
+        <p><b>URL:</b> {apiUrl ?? '정보 없음'}</p>
+        <p><b>Headers:</b> {headerName ?? '정보 없음'}</p>
+        <p><b>API Key:</b> {apiKey ?? '정보 없음'}</p>
 
-        <p className="font-600">예시 Request Body</p>
-        <pre className="rounded text-sm overflow-x-auto">{requestBodyExample}</pre>
+        <p className="font-600 font-bold">Request Body (예시)</p>
+
+        
+        <pre className="rounded text-sm overflow-x-auto font-bold">{requestBodyExample}</pre>
       </div>
     </div>
   );

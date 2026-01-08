@@ -2,37 +2,34 @@
 import api from '@/api/axiosInstance';
 
 /**
- *  팀별 리더보드 데이터 조회 (사용자용)
+ * 사용자 리더보드 조회
  */
-export const fetchLeaderboard = async (teamId, limit = 8) => {
-  const res = await api.get('/dashboard/leaderboard', {
-    params: { team_id: teamId, limit },
-  });
+export const fetchLeaderboard = async () => {
+  const res = await api.get('/common/leaderboard');
   return res.data;
 };
 
+
 /**
- *  관리자용 팀별 문제풀이 현황 조회
+ * 🔥 사용자 리더보드 공개 여부 조회
+ * GET /dashboard/arena/leaderboard-setting
+ */
+export const fetchUserLeaderboardSetting = async () => {
+  const res = await api.get('/common/leaderboard-setting');
+  return res.data;  // { leaderboard_enabled: true/false }
+};
+
+/**
+ * 관리자용 문제풀이 매트릭스
  */
 export const fetchSolveMatrix = async (label = 'title') => {
-  const res = await api.get('/admin/solve-matrix', {
-    params: { label },
+  const res = await api.get('/admin/arena/solve-matrix', { params: { label } });
+  return res.data;
+};
+
+export const fetchScoreSeriesTotal = async ({ start, end }) => {
+  const res = await api.get('/admin/score-series/total', {
+    params: { start, end }
   });
-  return res.data;
-};
-
-/**
- *  관리자용 실시간 점수 시계열 데이터 조회
- */
-export const fetchScoreSeries = async () => {
-  const res = await api.get('/admin/score-series');
-  return res.data;
-};
-
-/**
- *  관리자용 최신 success 변경 감지 (폴링용)
- */
-export const fetchScoreHead = async () => {
-  const res = await api.get('/admin/score-series/head');
   return res.data;
 };

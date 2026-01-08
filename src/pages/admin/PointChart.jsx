@@ -1,6 +1,13 @@
 import React from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from 'recharts';
 import { useScoreSeriesQuery } from '@/hooks/useScoreSeriesQuery';
 import Skeleton from '../../components/Skeleton/Skeleton';
@@ -21,19 +28,30 @@ const PointChartSkeleton = () => (
 const PointChart = () => {
   const { data, isLoading, error } = useScoreSeriesQuery(5000); // 5초 폴링
 
-  if (isLoading || data.length === 0) return <PointChartSkeleton />;
+  if (isLoading || !data || data.length === 0) return <PointChartSkeleton />;
   if (error) return <div className="text-red-500">데이터 로드 실패</div>;
 
-  // ✅ 마지막 데이터 기준으로 팀 이름 추출
+  // 마지막 데이터 기준 팀 추출
   const latest = data[data.length - 1];
-  const teamNames = Object.keys(latest).filter(key => key !== 'time');
+  const teamNames = Object.keys(latest).filter(k => k !== 'time');
 
-  // ✅ 0점이 아닌 팀만 필터링
-  const visibleTeams = teamNames.filter(team => latest[team] > 0);
+  // ⭐ 0점 팀도 모두 보여줌
+  const visibleTeams = teamNames;
 
+  // 새로운 색상 팔레트
   const colors = [
-    '#FFBA57', '#9E9E9E', '#CE7430', '#4CAF50', '#2196F3',
-    '#FF9800', '#9C27B0', '#00BCD4', '#E91E63', '#607D8B',
+    '#FF3B30',
+    '#FF9500',
+    '#FFCC00',
+    '#4CD964',
+    '#34C759',
+    '#5AC8FA',
+    '#007AFF',
+    '#5856D6',
+    '#AF52DE',
+    '#FF2D55',
+    '#FF6B6B',
+    '#8E8E93',
   ];
 
   return (
@@ -45,7 +63,7 @@ const PointChart = () => {
           <YAxis domain={[0, 'dataMax + 20']} />
           <Tooltip />
           <Legend />
-          {/* ✅ 점수가 0이 아닌 팀만 표시 */}
+
           {visibleTeams.map((team, idx) => (
             <Line
               key={team}
@@ -53,7 +71,8 @@ const PointChart = () => {
               dataKey={team}
               stroke={colors[idx % colors.length]}
               strokeWidth={2.5}
-              activeDot={{ r: 6 }}
+              dot={false}
+              activeDot={{ r: 5 }}
             />
           ))}
         </LineChart>

@@ -16,12 +16,12 @@ import SettingsIconWhite from '@/assets/icons/white-settings.svg';
 const primaryTextColor = 'text-[#0F172A]';
 
 export const aiSubMenu = [
-  { label: '코딩' },
-  { label: '상담' },
-  { label: '금융' },
-  { label: '의료' },
+  { label: '법률' },
+  { label: '군사' },
+  { label: '사회' },
   { label: '일반' },
 ];
+
 
 export const settingsSubMenu = [
   { label: '계정', path: '/settings/account' },
@@ -39,14 +39,16 @@ export const mainNavigationData = (isAIDropdownOpen) => [
     icon: ChartIcon,
     activeIcon: ChartIconWhite,
     label: '리더보드',
-    path: '/leaderboard',
+    // ⭐ 리더보드를 새 창으로 열기
+    onClick: () => window.open('/leaderboard', '_blank'),
+    openInNewTab: true, // UI에서 사용할 수 있게 플래그 추가(선택 사항)
   },
-  {
-    icon: PageIcon,
-    activeIcon: PageIconWhite,
-    label: '튜토리얼',
-    path: '/tutorial',
-  },
+  // {
+  //   icon: PageIcon,
+  //   activeIcon: PageIconWhite,
+  //   label: '튜토리얼',
+  //   path: '/tutorial',
+  // },
   {
     icon: AIIcon,
     activeIcon: AIIconWhite,

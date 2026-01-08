@@ -1,32 +1,46 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import RootRedirect from './RootRedirect';
 import LoginRedirect from './LoginRedirect';
 import ProtectedRoute from './ProtectedRoute';
-
-import DefaultLayout from '../ui/DefaultLayout';
-import ChallengeLayout from '../ui/ChallengeLayout';
 import AdminGuard from './AdminGuard';
 
+// Layouts
+import DefaultLayout from '../ui/DefaultLayout';
+import ChallengeLayout from '../ui/ChallengeLayout';
+import AdminLayout from '../ui/AdminLayout';
+import LeaderboardLayout from '../ui/LeaderboardLayout'; // ✅ 추가
+
+// Pages
 import Login from '../pages/Login/Login';
-import Dashboard from '../pages/Dashboard/Dashboard';
-import Leaderboard from '../pages/Leaderboard/Leaderboard';
-import AdminLeaderboard from '../pages/admin/AdminLeaderboard';
 import AdminLogin from '../pages/admin/AdminLogin';
+import Dashboard from '../pages/Dashboard/Dashboard';
+// import Leaderboard from '../pages/Leaderboard/Leaderboard';
 import Tutorial from '../pages/Tutorial/Tutorial';
-import NotFound from '../pages/NotFound/NotFound';
 import Kategorie from '../pages/Kategorie/Kategorie';
 import Challenge from '../pages/Challenge/ui/Challenge';
 import ChatTestPage from '../pages/ChatTestPage';
+import AdminLeaderboard from '../pages/admin/AdminLeaderboard';
 import LeaderboardMatrix from '../pages/admin/LeaderboardMatrix';
+import NotFound from '../pages/NotFound/NotFound';
+import ProblemStatusMatrix from '../pages/admin/ProblemStatusMatrix';
+import AdminProblemToggleList from '../pages/admin/AdminProblemToggleList';
+
+import ArenaMockPage from '../pages/Leaderboard/ArenaMockPage'; // ✅ 추가
+import Leaderboard from '../pages/Leaderboard/ArenaMockPage';
+import AdminProblemPage from '../pages/admin/AdminProblemPage';
+import AdminConversationMockPage from '../pages/admin/AdminConversationMockPage';
+import FourZeroThree from '../pages/NotFound/FourZeroThree'; // ⭐ 403 추가
+import AdminJudgePromptEditor from '../pages/admin/AdminJudgePromptEditor';
 
 export default function AppRouter() {
   return (
     <Routes>
       {/* "/" → 로그인 여부에 따라 이동 */}
       <Route path="/" element={<RootRedirect />} />
+      <Route path="/admin" element={<Navigate to="/admin/leaderboard" replace />} />
 
-      {/* 로그인 페이지 - 이미 로그인 되어 있으면 Dashboard로 */}
+      {/* 로그인 페이지 */}
       <Route
         path="/login"
         element={
@@ -36,31 +50,40 @@ export default function AppRouter() {
         }
       />
 
-      {/* 테스트 페이지는 보호 X */}
+      {/* 테스트 페이지(보호 X) */}
       <Route path="/test" element={<ChatTestPage />} />
 
-      {/* 관리자 페이지 (관리자 인증은 따로 만들면 됨) */}
+      {/* 관리자 로그인 */}
       <Route path="/admin/login" element={<AdminLogin />} />
 
+      {/* ---------------------------
+          🔥 Admin Layout (공통 UI)
+         --------------------------- */}
       <Route
-        path="/admin/leaderboard"
+        path="/admin"
         element={
           <AdminGuard>
-            <AdminLeaderboard />
+            <AdminLayout />
           </AdminGuard>
         }
-      />
+      >
+        <Route path="leaderboard" element={<AdminLeaderboard />} />
+        <Route path="matrix" element={<ProblemStatusMatrix />} />
+        <Route path="problems" element={<AdminProblemPage />} />
+        <Route path="users" element={<AdminConversationMockPage />} />
+        <Route path="judge" element={<AdminJudgePromptEditor />} />
+      </Route>
 
-      <Route
-        path="/admin/matrix"
-        element={
-          <AdminGuard>
-            <LeaderboardMatrix />
-          </AdminGuard>
-        }
-      />
+      {/* ---------------------------
+          🔥 LeaderboardLayout (ARENA MOCK)
+         --------------------------- */}
+      <Route element={<LeaderboardLayout />}>
+        <Route path="/leaderboard" element={<Leaderboard />} /> {/* ✅ 추가됨 */}
+      </Route>
 
-      {/*  DefaultLayout 하위는 모두 보호 */}
+      {/* ---------------------------  
+          🔥 DefaultLayout 보호 구역
+         --------------------------- */}
       <Route
         element={
           <ProtectedRoute>
@@ -70,11 +93,13 @@ export default function AppRouter() {
       >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/tutorial" element={<Tutorial />} />
+        {/* <Route path="/tutorial" element={<Tutorial />} /> */}
         <Route path="/kategorie" element={<Kategorie />} />
       </Route>
 
-      {/*  Challenge 페이지도 보호 */}
+      {/* ---------------------------
+          🔥 Challenge 보호 Layout
+         --------------------------- */}
       <Route
         element={
           <ProtectedRoute>
@@ -84,7 +109,8 @@ export default function AppRouter() {
       >
         <Route path="/challenge/:problemId" element={<Challenge />} />
       </Route>
-
+      {/* ⭐ 추가된 403 페이지 */}
+      <Route path="/403" element={<FourZeroThree />} />
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>

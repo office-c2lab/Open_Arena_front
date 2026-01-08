@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import PointChart from './PointChart';
 import AdminLeaderboardTable from './AdminLeaderboardTable';
 import AdminLeaderboardToggle from './AdminLeaderboardToggle';
+import AdminMatrixToggle from './AdminMatrixToggle';
+import AdminTotalGraphToggle from './AdminTotalGraphToggle';
 
 const Leaderboard = () => {
   const navigate = useNavigate();
@@ -33,20 +35,24 @@ const Leaderboard = () => {
           {/* ⬅ 타이틀 + 토글 한줄 정렬 (정확한 vertical-align 맞춤) */}
           <div className="flex items-center gap-4">
             <h1 className="heading-1 font-700 text-[#FF4854] whitespace-nowrap">팀별 순위 현황</h1>
-            <AdminLeaderboardToggle />
           </div>
 
           <AdminLeaderboardTable />
         </div>
       </div>
 
-      {/* 페이지 스위치 버튼 */}
+      {/* 페이지 스위치 버튼
       <button
         onClick={() => navigate('/admin/matrix')}
         className="px-5 py-2 bg-[#FF4854] hover:bg-[#e13a47] text-white heading-3 font-500 rounded-lg"
       >
         문제풀이 매트릭스 보기
-      </button>
+      </button> */}
+      <div className='flex gap-x-10'>
+        <AdminLeaderboardToggle />
+        <AdminMatrixToggle />
+        <AdminTotalGraphToggle />
+      </div>
     </div>
   );
 };

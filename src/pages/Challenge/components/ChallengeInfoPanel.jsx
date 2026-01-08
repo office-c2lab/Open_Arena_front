@@ -47,6 +47,7 @@ export default function ChallengeInfoPanel({
   problemApiMethod,
   problemApiHeaderName,
   problemApiKey,
+  problemCode,
 }) {
   const [width, setWidth] = useState(310);
   const [isResizing, setIsResizing] = useState(false);
@@ -177,6 +178,7 @@ whitespace-nowrap flex-shrink-0`}
                     method={problemApiMethod}
                     headerName={problemApiHeaderName}
                     apiKey={problemApiKey}
+                    problemCode={problemCode}
                   />
                 )}
               </div>

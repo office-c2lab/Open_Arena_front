@@ -23,7 +23,7 @@ export default function ChatBubble({ role, content, isTyping = false }) {
         setDisplayedText(content.slice(0, i));
         i++;
         if (i > content.length) clearInterval(interval);
-      }, 20);
+      }, 1);
       return () => clearInterval(interval);
     } else {
       setDisplayedText(content);

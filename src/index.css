@@ -62,11 +62,15 @@ body,
 #root {
   background-color: var(--color-gray-200);
   height: 100%;
+  overflow-x: hidden;
+  width: 100%;
 }
 body {
   background-color: #f2f4f6;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 @keyframes fadeIn {
@@ -111,5 +115,33 @@ body {
   }
   100% {
     background-position: 468px 0;
+  }
+}
+
+.board-scale-wrapper {
+  transform-origin: top center;
+}
+
+@media (max-width: 1600px) {
+  .board-scale-wrapper {
+    transform: scale(0.9);
+  }
+}
+
+@media (max-width: 1400px) {
+  .board-scale-wrapper {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 1200px) {
+  .board-scale-wrapper {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-width: 1000px) {
+  .board-scale-wrapper {
+    transform: scale(0.6);
   }
 }
