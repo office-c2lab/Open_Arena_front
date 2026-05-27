@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import medicalImage from '../../assets/images/qjqfbf.png';
 import counselImage from '../../assets/images/rnstk.png';
 import codingImage from '../../assets/images/tkghl.png';
 import generalImage from '../../assets/images/general.png';
-import financeImage from '../../assets/images/finance.png';
 
 import SolveProblemButton from '../Button/SolveProblemButton';
 import CategoryTag from '../Tag/CategoryTag';
@@ -62,6 +61,8 @@ const ProblemCardSkeleton = () => {
 // ProblemCard 본체
 // ====================================================
 const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   if (isLoading) {
     return <ProblemCardSkeleton />;
   }
@@ -69,7 +70,6 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
   // ✅ score 필드 사용
   const { title, category, sub_description, goal, score } = challenge;
 
-  const [isHovered, setIsHovered] = useState(false);
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 

@@ -25,9 +25,13 @@ export const useAuthStore = create(
       logout: async () => {
         try {
           await logoutApi();
-        } catch (_) {}
+        } catch {
+          // Ignore logout API failures; local auth state still needs to be cleared.
+        }
         set({ teamInfo: null, isLoggedIn: false });
       },
+
+      setUserLoggedOut: () => set({ teamInfo: null, isLoggedIn: false }),
 
       //---------------------------------------------------
       // ⭐ 관리자
@@ -44,9 +48,13 @@ export const useAuthStore = create(
       adminLogout: async () => {
         try {
           await adminLogoutApi();
-        } catch (_) {}
+        } catch {
+          // Ignore logout API failures; local auth state still needs to be cleared.
+        }
         set({ adminInfo: null, isAdminLoggedIn: false });
       },
+
+      setAdminLoggedOut: () => set({ adminInfo: null, isAdminLoggedIn: false }),
 
       //---------------------------------------------------
       // ⭐ 공통 초기화

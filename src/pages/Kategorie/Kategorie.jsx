@@ -7,7 +7,7 @@ import api from '@/api/axiosInstance';
 
 // 컴포넌트
 import Banner from '../../components/Banner/Banner';
-import ProblemCard from '../../components/ProblemCard/ProblemCard.jsx';
+import ProblemCard from '../../components/ProblemCard/ProblemCard';
 
 // API 경로
 const API_PATH = '/problem/all';
@@ -36,7 +36,7 @@ const ChallengeSection = () => {
         score: problem.score,
       }));
     },
-    refetchInterval: 1000,      // 🔥 1초 폴링
+    refetchInterval: 1000, // 🔥 1초 폴링
     refetchOnWindowFocus: true, // 포커스 복귀하면 즉시 갱신
     staleTime: 0,
   });
@@ -46,9 +46,7 @@ const ChallengeSection = () => {
     if (isLoading || isError) return [];
 
     if (currentCategory) {
-      return challenges.filter(
-        challenge => challenge.category === currentCategory
-      );
+      return challenges.filter(challenge => challenge.category === currentCategory);
     }
     return challenges;
   }, [currentCategory, challenges, isLoading, isError]);
@@ -61,17 +59,13 @@ const ChallengeSection = () => {
     [navigate]
   );
 
-  const titleText = currentCategory
-    ? `${currentCategory} 챌린지 목록`
-    : '전체 챌린지 목록';
+  const titleText = currentCategory ? `${currentCategory} 챌린지 목록` : '전체 챌린지 목록';
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center p-6 gap-8">
       <Banner />
 
-      <h1
-        className="heading-1 font-700 text-left max-w-[1080px] w-full mx-auto text-[#FF4854]"
-      >
+      <h1 className="heading-1 font-700 text-left max-w-[1080px] w-full mx-auto text-[#FF4854]">
         {titleText}
       </h1>
 
@@ -92,9 +86,7 @@ const ChallengeSection = () => {
               <ProblemCard key={index} isLoading={true} />
             ))
           ) : isError ? (
-            <p className="text-lg text-red-600 col-span-full">
-              오류: {error?.message}
-            </p>
+            <p className="text-lg text-red-600 col-span-full">오류: {error?.message}</p>
           ) : processedChallenges.length === 0 ? (
             <p className="text-lg text-gray-500 col-span-full">
               {currentCategory

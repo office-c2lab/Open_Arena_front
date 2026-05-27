@@ -74,15 +74,10 @@ export default function TotalLeaderboard() {
   // 팀 목록 추출 — 가장 최근 데이터 기준
   const last = data[data.length - 1];
 
-  // ⭐⭐⭐ "클래스" 팀만 필터링
-  let teamNames = Object.keys(last)
-    .filter(key => key !== "time")
-    .filter(team => team.startsWith("클래스"));
+  const teamNames = Object.keys(last).filter(key => key !== 'time');
 
   // 최대값 계산
-  const maxScore = Math.max(...data.flatMap(row =>
-    teamNames.map(team => Number(row[team]) || 0)
-  ));
+  const maxScore = Math.max(...data.flatMap(row => teamNames.map(team => Number(row[team]) || 0)));
 
   const yMax = Math.ceil((maxScore + 100) / 100) * 100;
   const yTicks = [];
@@ -91,33 +86,29 @@ export default function TotalLeaderboard() {
   const formatFullTime = iso => new Date(iso).toLocaleString();
 
   // 색상 팔레트
-const colors = [
-  "#FF0000", // 1 - Red
-  "#FF7F00", // 2 - Orange
-  "#FFFF00", // 3 - Yellow
-  "#7FFF00", // 4 - Yellow-Green
-  "#a76030ff", // 5 - Green
-  "#00FF7F", // 6 - Spring Green
-  "#00FFFF", // 7 - Cyan
-  "#007FFF", // 8 - Azure
-  "#0000FF", // 9 - Blue
-  "#7F00FF", // 10 - Violet
-  "#FF00FF", // 11 - Magenta
-  "#FF007F", // 12 - Rose
-  "#A52A2A", // 13 - Brown
-  "#ac9200ff", // 14 - Gold
-  "#757574ff", // 15 - Turquoise
-  "#008080", // 16 - Teal
-  "#800080", // 17 - Purple
-  "#ffffff", // 18 - Crimson
-  "#116291ff", // 19 - Dark Turquoise
-  "#556B2F", // 20 - Olive Green
-  "#8B4513", // 21 - Saddle Brown
-];
-
-
-
-
+  const colors = [
+    '#FF0000', // 1 - Red
+    '#FF7F00', // 2 - Orange
+    '#FFFF00', // 3 - Yellow
+    '#7FFF00', // 4 - Yellow-Green
+    '#a76030ff', // 5 - Green
+    '#00FF7F', // 6 - Spring Green
+    '#00FFFF', // 7 - Cyan
+    '#007FFF', // 8 - Azure
+    '#0000FF', // 9 - Blue
+    '#7F00FF', // 10 - Violet
+    '#FF00FF', // 11 - Magenta
+    '#FF007F', // 12 - Rose
+    '#A52A2A', // 13 - Brown
+    '#ac9200ff', // 14 - Gold
+    '#757574ff', // 15 - Turquoise
+    '#008080', // 16 - Teal
+    '#800080', // 17 - Purple
+    '#ffffff', // 18 - Crimson
+    '#116291ff', // 19 - Dark Turquoise
+    '#556B2F', // 20 - Olive Green
+    '#8B4513', // 21 - Saddle Brown
+  ];
 
   return (
     <div className="w-full flex justify-center py-1 px-6">
@@ -188,7 +179,6 @@ const colors = [
                     activeDot={{ r: 5 }}
                   />
                 ))}
-
               </LineChart>
             </ResponsiveContainer>
           </div>

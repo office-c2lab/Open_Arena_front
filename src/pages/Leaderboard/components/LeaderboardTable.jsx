@@ -94,11 +94,9 @@ export default function LeaderboardTable() {
   if (error) return <div className="text-red-400 text-center">데이터 불러오기 실패</div>;
 
   /* ===========================================
-     ⭐⭐⭐ “클래스”로 시작하는 팀만 필터링 후
-          점수 기반 정렬 + 새 rank 부여
+     점수 기반 정렬 + 새 rank 부여
   ============================================ */
   let rows = (data ?? [])
-    .filter(row => row.teamname.startsWith("클래스"))
     .sort((a, b) => {
       // 점수 높은 순 → 동일하면 해결 시간 빠른 순
       if (b.score !== a.score) return b.score - a.score;
@@ -106,7 +104,7 @@ export default function LeaderboardTable() {
     })
     .map((row, index) => ({
       ...row,
-      displayedRank: index + 1 // 새 등수
+      displayedRank: index + 1, // 새 등수
     }));
 
   return (
@@ -156,19 +154,13 @@ export default function LeaderboardTable() {
             </div>
 
             {/* 팀명 */}
-            <div className={`${COL_WIDTHS.team} text-center font-600`}>
-              {row.teamname}
-            </div>
+            <div className={`${COL_WIDTHS.team} text-center font-600`}>{row.teamname}</div>
 
             {/* 점수 */}
-            <div className={`${COL_WIDTHS.score} text-center font-600`}>
-              {row.score}
-            </div>
+            <div className={`${COL_WIDTHS.score} text-center font-600`}>{row.score}</div>
 
             {/* 해결 문제 수 */}
-            <div className={`${COL_WIDTHS.solved} text-center font-600`}>
-              {row.solved_count}
-            </div>
+            <div className={`${COL_WIDTHS.solved} text-center font-600`}>{row.solved_count}</div>
 
             {/* 해결 시간 */}
             <div className={`${COL_WIDTHS.time} text-center font-600`}>
