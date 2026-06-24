@@ -77,53 +77,22 @@ export default function ChallengeInfoPanel({
   problemCode,
 }) {
   const navigate = useNavigate();
-  const [width, setWidth] = useState(340);
-  const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef(null);
-
-  useEffect(() => {
-    const handleMouseMove = e => {
-      if (!isResizing) return;
-      const min = 320;
-      const max = 500;
-      const rect = panelRef.current.getBoundingClientRect();
-      const newWidth = Math.min(Math.max(e.clientX - rect.left, min), max);
-      setWidth(newWidth);
-    };
-    const stopResize = () => setIsResizing(false);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', stopResize);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', stopResize);
-    };
-  }, [isResizing]);
-
-  const gap = Math.min((width - 295) / 50 + 0.25, 2);
-  const padding = Math.min((width - 295) / 100 + 0.75, 1.5);
-  const lineHeight = Math.min((width - 295) / 200 + 1.6, 1.9);
+  const gap = 1.15;
+  const padding = 1.2;
+  const lineHeight = 1.75;
   const category = CHALLENGE_HEADER_INFO?.category || '일반';
   const headerTitleColor = CATEGORY_TITLE_COLOR_MAP[category] || 'text-[#E6007E]';
   const panelBackground = CATEGORY_BACKGROUND_MAP[category] || leftPurpleBg;
 
   if (isLoading) {
     return (
-      <div ref={panelRef} style={{ width }} className="relative">
+      <div ref={panelRef} className="relative w-[340px]">
         <ChallengeInfoPanelSkeleton
           TABS={TABS}
           handleTabClick={handleTabClick}
           activeTab={activeTab}
         />
-        <div
-          onMouseDown={() => setIsResizing(true)}
-          className={`absolute right-0 top-0 w-[10px] h-full cursor-ew-resize bg-gray-400 transition-colors rounded-r-[16px] flex items-center justify-center`}
-        >
-          <div className="flex flex-col items-center justify-center gap-[5px]">
-            <span className="w-[2px] h-[8px] bg-white rounded-full" />
-            <span className="w-[2px] h-[8px] bg-white rounded-full" />
-            <span className="w-[2px] h-[8px] bg-white rounded-full" />
-          </div>
-        </div>
       </div>
     );
   }
@@ -131,11 +100,10 @@ export default function ChallengeInfoPanel({
   return (
     <div
       ref={panelRef}
-      style={{ '--panel-width': `${width}px`, transition: isResizing ? 'none' : 'width 0.2s ease' }}
-      className="relative flex h-full flex-col flex-shrink-0 w-[var(--panel-width)]"
+      className="relative flex h-full min-h-0 w-[340px] flex-col flex-shrink-0"
     >
       <div
-        className="shadow-xl rounded-[20px] overflow-hidden flex flex-col h-full border border-[#E5E7EB] bg-cover bg-center"
+        className="shadow-xl rounded-[20px] overflow-hidden flex min-h-0 flex-col h-full border border-[#E5E7EB] bg-cover bg-center"
         style={{ backgroundImage: `url(${panelBackground})` }}
       >
         {/* 문제 헤더 */}
@@ -162,7 +130,7 @@ export default function ChallengeInfoPanel({
         </div>
 
         {/* 탭 영역 */}
-        <div className="w-full flex-shrink-0 flex flex-col flex-grow min-h-0 bg-white/70 backdrop-blur-[1px]">
+        <div className="w-full flex flex-col flex-grow min-h-0 bg-white/70 backdrop-blur-[1px]">
           <div
             className="flex justify-between border-b border-[#E5E7EB] flex-shrink-0 bg-white/85"
             style={{
@@ -193,13 +161,13 @@ export default function ChallengeInfoPanel({
           {/* 탭 콘텐츠 */}
           {activeTabContent && (
             <div
-              className="flex-grow min-h-0 p-4"
+              className="flex-grow min-h-0 overflow-hidden p-4"
               style={{
                 padding: `${padding * 1.05}rem`,
                 transition: 'all 0.2s ease',
               }}
             >
-              <div className="flex h-full flex-col overflow-y-auto pr-2">
+              <div className="flex h-full min-h-0 flex-col overflow-y-auto pr-2">
                 <div className="rounded-[8px] border border-[#E5E7EB] bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.06)]">
                   <span className={`heading-3 font-700 ${activeTabContent.titleColor} block mb-6`}>
                     {activeTabContent.title}
@@ -235,22 +203,6 @@ export default function ChallengeInfoPanel({
               </div>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* 리사이즈 핸들 */}
-      <div
-  onMouseDown={() => setIsResizing(true)}
-  className={`absolute right-0 top-0 w-[14px] h-full cursor-ew-resize
-    ${isResizing ? 'bg-gray-500' : 'bg-gray-400 hover:bg-gray-500'}
-    transition-colors rounded-r-[16px] flex items-center justify-center
-    translate-x-[10px]`}
->
-
-        <div className="flex flex-col items-center justify-center gap-[5px]">
-          <span className="w-[2px] h-[8px] bg-white rounded-full" />
-          <span className="w-[2px] h-[8px] bg-white rounded-full" />
-          <span className="w-[2px] h-[8px] bg-white rounded-full" />
         </div>
       </div>
     </div>

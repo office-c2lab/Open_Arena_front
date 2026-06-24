@@ -95,11 +95,20 @@ const Dashboard = () => {
   const solvedCount = data?.solved_count ?? 0;
   const totalScore = data?.total_score ?? 0;
   const problems = useMemo(() => data?.problems ?? [], [data?.problems]);
-  const totalProblems = problems.length || 40;
+  const totalProblems = data?.total_problem_count ?? problems.length ?? 0;
   const currentRank = data?.rank ?? '-';
-  const nextRankGap = data?.next_rank_score_gap ?? data?.next_rank_gap ?? 80;
+  const nextRankGap =
+    data?.score_gap_to_next_rank ?? data?.next_rank_score_gap ?? data?.next_rank_gap ?? 0;
 
   const categoryStats = useMemo(() => {
+    if (Array.isArray(data?.category_solve_status) && data.category_solve_status.length > 0) {
+      return data.category_solve_status.map(item => ({
+        label: item.category,
+        solved: item.solved_count ?? 0,
+        total: item.total_count ?? 0,
+      }));
+    }
+
     const activeCategories = CATEGORY_OPTIONS.slice(1);
     const buckets = activeCategories.map(label => ({ label, solved: 0, total: 0 }));
 
@@ -116,7 +125,7 @@ const Dashboard = () => {
     }
 
     return buckets.map(item => ({ ...item, total: item.total || 1 }));
-  }, [problems]);
+  }, [data?.category_solve_status, problems]);
 
   const dashboardProblems = useMemo(
     () => problems.map((problem, index) => ({ ...problem, _dashboardIndex: index })),
