@@ -13,13 +13,30 @@ const CATEGORY_BACKGROUND_MAP = {
   군사: leftGreenBg,
   법률: leftYellowBg,
   사회: leftPinkBg,
+  튜토리얼: leftPinkBg,
   일반: leftPurpleBg,
 };
+
+const LEFT_PANEL_BACKGROUNDS = [leftGreenBg, leftYellowBg, leftPinkBg, leftPurpleBg];
+
+if (typeof document !== 'undefined') {
+  LEFT_PANEL_BACKGROUNDS.forEach(src => {
+    const isAlreadyPreloaded = document.head.querySelector(`link[rel="preload"][href="${src}"]`);
+    if (isAlreadyPreloaded) return;
+
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = src;
+    document.head.appendChild(link);
+  });
+}
 
 const CATEGORY_TITLE_COLOR_MAP = {
   군사: 'text-[#079C4C]',
   법률: 'text-[#E6AA02]',
   사회: 'text-[#E6007E]',
+  튜토리얼: 'text-[#E6007E]',
   일반: 'text-[#837BBD]',
 };
 

@@ -15,6 +15,8 @@ const API_PATH = '/problem/all';
 // 스켈레톤 개수
 const SKELETON_COUNT = 9;
 
+const getProblemRouteId = problem => problem?.problem_id ?? problem?.problemId ?? problem?.id;
+
 const ChallengeSection = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -96,9 +98,9 @@ const ChallengeSection = () => {
           ) : (
             processedChallenges.map(challenge => (
               <ProblemCard
-                key={challenge.id}
+                key={getProblemRouteId(challenge)}
                 challenge={challenge}
-                onSolveClick={() => handleSolveProblem(challenge.id)}
+                onSolveClick={() => handleSolveProblem(getProblemRouteId(challenge))}
                 isLoading={false}
               />
             ))

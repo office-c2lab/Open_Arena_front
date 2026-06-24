@@ -159,7 +159,7 @@ export default function AttemptHistoryPanel({
           )}
         </div>
 
-        <div className="flex flex-1 flex-col items-center overflow-y-auto px-4 py-1 gap-4">
+        <div className="flex flex-1 flex-col items-center overflow-y-auto px-4 py-2 gap-5">
           {isLoading ? (
             [...Array(SKELETON_CARD_COUNT)].map((_, i) => <AttemptHistoryCardSkeleton key={i} />)
           ) : filteredAttempts.length > 0 ? (

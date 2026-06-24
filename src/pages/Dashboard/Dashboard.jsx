@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useTeamDashboardQuery } from '@/hooks/useTeamDashboardQuery';
 
 const CATEGORY_OPTIONS = ['전체', '법률', '군사', '사회', '일반'];
+
 function DashboardCard({ title, value, unit, description, isLoading, unitColor = '#FF4854' }) {
   return (
     <section className="min-h-[150px] rounded-[8px] border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_14px_rgba(15,23,42,0.06)]">
@@ -127,12 +128,6 @@ const Dashboard = () => {
     return buckets.map(item => ({ ...item, total: item.total || 1 }));
   }, [data?.category_solve_status, problems]);
 
-  const dashboardProblems = useMemo(
-    () => problems.map((problem, index) => ({ ...problem, _dashboardIndex: index })),
-    [problems]
-  );
-
-
   if (!isLoggedIn)
     return (
       <div className="flex h-full items-center justify-center text-2xl text-gray-500">
@@ -211,18 +206,19 @@ const Dashboard = () => {
                   <Skeleton className="h-full w-full" />
                 </div>
               ))
-            : dashboardProblems.map((problem, index) => (
+            : problems.map((problem, index) => (
                 <ChallengeCard
-                  key={problem.id || `${problem.title}-${index}`}
+                  key={problem.id ?? `${problem.title}-${index}`}
                   problem={problem}
                   index={index}
-                  onClick={() =>
-                    navigate(`/challenge/${problem.id || problem.problem_id || problem._dashboardIndex + 1}`)
-                  }
+                  onClick={() => {
+                    if (!problem.id) return;
+                    navigate(`/challenge/${problem.id}`);
+                  }}
                 />
               ))}
 
-          {!isLoading && dashboardProblems.length === 0 ? (
+          {!isLoading && problems.length === 0 ? (
             <div className="col-span-full rounded-[8px] border border-[#E5E7EB] bg-white p-10 text-center body-large font-500 text-[#6B6B6B]">
               등록된 챌린지가 없습니다.
             </div>

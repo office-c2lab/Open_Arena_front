@@ -17,6 +17,7 @@ const getCategoryImage = category => {
     case '군사':
       return greenProblemImage;
     case '사회':
+    case '튜토리얼':
       return pinkProblemImage;
     case '일반':
       return purpleProblemImage;
