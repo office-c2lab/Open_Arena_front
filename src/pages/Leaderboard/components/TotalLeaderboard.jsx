@@ -41,7 +41,7 @@ const YAxisTickBox = ({ x, y, payload }) => {
 };
 
 export default function TotalLeaderboard() {
-  const { data, enabled, isLoading, error } = useUserScoreSeriesTotal(1500);
+  const { data, enabled, isLoading, error } = useUserScoreSeriesTotal(2000);
 
   // ⭐ 404 → 비공개 상태 메시지 출력
   if (error?.response?.status === 404) {
@@ -174,10 +174,13 @@ export default function TotalLeaderboard() {
                     key={team}
                     dataKey={team}
                     stroke={colors[i % colors.length]}
-                    strokeWidth={4}
-                    dot={false}
-                    activeDot={{ r: 5 }}
-                  />
+	                    strokeWidth={4}
+	                    dot={false}
+	                    activeDot={{ r: 5 }}
+	                    isAnimationActive
+	                    animationDuration={500}
+	                    animationEasing="ease-out"
+	                  />
                 ))}
               </LineChart>
             </ResponsiveContainer>

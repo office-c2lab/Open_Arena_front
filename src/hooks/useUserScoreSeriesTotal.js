@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   fetchUserScoreSeriesTotal,
   fetchUserTotalGraphSetting,
@@ -9,31 +9,58 @@ export function useUserScoreSeriesTotal(interval = 5000) {
   const [enabled, setEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const lastDataKeyRef = useRef('');
 
   // ⭐ KST 대회 시작 09:00
   const START = "2026-06-25T00:50:00+09:00";
   // ⭐ 대회 종료 17:30
   // const END = "2025-12-03T17:30:00+09:00";
 
+  const normalizeSeries = rows => {
+    const sortedRows = [...rows].sort((a, b) => new Date(a.time) - new Date(b.time));
+    const compactedRows = [];
+    let previousScoreKey = '';
+
+    sortedRows.forEach(row => {
+      const scoreKey = Object.keys(row)
+        .filter(key => key !== 'time')
+        .sort()
+        .map(key => `${key}:${Number(row[key]) || 0}`)
+        .join('|');
+
+      if (scoreKey === previousScoreKey) return;
+
+      compactedRows.push(row);
+      previousScoreKey = scoreKey;
+    });
+
+    return compactedRows;
+  };
+
   const load = async () => {
     try {
       const setting = await fetchUserTotalGraphSetting();
-      setEnabled(setting.enabled);
+      setEnabled(prev => (prev === setting.enabled ? prev : setting.enabled));
 
       if (!setting.enabled) {
-        setSeriesData([]);
+        setSeriesData(prev => (prev.length === 0 ? prev : []));
+        lastDataKeyRef.current = '';
         setIsLoading(false);
         return;
       }
 
-      let res = await fetchUserScoreSeriesTotal({
+      const res = await fetchUserScoreSeriesTotal({
         start: START,
         // end: END,
       });
 
-      res = res.sort((a, b) => new Date(a.time) - new Date(b.time));
+      const nextSeriesData = normalizeSeries(res);
+      const nextDataKey = JSON.stringify(nextSeriesData);
 
-      setSeriesData(res);
+      if (nextDataKey !== lastDataKeyRef.current) {
+        lastDataKeyRef.current = nextDataKey;
+        setSeriesData(nextSeriesData);
+      }
       setIsLoading(false);
     } catch (err) {
       console.error("user score-series error:", err);
