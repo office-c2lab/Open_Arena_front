@@ -1,5 +1,5 @@
 // src/features/Challenge/components/ChallengeInfoPanel.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import ApiInfoPanel from './ApiInfoPanel';
@@ -28,6 +28,13 @@ const TAB_ACCENT_COLOR_MAP = {
   goal: '#E6AA02',
   success: '#079C4C',
   failure: '#FF4854',
+};
+
+const TAB_TITLE_COLOR_CLASS_MAP = {
+  description: 'text-[#837BBD]',
+  goal: 'text-[#E6AA02]',
+  success: 'text-[#079C4C]',
+  failure: 'text-[#FF4854]',
 };
 
 const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick, activeTab }) => (
@@ -77,6 +84,7 @@ export default function ChallengeInfoPanel({
   problemCode,
 }) {
   const navigate = useNavigate();
+  const [hoveredTab, setHoveredTab] = useState(null);
   const panelRef = useRef(null);
   const gap = 1.15;
   const padding = 1.2;
@@ -103,23 +111,23 @@ export default function ChallengeInfoPanel({
       className="relative flex h-full min-h-0 w-[340px] flex-col flex-shrink-0"
     >
       <div
-        className="shadow-xl rounded-[20px] overflow-hidden flex min-h-0 flex-col h-full border border-[#E5E7EB] bg-cover bg-center"
+        className="relative shadow-[0_10px_28px_rgba(15,23,42,0.10)] rounded-[30px] overflow-hidden flex min-h-0 flex-col h-full border border-white/55 bg-cover bg-center backdrop-blur-xl"
         style={{ backgroundImage: `url(${panelBackground})` }}
       >
+        <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
         {/* 문제 헤더 */}
         <div
-          className="relative flex min-h-[96px] flex-col justify-center overflow-hidden rounded-t-[20px] flex-shrink-0 border-b border-[#E5E7EB] bg-white/80 backdrop-blur-[1px]"
-          style={{ padding: `${padding * 0.95}rem ${padding * 1.15}rem` }}
+          className="relative flex min-h-[108px] flex-col justify-center overflow-hidden flex-shrink-0 px-4 pt-4 pb-3"
         >
-          <div className="relative flex items-center gap-3">
+          <div className="relative flex w-full items-center gap-3 rounded-[18px] border border-white/65 bg-white/42 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="group flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-md transition hover:bg-white/60"
+              className="group flex h-9 w-7 flex-shrink-0 cursor-pointer items-center justify-center"
               aria-label="뒤로가기"
             >
               <ChevronLeft
-                className="h-6 w-6 text-[#6B6B6B] transition-colors group-hover:text-[#FF4854]"
+                className="h-7 w-7 text-[#6B6B6B] transition-colors group-hover:text-[#FF4854]"
                 strokeWidth={2}
               />
             </button>
@@ -130,12 +138,12 @@ export default function ChallengeInfoPanel({
         </div>
 
         {/* 탭 영역 */}
-        <div className="w-full flex flex-col flex-grow min-h-0 bg-white/70 backdrop-blur-[1px]">
+        <div className="relative w-full flex flex-col flex-grow min-h-0 px-4 pb-4">
           <div
-            className="flex justify-between border-b border-[#E5E7EB] flex-shrink-0 bg-white/85"
+            className="flex justify-between flex-shrink-0 rounded-[18px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md"
             style={{
               gap: `${Math.min(gap, 1)}rem`,
-              padding: `0 ${padding * 1.2}rem`,
+              padding: `0 ${padding * 0.75}rem`,
               transition: 'all 0.2s ease',
             }}
           >
@@ -143,14 +151,18 @@ export default function ChallengeInfoPanel({
               <button
                 key={tab.id}
                 onClick={e => handleTabClick(e, tab.id)}
+                onMouseEnter={() => setHoveredTab(tab.id)}
+                onMouseLeave={() => setHoveredTab(null)}
                 className={`relative h-[58px] px-1 body-large font-700 transition-colors duration-200 cursor-pointer whitespace-nowrap flex-shrink-0 ${
-                  activeTab === tab.id ? tab.titleColor : 'text-[#0F172A] hover:text-[#837BBD]'
+                  activeTab === tab.id || hoveredTab === tab.id
+                    ? TAB_TITLE_COLOR_CLASS_MAP[tab.id]
+                    : 'text-[#0F172A]'
                 }`}
               >
                 {tab.title}
                 {activeTab === tab.id ? (
                   <span
-                    className="absolute bottom-0 left-0 h-[4px] w-full rounded-t-full"
+                    className="absolute bottom-0 left-0 h-[5px] w-full rounded-t-full shadow-[0_0_12px_rgba(131,123,189,0.35)]"
                     style={{ backgroundColor: TAB_ACCENT_COLOR_MAP[tab.id] }}
                   />
                 ) : null}
@@ -161,14 +173,13 @@ export default function ChallengeInfoPanel({
           {/* 탭 콘텐츠 */}
           {activeTabContent && (
             <div
-              className="flex-grow min-h-0 overflow-hidden p-4"
+              className="flex-grow min-h-0 overflow-hidden pt-4"
               style={{
-                padding: `${padding * 1.05}rem`,
                 transition: 'all 0.2s ease',
               }}
             >
-              <div className="flex h-full min-h-0 flex-col overflow-y-auto pr-2">
-                <div className="rounded-[8px] border border-[#E5E7EB] bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.06)]">
+              <div className="flex h-full min-h-0 flex-col overflow-y-auto pr-1">
+                <div className="rounded-[24px] border border-white/65 bg-white/46 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
                   <span className={`heading-3 font-700 ${activeTabContent.titleColor} block mb-6`}>
                     {activeTabContent.title}
                   </span>
