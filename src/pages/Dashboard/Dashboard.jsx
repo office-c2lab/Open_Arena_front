@@ -1,54 +1,229 @@
 // src/pages/Dashboard/Dashboard.jsx
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TeamInfoSection from './components/TeamInfoSection';
-import ProblemList from './components/ProblemList';
 import Banner from '@/components/Banner/Banner';
+import Skeleton from '@/components/Skeleton/Skeleton';
 import { useAuthStore } from '@/stores/authStore';
 import { useTeamDashboardQuery } from '@/hooks/useTeamDashboardQuery';
 
+const CATEGORY_OPTIONS = ['전체', '법률', '군사', '사회', '일반'];
+function DashboardCard({ title, value, unit, description, isLoading, unitColor = '#FF4854' }) {
+  return (
+    <section className="min-h-[150px] rounded-[8px] border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_14px_rgba(15,23,42,0.06)]">
+      <p className="body-large font-700 text-black">{title}</p>
+      {isLoading ? (
+        <Skeleton className="mt-5 h-9 w-28" />
+      ) : (
+        <div className="mt-5 flex flex-wrap items-baseline gap-2">
+          <span className="heading-1 font-700 leading-none text-[#FF4854]">{value}</span>
+          {unit ? (
+            <span className="heading-3 font-700 leading-none" style={{ color: unitColor }}>
+              {unit}
+            </span>
+          ) : null}
+        </div>
+      )}
+      <p className="mt-4 body-medium font-500 text-[#6B6B6B]">{description}</p>
+    </section>
+  );
+}
+
+function ProgressBar({ label, solved, total }) {
+  const percent = total > 0 ? Math.min((solved / total) * 100, 100) : 0;
+
+  return (
+    <div className="min-w-0">
+      <div className="mb-3 flex items-center justify-between body-medium font-700 text-black">
+        <span>{label}</span>
+        <span className="font-700">
+          <span className="text-[#FF4854]">{solved}</span>
+          <span className="text-[#6B6B6B]"> / {total}</span>
+        </span>
+      </div>
+      <div className="h-[5px] overflow-hidden rounded-full bg-[#E5E7EB]">
+        <div className="h-full rounded-full bg-[#FF4854]" style={{ width: `${percent}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function ProblemStatusBadge({ solved }) {
+  return (
+    <span className={`body-large font-700 ${solved ? 'text-[#00B654]' : 'text-[#6B6B6B]'}`}>
+      {solved ? '완료' : '미해결'}
+    </span>
+  );
+}
+
+function ChallengeCard({ problem, index, onClick }) {
+  const title = problem.title || `챌린지 ${index + 1}`;
+  const solved = Boolean(problem.solved);
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative flex h-[132px] w-full cursor-pointer flex-col overflow-hidden rounded-[8px] px-6 pb-6 pt-7 text-left shadow-[0_4px_14px_rgba(15,23,42,0.05)] transition hover:-translate-y-[1px] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
+        solved
+          ? 'border border-[#00B654]/30 bg-white'
+          : 'border border-[#E5E7EB] bg-[#8A93A5]/8'
+      }`}
+    >
+      {solved ? (
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(0,182,84,0.08)_0%,rgba(255,255,255,0)_55%)]" />
+      ) : null}
+      <h3 className="relative truncate text-[16px] leading-[22px] font-700 text-black 2xl:text-[20px] 2xl:leading-[26px]">
+        {title}
+      </h3>
+      <div className="relative mt-auto border-t border-[#D9DADB] pt-5">
+        <ProblemStatusBadge solved={solved} />
+      </div>
+    </button>
+  );
+}
+
 const Dashboard = () => {
   const navigate = useNavigate();
+
   const teamInfo = useAuthStore(state => state.teamInfo);
   const isLoggedIn = useAuthStore(state => state.isLoggedIn);
   const teamId = teamInfo?.id || teamInfo?.team_id;
 
   const { data, isLoading, isError } = useTeamDashboardQuery(teamId);
 
+  const teamName = teamInfo?.teamname ?? 'Team';
+  const solvedCount = data?.solved_count ?? 0;
+  const totalScore = data?.total_score ?? 0;
+  const problems = useMemo(() => data?.problems ?? [], [data?.problems]);
+  const totalProblems = problems.length || 40;
+  const currentRank = data?.rank ?? '-';
+  const nextRankGap = data?.next_rank_score_gap ?? data?.next_rank_gap ?? 80;
+
+  const categoryStats = useMemo(() => {
+    const activeCategories = CATEGORY_OPTIONS.slice(1);
+    const buckets = activeCategories.map(label => ({ label, solved: 0, total: 0 }));
+
+    problems.forEach((problem, index) => {
+      const label = problem.category || activeCategories[index % activeCategories.length];
+      const bucket = buckets.find(item => item.label === label);
+      if (!bucket) return;
+      bucket.total += 1;
+      if (problem.solved) bucket.solved += 1;
+    });
+
+    if (problems.length === 0) {
+      return buckets.map(item => ({ ...item, total: 10 }));
+    }
+
+    return buckets.map(item => ({ ...item, total: item.total || 1 }));
+  }, [problems]);
+
+  const dashboardProblems = useMemo(
+    () => problems.map((problem, index) => ({ ...problem, _dashboardIndex: index })),
+    [problems]
+  );
+
+
   if (!isLoggedIn)
     return (
-      <div className="flex justify-center items-center h-full text-2xl text-gray-500">
+      <div className="flex h-full items-center justify-center text-2xl text-gray-500">
         로그인 후 이용 가능합니다.
       </div>
     );
 
   if (isError)
     return (
-      <div className="flex justify-center items-center h-full text-xl text-red-500">
+      <div className="flex h-full items-center justify-center text-xl text-red-500">
         데이터를 불러오는 중 오류가 발생했습니다.
       </div>
     );
 
-  const teamName = teamInfo?.teamname ?? 'Team';
-  const solvedCount = data?.solved_count ?? 0;
-  const totalScore = data?.total_score ?? 0;
-  const problems = data?.problems ?? [];
-
   return (
-    <div className="w-full h-full flex flex-col items-center p-6 gap-8">
-      {/* 배너 */}
-      <Banner />
+    <div className="flex min-h-screen w-full flex-col items-center bg-[#F2F4F6] p-6">
+      <div className="w-full max-w-[1080px] space-y-6">
+        <Banner />
 
-      {/* 팀 정보 */}
-      <div className="w-full max-w-[1060px] flex flex-col items-start mx-auto">
-        <h1 className="heading-1 font-700 mb-5 text-[#FF4854]">{teamName}</h1>
+        <section className="flex items-center justify-between gap-4 px-1">
+          <p className="heading-1 font-700 text-[#FF4854]">대회 현황</p>
+          <div className="flex items-center gap-3 heading-1 font-700">
+            <span className="text-[#6B6B6B]">대회 종료까지</span>
+            <span className="text-[#FF4854]">02:14:32</span>
+          </div>
+        </section>
 
-        <TeamInfoSection isLoading={isLoading} solvedCount={solvedCount} totalScore={totalScore} />
-      </div>
+        <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <DashboardCard
+            title="현재 순위"
+            value={currentRank}
+            unit={currentRank === '-' ? '' : '위'}
+            description="전체 참가자 중"
+            isLoading={isLoading}
+          />
+          <DashboardCard
+            title="해결한 챌린지"
+            value={solvedCount}
+            unit={`/ ${totalProblems}`}
+            unitColor="#6B6B6B"
+            description="해결한 챌린지 수"
+            isLoading={isLoading}
+          />
+          <DashboardCard
+            title="획득 점수"
+            value={totalScore.toLocaleString()}
+            unit="점"
+            description="누적 획득 점수"
+            isLoading={isLoading}
+          />
+          <DashboardCard
+            title="다음 순위까지"
+            value={nextRankGap}
+            unit="점"
+            description="앞 순위와의 점수 차이"
+            isLoading={isLoading}
+          />
+        </section>
 
-      {/* 문제 리스트 */}
-      <div className="w-full flex justify-center">
-        <ProblemList isLoading={isLoading} problems={problems} />
+        <section className="rounded-[8px] border border-[#E5E7EB] bg-white p-7 shadow-[0_4px_14px_rgba(15,23,42,0.06)]">
+          <div>
+            <p className="body-medium font-700 text-black">카테고리별 해결 현황</p>
+            <div className="mt-6 grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-4">
+              {categoryStats.map(item => (
+                <ProgressBar key={item.label} {...item} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-5">
+          <h2 className="heading-1 font-700 text-[#FF4854]">챌린지 목록</h2>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {isLoading
+            ? [...Array(8)].map((_, index) => (
+                <div
+                  key={`dashboard-problem-skeleton-${index}`}
+                  className="h-[132px] rounded-[8px] border border-[#E5E7EB] bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.05)]"
+                >
+                  <Skeleton className="h-full w-full" />
+                </div>
+              ))
+            : dashboardProblems.map((problem, index) => (
+                <ChallengeCard
+                  key={problem.id || `${problem.title}-${index}`}
+                  problem={problem}
+                  index={index}
+                  onClick={() =>
+                    navigate(`/challenge/${problem.id || problem.problem_id || problem._dashboardIndex + 1}`)
+                  }
+                />
+              ))}
+
+          {!isLoading && dashboardProblems.length === 0 ? (
+            <div className="col-span-full rounded-[8px] border border-[#E5E7EB] bg-white p-10 text-center body-large font-500 text-[#6B6B6B]">
+              등록된 챌린지가 없습니다.
+            </div>
+          ) : null}
+          </div>
+        </section>
       </div>
     </div>
   );

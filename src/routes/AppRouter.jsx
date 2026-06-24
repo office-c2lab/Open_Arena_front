@@ -13,6 +13,7 @@ import LeaderboardLayout from '../ui/LeaderboardLayout'; // ✅ 추가
 
 // Pages
 import Login from '../pages/Login/Login';
+import Signup from '../pages/Signup/Signup';
 import AdminLogin from '../pages/admin/AdminLogin';
 import Dashboard from '../pages/Dashboard/Dashboard';
 // import Leaderboard from '../pages/Leaderboard/Leaderboard';
@@ -46,6 +47,15 @@ export default function AppRouter() {
         element={
           <LoginRedirect>
             <Login />
+          </LoginRedirect>
+        }
+      />
+
+      <Route
+        path="/signup"
+        element={
+          <LoginRedirect>
+            <Signup />
           </LoginRedirect>
         }
       />

@@ -29,12 +29,24 @@ const getCategoryColors = category => {
  * @param {React.ReactNode} props.children - 태그에 표시될 카테고리 텍스트 (예: '문법', '어휘')
  * @returns {JSX.Element} 카테고리 태그 엘리먼트
  */
-const CategoryTag = ({ children }) => {
+const CategoryTag = ({ children, compact = false }) => {
   const categoryText = String(children);
   const colorClasses = getCategoryColors(categoryText);
 
   // 공통 기본 스타일 (높이 31px, 배경 흰색, 둥근 모서리, 폰트, 좁은 패딩: p-2)
-  const baseClasses = `
+  const baseClasses = compact
+    ? `
+    flex items-center justify-center
+    h-[26px]
+    bg-white
+    rounded-full
+    border
+    px-2
+    text-[11px]
+    leading-[14px]
+    font-500
+  `
+    : `
     flex items-center justify-center 
     h-[31px] 
     bg-white 

@@ -3,12 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+import { Eye, EyeOff } from 'lucide-react';
 import { login } from '@/api/auth';
 import { useAuthStore } from '@/stores/authStore';
 
 export default function Login() {
   const navigate = useNavigate();
   const loginToStore = useAuthStore(state => state.login);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const PasswordRevealIcon = isPasswordVisible ? EyeOff : Eye;
 
   const [formData, setFormData] = useState({
     login_id: '',
@@ -66,7 +69,7 @@ export default function Login() {
     'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
+    <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div
         className="max-w-[675px] w-full bg-white rounded-[16px] shadow-xl flex flex-col 
                   min-h-screen md:min-h-0 md:my-10 overflow-hidden"
@@ -111,12 +114,21 @@ export default function Login() {
               <div className="relative">
                 <input
                   id="pw-input"
-                  type="password"
-                  className={`${inputFieldStyle} pr-8`}
+                  type={isPasswordVisible ? 'text' : 'password'}
+                  className={`${inputFieldStyle} pr-10`}
                   placeholder="비밀번호"
                   value={formData.password}
                   onChange={handleChange}
                 />
+                <button
+                  type="button"
+                  aria-label={`비밀번호 ${isPasswordVisible ? '숨기기' : '보기'}`}
+                  aria-pressed={isPasswordVisible}
+                  onClick={() => setIsPasswordVisible(current => !current)}
+                  className="absolute right-0 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-[#8A93A5] transition hover:bg-[#F4F6FA] hover:text-[#FF4854] cursor-pointer"
+                >
+                  <PasswordRevealIcon className="h-5 w-5" strokeWidth={2} />
+                </button>
               </div>
             </div>
           </form>
@@ -125,6 +137,7 @@ export default function Login() {
         {/* Footer */}
         <footer className="px-8 pt-4 pb-8 mt-8">
           <button
+            type="button"
             onClick={handleSubmit}
             disabled={isPending}
             className={`w-full h-[58px] rounded-[16px] text-white heading-3 font-500 transition-colors cursor-pointer
@@ -132,6 +145,17 @@ export default function Login() {
           >
             {isPending ? '로그인 중...' : '로그인'}
           </button>
+
+          <div className="mt-7 text-center body-medium font-500 text-[#6B6B6B]">
+            <span>계정이 없으신가요? </span>
+            <button
+              type="button"
+              onClick={() => navigate('/signup')}
+              className="text-[#FF4854] underline decoration-[#FF4854] underline-offset-2 cursor-pointer"
+            >
+              회원가입
+            </button>
+          </div>
         </footer>
       </div>
     </div>

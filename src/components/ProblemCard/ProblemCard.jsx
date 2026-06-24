@@ -6,6 +6,7 @@ import generalImage from '../../assets/images/general.png';
 
 import SolveProblemButton from '../Button/SolveProblemButton';
 import CategoryTag from '../Tag/CategoryTag';
+import ScoreTag from '../Tag/ScoreTag';
 import Skeleton from '../Skeleton/Skeleton'; // Skeleton 컴포넌트 import
 
 // 🖼️ 카테고리별 이미지 매핑
@@ -113,10 +114,7 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
       <div className={contentClasses.trim()}>
         <div className={tagsContainerClasses.trim()}>
           <CategoryTag>{category}</CategoryTag>
-          {/* ✅ 점수 표시 */}
-          <p className="px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold">
-            점수: {score}점
-          </p>
+          <ScoreTag score={score} />
         </div>
 
         <h3 className={titleClasses.trim()}>{title}</h3>
