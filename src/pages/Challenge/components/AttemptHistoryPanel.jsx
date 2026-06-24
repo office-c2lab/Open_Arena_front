@@ -109,7 +109,7 @@ export default function AttemptHistoryPanel({
   }, []);
 
   return (
-    <div className="flex flex-col flex-shrink-0 w-[240px] lg:w-[295px] h-full">
+    <div className="flex h-full w-[295px] flex-col flex-shrink-0">
 
       {/* 포인트 카드 */}
       <div className="flex-shrink-0 w-full mb-4">

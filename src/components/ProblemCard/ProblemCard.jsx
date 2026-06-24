@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import medicalImage from '../../assets/images/qjqfbf.png';
-import counselImage from '../../assets/images/rnstk.png';
-import codingImage from '../../assets/images/tkghl.png';
-import generalImage from '../../assets/images/general.png';
+import greenProblemImage from '../../assets/images/greenp.png';
+import yellowProblemImage from '../../assets/images/yellowp.png';
+import pinkProblemImage from '../../assets/images/pinkp.png';
+import purpleProblemImage from '../../assets/images/purplep.png';
 
 import SolveProblemButton from '../Button/SolveProblemButton';
 import CategoryTag from '../Tag/CategoryTag';
@@ -13,17 +13,17 @@ import Skeleton from '../Skeleton/Skeleton'; // Skeleton 컴포넌트 import
 const getCategoryImage = category => {
   switch (category) {
     case '법률':
-      return medicalImage;
+      return yellowProblemImage;
     case '군사':
-      return counselImage;
+      return greenProblemImage;
     case '사회':
-      return codingImage;
+      return pinkProblemImage;
     case '일반':
-      return generalImage;
+      return purpleProblemImage;
     // case '금융':
     //   return financeImage;
     default:
-      return generalImage;
+      return purpleProblemImage;
   }
 };
 
@@ -79,7 +79,7 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
   const cardClasses = `w-[339px] bg-white shadow-xl rounded-xl flex flex-col overflow-hidden relative`;
   const imageContainerClasses = `relative w-full h-[198px] overflow-hidden`;
   const imageClasses = `w-full h-full object-cover transition-transform duration-300 ease-in-out ${
-    isHovered ? 'scale-220' : 'scale-200'
+    isHovered ? 'scale-115' : 'scale-105'
   }`;
   const contentClasses = `p-6 flex flex-col gap-2.5`;
   const tagsContainerClasses = `flex space-x-1.5 items-start`;

@@ -103,7 +103,7 @@ export default function AppRouter() {
       >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
-        {/* <Route path="/tutorial" element={<Tutorial />} /> */}
+        <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
       </Route>
 

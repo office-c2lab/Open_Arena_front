@@ -8,9 +8,9 @@ export function useScoreSeriesQuery(interval = 5000) {
   const [error, setError] = useState(null);
 
   // ⭐ 대회 시작 (KST)
-  const START = "2025-12-03T09:00:00+09:00";
+  const START = "2026-06-24T09:00:00+09:00";
   // ⭐ 대회 종료 (KST 17:30)
-  const END = "2025-12-03T17:30:00+09:00";
+  const END = "2025-06-26T17:30:00+09:00";
 
   const load = async () => {
     try {

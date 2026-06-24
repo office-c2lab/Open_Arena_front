@@ -92,7 +92,7 @@ export default function ChatArea({
     !sessionId && displayMessages.length === 0 && !createSessionMutation.isPending;
 
   return (
-    <div className="flex flex-col flex-grow h-full">
+    <div className="flex h-full min-w-0 flex-grow flex-col">
       <SessionList
         sessions={sessions}
         sessionId={sessionId}

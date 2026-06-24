@@ -111,6 +111,7 @@ useEffect(() => {
       const headerInfo = {
         title: problem.title,
         subtitle: problem.sub_title,
+        category: problem.category,
         score: problem.score,
       };
 
@@ -155,7 +156,7 @@ useEffect(() => {
   // Render
   // ----------------------------------------------------------------------
   return (
-    <div className="flex w-full h-full gap-4 md:gap-6">
+    <div className="flex h-full min-w-[1120px] w-full gap-6">
 
       {/* 왼쪽: 문제 정보 패널 */}
       <ChallengeInfoPanel

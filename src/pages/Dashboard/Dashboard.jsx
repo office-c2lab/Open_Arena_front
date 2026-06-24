@@ -143,12 +143,8 @@ const Dashboard = () => {
       <div className="w-full max-w-[1080px] space-y-6">
         <Banner />
 
-        <section className="flex items-center justify-between gap-4 px-1">
+        <section className="flex items-center gap-4 px-1">
           <p className="heading-1 font-700 text-[#FF4854]">대회 현황</p>
-          <div className="flex items-center gap-3 heading-1 font-700">
-            <span className="text-[#6B6B6B]">대회 종료까지</span>
-            <span className="text-[#FF4854]">02:14:32</span>
-          </div>
         </section>
 
         <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
