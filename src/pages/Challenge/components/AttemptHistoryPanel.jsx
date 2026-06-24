@@ -112,18 +112,18 @@ export default function AttemptHistoryPanel({
     <div className="flex h-full w-[295px] flex-col flex-shrink-0">
 
       {/* 포인트 카드 */}
-      <div className="flex-shrink-0 w-full mb-4">
+      <div className="flex-shrink-0 w-full mb-3">
         <PointInfoCard isLoading={isLoading} />
       </div>
 
       {/* ⭐ 토큰 카드 */}
-      <div className="flex-shrink-0 w-full mb-4">
+      <div className="flex-shrink-0 w-full mb-3">
         <TokenInfoCard problemId={problemId} teamId={teamId} />
       </div>
 
       {/* 시도 기록 */}
-      <div className="flex flex-col shadow-xl rounded-[20px] overflow-hidden flex-1 bg-[rgba(235,232,254,0.1)] h-full">
-        <div className="w-full h-[70px] p-3 md:p-4 shadow-sm bg-white rounded-t-[20px] flex items-center justify-between">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
+        <div className="w-full h-[70px] p-3 md:p-4 flex items-center justify-between border-b border-white/50 bg-white/35">
           <span className="heading-2 font-500 text-[#837BBD]">
             최근 시도 ({sessions.length})
           </span>
@@ -131,7 +131,7 @@ export default function AttemptHistoryPanel({
 
         <div className="p-3 md:p-4 flex justify-end relative" ref={dropdownRef}>
           <div
-            className="flex items-center justify-between w-[126px] h-[39px] px-4 py-[10px] bg-white shadow rounded-[10px] cursor-pointer"
+            className="flex items-center justify-between w-[126px] h-[39px] px-4 py-[10px] rounded-[12px] border border-white/65 bg-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_12px_rgba(15,23,42,0.06)] backdrop-blur-md cursor-pointer"
             onClick={toggleDropdown}
           >
             <span className="body-large font-700 text-[#837BBD]">{selectedFilter.label}</span>
@@ -143,7 +143,7 @@ export default function AttemptHistoryPanel({
           </div>
 
           {isDropdownOpen && (
-            <div className="absolute top-[60px] right-[16px] w-[126px] bg-white shadow-lg rounded-[10px] border border-[#EBE8FE] z-10">
+            <div className="absolute top-[60px] right-[16px] w-[126px] rounded-[12px] border border-white/65 bg-white/80 shadow-[0_8px_22px_rgba(15,23,42,0.12)] backdrop-blur-md z-10">
               {FILTER_OPTIONS.map(option => (
                 <div
                   key={option.key}

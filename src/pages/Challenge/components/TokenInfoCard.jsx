@@ -25,9 +25,10 @@ const TokenInfoCard = ({ problemId, teamId }) => {
         h-[80px]          
         flex flex-col justify-center 
         p-4 flex-shrink-0
-        bg-white rounded-[20px] shadow-lg
+        rounded-[20px] border border-white/65 bg-white/48
+        shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)]
+        backdrop-blur-md
       "
-      style={{ boxShadow: '0px 2px 10px rgba(0,0,0,0.25)' }}
     >
       <div className="flex items-center">
         {/* 아이콘 */}

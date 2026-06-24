@@ -19,10 +19,9 @@ export const AttemptHistoryCardSkeleton = () => {
   return (
     <div
       className="w-full h-[110px] flex flex-col justify-between p-[5px] flex-shrink-0 
-            bg-white rounded-[10px] border border-solid animate-pulse"
+            bg-white/55 rounded-[14px] border border-white/65 animate-pulse backdrop-blur-md"
       style={{
-        border: `1px solid ${BORDER_COLOR}`,
-        filter: 'drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.25))',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(15,23,42,0.06)',
       }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 스켈레톤 */}
@@ -84,13 +83,13 @@ const AttemptHistoryCard = ({
   return (
     <div
       className={`w-full h-[110px] flex flex-col justify-between p-[5px] flex-shrink-0 cursor-pointer 
-            bg-white rounded-[10px] border border-solid transition-all duration-150 ${
+            bg-white/55 rounded-[14px] border border-white/65 backdrop-blur-md transition-all duration-150 ${
               isActive ? 'ring-2 ring-offset-2 ring-purple-500' : ''
             }`}
       onClick={onClick}
       style={{
-        border: `1px solid ${isActive ? COLOR_PURPLE_LIGHT : BORDER_COLOR}`,
-        filter: 'drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.25))',
+        borderColor: isActive ? COLOR_PURPLE_LIGHT : 'rgba(255,255,255,0.65)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(15,23,42,0.06)',
       }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 (Flex Row) */}

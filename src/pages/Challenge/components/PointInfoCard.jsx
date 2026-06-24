@@ -13,8 +13,7 @@ const COLOR_BLACK = '#000000';
 const PointInfoCardSkeleton = () => (
   <div
     className="w-full h-[80px] flex justify-start items-center p-4 flex-shrink-0 
-               bg-white rounded-[20px] shadow-lg animate-pulse"
-    style={{ boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.25)' }}
+               rounded-[20px] border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md animate-pulse"
   >
     <div
       className="w-[49px] h-[49px] flex justify-center items-center rounded-[10px] flex-shrink-0"
@@ -50,8 +49,7 @@ export default function PointInfoCard() {
   return (
     <div
       className="w-full h-[80px] flex justify-start items-center p-4 flex-shrink-0 
-                 bg-white rounded-[20px] shadow-lg"
-      style={{ boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.25)' }}
+                 rounded-[20px] border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md"
     >
       <div
         className="w-[49px] h-[49px] flex justify-center items-center rounded-[10px] flex-shrink-0"
