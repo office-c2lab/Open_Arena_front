@@ -12,7 +12,7 @@ export function useUserScoreSeriesTotal(interval = 5000) {
   const lastDataKeyRef = useRef('');
 
   // ⭐ KST 대회 시작 09:00
-  const START = "2026-06-25T00:50:00+09:00";
+  const START = "2026-06-25T09:00:00+09:00";
   // ⭐ 대회 종료 17:30
   // const END = "2025-12-03T17:30:00+09:00";
 
