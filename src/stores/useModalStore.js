@@ -32,11 +32,11 @@ const useModalStore = create((set, get) => ({
   // --------------------------------------------------------
 
   // 콜백 등록
-  setResetChatAction: (action) => set({ resetChatAction: action }),
-  setSubmitAction: (action) => set({ submitAction: action }),
+  setResetChatAction: action => set({ resetChatAction: action }),
+  setSubmitAction: action => set({ submitAction: action }),
 
   // 챌린지 결과 저장
-  setChallengeResults: (results) => set({ challengeResults: results }),
+  setChallengeResults: results => set({ challengeResults: results }),
 
   // --------------------------------------------------------
   // 3️⃣ 모달 제어 액션
@@ -54,65 +54,71 @@ const useModalStore = create((set, get) => ({
     }),
 
   // 디버그 모달
-  openDebugModal: () => set({
-    isDebugModalOpen: true,
-    isResetModalOpen: false,
-    isSubmitModalOpen: false,
-    isLoadingModalOpen: false,
-    isFailedModalOpen: false,
-    isSuccessModalOpen: false,
-  }),
+  openDebugModal: () =>
+    set({
+      isDebugModalOpen: true,
+      isResetModalOpen: false,
+      isSubmitModalOpen: false,
+      isLoadingModalOpen: false,
+      isFailedModalOpen: false,
+      isSuccessModalOpen: false,
+    }),
   closeDebugModal: () => set({ isDebugModalOpen: false }),
 
   // 초기화 모달
-  openResetModal: () => set({
-    isResetModalOpen: true,
-    isDebugModalOpen: false,
-    isSubmitModalOpen: false,
-    isLoadingModalOpen: false,
-    isFailedModalOpen: false,
-    isSuccessModalOpen: false,
-  }),
+  openResetModal: () =>
+    set({
+      isResetModalOpen: true,
+      isDebugModalOpen: false,
+      isSubmitModalOpen: false,
+      isLoadingModalOpen: false,
+      isFailedModalOpen: false,
+      isSuccessModalOpen: false,
+    }),
   closeResetModal: () => set({ isResetModalOpen: false }),
 
   // 제출 모달
-  openSubmitModal: () => set({
-    isSubmitModalOpen: true,
-    isDebugModalOpen: false,
-    isResetModalOpen: false,
-    isLoadingModalOpen: false,
-    isFailedModalOpen: false,
-    isSuccessModalOpen: false,
-  }),
+  openSubmitModal: () =>
+    set({
+      isSubmitModalOpen: true,
+      isDebugModalOpen: false,
+      isResetModalOpen: false,
+      isLoadingModalOpen: false,
+      isFailedModalOpen: false,
+      isSuccessModalOpen: false,
+    }),
   closeSubmitModal: () => set({ isSubmitModalOpen: false }),
 
   // 로딩 모달
-  openLoadingModal: () => set({
-    isLoadingModalOpen: true,
-    isDebugModalOpen: false,
-    isResetModalOpen: false,
-    isSubmitModalOpen: false,
-    isFailedModalOpen: false,
-    isSuccessModalOpen: false,
-  }),
+  openLoadingModal: () =>
+    set({
+      isLoadingModalOpen: true,
+      isDebugModalOpen: false,
+      isResetModalOpen: false,
+      isSubmitModalOpen: false,
+      isFailedModalOpen: false,
+      isSuccessModalOpen: false,
+    }),
   closeLoadingModal: () => set({ isLoadingModalOpen: false }),
 
   // 실패 모달
-  openFailedModal: () => set({
-    isFailedModalOpen: true,
-    isLoadingModalOpen: false,
-    isSubmitModalOpen: false,
-    isSuccessModalOpen: false,
-  }),
+  openFailedModal: () =>
+    set({
+      isFailedModalOpen: true,
+      isLoadingModalOpen: false,
+      isSubmitModalOpen: false,
+      isSuccessModalOpen: false,
+    }),
   closeFailedModal: () => set({ isFailedModalOpen: false }),
 
   // 성공 모달
-  openSuccessModal: () => set({
-    isSuccessModalOpen: true,
-    isLoadingModalOpen: false,
-    isSubmitModalOpen: false,
-    isFailedModalOpen: false,
-  }),
+  openSuccessModal: () =>
+    set({
+      isSuccessModalOpen: true,
+      isLoadingModalOpen: false,
+      isSubmitModalOpen: false,
+      isFailedModalOpen: false,
+    }),
   closeSuccessModal: () => set({ isSuccessModalOpen: false }),
 }));
 

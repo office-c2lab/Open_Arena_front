@@ -1,39 +1,65 @@
 // src/hooks/useScoreSeriesQuery.js
-import { useEffect, useState } from "react";
-import { fetchScoreSeriesTotal } from "@/api/leaderboardApi";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { fetchScoreSeriesTotal } from '@/api/leaderboardApi';
 
 export function useScoreSeriesQuery(interval = 5000) {
   const [seriesData, setSeriesData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const lastDataKeyRef = useRef('');
 
   // ⭐ 대회 시작 (KST)
-  const START = "2026-06-25T10:00:00+09:00";
+  const start = '2026-06-25T10:00:00+09:00';
   // ⭐ 대회 종료 (KST 17:30)
-  const END = "2026-06-26T17:30:00+09:00";
+  const end = '2026-06-26T17:30:00+09:00';
 
-  const load = async () => {
+  const normalizeSeries = useCallback(rows => {
+    const sortedRows = [...rows].sort((a, b) => new Date(a.time) - new Date(b.time));
+    const compactedRows = [];
+    let previousScoreKey = '';
+
+    sortedRows.forEach(row => {
+      const scoreKey = Object.keys(row)
+        .filter(key => key !== 'time')
+        .sort()
+        .map(key => `${key}:${Number(row[key]) || 0}`)
+        .join('|');
+
+      if (scoreKey === previousScoreKey) return;
+
+      compactedRows.push(row);
+      previousScoreKey = scoreKey;
+    });
+
+    return compactedRows;
+  }, []);
+
+  const load = useCallback(async () => {
     try {
       const res = await fetchScoreSeriesTotal({
-        start: START,
-        end: END, // ⭐ 추가!
+        start,
+        end, // ⭐ 추가!
       });
 
-      const sorted = res.sort((a, b) => new Date(a.time) - new Date(b.time));
+      const nextSeriesData = normalizeSeries(res);
+      const nextDataKey = JSON.stringify(nextSeriesData);
 
-      setSeriesData(sorted);
+      if (nextDataKey !== lastDataKeyRef.current) {
+        lastDataKeyRef.current = nextDataKey;
+        setSeriesData(nextSeriesData);
+      }
       setIsLoading(false);
     } catch (err) {
-      console.error("score-series load error:", err);
+      console.error('score-series load error:', err);
       setError(err);
     }
-  };
+  }, [end, normalizeSeries, start]);
 
   useEffect(() => {
     load();
     const timer = setInterval(load, interval);
     return () => clearInterval(timer);
-  }, [interval]);
+  }, [interval, load]);
 
   return { data: seriesData, isLoading, error };
 }

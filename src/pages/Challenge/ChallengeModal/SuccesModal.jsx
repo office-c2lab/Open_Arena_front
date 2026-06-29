@@ -92,7 +92,6 @@ export default function SuccessModal() {
   return (
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-[1000]">
       <div className="w-[990px] bg-[#FAFAFA] rounded-[30px] flex flex-col items-center shadow-lg py-10">
-
         {/* === 최종 성공 박스 === */}
         <div
           className="w-full max-w-[877px] bg-white rounded-[20px] flex flex-col items-center 

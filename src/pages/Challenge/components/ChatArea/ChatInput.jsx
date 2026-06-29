@@ -12,8 +12,7 @@ export default function ChatInput({
   const normalizedStatus = sessionStatus?.toLowerCase();
 
   // ❗ 전체 성공 여부를 제거 — 현재 세션 상태만 체크
-  const isSessionClosed =
-    normalizedStatus === 'success' || normalizedStatus === 'fail';
+  const isSessionClosed = normalizedStatus === 'success' || normalizedStatus === 'fail';
 
   if (isSessionClosed) {
     const isSuccess = normalizedStatus === 'success';
@@ -23,13 +22,13 @@ export default function ChatInput({
         <p className="text-gray-600 text-sm md:text-base leading-relaxed">
           {isSuccess ? (
             <>
-              이 대화는 이미{' '}
-              <b className="text-green-600">성공</b>하여 더 이상 대화를 이어갈 수 없습니다.
+              이 대화는 이미 <b className="text-green-600">성공</b>하여 더 이상 대화를 이어갈 수
+              없습니다.
             </>
           ) : (
             <>
-              이 대화는 이미{' '}
-              <b className="text-red-500">실패</b>하여 더 이상 대화를 이어갈 수 없습니다.
+              이 대화는 이미 <b className="text-red-500">실패</b>하여 더 이상 대화를 이어갈 수
+              없습니다.
             </>
           )}
         </p>
@@ -53,9 +52,7 @@ export default function ChatInput({
       <textarea
         className="w-full h-full resize-none focus:outline-none body-large text-[#6B6B6B] pr-12 overflow-y-auto"
         placeholder={
-          isDisabled
-            ? '전송 중입니다...'
-            : '프롬프트를 입력하세요 (Shift + Enter로 줄바꿈)'
+          isDisabled ? '전송 중입니다...' : '프롬프트를 입력하세요 (Shift + Enter로 줄바꿈)'
         }
         value={inputValue}
         onChange={e => setInputValue(e.target.value)}
@@ -70,9 +67,7 @@ export default function ChatInput({
 
       <button
         className={`flex-shrink-0 w-10 h-10 ${
-          inputValue.trim()
-            ? 'bg-[#FF6289] hover:bg-[#e6597c] cursor-pointer'
-            : 'bg-[#D9DADB]'
+          inputValue.trim() ? 'bg-[#FF6289] hover:bg-[#e6597c] cursor-pointer' : 'bg-[#D9DADB]'
         } rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-colors duration-200 ${
           isDisabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}

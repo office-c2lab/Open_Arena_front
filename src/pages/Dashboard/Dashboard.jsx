@@ -8,7 +8,15 @@ import { useTeamDashboardQuery } from '@/hooks/useTeamDashboardQuery';
 
 const CATEGORY_OPTIONS = ['전체', '법률', '군사', '사회', '일반'];
 
-function DashboardCard({ title, value, unit, description, isLoading, unitColor = '#FF4854' }) {
+function DashboardCard({
+  title,
+  value,
+  unit,
+  description,
+  isLoading,
+  unitColor = '#FF4854',
+  isPrivate = false,
+}) {
   return (
     <section className="min-h-[150px] rounded-[8px] border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_14px_rgba(15,23,42,0.06)]">
       <p className="body-large font-700 text-black">{title}</p>
@@ -16,7 +24,15 @@ function DashboardCard({ title, value, unit, description, isLoading, unitColor =
         <Skeleton className="mt-5 h-9 w-28" />
       ) : (
         <div className="mt-5 flex flex-wrap items-baseline gap-2">
-          <span className="heading-1 font-700 leading-none text-[#FF4854]">{value}</span>
+          <span
+            className={
+              isPrivate
+                ? 'text-[22px] font-700 leading-none text-[#8A93A5]'
+                : 'heading-1 font-700 leading-none text-[#FF4854]'
+            }
+          >
+            {value}
+          </span>
           {unit ? (
             <span className="heading-3 font-700 leading-none" style={{ color: unitColor }}>
               {unit}
@@ -65,9 +81,7 @@ function ChallengeCard({ problem, index, onClick }) {
       type="button"
       onClick={onClick}
       className={`relative flex h-[132px] w-full cursor-pointer flex-col overflow-hidden rounded-[8px] px-6 pb-6 pt-7 text-left shadow-[0_4px_14px_rgba(15,23,42,0.05)] transition hover:-translate-y-[1px] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
-        solved
-          ? 'border border-[#00B654]/30 bg-white'
-          : 'border border-[#E5E7EB] bg-[#8A93A5]/8'
+        solved ? 'border border-[#00B654]/30 bg-white' : 'border border-[#E5E7EB] bg-[#8A93A5]/8'
       }`}
     >
       {solved ? (
@@ -92,7 +106,6 @@ const Dashboard = () => {
 
   const { data, isLoading, isError } = useTeamDashboardQuery(teamId);
 
-  const teamName = teamInfo?.teamname ?? 'Team';
   const solvedCount = data?.solved_count ?? 0;
   const totalScore = data?.total_score ?? 0;
   const problems = useMemo(() => data?.problems ?? [], [data?.problems]);
@@ -100,6 +113,8 @@ const Dashboard = () => {
   const currentRank = data?.rank ?? '-';
   const nextRankGap =
     data?.score_gap_to_next_rank ?? data?.next_rank_score_gap ?? data?.next_rank_gap ?? 0;
+  const showCompetitionStatus = data?.dashboard_summary_enabled !== false;
+  const hiddenSummaryValue = '비공개';
 
   const categoryStats = useMemo(() => {
     if (Array.isArray(data?.category_solve_status) && data.category_solve_status.length > 0) {
@@ -154,32 +169,36 @@ const Dashboard = () => {
         <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
           <DashboardCard
             title="현재 순위"
-            value={currentRank}
-            unit={currentRank === '-' ? '' : '위'}
+            value={showCompetitionStatus ? currentRank : hiddenSummaryValue}
+            unit={showCompetitionStatus && currentRank !== '-' ? '위' : ''}
             description="전체 참가자 중"
             isLoading={isLoading}
+            isPrivate={!showCompetitionStatus}
           />
           <DashboardCard
             title="해결한 챌린지"
-            value={solvedCount}
-            unit={`/ ${totalProblems}`}
+            value={showCompetitionStatus ? solvedCount : hiddenSummaryValue}
+            unit={showCompetitionStatus ? `/ ${totalProblems}` : ''}
             unitColor="#6B6B6B"
             description="해결한 챌린지 수"
             isLoading={isLoading}
+            isPrivate={!showCompetitionStatus}
           />
           <DashboardCard
             title="획득 점수"
-            value={totalScore.toLocaleString()}
-            unit="점"
+            value={showCompetitionStatus ? totalScore.toLocaleString() : hiddenSummaryValue}
+            unit={showCompetitionStatus ? '점' : ''}
             description="누적 획득 점수"
             isLoading={isLoading}
+            isPrivate={!showCompetitionStatus}
           />
           <DashboardCard
             title="다음 순위까지"
-            value={nextRankGap}
-            unit="점"
+            value={showCompetitionStatus ? nextRankGap : hiddenSummaryValue}
+            unit={showCompetitionStatus ? '점' : ''}
             description="앞 순위와의 점수 차이"
             isLoading={isLoading}
+            isPrivate={!showCompetitionStatus}
           />
         </section>
 
@@ -197,32 +216,32 @@ const Dashboard = () => {
         <section className="space-y-5">
           <h2 className="heading-1 font-700 text-[#FF4854]">챌린지 목록</h2>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {isLoading
-            ? [...Array(8)].map((_, index) => (
-                <div
-                  key={`dashboard-problem-skeleton-${index}`}
-                  className="h-[132px] rounded-[8px] border border-[#E5E7EB] bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.05)]"
-                >
-                  <Skeleton className="h-full w-full" />
-                </div>
-              ))
-            : problems.map((problem, index) => (
-                <ChallengeCard
-                  key={problem.id ?? `${problem.title}-${index}`}
-                  problem={problem}
-                  index={index}
-                  onClick={() => {
-                    if (!problem.id) return;
-                    navigate(`/challenge/${problem.id}`);
-                  }}
-                />
-              ))}
+            {isLoading
+              ? [...Array(8)].map((_, index) => (
+                  <div
+                    key={`dashboard-problem-skeleton-${index}`}
+                    className="h-[132px] rounded-[8px] border border-[#E5E7EB] bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.05)]"
+                  >
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ))
+              : problems.map((problem, index) => (
+                  <ChallengeCard
+                    key={problem.id ?? `${problem.title}-${index}`}
+                    problem={problem}
+                    index={index}
+                    onClick={() => {
+                      if (!problem.id) return;
+                      navigate(`/challenge/${problem.id}`);
+                    }}
+                  />
+                ))}
 
-          {!isLoading && problems.length === 0 ? (
-            <div className="col-span-full rounded-[8px] border border-[#E5E7EB] bg-white p-10 text-center body-large font-500 text-[#6B6B6B]">
-              등록된 챌린지가 없습니다.
-            </div>
-          ) : null}
+            {!isLoading && problems.length === 0 ? (
+              <div className="col-span-full rounded-[8px] border border-[#E5E7EB] bg-white p-10 text-center body-large font-500 text-[#6B6B6B]">
+                등록된 챌린지가 없습니다.
+              </div>
+            ) : null}
           </div>
         </section>
       </div>

@@ -174,13 +174,13 @@ export default function TotalLeaderboard() {
                     key={team}
                     dataKey={team}
                     stroke={colors[i % colors.length]}
-	                    strokeWidth={4}
-	                    dot={false}
-	                    activeDot={{ r: 5 }}
-	                    isAnimationActive
-	                    animationDuration={500}
-	                    animationEasing="ease-out"
-	                  />
+                    strokeWidth={4}
+                    dot={false}
+                    activeDot={{ r: 5 }}
+                    isAnimationActive
+                    animationDuration={500}
+                    animationEasing="ease-out"
+                  />
                 ))}
               </LineChart>
             </ResponsiveContainer>

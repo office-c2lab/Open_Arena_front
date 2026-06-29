@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import LeaderboardTabs from "./components/LeaderboardTabs";
-import LeaderboardTable from "./components/LeaderboardTable";
-import TotalLeaderboard from "./components/TotalLeaderboard";
-import UnifiedRankBoard from "./components/UnifiedRankBoard";
+import LeaderboardTabs from './components/LeaderboardTabs';
+import LeaderboardTable from './components/LeaderboardTable';
+import TotalLeaderboard from './components/TotalLeaderboard';
 
-const TAB_LIST = ["팀별 점수 차트", "통합 랭크보드"];
+const TAB_LIST = ['팀별 점수 차트', '통합 랭크보드'];
 
 export default function Leaderboard() {
   const [activeTab, setActiveTab] = useState(TAB_LIST[0]);
@@ -25,13 +24,12 @@ export default function Leaderboard() {
 
   return (
     <div className="w-full flex flex-col items-center gap-20 py-10">
-
       {/* 탭 */}
       <LeaderboardTabs activeTab={activeTab} onChange={setActiveTab} />
 
       {/* 페이지 */}
-      {activeTab === "팀별 점수 차트" && <TotalLeaderboard />}
-      {activeTab === "통합 랭크보드" && <LeaderboardTable />}
+      {activeTab === '팀별 점수 차트' && <TotalLeaderboard />}
+      {activeTab === '통합 랭크보드' && <LeaderboardTable />}
     </div>
   );
 }

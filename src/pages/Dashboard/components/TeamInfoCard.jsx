@@ -94,10 +94,7 @@ const TeamInfoCard = ({
         <span className="heading-1 font-500 text-[#000000]">{title}</span>
 
         {/* 값 */}
-        <span
-          className="heading-1 font-700 text-right"
-          style={{ color: valueColor }}
-        >
+        <span className="heading-1 font-700 text-right" style={{ color: valueColor }}>
           {value}
         </span>
       </div>

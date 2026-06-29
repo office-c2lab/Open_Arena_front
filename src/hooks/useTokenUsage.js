@@ -1,10 +1,10 @@
 // src/hooks/useTokenUsage.js
-import { useQuery } from "@tanstack/react-query";
-import { getTokenUsage } from "@/api/chattoken";
+import { useQuery } from '@tanstack/react-query';
+import { getTokenUsage } from '@/api/chattoken';
 
 export const useTokenUsage = (teamId, problemId, sessionId, options = {}) => {
   return useQuery({
-    queryKey: ["tokenUsage", teamId, problemId, sessionId],
+    queryKey: ['tokenUsage', teamId, problemId, sessionId],
     queryFn: () =>
       getTokenUsage({
         team_id: teamId,

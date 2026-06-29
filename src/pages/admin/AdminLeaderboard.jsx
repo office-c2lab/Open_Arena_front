@@ -1,16 +1,13 @@
 // src/pages/Leaderboard/Leaderboard.jsx
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import PointChart from './PointChart';
 import AdminLeaderboardTable from './AdminLeaderboardTable';
 import AdminLeaderboardToggle from './AdminLeaderboardToggle';
-import AdminMatrixToggle from './AdminMatrixToggle';
 import AdminTotalGraphToggle from './AdminTotalGraphToggle';
+import AdminDashboardStatusToggle from './AdminDashboardStatusToggle';
 
 const Leaderboard = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="w-full min-h-screen flex flex-col items-center p-6 gap-[40px] pb-40">
       {/* 🔥 양옆 2컬럼 레이아웃 */}
@@ -48,10 +45,10 @@ const Leaderboard = () => {
       >
         문제풀이 매트릭스 보기
       </button> */}
-      <div className='flex gap-x-10'>
+      <div className="flex gap-x-10">
         <AdminLeaderboardToggle />
-        <AdminMatrixToggle />
         <AdminTotalGraphToggle />
+        <AdminDashboardStatusToggle />
       </div>
     </div>
   );

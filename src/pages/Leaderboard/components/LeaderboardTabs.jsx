@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-const tabs = ["팀별 점수 차트", "통합 랭크보드"];
+const tabs = ['팀별 점수 차트', '통합 랭크보드'];
 
 export default function LeaderboardTabs({ activeTab, onChange }) {
   return (
@@ -15,7 +15,7 @@ export default function LeaderboardTabs({ activeTab, onChange }) {
           shadow-[0_0_25px_rgba(255,72,84,0.35)]
         "
       >
-        {tabs.map((tab) => {
+        {tabs.map(tab => {
           const isActive = activeTab === tab;
 
           return (
@@ -42,8 +42,8 @@ export default function LeaderboardTabs({ activeTab, onChange }) {
                 }
               `}
               style={{
-                fontFamily: "Black Han Sans",
-                letterSpacing: "0.5px",
+                fontFamily: 'Black Han Sans',
+                letterSpacing: '0.5px',
               }}
             >
               {tab}

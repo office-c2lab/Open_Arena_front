@@ -7,8 +7,8 @@ export function useChatSession(teamId, problemId) {
   const { sessionId, setSessionId, clearSession } = useSessionStore();
 
   const createSessionMutation = useMutation({
-    mutationFn: (title) => createSession({ teamId, problemId, title }),
-    onSuccess: (data) => {
+    mutationFn: title => createSession({ teamId, problemId, title }),
+    onSuccess: data => {
       const newSessionId = data?.id ?? data;
       if (newSessionId) {
         setSessionId(newSessionId);
@@ -17,7 +17,7 @@ export function useChatSession(teamId, problemId) {
     },
   });
 
-  const handleSessionClick = (newSessionId) => {
+  const handleSessionClick = newSessionId => {
     if (newSessionId === sessionId) return;
     setSessionId(newSessionId);
     queryClient.invalidateQueries({ queryKey: ['chatMessages', newSessionId, teamId, problemId] });

@@ -1,12 +1,12 @@
 // src/api/user/userTotalGraphApi.js
-import api from "@/api/axiosInstance";
+import api from '@/api/axiosInstance';
 
 /**
  * 🔹 모든 팀명 리스트
  * GET /common/teams
  */
 export const fetchCommonTeams = async () => {
-  const res = await api.get("/common/teams");
+  const res = await api.get('/common/teams');
   return res.data; // ["TeamA", "TeamB", ...]
 };
 
@@ -15,7 +15,7 @@ export const fetchCommonTeams = async () => {
  * GET /common/total-graph-setting
  */
 export const fetchUserTotalGraphSetting = async () => {
-  const res = await api.get("/common/total-graph-setting");
+  const res = await api.get('/common/total-graph-setting');
   return res.data; // { enabled: true/false }
 };
 
@@ -26,7 +26,7 @@ export const fetchUserTotalGraphSetting = async () => {
  * 관리자가 total_graph_enabled 꺼두면 404 발생함
  */
 export const fetchUserScoreSeriesTotal = async ({ start, end }) => {
-  const res = await api.get("/common/score-series/total", {
+  const res = await api.get('/common/score-series/total', {
     params: { start, end },
   });
   return res.data;

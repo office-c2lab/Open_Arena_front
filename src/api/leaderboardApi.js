@@ -9,14 +9,13 @@ export const fetchLeaderboard = async () => {
   return res.data;
 };
 
-
 /**
  * 🔥 사용자 리더보드 공개 여부 조회
  * GET /dashboard/arena/leaderboard-setting
  */
 export const fetchUserLeaderboardSetting = async () => {
   const res = await api.get('/common/leaderboard-setting');
-  return res.data;  // { leaderboard_enabled: true/false }
+  return res.data; // { leaderboard_enabled: true/false }
 };
 
 /**
@@ -29,7 +28,7 @@ export const fetchSolveMatrix = async (label = 'title') => {
 
 export const fetchScoreSeriesTotal = async ({ start, end }) => {
   const res = await api.get('/admin/score-series/total', {
-    params: { start, end }
+    params: { start, end },
   });
   return res.data;
 };

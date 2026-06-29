@@ -1,5 +1,5 @@
 // src/pages/AdminConversationReview/AdminConversationReviewPage.jsx
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   useJudgeTeams,
   useJudgeProblems,
@@ -8,7 +8,7 @@ import {
   useJudgeResult,
   useMarkSessionFail,
   useMarkSessionSuccess,
-} from "@/hooks/useAdminJudgeReview";
+} from '@/hooks/useAdminJudgeReview';
 
 export default function AdminConversationReviewPage() {
   const [teamId, setTeamId] = useState(null);
@@ -26,9 +26,7 @@ export default function AdminConversationReviewPage() {
 
   return (
     <div className="w-full p-10 text-white flex flex-col gap-6">
-      <h1 className="text-3xl font-bold text-[#FF4854]">
-        관리자 세션 / 판정 관리 페이지
-      </h1>
+      <h1 className="text-3xl font-bold text-[#FF4854]">관리자 세션 / 판정 관리 페이지</h1>
 
       {/* ============================================
           1) 팀 / 문제 / 세션 목록
@@ -36,7 +34,7 @@ export default function AdminConversationReviewPage() {
       <div className="grid grid-cols-3 gap-4">
         {/* 팀 목록 */}
         <Column title="팀 목록">
-          {teams.map((t) => (
+          {teams.map(t => (
             <Item
               key={t.id}
               label={t.username ?? t.teamname ?? `Team ${t.id}`}
@@ -53,7 +51,7 @@ export default function AdminConversationReviewPage() {
         {/* 문제 목록 */}
         <Column title="문제 목록">
           {problems.length === 0 && <Empty>문제를 불러오는 중...</Empty>}
-          {problems.map((p) => (
+          {problems.map(p => (
             <Item
               key={p.id}
               label={p.title}
@@ -68,11 +66,9 @@ export default function AdminConversationReviewPage() {
 
         {/* 세션 목록 */}
         <Column title="세션 목록">
-          {(!teamId || !problemId) && (
-            <Empty>팀/문제를 먼저 선택하세요</Empty>
-          )}
+          {(!teamId || !problemId) && <Empty>팀/문제를 먼저 선택하세요</Empty>}
 
-          {sessions.map((s) => (
+          {sessions.map(s => (
             <Item
               key={s.id}
               label={`세션 #${s.id} (${s.status})`}
@@ -92,7 +88,7 @@ export default function AdminConversationReviewPage() {
         {!sessionId && <Empty>세션을 선택하세요</Empty>}
 
         <div className="flex flex-col gap-3">
-          {messages.map((m) => (
+          {messages.map(m => (
             <ChatBubble key={m.id} msg={m} />
           ))}
         </div>
@@ -146,8 +142,8 @@ function Item({ label, active, onClick }) {
       className={`p-2 rounded-lg cursor-pointer mb-2 border
       ${
         active
-          ? "bg-[#FF4854] text-white border-[#FF4854]"
-          : "bg-[#10050F]/50 text-gray-200 hover:bg-[#1A0B15] border-white/10"
+          ? 'bg-[#FF4854] text-white border-[#FF4854]'
+          : 'bg-[#10050F]/50 text-gray-200 hover:bg-[#1A0B15] border-white/10'
       }`}
     >
       {label}
@@ -160,12 +156,12 @@ function Empty({ children }) {
 }
 
 function ChatBubble({ msg }) {
-  const isUser = msg.role === "user";
+  const isUser = msg.role === 'user';
 
   return (
     <div
       className={`max-w-[85%] p-3 rounded-lg 
-        ${isUser ? "ml-auto bg-[#2A1620]" : "mr-auto bg-[#16202A]"}`}
+        ${isUser ? 'ml-auto bg-[#2A1620]' : 'mr-auto bg-[#16202A]'}`}
     >
       <div className="text-xs opacity-60 mb-1">{msg.role}</div>
       <div className="whitespace-pre-wrap">{msg.content}</div>
@@ -178,11 +174,9 @@ function ChatBubble({ msg }) {
 ======================================================= */
 
 function JudgePanel({ judgeResult, sessionId }) {
-  const { mutate: markFail, isPending: failLoading } =
-    useMarkSessionFail(sessionId);
+  const { mutate: markFail, isPending: failLoading } = useMarkSessionFail(sessionId);
 
-  const { mutate: markSuccess, isPending: successLoading } =
-    useMarkSessionSuccess(sessionId);
+  const { mutate: markSuccess, isPending: successLoading } = useMarkSessionSuccess(sessionId);
 
   if (!judgeResult) {
     return (
@@ -214,9 +208,7 @@ function JudgePanel({ judgeResult, sessionId }) {
               scrollbar-thumb-[#FF4854]/40
             "
           >
-            <div className="font-bold text-[#FF4854] text-lg mb-4">
-              {r.model}
-            </div>
+            <div className="font-bold text-[#FF4854] text-lg mb-4">{r.model}</div>
 
             <div className="flex items-center gap-2 mb-4">
               <span className="text-sm opacity-70">판단:</span>
@@ -224,11 +216,11 @@ function JudgePanel({ judgeResult, sessionId }) {
                 className={`
                   px-3 py-1 rounded-full text-white text-sm
                   ${
-                    r.verdict?.toLowerCase() === "passed"
-                      ? "bg-green-600"
-                      : r.verdict?.toLowerCase() === "failed"
-                      ? "bg-red-600"
-                      : "bg-gray-600"
+                    r.verdict?.toLowerCase() === 'passed'
+                      ? 'bg-green-600'
+                      : r.verdict?.toLowerCase() === 'failed'
+                        ? 'bg-red-600'
+                        : 'bg-gray-600'
                   }
                 `}
               >
@@ -248,19 +240,13 @@ function JudgePanel({ judgeResult, sessionId }) {
         <div className="text-lg font-bold mb-2">최종 판정</div>
         <div
           className={`px-4 py-2 inline-block rounded-full text-white font-bold ${
-            status === "success"
-              ? "bg-green-600"
-              : status === "fail"
-              ? "bg-red-600"
-              : "bg-gray-600"
+            status === 'success' ? 'bg-green-600' : status === 'fail' ? 'bg-red-600' : 'bg-gray-600'
           }`}
         >
           {status}
         </div>
 
-        <div className="mt-3 text-gray-300 whitespace-pre-wrap">
-          {judge_reason}
-        </div>
+        <div className="mt-3 text-gray-300 whitespace-pre-wrap">{judge_reason}</div>
       </div>
 
       {/* ============================================
@@ -277,7 +263,7 @@ function JudgePanel({ judgeResult, sessionId }) {
               disabled:opacity-40
             "
           >
-            {successLoading ? "처리 중..." : "강제 성공 처리"}
+            {successLoading ? '처리 중...' : '강제 성공 처리'}
           </button>
 
           <button
@@ -289,7 +275,7 @@ function JudgePanel({ judgeResult, sessionId }) {
               disabled:opacity-40
             "
           >
-            {failLoading ? "처리 중..." : "강제 실패 처리"}
+            {failLoading ? '처리 중...' : '강제 실패 처리'}
           </button>
         </div>
       )}

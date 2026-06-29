@@ -1,18 +1,18 @@
 // src/pages/Leaderboard/components/AdminLeaderboardTable.jsx
 
-import React, { useRef, useEffect, useState } from "react";
-import medalGold from "@/assets/icons/medal_gold.svg";
-import medalSilver from "@/assets/icons/medal_silver.svg";
-import medalBronze from "@/assets/icons/medal_bronze.svg";
-import Skeleton from "@/components/Skeleton/Skeleton";
-import { useAdminLeaderboardQuery } from "@/hooks/useAdminLeaderboardQuery";
+import React, { useRef, useEffect, useState } from 'react';
+import medalGold from '@/assets/icons/medal_gold.svg';
+import medalSilver from '@/assets/icons/medal_silver.svg';
+import medalBronze from '@/assets/icons/medal_bronze.svg';
+import Skeleton from '@/components/Skeleton/Skeleton';
+import { useAdminLeaderboardQuery } from '@/hooks/useAdminLeaderboardQuery';
 
 const MEDAL_ICON_MAP = { 1: medalGold, 2: medalSilver, 3: medalBronze };
 const COL_WIDTHS = {
-  rank: "w-[11%]",
-  team: "w-[24%]",
-  score: "w-[30%]",
-  solved: "flex-1",
+  rank: 'w-[11%]',
+  team: 'w-[24%]',
+  score: 'w-[30%]',
+  solved: 'flex-1',
 };
 
 // -------------------------------
@@ -64,7 +64,7 @@ export default function AdminLeaderboardTable() {
 
     const newScores = {};
 
-    data.forEach((team) => {
+    data.forEach(team => {
       newScores[team.teamname] = team.score;
 
       // 점수 증가한 팀 하이라이트
@@ -84,7 +84,6 @@ export default function AdminLeaderboardTable() {
 
   return (
     <div className="relative w-full max-w-[1027px] rounded-[10px] bg-white/80 shadow-md">
-
       {/* ------------------- 헤더 ------------------- */}
       <div className="flex items-center h-[79px] heading-3 border-b border-[#FF4854] text-[#FF4854] font-500">
         <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
@@ -103,7 +102,7 @@ export default function AdminLeaderboardTable() {
             className={`
               flex items-center h-[79px] border-b border-[#FF4854]/30 heading-3 font-700
               transition-all duration-500
-              ${isHighlighted ? "bg-[#FFF5E1]" : "text-[#010101]"}
+              ${isHighlighted ? 'bg-[#FFF5E1]' : 'text-[#010101]'}
             `}
           >
             {/* 순위 */}

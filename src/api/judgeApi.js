@@ -7,6 +7,5 @@ import api from './axiosInstance'; // axios 기본 설정 인스턴스
  * @returns {Promise}
  */
 export const submitForJudgement = (sessionId, body = {}) => {
-  return api.post(`/judge/sessions/${sessionId}/submit`, body)
-    .then(res => res.data);
+  return api.post(`/judge/sessions/${sessionId}/submit`, body).then(res => res.data);
 };

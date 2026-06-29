@@ -8,7 +8,7 @@ export default function FloatingMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const adminLogout = useAuthStore((state) => state.adminLogout);
+  const adminLogout = useAuthStore(state => state.adminLogout);
 
   // 버튼 목록 (🔥 빨간 테마)
   const buttons = [
@@ -24,7 +24,7 @@ export default function FloatingMenu() {
 
   const gap = 75;
 
-  const handleNavigate = async (btn) => {
+  const handleNavigate = async btn => {
     setIsOpen(false);
 
     if (btn.isLogout) {
@@ -63,16 +63,8 @@ export default function FloatingMenu() {
                 whileTap={{ scale: 0.95 }}
                 className="absolute w-[60px] h-[60px] rounded-full flex items-center justify-center cursor-pointer transition-transform"
                 style={{
-                  background: isActive
-                    ? '#FF4854'
-                    : isLogout
-                    ? '#FFFFFF'
-                    : '#FFFFFF',
-                  color: isActive
-                    ? '#FFFFFF'
-                    : isLogout
-                    ? '#D80027'
-                    : '#FF4854',
+                  background: isActive ? '#FF4854' : isLogout ? '#FFFFFF' : '#FFFFFF',
+                  color: isActive ? '#FFFFFF' : isLogout ? '#D80027' : '#FF4854',
                   fontFamily: "'Black Ops One', sans-serif",
                   fontSize: btn.fontSize,
                   fontWeight: 400,
@@ -83,11 +75,7 @@ export default function FloatingMenu() {
                 }}
               >
                 {/* 로그아웃 아이콘 */}
-                {btn.isLogout ? (
-                  <LogOut size={20} color="#D80027" />
-                ) : (
-                  btn.label
-                )}
+                {btn.isLogout ? <LogOut size={20} color="#D80027" /> : btn.label}
               </motion.button>
             );
           })}
@@ -95,7 +83,7 @@ export default function FloatingMenu() {
 
       {/* 🔥 메인 토글 버튼 */}
       <motion.button
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => setIsOpen(prev => !prev)}
         whileHover={{
           scale: 1.1,
           boxShadow: '0px 0px 15px 3px rgba(255, 72, 84, 0.5)',

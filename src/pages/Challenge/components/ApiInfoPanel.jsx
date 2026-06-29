@@ -37,7 +37,7 @@ export default function ApiInfoPanel({
   method,
   headerName,
   apiKey,
-  problemCode,   // ⭐ 추가된 props
+  problemCode, // ⭐ 추가된 props
 }) {
   if (isLoading) return <ApiInfoPanelSkeleton />;
 
@@ -58,13 +58,18 @@ export default function ApiInfoPanel({
       <h3 className="body-large font-700 text-[#837BBD]">문제 API</h3>
 
       <div className="body-medium font-500 whitespace-pre-wrap" style={{ color: API_TEXT_COLOR }}>
-        <p><b>URL:</b> {apiUrl ?? '정보 없음'}</p>
-        <p><b>Headers:</b> {headerName ?? '정보 없음'}</p>
-        <p><b>API Key:</b> {apiKey ?? '정보 없음'}</p>
+        <p>
+          <b>URL:</b> {apiUrl ?? '정보 없음'}
+        </p>
+        <p>
+          <b>Headers:</b> {headerName ?? '정보 없음'}
+        </p>
+        <p>
+          <b>API Key:</b> {apiKey ?? '정보 없음'}
+        </p>
 
         <p className="font-600 font-bold">Request Body (예시)</p>
 
-        
         <pre className="rounded text-sm overflow-x-auto font-bold">{requestBodyExample}</pre>
       </div>
     </div>

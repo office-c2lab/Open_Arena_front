@@ -37,14 +37,14 @@ export default function ChatTestPage() {
           type="text"
           placeholder="세션 제목"
           value={sessionTitle}
-          onChange={(e) => setSessionTitle(e.target.value)}
+          onChange={e => setSessionTitle(e.target.value)}
           className="border p-2 mr-2"
         />
         <button
           onClick={() =>
             createSessionMutation.mutate(undefined, {
-              onSuccess: (data) => setSessionId(data.id),
-              onError: (err) => console.error('세션 생성 실패', err),
+              onSuccess: data => setSessionId(data.id),
+              onError: err => console.error('세션 생성 실패', err),
             })
           }
           className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -61,7 +61,7 @@ export default function ChatTestPage() {
             type="text"
             placeholder="보낼 메시지"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={e => setMessage(e.target.value)}
             className="border p-2 mr-2"
           />
           <button
@@ -71,7 +71,7 @@ export default function ChatTestPage() {
                   setMessage('');
                   messagesQuery.refetch();
                 },
-                onError: (err) => console.error('메시지 전송 실패', err),
+                onError: err => console.error('메시지 전송 실패', err),
               })
             }
             className="bg-green-500 text-white px-4 py-2 rounded"

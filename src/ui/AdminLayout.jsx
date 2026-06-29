@@ -7,7 +7,7 @@ export default function AdminLayout() {
   return (
     <div className="relative w-full min-h-screen bg-[#F7F8FA]">
       {/* 메인 Content */}
-      <div className="pb-20">  
+      <div className="pb-20">
         <Outlet />
       </div>
 

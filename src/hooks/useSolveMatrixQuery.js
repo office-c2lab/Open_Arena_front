@@ -14,7 +14,7 @@ export const useSolveMatrixQuery = (label = 'title', interval = 5000) => {
       return await fetchSolveMatrix(label); // 바로 solve-matrix 호출
     },
     refetchInterval: interval, // 5초 간격 업데이트
-    refetchOnWindowFocus: true, 
+    refetchOnWindowFocus: true,
     staleTime: 0,
     retry: 1,
   });

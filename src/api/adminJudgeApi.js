@@ -1,8 +1,8 @@
 // src/api/adminJudgeApi.js
-import api from "./axiosInstance";
+import api from './axiosInstance';
 
 // Judge 프롬프트 조회
-export const fetchJudgePrompt = async (problemId) => {
+export const fetchJudgePrompt = async problemId => {
   const res = await api.get(`/admin/judgements/${problemId}`);
   return res.data;
 };

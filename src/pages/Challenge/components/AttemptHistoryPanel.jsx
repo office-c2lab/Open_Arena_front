@@ -49,18 +49,14 @@ export default function AttemptHistoryPanel({
           isSubmitted = true;
           isSuccess = false;
           promptSummary =
-            session.judge_reason?.split('\n')[0]?.slice(0, 50) ||
-            session.title ||
-            '실패한 시도';
+            session.judge_reason?.split('\n')[0]?.slice(0, 50) || session.title || '실패한 시도';
           break;
         default:
           filterKey = 'NOT_SUBMITTED';
           isSubmitted = false;
           isSuccess = false;
           promptSummary =
-            session.judge_reason?.split('\n')[0]?.slice(0, 50) ||
-            session.title ||
-            '새로운 대화';
+            session.judge_reason?.split('\n')[0]?.slice(0, 50) || session.title || '새로운 대화';
       }
 
       return {
@@ -110,7 +106,6 @@ export default function AttemptHistoryPanel({
 
   return (
     <div className="flex h-full w-[295px] flex-col flex-shrink-0">
-
       {/* 포인트 카드 */}
       <div className="flex-shrink-0 w-full mb-3">
         <PointInfoCard isLoading={isLoading} />
@@ -124,9 +119,7 @@ export default function AttemptHistoryPanel({
       {/* 시도 기록 */}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
         <div className="w-full h-[70px] p-3 md:p-4 flex items-center justify-between border-b border-white/50 bg-white/35">
-          <span className="heading-2 font-500 text-[#837BBD]">
-            최근 시도 ({sessions.length})
-          </span>
+          <span className="heading-2 font-500 text-[#837BBD]">최근 시도 ({sessions.length})</span>
         </div>
 
         <div className="p-3 md:p-4 flex justify-end relative" ref={dropdownRef}>
@@ -184,7 +177,6 @@ export default function AttemptHistoryPanel({
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

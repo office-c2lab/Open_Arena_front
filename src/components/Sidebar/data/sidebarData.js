@@ -22,13 +22,12 @@ export const aiSubMenu = [
   { label: '일반' },
 ];
 
-
 export const settingsSubMenu = [
   { label: '계정', path: '/settings/account' },
   { label: '알림', path: '/settings/notification' },
 ];
 
-export const mainNavigationData = (isAIDropdownOpen) => [
+export const mainNavigationData = isAIDropdownOpen => [
   {
     icon: DashboardIcon,
     activeIcon: DashboardIconWhite,
@@ -85,7 +84,7 @@ export const bottomLinksData = (
 // -----------------------------------------------------------
 // 서브 네비게이션 데이터 (설정 섹션)
 // -----------------------------------------------------------
-export const subNavigationData = (isSettingsDropdownOpen) => [
+export const subNavigationData = isSettingsDropdownOpen => [
   {
     icon: SettingsIcon,
     activeIcon: SettingsIconWhite,

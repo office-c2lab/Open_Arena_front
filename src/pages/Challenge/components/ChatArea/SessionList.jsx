@@ -19,7 +19,7 @@ export default function SessionList({ sessions = [], sessionId, onSessionClick }
 
   return (
     <div className="p-4 flex flex-col max-h-[200px] overflow-y-auto">
-      {sessions.map((s) => (
+      {sessions.map(s => (
         <SessionCard
           key={s.id}
           session={s}

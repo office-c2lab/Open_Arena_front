@@ -7,9 +7,9 @@ import { fetchLeaderboard } from '@/api/leaderboardApi';
  */
 export const useLeaderboardQuery = () => {
   return useQuery({
-    queryKey: ['leaderboard'],   // teamId 제거
-    queryFn: fetchLeaderboard,   // 인자 제거
-    refetchInterval: 10000,      // 10초마다 새로고침
+    queryKey: ['leaderboard'], // teamId 제거
+    queryFn: fetchLeaderboard, // 인자 제거
+    refetchInterval: 10000, // 10초마다 새로고침
     staleTime: 5000,
     retry: 1,
   });

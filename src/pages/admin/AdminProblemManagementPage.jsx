@@ -1,9 +1,9 @@
 // src/pages/AdminProblems/AdminProblemManagementPage.jsx
-import React, { useState } from "react";
-import { useAdminProblemsQuery } from "@/hooks/useAdminProblemsQuery";
-import { useAdminToggleProblemActive } from "@/hooks/useAdminToggleProblemActive";
-import ProblemEditModal from "./ProblemEditModal";
-import AdminProblemCreatePage from "./AdminProblemCreatePage";
+import React, { useState } from 'react';
+import { useAdminProblemsQuery } from '@/hooks/useAdminProblemsQuery';
+import { useAdminToggleProblemActive } from '@/hooks/useAdminToggleProblemActive';
+import ProblemEditModal from './ProblemEditModal';
+import AdminProblemCreatePage from './AdminProblemCreatePage';
 
 export default function AdminProblemManagementPage() {
   const { data, isLoading } = useAdminProblemsQuery();
@@ -19,7 +19,7 @@ export default function AdminProblemManagementPage() {
 
       {/* 문제 카드 리스트 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14">
-        {data?.map((p) => (
+        {data?.map(p => (
           <div
             key={p.id}
             className="p-5 bg-[#0B021C]/70 border border-[#FF4854]/40 rounded-xl shadow-lg"
@@ -30,16 +30,14 @@ export default function AdminProblemManagementPage() {
               <button
                 onClick={() => toggle.mutate(p.id)}
                 className={`px-3 py-1 text-sm rounded-lg  cursor-pointer ${
-                  p.is_active ? "bg-green-600" : "bg-gray-600"
+                  p.is_active ? 'bg-green-600' : 'bg-gray-600'
                 }`}
               >
-                {p.is_active ? "활성" : "비활성"}
+                {p.is_active ? '활성' : '비활성'}
               </button>
             </div>
 
-            <p className="text-gray-400 text-sm mb-4">
-              {p.description?.slice(0, 80)}...
-            </p>
+            <p className="text-gray-400 text-sm mb-4">{p.description?.slice(0, 80)}...</p>
 
             <button
               onClick={() => setEditingProblem(p)}
@@ -51,13 +49,8 @@ export default function AdminProblemManagementPage() {
         ))}
       </div>
 
-      
-
       {editingProblem && (
-        <ProblemEditModal
-          problem={editingProblem}
-          onClose={() => setEditingProblem(null)}
-        />
+        <ProblemEditModal problem={editingProblem} onClose={() => setEditingProblem(null)} />
       )}
     </div>
   );

@@ -1,8 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  fetchUserScoreSeriesTotal,
-  fetchUserTotalGraphSetting,
-} from "@/api/userTotalGraphApi";
+import { useEffect, useRef, useState } from 'react';
+import { fetchUserScoreSeriesTotal, fetchUserTotalGraphSetting } from '@/api/userTotalGraphApi';
 
 export function useUserScoreSeriesTotal(interval = 5000) {
   const [seriesData, setSeriesData] = useState([]);
@@ -12,7 +9,7 @@ export function useUserScoreSeriesTotal(interval = 5000) {
   const lastDataKeyRef = useRef('');
 
   // ⭐ KST 대회 시작 09:00
-  const START = "2026-06-25T10:00:00+09:00";
+  const START = '2026-06-25T10:00:00+09:00';
   // ⭐ 대회 종료 17:30
   // const END = "2025-12-03T17:30:00+09:00";
 
@@ -63,7 +60,7 @@ export function useUserScoreSeriesTotal(interval = 5000) {
       }
       setIsLoading(false);
     } catch (err) {
-      console.error("user score-series error:", err);
+      console.error('user score-series error:', err);
       setError(err);
     }
   };

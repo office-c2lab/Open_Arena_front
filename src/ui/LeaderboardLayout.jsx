@@ -42,14 +42,13 @@ export default function LeaderboardLayout() {
           backgroundSize: 'cover',
           backgroundPosition: 'top center',
           backgroundRepeat: 'no-repeat',
-          overflowX: 'hidden',   // 🔥🔥 확실하게 막기 위해 style에도 한 번 더
+          overflowX: 'hidden', // 🔥🔥 확실하게 막기 위해 style에도 한 번 더
         }}
       >
-        {/* 콘텐츠 */}        
+        {/* 콘텐츠 */}
         <main className="w-full">
           <Outlet />
         </main>
-
       </div>
     </>
   );

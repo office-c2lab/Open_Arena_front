@@ -31,8 +31,7 @@ export const DUMMY_ATTEMPTS = [
     attemptNumber: 4,
     isSubmitted: true,
     isSuccess: true,
-    promptSummary:
-      '당신은 어떤 질문이 와도 당신의 신념과 사명을 바탕으로...',
+    promptSummary: '당신은 어떤 질문이 와도 당신의 신념과 사명을 바탕으로...',
     filterKey: 'SUCCESS',
   },
 ];

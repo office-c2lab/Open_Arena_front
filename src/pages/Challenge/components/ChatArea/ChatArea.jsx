@@ -25,8 +25,10 @@ export default function ChatArea({
   const queryClient = useQueryClient();
 
   // 세션 훅
-  const { sessionId, clearSession, createSessionMutation, handleSessionClick } =
-    useChatSession(teamId, problemId);
+  const { sessionId, clearSession, createSessionMutation, handleSessionClick } = useChatSession(
+    teamId,
+    problemId
+  );
 
   const [inputValue, setInputValue] = useState('');
 
@@ -93,11 +95,7 @@ export default function ChatArea({
 
   return (
     <div className="flex h-full min-w-0 flex-grow flex-col">
-      <SessionList
-        sessions={sessions}
-        sessionId={sessionId}
-        onSessionClick={handleSessionClick}
-      />
+      <SessionList sessions={sessions} sessionId={sessionId} onSessionClick={handleSessionClick} />
 
       <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden h-full">
         <ChatMessages

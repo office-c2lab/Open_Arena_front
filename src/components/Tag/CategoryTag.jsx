@@ -9,18 +9,17 @@ import React from 'react';
 const getCategoryColors = category => {
   switch (category) {
     case '법률':
-      return 'text-yellow-400 border-yellow-400'; 
+      return 'text-yellow-400 border-yellow-400';
     case '군사':
-      return 'text-green-500 border-green-500'; 
+      return 'text-green-500 border-green-500';
     case '사회':
-      return 'text-pink-400 border-pink-400'; 
+      return 'text-pink-400 border-pink-400';
     case '일반':
       return 'text-fuchsia-600 border-fuchsia-600';
     default:
       return 'text-fuchsia-600 border-fuchsia-600';
   }
 };
-
 
 /**
  * 카테고리/유형 표시를 위한 공통 태그 컴포넌트입니다. (좁은 패딩 Variant B)

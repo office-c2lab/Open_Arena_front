@@ -31,9 +31,7 @@ export const AttemptHistoryCardSkeleton = () => {
         <Skeleton className="w-[72px] h-[28px] rounded-full" />
       </div>
       {/* 2. 하단 영역: 프롬프트 요약 스켈레톤 */}
-      <div
-        className="w-full h-[48px] rounded-[14px] flex items-center flex-shrink-0 bg-white/35"
-      >
+      <div className="w-full h-[48px] rounded-[14px] flex items-center flex-shrink-0 bg-white/35">
         {/* 텍스트 줄 스켈레톤 */}
         <div className="w-full mx-[8px] space-y-2">
           <Skeleton className="h-3 w-11/12 rounded" />

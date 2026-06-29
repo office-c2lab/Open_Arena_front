@@ -123,19 +123,14 @@ export default function ChallengeInfoPanel({
   }
 
   return (
-    <div
-      ref={panelRef}
-      className="relative flex h-full min-h-0 w-[340px] flex-col flex-shrink-0"
-    >
+    <div ref={panelRef} className="relative flex h-full min-h-0 w-[340px] flex-col flex-shrink-0">
       <div
         className="relative shadow-[0_10px_28px_rgba(15,23,42,0.10)] rounded-[30px] overflow-hidden flex min-h-0 flex-col h-full border border-white/55 bg-cover bg-center backdrop-blur-xl"
         style={{ backgroundImage: `url(${panelBackground})` }}
       >
         <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
         {/* 문제 헤더 */}
-        <div
-          className="relative flex min-h-[108px] flex-col justify-center overflow-hidden flex-shrink-0 px-4 pt-4 pb-3"
-        >
+        <div className="relative flex min-h-[108px] flex-col justify-center overflow-hidden flex-shrink-0 px-4 pt-4 pb-3">
           <div className="relative flex w-full items-center gap-3 rounded-[18px] border border-white/65 bg-white/42 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
             <button
               type="button"

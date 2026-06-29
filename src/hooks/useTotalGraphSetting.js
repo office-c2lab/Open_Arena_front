@@ -1,22 +1,19 @@
 // src/hooks/useTotalGraphSetting.js
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  fetchTotalGraphSetting,
-  toggleTotalGraphSetting
-} from "@/api/totalGraphApi";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchTotalGraphSetting, toggleTotalGraphSetting } from '@/api/totalGraphApi';
 
 export function useTotalGraphSetting() {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["totalGraphSetting"],
+    queryKey: ['totalGraphSetting'],
     queryFn: fetchTotalGraphSetting,
   });
 
   const { mutate: toggle, isPending } = useMutation({
     mutationFn: toggleTotalGraphSetting,
     onSuccess: () => {
-      queryClient.invalidateQueries(["totalGraphSetting"]);
+      queryClient.invalidateQueries(['totalGraphSetting']);
     },
   });
 

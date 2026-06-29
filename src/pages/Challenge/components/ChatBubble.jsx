@@ -3,9 +3,18 @@ import React, { useState, useEffect, useRef } from 'react';
 // 💡 로딩 애니메이션 (3개의 점이 bounce)
 const TypingIndicator = () => (
   <div className="flex space-x-1 ml-2">
-    <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-    <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-    <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+    <div
+      className="w-2 h-2 bg-white rounded-full animate-bounce"
+      style={{ animationDelay: '0s' }}
+    ></div>
+    <div
+      className="w-2 h-2 bg-white rounded-full animate-bounce"
+      style={{ animationDelay: '0.2s' }}
+    ></div>
+    <div
+      className="w-2 h-2 bg-white rounded-full animate-bounce"
+      style={{ animationDelay: '0.4s' }}
+    ></div>
   </div>
 );
 

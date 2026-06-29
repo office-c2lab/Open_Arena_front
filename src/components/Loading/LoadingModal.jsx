@@ -59,13 +59,7 @@ export default function LoadingModal({ isOpen }) {
               fill="none"
               style={{ transform: 'rotate(-90deg)', zIndex: 1 }}
             >
-              <circle
-                cx={center}
-                cy={center}
-                r={circleRadius}
-                stroke="#FFD5D5"
-                strokeWidth="2"
-              />
+              <circle cx={center} cy={center} r={circleRadius} stroke="#FFD5D5" strokeWidth="2" />
               <motion.circle
                 cx={center}
                 cy={center}
@@ -100,12 +94,47 @@ export default function LoadingModal({ isOpen }) {
               className="text-sm md:text-base text-[#6B6B6B] mt-20 tracking-wide text-center"
               style={{ zIndex: 2 }}
             >
-              {[ 
-                { text: <><span className="text-[#FF4854]">A</span>I{' '}</>, delay: 0.2 },
-                { text: <><span className="text-[#FF4854]">R</span>edteam{' '}</>, delay: 0.4 },
-                { text: <>and <span className="text-[#FF4854]">E</span>valuation for{' '}</>, delay: 0.6 },
-                { text: <><span className="text-[#FF4854]">N</span>ext-gen{' '}</>, delay: 0.8 },
-                { text: <><span className="text-[#FF4854]">A</span>I</>, delay: 1.0 },
+              {[
+                {
+                  text: (
+                    <>
+                      <span className="text-[#FF4854]">A</span>I{' '}
+                    </>
+                  ),
+                  delay: 0.2,
+                },
+                {
+                  text: (
+                    <>
+                      <span className="text-[#FF4854]">R</span>edteam{' '}
+                    </>
+                  ),
+                  delay: 0.4,
+                },
+                {
+                  text: (
+                    <>
+                      and <span className="text-[#FF4854]">E</span>valuation for{' '}
+                    </>
+                  ),
+                  delay: 0.6,
+                },
+                {
+                  text: (
+                    <>
+                      <span className="text-[#FF4854]">N</span>ext-gen{' '}
+                    </>
+                  ),
+                  delay: 0.8,
+                },
+                {
+                  text: (
+                    <>
+                      <span className="text-[#FF4854]">A</span>I
+                    </>
+                  ),
+                  delay: 1.0,
+                },
               ].map(({ text, delay }, i) => (
                 <motion.span
                   key={i}
