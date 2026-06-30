@@ -1,31 +1,19 @@
 import { useState } from 'react';
-import greenProblemImage from '../../assets/images/greenp.png';
-import yellowProblemImage from '../../assets/images/yellowp.png';
-import pinkProblemImage from '../../assets/images/pinkp.png';
-import purpleProblemImage from '../../assets/images/purplep.png';
+import tutorialImage from '../../assets/images/tutorial.png';
+import challengeImage from '../../assets/images/challenge.png';
 
 import SolveProblemButton from '../Button/SolveProblemButton';
 import CategoryTag from '../Tag/CategoryTag';
 import ScoreTag from '../Tag/ScoreTag';
 import Skeleton from '../Skeleton/Skeleton'; // Skeleton 컴포넌트 import
+import { normalizeProblemCategory } from '@/utils/problemCategory';
 
-// 🖼️ 카테고리별 이미지 매핑
-const getCategoryImage = category => {
-  switch (category) {
-    case '법률':
-      return yellowProblemImage;
-    case '군사':
-      return greenProblemImage;
-    case '사회':
-    case '튜토리얼':
-      return pinkProblemImage;
-    case '일반':
-      return purpleProblemImage;
-    // case '금융':
-    //   return financeImage;
-    default:
-      return purpleProblemImage;
+const getProblemCardImage = category => {
+  if (category === '챌린지') {
+    return challengeImage;
   }
+
+  return tutorialImage;
 };
 
 // ====================================================
@@ -33,7 +21,7 @@ const getCategoryImage = category => {
 // ====================================================
 const ProblemCardSkeleton = () => {
   const cardClasses = `w-[339px] bg-white shadow-xl rounded-xl flex flex-col overflow-hidden relative`;
-  const imageContainerClasses = `relative w-full h-[198px] overflow-hidden`;
+  const imageContainerClasses = `relative w-full h-[176px] overflow-hidden`;
   const contentClasses = `p-6 flex flex-col gap-2.5`;
   const tagsContainerClasses = `flex space-x-1.5 items-start`;
 
@@ -71,14 +59,14 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
 
   // ✅ score 필드 사용
   const { title, category, sub_description, goal, score } = challenge;
+  const normalizedCategory = normalizeProblemCategory(category);
+  const currentImage = getProblemCardImage(normalizedCategory);
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 
-  const currentImageSrc = getCategoryImage(category);
-
   const cardClasses = `w-[339px] bg-white shadow-xl rounded-xl flex flex-col overflow-hidden relative`;
-  const imageContainerClasses = `relative w-full h-[198px] overflow-hidden`;
+  const imageContainerClasses = `relative w-full h-[190px] overflow-hidden`;
   const imageClasses = `w-full h-full object-cover transition-transform duration-300 ease-in-out ${
     isHovered ? 'scale-115' : 'scale-105'
   }`;
@@ -98,8 +86,8 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
       {/* 🖼️ 이미지 영역 */}
       <div className={imageContainerClasses.trim()}>
         <img
-          src={currentImageSrc}
-          alt={`문제 ${title}의 ${category} 이미지`}
+          src={currentImage}
+          alt={`문제 ${title}의 ${normalizedCategory} 이미지`}
           className={imageClasses.trim()}
         />
 
@@ -114,7 +102,7 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
       {/* 📝 내용 영역 */}
       <div className={contentClasses.trim()}>
         <div className={tagsContainerClasses.trim()}>
-          <CategoryTag>{category}</CategoryTag>
+          <CategoryTag>{normalizedCategory}</CategoryTag>
           <ScoreTag score={score} />
         </div>
 

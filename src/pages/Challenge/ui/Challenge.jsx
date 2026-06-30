@@ -21,6 +21,7 @@ import PurpleDownIcon from '@/assets/icons/purple-downbtn.svg';
 
 // Components
 import ChallengeInfoPanel from '../components/ChallengeInfoPanel';
+import { normalizeProblemCategory } from '@/utils/problemCategory';
 import ChatArea from '../components/ChatArea/ChatArea';
 import AttemptHistoryPanel from '../components/AttemptHistoryPanel';
 import LoadingModal from '../../../components/Loading/LoadingModal';
@@ -110,7 +111,7 @@ export default function Challenge() {
       const headerInfo = {
         title: problem.title,
         subtitle: problem.sub_title,
-        category: problem.category,
+        category: normalizeProblemCategory(problem.category),
         score: problem.score,
       };
 

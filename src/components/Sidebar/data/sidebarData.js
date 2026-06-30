@@ -13,21 +13,12 @@ import PageIconWhite from '@/assets/icons/white-page.svg';
 import AIIconWhite from '@/assets/icons/white-ai-model.svg';
 import SettingsIconWhite from '@/assets/icons/white-settings.svg';
 
-const primaryTextColor = 'text-[#0F172A]';
-
-export const aiSubMenu = [
-  { label: '법률' },
-  { label: '군사' },
-  { label: '사회' },
-  { label: '일반' },
-];
-
 export const settingsSubMenu = [
   { label: '계정', path: '/settings/account' },
   { label: '알림', path: '/settings/notification' },
 ];
 
-export const mainNavigationData = isAIDropdownOpen => [
+export const mainNavigationData = [
   {
     icon: DashboardIcon,
     activeIcon: DashboardIconWhite,
@@ -53,10 +44,6 @@ export const mainNavigationData = isAIDropdownOpen => [
     activeIcon: AIIconWhite,
     label: '챌린지',
     path: '/kategorie',
-    isDropdown: true,
-    hasChevron: true,
-    isOpen: isAIDropdownOpen,
-    subMenu: aiSubMenu,
   },
 ];
 

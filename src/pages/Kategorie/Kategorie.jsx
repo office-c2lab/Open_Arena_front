@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 // ⭐ axiosInstance
 import api from '@/api/axiosInstance';
+import { CHALLENGE_CATEGORY, normalizeProblemCategory } from '@/utils/problemCategory';
 
 // 컴포넌트
 import Banner from '../../components/Banner/Banner';
@@ -11,7 +12,6 @@ import ProblemCard from '../../components/ProblemCard/ProblemCard';
 
 // API 경로
 const API_PATH = '/problem/all';
-
 // 스켈레톤 개수
 const SKELETON_COUNT = 9;
 
@@ -19,8 +19,6 @@ const getProblemRouteId = problem => problem?.problem_id ?? problem?.problemId ?
 
 const ChallengeSection = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const currentCategory = searchParams.get('category');
 
   // 🔥 React Query 기반 API 호출 + 폴링
   const {
@@ -47,11 +45,10 @@ const ChallengeSection = () => {
   const processedChallenges = useMemo(() => {
     if (isLoading || isError) return [];
 
-    if (currentCategory) {
-      return challenges.filter(challenge => challenge.category === currentCategory);
-    }
-    return challenges;
-  }, [currentCategory, challenges, isLoading, isError]);
+    return challenges.filter(
+      challenge => normalizeProblemCategory(challenge.category) === CHALLENGE_CATEGORY
+    );
+  }, [challenges, isLoading, isError]);
 
   // --- Solve 버튼 ---
   const handleSolveProblem = useCallback(
@@ -61,7 +58,7 @@ const ChallengeSection = () => {
     [navigate]
   );
 
-  const titleText = currentCategory ? `${currentCategory} 챌린지 목록` : '전체 챌린지 목록';
+  const titleText = `${CHALLENGE_CATEGORY} 목록`;
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center p-6 gap-8">
@@ -91,9 +88,7 @@ const ChallengeSection = () => {
             <p className="text-lg text-red-600 col-span-full">오류: {error?.message}</p>
           ) : processedChallenges.length === 0 ? (
             <p className="text-lg text-gray-500 col-span-full">
-              {currentCategory
-                ? `${currentCategory}에 해당하는 문제가 없습니다.`
-                : '등록된 문제가 없습니다.'}
+              {`${CHALLENGE_CATEGORY} 카테고리에 해당하는 문제가 없습니다.`}
             </p>
           ) : (
             processedChallenges.map(challenge => (

@@ -10,6 +10,7 @@ import leftPinkBg from '@/assets/images/leftpink.png';
 import leftPurpleBg from '@/assets/images/leftpurple.png';
 
 const CATEGORY_BACKGROUND_MAP = {
+  챌린지: leftPinkBg,
   군사: leftGreenBg,
   법률: leftYellowBg,
   사회: leftPinkBg,
@@ -33,6 +34,7 @@ if (typeof document !== 'undefined') {
 }
 
 const CATEGORY_TITLE_COLOR_MAP = {
+  챌린지: 'text-[#0F172A]',
   군사: 'text-[#079C4C]',
   법률: 'text-[#E6AA02]',
   사회: 'text-[#E6007E]',
@@ -131,7 +133,7 @@ export default function ChallengeInfoPanel({
         <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
         {/* 문제 헤더 */}
         <div className="relative flex min-h-[108px] flex-col justify-center overflow-hidden flex-shrink-0 px-4 pt-4 pb-3">
-          <div className="relative flex w-full items-center gap-3 rounded-[18px] border border-white/65 bg-white/42 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
+          <div className="relative flex w-full items-center gap-3 rounded-[18px] border border-white/65 bg-white/65 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
             <button
               type="button"
               onClick={() => navigate(-1)}
@@ -152,7 +154,7 @@ export default function ChallengeInfoPanel({
         {/* 탭 영역 */}
         <div className="relative w-full flex flex-col flex-grow min-h-0 px-4 pb-4">
           <div
-            className="flex justify-between flex-shrink-0 rounded-[18px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md"
+            className="flex justify-between flex-shrink-0 rounded-[18px] border border-white/65 bg-white/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md"
             style={{
               gap: `${Math.min(gap, 1)}rem`,
               padding: `0 ${padding * 0.75}rem`,
@@ -191,7 +193,7 @@ export default function ChallengeInfoPanel({
               }}
             >
               <div className="flex h-full min-h-0 flex-col overflow-y-auto pr-1">
-                <div className="rounded-[24px] border border-white/65 bg-white/46 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
+                <div className="rounded-[24px] border border-white/65 bg-white/65 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
                   <span className={`heading-3 font-700 ${activeTabContent.titleColor} block mb-6`}>
                     {activeTabContent.title}
                   </span>

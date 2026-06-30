@@ -13,8 +13,7 @@ import SidebarProfile from './components/SidebarProfile';
 import { mainNavigationData, bottomLinksData } from './data/sidebarData';
 
 export default function Sidebar({ isChallengeLayout = false, isOpen = true }) {
-  const { isCollapsed, toggleCollapsed, activeItem, isAIDropdownOpen, setActiveItemByPath } =
-    useSidebarStore();
+  const { isCollapsed, toggleCollapsed, activeItem, setActiveItemByPath } = useSidebarStore();
 
   const location = useLocation();
   useEffect(() => {
@@ -46,7 +45,7 @@ export default function Sidebar({ isChallengeLayout = false, isOpen = true }) {
     role = '관리자';
   }
 
-  const mainNavigation = mainNavigationData(isAIDropdownOpen);
+  const mainNavigation = mainNavigationData;
 
   const bottomLinks = bottomLinksData(
     isHelpHovered,

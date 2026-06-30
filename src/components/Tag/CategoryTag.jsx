@@ -8,6 +8,8 @@ import React from 'react';
  */
 const getCategoryColors = category => {
   switch (category) {
+    case '챌린지':
+      return 'text-[#FF4854] border-[#FF4854]';
     case '법률':
       return 'text-yellow-400 border-yellow-400';
     case '군사':

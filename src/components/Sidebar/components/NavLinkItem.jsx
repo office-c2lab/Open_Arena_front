@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSidebarStore } from '../../../stores/useSidebarStore';
 
 // 아이콘 (경로 유지)
@@ -12,9 +12,6 @@ const primaryTextColor = 'text-[#0F172A]';
  * 단일 네비게이션 링크 항목 컴포넌트 (Link 기반 + 필터링 기능)
  */
 export default function NavLinkItem({ item, isCollapsed }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const { activeItem, handleItemClick, handleSubMenuClick } = useSidebarStore(); // 1. 활성화 상태 계산
 
   const isLabelActive = activeItem === item.label;
@@ -38,15 +35,6 @@ export default function NavLinkItem({ item, isCollapsed }) {
         onClick: item.onClick || (() => handleItemClick(item.label, item.isDropdown)),
         role: 'button',
       };
-
-  const isChallenge = item.label === '챌린지';
-  const SubComponent = isChallenge ? 'a' : Link; // 하위 메뉴 클릭 핸들러
-
-  const handleChallengeSubMenuClick = (subLabel, parentLabel) => {
-    handleSubMenuClick(subLabel, parentLabel);
-    const categoryName = subLabel;
-    navigate(`/kategorie?category=${categoryName}`);
-  };
 
   return (
     <div className={`w-full ${isDropdownOpen && !isCollapsed ? 'flex flex-col gap-3' : ''}`}>
@@ -97,14 +85,11 @@ export default function NavLinkItem({ item, isCollapsed }) {
           {item.subMenu.map((sub, subIdx) => {
             const isSubActive = activeItem === sub.label;
 
-            const onClickHandler = isChallenge
-              ? () => handleChallengeSubMenuClick(sub.label, item.label)
-              : () => handleSubMenuClick(sub.label, item.label);
-
-            const subProps = isChallenge ? { role: 'button' } : { to: sub.path };
+            const onClickHandler = () => handleSubMenuClick(sub.label, item.label);
+            const subProps = { to: sub.path };
 
             return (
-              <SubComponent
+              <Link
                 key={subIdx}
                 onClick={onClickHandler}
                 {...subProps}
@@ -118,7 +103,7 @@ export default function NavLinkItem({ item, isCollapsed }) {
                 >
                   {sub.label}
                 </span>
-              </SubComponent>
+              </Link>
             );
           })}
         </div>
