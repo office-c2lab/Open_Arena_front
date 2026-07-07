@@ -9,8 +9,8 @@ export const useAdminToggleProblemActive = () => {
     mutationFn: problemId => toggleAdminProblemActive(problemId),
 
     onSuccess: () => {
-      // 🔄 문제 목록 갱신 (GET /problem/all)
-      queryClient.invalidateQueries(['allProblems']);
+      queryClient.invalidateQueries({ queryKey: ['adminProblems'] });
+      queryClient.invalidateQueries({ queryKey: ['allProblems'] });
     },
 
     onError: err => {

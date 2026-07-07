@@ -7,11 +7,12 @@ const TABS = ['문제 활성/비활성', '문제 생성', '문제 수정/삭제'
 
 export default function AdminProblemPage() {
   const [activeTab, setActiveTab] = useState(TABS[0]);
+  const [activeOnly, setActiveOnly] = useState(false);
 
   return (
     <div className="w-full max-w-6xl mx-auto pt-10">
       {/*  탭 UI  */}
-      <div className="flex gap-4 mb-10 justify-center ">
+      <div className="flex gap-4 mb-10 justify-center">
         {TABS.map(tab => {
           const isActive = activeTab === tab;
           return (
@@ -35,9 +36,19 @@ export default function AdminProblemPage() {
       </div>
 
       {/*  탭 내용  */}
-      {activeTab === '문제 활성/비활성' && <AdminProblemToggleList />}
+      {activeTab === '문제 활성/비활성' && (
+        <AdminProblemToggleList
+          activeOnly={activeOnly}
+          onActiveOnlyToggle={() => setActiveOnly(prev => !prev)}
+        />
+      )}
       {activeTab === '문제 생성' && <AdminProblemCreatePage />}
-      {activeTab === '문제 수정/삭제' && <AdminProblemManagementPage />}
+      {activeTab === '문제 수정/삭제' && (
+        <AdminProblemManagementPage
+          activeOnly={activeOnly}
+          onActiveOnlyToggle={() => setActiveOnly(prev => !prev)}
+        />
+      )}
     </div>
   );
 }

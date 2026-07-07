@@ -4,9 +4,10 @@ import { useAdminProblemsQuery } from '@/hooks/useAdminProblemsQuery';
 import { useAdminToggleProblemActive } from '@/hooks/useAdminToggleProblemActive';
 import ProblemEditModal from './ProblemEditModal';
 import AdminProblemCreatePage from './AdminProblemCreatePage';
+import ToggleSwitch from './ToggleSwitch';
 
-export default function AdminProblemManagementPage() {
-  const { data, isLoading } = useAdminProblemsQuery();
+export default function AdminProblemManagementPage({ activeOnly = false, onActiveOnlyToggle }) {
+  const { data, isLoading } = useAdminProblemsQuery({ activeOnly });
   const toggle = useAdminToggleProblemActive();
 
   const [editingProblem, setEditingProblem] = useState(null);
@@ -15,7 +16,14 @@ export default function AdminProblemManagementPage() {
 
   return (
     <div className="p-10 text-white max-w-[1200px] mx-auto">
-      <h1 className="text-4xl font-bold text-[#FF4854] mb-8">문제 관리</h1>
+      <div className="flex items-center justify-between gap-4 mb-8">
+        <h1 className="text-4xl font-bold text-[#FF4854]">문제 관리</h1>
+
+        <label className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#0B021C]/70 border border-white/10 text-white cursor-pointer">
+          <ToggleSwitch enabled={activeOnly} onToggle={onActiveOnlyToggle} />
+          <span className="font-bold whitespace-nowrap">활성 문제만 보기</span>
+        </label>
+      </div>
 
       {/* 문제 카드 리스트 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14">

@@ -4,10 +4,10 @@ import { useAdminToggleProblemActive } from '@/hooks/useAdminToggleProblemActive
 import { getAdminProblems } from '@/api/adminProblemsApi';
 import ToggleSwitch from './ToggleSwitch';
 
-const AdminProblemToggleList = () => {
+const AdminProblemToggleList = ({ activeOnly = false, onActiveOnlyToggle }) => {
   const { data, isLoading } = useQuery({
-    queryKey: ['adminProblems'],
-    queryFn: getAdminProblems,
+    queryKey: ['adminProblems', { activeOnly }],
+    queryFn: () => getAdminProblems({ activeOnly }),
   });
 
   const toggleMutation = useAdminToggleProblemActive();
@@ -17,7 +17,14 @@ const AdminProblemToggleList = () => {
 
   return (
     <div className="w-full flex flex-col gap-6 mt-10">
-      <h1 className="heading-1 font-700 text-[#FF4854]">문제 활성/비활성 관리</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="heading-1 font-700 text-[#FF4854]">문제 활성/비활성 관리</h1>
+
+        <label className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#0B021C]/70 border border-white/10 text-white cursor-pointer">
+          <ToggleSwitch enabled={activeOnly} onToggle={onActiveOnlyToggle} />
+          <span className="font-bold whitespace-nowrap">활성 문제만 보기</span>
+        </label>
+      </div>
 
       {/*  3개씩 가로 배치되는 grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">

@@ -11,7 +11,12 @@ export const toggleAdminProblemActive = problemId => {
 /**
  * 문제 전체 조회
  */
-export const getAdminProblems = () => api.get('/admin/problems/view').then(res => res.data);
+export const getAdminProblems = ({ activeOnly = false } = {}) =>
+  api
+    .get('/admin/problems/view', {
+      params: activeOnly ? { active_only: true } : undefined,
+    })
+    .then(res => res.data);
 
 /**
  * 문제 생성
