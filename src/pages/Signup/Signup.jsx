@@ -45,17 +45,17 @@ export default function Signup() {
     alert('회원가입 API 연결이 필요합니다.');
   };
 
-  const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4';
+  const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
   const inputFieldStyle =
     'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   return (
-    <div className="min-h-screen flex justify-center items-start bg-gray-100 md:py-10">
+    <div className="min-h-screen flex justify-center items-center bg-[#F7F8FA] md:py-10">
       <div
-        className="max-w-[675px] w-full bg-white rounded-[16px] shadow-xl flex flex-col
+        className="max-w-[675px] w-full rounded-[24px] border border-white/80 bg-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.08)] backdrop-blur-md flex flex-col
                   min-h-screen md:min-h-0 overflow-hidden"
       >
-        <header className="px-8 pt-8 pb-4 border-b border-[#D9DADB] rounded-t-[16px]">
+        <header className="px-8 pt-8 pb-4 border-b border-white/75 rounded-t-[24px] bg-white/45">
           <div className="flex items-center">
             <button
               type="button"
@@ -186,7 +186,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={handleSubmit}
-            className="w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white heading-3 font-500 transition-colors hover:bg-red-600 cursor-pointer"
+            className="w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white heading-3 font-700 shadow-[0_8px_18px_rgba(255,72,84,0.18)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)] cursor-pointer"
           >
             회원가입
           </button>

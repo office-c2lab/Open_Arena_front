@@ -1,6 +1,6 @@
 // src/pages/Login/Login.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff } from 'lucide-react';
@@ -34,20 +34,20 @@ export default function Login() {
       loginToStore(data); //스토어에 저장
       navigate('/dashboard');
     },
-    onError: error => {
+    onError: () => {
       const errorMessage = '로그인 실패: 아이디/비번을 확인해주세요.';
       alert(errorMessage);
     },
   });
 
   //  로그인 제출
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     if (!formData.login_id || !formData.password) {
       alert('아이디와 비밀번호를 입력해 주세요.');
       return;
     }
     loginMutation.mutate(formData);
-  };
+  }, [formData, loginMutation]);
 
   //  전역 엔터키 이벤트 등록 (어디에서든 엔터 누르면 로그인)
   useEffect(() => {
@@ -60,22 +60,22 @@ export default function Login() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [formData]); // formData 최신 상태 유지
+  }, [handleSubmit]);
 
   const isPending = loginMutation.isPending;
 
-  const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4';
+  const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
   const inputFieldStyle =
     'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+    <div className="min-h-screen flex justify-center items-center bg-[#F7F8FA]">
       <div
-        className="max-w-[675px] w-full bg-white rounded-[16px] shadow-xl flex flex-col 
+        className="max-w-[675px] w-full rounded-[24px] border border-white/80 bg-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.08)] backdrop-blur-md flex flex-col 
                   min-h-screen md:min-h-0 md:my-10 overflow-hidden"
       >
         {/* Header */}
-        <header className="px-8 pt-8 pb-4 border-b border-[#D9DADB] rounded-t-[16px]">
+        <header className="px-8 pt-8 pb-4 border-b border-white/75 rounded-t-[24px] bg-white/45">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <h1 className="heading-3 font-500 text-black">로그인</h1>
@@ -140,8 +140,12 @@ export default function Login() {
             type="button"
             onClick={handleSubmit}
             disabled={isPending}
-            className={`w-full h-[58px] rounded-[16px] text-white heading-3 font-500 transition-colors cursor-pointer
-              ${isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#FF4854] hover:bg-red-600'}`}
+            className={`w-full h-[58px] rounded-[16px] text-white heading-3 font-700 transition-all duration-200 cursor-pointer
+              ${
+                isPending
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-[#FF4854] shadow-[0_8px_18px_rgba(255,72,84,0.18)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)]'
+              }`}
           >
             {isPending ? '로그인 중...' : '로그인'}
           </button>
