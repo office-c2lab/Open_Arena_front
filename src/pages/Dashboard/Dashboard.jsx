@@ -7,6 +7,8 @@ import { useAuthStore } from '@/stores/authStore';
 import { useTeamDashboardQuery } from '@/hooks/useTeamDashboardQuery';
 
 const CATEGORY_OPTIONS = ['전체', '법률', '군사', '사회', '일반'];
+const GLASS_CARD_CLASS =
+  'border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md';
 
 function DashboardCard({
   title,
@@ -18,12 +20,14 @@ function DashboardCard({
   isPrivate = false,
 }) {
   return (
-    <section className="min-h-[150px] rounded-[8px] border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_14px_rgba(15,23,42,0.06)]">
-      <p className="body-large font-700 text-black">{title}</p>
+    <section
+      className={`relative min-h-[150px] overflow-hidden rounded-[20px] p-6 transition-all duration-200 hover:-translate-y-[1px] hover:bg-white/64 ${GLASS_CARD_CLASS}`}
+    >
+      <p className="relative body-large font-700 text-black">{title}</p>
       {isLoading ? (
-        <Skeleton className="mt-5 h-9 w-28" />
+        <Skeleton className="relative mt-5 h-9 w-28" />
       ) : (
-        <div className="mt-5 flex flex-wrap items-baseline gap-2">
+        <div className="relative mt-5 flex flex-wrap items-baseline gap-2">
           <span
             className={
               isPrivate
@@ -40,7 +44,7 @@ function DashboardCard({
           ) : null}
         </div>
       )}
-      <p className="mt-4 body-medium font-500 text-[#6B6B6B]">{description}</p>
+      <p className="relative mt-4 body-medium font-500 text-[#6B6B6B]">{description}</p>
     </section>
   );
 }
@@ -80,17 +84,19 @@ function ChallengeCard({ problem, index, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`relative flex h-[132px] w-full cursor-pointer flex-col overflow-hidden rounded-[8px] px-6 pb-6 pt-7 text-left shadow-[0_4px_14px_rgba(15,23,42,0.05)] transition hover:-translate-y-[1px] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
-        solved ? 'border border-[#00B654]/30 bg-white' : 'border border-[#E5E7EB] bg-[#8A93A5]/8'
+      className={`relative flex h-[132px] w-full cursor-pointer flex-col overflow-hidden rounded-[18px] px-6 pb-6 pt-7 text-left backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-white/64 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_22px_rgba(15,23,42,0.11)] ${
+        solved
+          ? 'border border-white/70 bg-[linear-gradient(135deg,rgba(0,182,84,0.10)_0%,rgba(255,255,255,0.58)_56%,rgba(255,255,255,0.44)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_7px_18px_rgba(15,23,42,0.07)]'
+          : 'border border-white/60 bg-[linear-gradient(135deg,rgba(138,147,165,0.12)_0%,rgba(255,255,255,0.42)_58%,rgba(138,147,165,0.08)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.68),0_6px_18px_rgba(15,23,42,0.06)]'
       }`}
     >
       {solved ? (
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(0,182,84,0.08)_0%,rgba(255,255,255,0)_55%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,182,84,0.10)_0%,rgba(255,255,255,0)_42%)]" />
       ) : null}
       <h3 className="relative truncate text-[16px] leading-[22px] font-700 text-black 2xl:text-[20px] 2xl:leading-[26px]">
         {title}
       </h3>
-      <div className="relative mt-auto border-t border-[#D9DADB] pt-5">
+      <div className="relative mt-auto border-t border-white/60 pt-5">
         <ProblemStatusBadge solved={solved} />
       </div>
     </button>
@@ -202,9 +208,9 @@ const Dashboard = () => {
           />
         </section>
 
-        <section className="rounded-[8px] border border-[#E5E7EB] bg-white p-7 shadow-[0_4px_14px_rgba(15,23,42,0.06)]">
+        <section className={`rounded-[24px] p-7 ${GLASS_CARD_CLASS}`}>
           <div>
-            <p className="body-medium font-700 text-black">카테고리별 해결 현황</p>
+            <p className="body-large font-700 text-black">카테고리별 해결 현황</p>
             <div className="mt-6 grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-4">
               {categoryStats.map(item => (
                 <ProgressBar key={item.label} {...item} />
@@ -220,7 +226,7 @@ const Dashboard = () => {
               ? [...Array(8)].map((_, index) => (
                   <div
                     key={`dashboard-problem-skeleton-${index}`}
-                    className="h-[132px] rounded-[8px] border border-[#E5E7EB] bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.05)]"
+                    className={`h-[132px] rounded-[18px] p-5 ${GLASS_CARD_CLASS}`}
                   >
                     <Skeleton className="h-full w-full" />
                   </div>
@@ -238,7 +244,9 @@ const Dashboard = () => {
                 ))}
 
             {!isLoading && problems.length === 0 ? (
-              <div className="col-span-full rounded-[8px] border border-[#E5E7EB] bg-white p-10 text-center body-large font-500 text-[#6B6B6B]">
+              <div
+                className={`col-span-full rounded-[20px] p-10 text-center body-large font-500 text-[#6B6B6B] ${GLASS_CARD_CLASS}`}
+              >
                 등록된 챌린지가 없습니다.
               </div>
             ) : null}

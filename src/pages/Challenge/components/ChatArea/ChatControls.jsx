@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSessionStore } from '@/stores/useSessionStore';
 
 export default function ChatControls({
   ResetIcon,
@@ -8,14 +7,11 @@ export default function ChatControls({
   isDisabled,
   sessionId,
 }) {
-  const { sessionStatus } = useSessionStore();
-
   return (
-    <div className="flex justify-between flex-shrink-0 gap-16">
+    <div className="flex justify-between flex-shrink-0 gap-4 md:gap-16">
       {/* 새로운 대화 시작 버튼 — 항상 활성화! */}
       <button
-        className={`flex items-center justify-center flex-1 h-[44px] rounded-lg gap-2 transition-colors
-          bg-[#D9DADB] hover:bg-[#BFC0C4] cursor-pointer`}
+        className="flex items-center justify-center flex-1 h-[44px] rounded-[12px] gap-2 border border-white/65 bg-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_4px_12px_rgba(15,23,42,0.06)] backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-white/66 cursor-pointer"
         onClick={() => {
           openResetModal(); // 무조건 새 대화 가능
         }}
@@ -33,10 +29,10 @@ export default function ChatControls({
 
       {/* 제출하기 버튼 */}
       <button
-        className={`flex-1 h-[44px] bg-[#FF6289] rounded-lg flex justify-center items-center transition-opacity ${
+        className={`flex-1 h-[44px] bg-[#FF4854] rounded-[12px] flex justify-center items-center shadow-[0_8px_18px_rgba(255,72,84,0.18)] transition-all duration-200 ${
           isDisabled || !sessionId
             ? 'opacity-50 cursor-not-allowed'
-            : 'hover:bg-[#e6597c] cursor-pointer'
+            : 'hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)] cursor-pointer'
         }`}
         onClick={openSubmitModal}
         disabled={isDisabled || !sessionId}

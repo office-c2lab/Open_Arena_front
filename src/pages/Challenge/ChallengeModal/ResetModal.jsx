@@ -36,7 +36,7 @@ const ResetModal = () => {
 
   return (
     <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]">
-      <div className="relative w-[403.65px] h-[586.46px] bg-white rounded-[16px] p-[30px] box-border">
+      <div className="relative w-[440px] h-[586.46px] bg-white rounded-[24px] p-[30px] box-border border border-[#EEF0F4] shadow-[0_18px_40px_rgba(15,23,42,0.16)]">
         <CancelIcon onClick={closeResetModal} />
 
         {/* 헤더 */}
@@ -53,20 +53,22 @@ const ResetModal = () => {
         </div>
 
         {/* 메시지 */}
-        <p className="absolute w-[301.76px] left-1/2 -translate-x-1/2 top-[334.91px] text-center heading-3 font-500 text-black m-0">
-          현재 입력한 내용과 진행 중인 모든 작업이 즉시 중지되며, 되돌릴 수 없습니다.
+        <p className="absolute w-[380px] left-1/2 -translate-x-1/2 top-[334.91px] text-center text-[18px] font-500 leading-8 text-[#0F172A] m-0">
+          현재 입력한 내용과 진행 중인 모든 작업이 <br /> 즉시 중지되며, 되돌릴 수 없습니다.
         </p>
 
         {/* 버튼 */}
         <button
           type="button"
           onClick={handleReset}
-          className="absolute w-[343.2px] h-[60.45px] left-[30.22px] top-[496.28px]
+          className="absolute w-[380px] h-[60.45px] left-[30px] top-[496.28px]
             flex justify-center items-center gap-[4.88px]
-            bg-[#FF4854] rounded-[29.25px] cursor-pointer
-            hover:bg-red-600 transition duration-200"
+            bg-[#FF4854] rounded-[18px] cursor-pointer
+            shadow-[0_8px_18px_rgba(255,72,84,0.18)]
+            hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)]
+            transition-all duration-200"
         >
-          <span className="heading-3 font-500 text-white">새로운 대화 시작</span>
+          <span className="heading-3 font-700 text-white">새로운 대화 시작</span>
         </button>
       </div>
     </div>

@@ -18,7 +18,7 @@ export default function ChatInput({
     const isSuccess = normalizedStatus === 'success';
 
     return (
-      <div className="w-full h-[130px] md:h-[153px] bg-white shadow-[0_0_4px_rgba(0,0,0,0.25)] rounded-[20px] flex flex-col items-center justify-center px-4 text-center">
+      <div className="w-full h-[130px] md:h-[153px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md flex flex-col items-center justify-center px-4 text-center">
         <p className="text-gray-600 text-sm md:text-base leading-relaxed">
           {isSuccess ? (
             <>
@@ -48,9 +48,9 @@ export default function ChatInput({
 
   // 기본 입력창
   return (
-    <div className="w-full h-[130px] md:h-[153px] bg-white shadow-[0_0_4px_rgba(0,0,0,0.25)] rounded-[20px] p-3 md:p-4 flex items-start relative">
+    <div className="w-full h-[130px] md:h-[153px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md p-3 md:p-4 flex items-start relative">
       <textarea
-        className="w-full h-full resize-none focus:outline-none body-large text-[#6B6B6B] pr-12 overflow-y-auto"
+        className="w-full h-full resize-none bg-transparent focus:outline-none body-large text-[#0F172A] placeholder:text-[#8A93A5] pr-12 overflow-y-auto"
         placeholder={
           isDisabled ? '전송 중입니다...' : '프롬프트를 입력하세요 (Shift + Enter로 줄바꿈)'
         }
@@ -67,8 +67,10 @@ export default function ChatInput({
 
       <button
         className={`flex-shrink-0 w-10 h-10 ${
-          inputValue.trim() ? 'bg-[#FF6289] hover:bg-[#e6597c] cursor-pointer' : 'bg-[#D9DADB]'
-        } rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-colors duration-200 ${
+          inputValue.trim()
+            ? 'bg-[#FF4854] hover:bg-[#FF4854]/90 cursor-pointer shadow-[0_8px_18px_rgba(255,72,84,0.18)]'
+            : 'bg-[#D9DADB]'
+        } rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-all duration-200 ${
           isDisabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         disabled={!inputValue.trim() || isDisabled}

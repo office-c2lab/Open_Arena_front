@@ -42,10 +42,10 @@ export default function ChatBubble({ role, content, isTyping = false }) {
   return (
     <div className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
       <div
-        className={`max-w-[80%] p-3 rounded-2xl shadow-md ${
+        className={`max-w-[80%] p-3 rounded-2xl backdrop-blur-md ${
           role === 'user'
-            ? 'bg-[#FF6289] text-white rounded-l-2xl rounded-tr-2xl'
-            : 'bg-[#2D2F39] text-white rounded-r-2xl rounded-tl-2xl'
+            ? 'bg-[#FF4854] text-white rounded-l-2xl rounded-tr-2xl shadow-[0_8px_18px_rgba(255,72,84,0.16)]'
+            : 'border border-white/55 bg-[#2D2F39]/88 text-white rounded-r-2xl rounded-tl-2xl shadow-[0_8px_18px_rgba(15,23,42,0.12)]'
         }`}
       >
         {isTyping && role === 'assistant' ? (

@@ -157,7 +157,7 @@ const SubmitModal = ({ setProgress }) => {
 
   return (
     <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[9999]">
-      <div className="relative w-[403.65px] h-[586.46px] bg-white rounded-[16px] box-border">
+      <div className="relative w-[440px] h-[586.46px] bg-white rounded-[24px] box-border border border-[#EEF0F4] shadow-[0_18px_40px_rgba(15,23,42,0.16)]">
         <CancelIcon onClick={closeSubmitModal} />
 
         {/* 로고 */}
@@ -174,20 +174,24 @@ const SubmitModal = ({ setProgress }) => {
         </div>
 
         {/* 안내문 */}
-        <div className="absolute w-[340px] left-[31px] top-[340px] text-center body-large font-500 text-black m-0 whitespace-pre-wrap">
-          <p>제출하면 세 개의 JUDGE AI 모델의 판단 결과를 제공합니다.</p>
-          <p>대화 내용은 저장되어 챌린지 화면 우측에서 확인하실 수 있습니다.</p>
-          <p>제출 요청 시 해당 계정이 다음 제출까지 약 30초의 대기시간이 부여됩니다.</p>
+        <div className="absolute w-[380px] left-[30px] top-[340px] text-center text-[18px] font-500 leading-8 text-[#0F172A] m-0 whitespace-pre-wrap">
+          <p>제출하면 3개의 JUDGE AI가 결과를 판단합니다.</p>
+          <p>대화 기록은 우측 화면에서 확인할 수 있습니다.</p>
+          <p>제출 후에는 약 30초간 다시 제출할 수 없습니다.</p>
         </div>
 
         {/* 제출 버튼 */}
         <button
           type="button"
           onClick={submitForJudgement}
-          className={`absolute w-[343.2px] h-[60.45px] left-[30.22px] top-[496.28px]
+          className={`absolute w-[380px] h-[60.45px] left-[30px] top-[496.28px]
             flex justify-center items-center 
-            rounded-[29.25px] cursor-pointer transition duration-200
-            ${cooldown > 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#FF6289] hover:bg-pink-600'}`}
+            rounded-[18px] cursor-pointer transition-all duration-200
+            ${
+              cooldown > 0
+                ? 'bg-[#D9DADB] text-[#515151] cursor-not-allowed'
+                : 'bg-[#FF4854] shadow-[0_8px_18px_rgba(255,72,84,0.18)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)]'
+            }`}
           disabled={!sessionId || cooldown > 0}
         >
           <span className="heading-3 font-700 text-white">

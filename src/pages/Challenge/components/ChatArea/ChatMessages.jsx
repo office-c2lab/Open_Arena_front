@@ -16,7 +16,7 @@ export default function ChatMessages({
           alt="ARENA Logo"
           className="max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain mb-4"
         />
-        <p className="heading-3 font-300 text-[#000000] mt-4 mb-6">
+        <p className="heading-3 font-500 text-[#0F172A] mt-4 mb-6">
           AI와 대화를 시작하세요. <br /> 아래 입력창에 메시지를 입력해보세요.
         </p>
       </div>
@@ -29,7 +29,7 @@ export default function ChatMessages({
         <img
           src={ArenaIcon}
           alt="ARENA Logo"
-          className="max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain opacity-30"
+          className="max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain opacity-20"
         />
       </div>
       <div className="relative z-10 pt-4 h-full overflow-y-auto">

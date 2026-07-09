@@ -18,7 +18,6 @@ export default function ChatArea({
   problemId,
   teamId,
   sessions = [],
-  hasSuccessSession = false, // 전달은 받지만 사용하지 않음
 }) {
   const { openResetModal, openSubmitModal } = useModalStore();
   const { sessionStatus } = useSessionStore();
@@ -97,7 +96,7 @@ export default function ChatArea({
     <div className="flex h-full min-w-0 flex-grow flex-col">
       <SessionList sessions={sessions} sessionId={sessionId} onSessionClick={handleSessionClick} />
 
-      <div className="flex-1 bg-white shadow-xl rounded-[20px] flex flex-col overflow-hidden h-full">
+      <div className="flex-1 rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md flex flex-col overflow-hidden h-full">
         <ChatMessages
           messages={displayMessages}
           isLoading={isMessagesLoading}
@@ -106,7 +105,7 @@ export default function ChatArea({
           chatEndRef={chatEndRef}
         />
 
-        <div className="h-[210px] md:h-[237px] p-4 md:p-6 bg-purple-50/20 shadow-[0_-3px_10px_rgba(0,0,0,0.25)] rounded-b-[20px] flex flex-col justify-end gap-3 flex-shrink-0">
+        <div className="h-[210px] md:h-[237px] p-4 md:p-6 border-t border-white/55 bg-white/28 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] flex flex-col justify-end gap-3 flex-shrink-0">
           <ChatInput
             inputValue={inputValue}
             setInputValue={setInputValue}
