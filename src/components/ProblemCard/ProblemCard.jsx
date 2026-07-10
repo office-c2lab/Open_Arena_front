@@ -112,7 +112,7 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
         <h3 className={titleClasses.trim()}>{title}</h3>
         <SolveProblemButton
           onClick={onSolveClick}
-          className="rounded-[12px] bg-[#FF4854] font-700 shadow-[0_8px_18px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.20)]"
+          className="rounded-[12px] bg-[#FF4854] font-700 shadow-[0_3px_8px_rgba(255,72,84,0.14)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.16)]"
         />
       </div>
     </div>

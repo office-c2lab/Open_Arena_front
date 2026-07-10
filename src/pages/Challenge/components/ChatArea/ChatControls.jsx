@@ -29,10 +29,10 @@ export default function ChatControls({
 
       {/* 제출하기 버튼 */}
       <button
-        className={`flex-1 h-[44px] bg-[#FF4854] rounded-[12px] flex justify-center items-center shadow-[0_8px_18px_rgba(255,72,84,0.18)] transition-all duration-200 ${
+        className={`flex-1 h-[44px] bg-[#FF4854] rounded-[12px] flex justify-center items-center shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 ${
           isDisabled || !sessionId
             ? 'opacity-50 cursor-not-allowed'
-            : 'hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)] cursor-pointer'
+            : 'hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer'
         }`}
         onClick={openSubmitModal}
         disabled={isDisabled || !sessionId}

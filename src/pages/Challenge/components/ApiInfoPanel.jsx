@@ -3,24 +3,12 @@
 import React from 'react';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 
-// === 색상 정의 ===
-const API_BG_COLOR = 'rgba(131, 123, 189, 0.3)';
-const API_BORDER_COLOR = '#837BBD';
-const API_TEXT_COLOR = '#4C4C4C';
-
 // ------------------------------------------------------------------
 // Skeleton
 // ------------------------------------------------------------------
 const ApiInfoPanelSkeleton = () => {
   return (
-    <div
-      className="flex flex-col items-start w-full p-[11px] gap-2 flex-shrink-0 mt-4 animate-pulse"
-      style={{
-        background: API_BG_COLOR,
-        border: `1px solid ${API_BORDER_COLOR}`,
-        borderRadius: '10px',
-      }}
-    >
+    <div className="flex flex-col items-start w-full p-4 gap-2 flex-shrink-0 animate-pulse rounded-[18px] border border-white/65 bg-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_4px_12px_rgba(15,23,42,0.05)] backdrop-blur-md">
       <Skeleton className="h-4 w-1/4 rounded mb-2" />
       <Skeleton className="h-4 w-3/4 rounded" />
       <Skeleton className="h-4 w-1/2 rounded" />
@@ -47,19 +35,15 @@ export default function ApiInfoPanel({
 }`;
 
   return (
-    <div
-      className="flex flex-col items-start w-full p-[10px] gap-2 flex-shrink-0 mt-4"
-      style={{
-        background: API_BG_COLOR,
-        border: `1px solid ${API_BORDER_COLOR}`,
-        borderRadius: '10px',
-      }}
-    >
+    <div className="flex flex-col items-start w-full p-4 gap-3 flex-shrink-0 rounded-[18px] border border-white/65 bg-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_4px_12px_rgba(15,23,42,0.05)] backdrop-blur-md">
       <h3 className="body-large font-700 text-[#837BBD]">문제 API</h3>
 
-      <div className="body-medium font-500 whitespace-pre-wrap" style={{ color: API_TEXT_COLOR }}>
+      <div className="body-medium font-500 whitespace-pre-wrap text-[#0F172A]">
         <p>
           <b>URL:</b> {apiUrl ?? '정보 없음'}
+        </p>
+        <p>
+          <b>Method:</b> {method ?? '정보 없음'}
         </p>
         <p>
           <b>Headers:</b> {headerName ?? '정보 없음'}
@@ -70,7 +54,9 @@ export default function ApiInfoPanel({
 
         <p className="font-600 font-bold">Request Body (예시)</p>
 
-        <pre className="rounded text-sm overflow-x-auto font-bold">{requestBodyExample}</pre>
+        <pre className="mt-1 rounded-[12px] border border-white/65 bg-white/45 p-3 text-sm overflow-x-auto font-bold">
+          {requestBodyExample}
+        </pre>
       </div>
     </div>
   );

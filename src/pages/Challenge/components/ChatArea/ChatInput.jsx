@@ -68,7 +68,7 @@ export default function ChatInput({
       <button
         className={`flex-shrink-0 w-10 h-10 ${
           inputValue.trim()
-            ? 'bg-[#FF4854] hover:bg-[#FF4854]/90 cursor-pointer shadow-[0_8px_18px_rgba(255,72,84,0.18)]'
+            ? 'bg-[#FF4854] hover:bg-[#FF4854]/90 cursor-pointer shadow-[0_3px_8px_rgba(255,72,84,0.16)]'
             : 'bg-[#D9DADB]'
         } rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-all duration-200 ${
           isDisabled ? 'opacity-50 cursor-not-allowed' : ''

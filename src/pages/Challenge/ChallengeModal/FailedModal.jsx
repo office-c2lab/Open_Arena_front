@@ -79,7 +79,7 @@ export default function FailedModal() {
           <button
             type="button"
             onClick={handleContinue}
-            className="w-[400px] h-[61px] bg-[#FF4854] rounded-[18px] shadow-[0_8px_18px_rgba(255,72,84,0.18)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)] transition-all duration-200 cursor-pointer"
+            className="w-[400px] h-[61px] bg-[#FF4854] rounded-[18px] shadow-[0_3px_8px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] transition-all duration-200 cursor-pointer"
           >
             <span className="heading-2 font-700 text-white">다른 문제 풀기</span>
           </button>

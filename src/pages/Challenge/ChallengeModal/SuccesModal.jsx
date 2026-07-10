@@ -126,7 +126,7 @@ export default function SuccessModal() {
             type="button"
             onClick={handleContinue}
             className="w-[48%] h-[61px] rounded-[18px] flex items-center justify-center 
-                       text-white shadow-[0_8px_18px_rgba(4,176,123,0.18)] transition-all duration-200 hover:-translate-y-[1px] hover:opacity-90 hover:shadow-[0_10px_22px_rgba(4,176,123,0.22)] cursor-pointer"
+                       text-white shadow-[0_3px_8px_rgba(4,176,123,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:opacity-90 hover:shadow-[0_5px_12px_rgba(4,176,123,0.18)] cursor-pointer"
             style={{ backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
             <span className="heading-2 font-700">다른 문제 풀기</span>

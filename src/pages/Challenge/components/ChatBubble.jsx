@@ -44,17 +44,17 @@ export default function ChatBubble({ role, content, isTyping = false }) {
       <div
         className={`max-w-[80%] p-3 rounded-2xl backdrop-blur-md ${
           role === 'user'
-            ? 'bg-[#FF4854] text-white rounded-l-2xl rounded-tr-2xl shadow-[0_8px_18px_rgba(255,72,84,0.16)]'
-            : 'border border-white/55 bg-[#2D2F39]/88 text-white rounded-r-2xl rounded-tl-2xl shadow-[0_8px_18px_rgba(15,23,42,0.12)]'
+            ? 'bg-[#FF4854] text-white rounded-l-2xl rounded-tr-2xl shadow-[0_3px_8px_rgba(255,72,84,0.16)]'
+            : 'border border-[#323746] bg-[#222632] text-white rounded-r-2xl rounded-tl-2xl shadow-[0_3px_8px_rgba(15,23,42,0.10)]'
         }`}
       >
         {isTyping && role === 'assistant' ? (
           <div className="flex items-center">
-            <span className="body-large font-300">AI가 응답을 생성 중입니다</span>
+            <span className="body-large font-500">AI가 응답을 생성 중입니다</span>
             <TypingIndicator />
           </div>
         ) : (
-          <p className="body-large font-300 whitespace-pre-wrap">{displayedText}</p>
+          <p className="body-large font-500 whitespace-pre-wrap leading-7">{displayedText}</p>
         )}
       </div>
     </div>

@@ -37,7 +37,7 @@ export default function Tutorial() {
             </p>
             <button
               onClick={handleStartChallenge}
-              className="h-[50px] w-full max-w-[614px] cursor-pointer rounded-[12px] bg-[#FF4854] body-large font-700 text-white shadow-[0_8px_18px_rgba(255,72,84,0.18)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)]"
+              className="h-[50px] w-full max-w-[614px] cursor-pointer rounded-[12px] bg-[#FF4854] body-large font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]"
             >
               문제 풀기
             </button>

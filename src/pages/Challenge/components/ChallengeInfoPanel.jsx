@@ -56,22 +56,22 @@ const TAB_TITLE_COLOR_CLASS_MAP = {
   failure: 'text-[#FF4854]',
 };
 
-const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick, activeTab }) => (
-  <div className="flex flex-col flex-shrink-0 w-[295px] h-full animate-pulse">
-    <div className="bg-white shadow-xl rounded-[20px] overflow-hidden flex flex-col h-full">
-      <div className="flex flex-col p-4 h-[110px] shadow-sm bg-white rounded-t-[20px] flex-shrink-0">
+const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
+  <div className="flex flex-col flex-shrink-0 w-[340px] h-full animate-pulse">
+    <div className="rounded-[30px] overflow-hidden flex flex-col h-full border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
+      <div className="flex flex-col p-4 h-[110px] border-b border-white/60 bg-white/45 rounded-t-[30px] flex-shrink-0">
         <Skeleton className="h-6 w-3/4 rounded mb-3" />
         <Skeleton className="h-4 w-full rounded mb-3" />
         <Skeleton className="h-4 w-full rounded mb-3" />
       </div>
-      <div className="w-full flex-shrink-0 flex flex-col bg-white border-t border-gray-200 flex-grow">
-        <div className="flex justify-center p-4 gap-2 border-b border-gray-200 flex-shrink-0">
+      <div className="w-full flex-shrink-0 flex flex-col bg-white/30 flex-grow">
+        <div className="flex justify-center p-4 gap-2 border-b border-white/60 flex-shrink-0">
           {TABS.map(tab => (
             <button
               key={tab.id}
               onClick={e => handleTabClick(e, tab.id)}
               className={`py-2 px-2 body-large font-500 rounded-lg transition-colors duration-200 cursor-pointer
-                text-gray-500 border border-gray-300 bg-gray-50 hover:bg-gray-100 whitespace-nowrap`}
+                text-gray-500 border border-white/65 bg-white/45 hover:bg-white/65 whitespace-nowrap`}
             >
               {tab.title}
             </button>
@@ -115,11 +115,7 @@ export default function ChallengeInfoPanel({
   if (isLoading) {
     return (
       <div ref={panelRef} className="relative w-[340px]">
-        <ChallengeInfoPanelSkeleton
-          TABS={TABS}
-          handleTabClick={handleTabClick}
-          activeTab={activeTab}
-        />
+        <ChallengeInfoPanelSkeleton TABS={TABS} handleTabClick={handleTabClick} />
       </div>
     );
   }
@@ -127,7 +123,7 @@ export default function ChallengeInfoPanel({
   return (
     <div ref={panelRef} className="relative flex h-full min-h-0 w-[340px] flex-col flex-shrink-0">
       <div
-        className="relative shadow-[0_10px_28px_rgba(15,23,42,0.10)] rounded-[30px] overflow-hidden flex min-h-0 flex-col h-full border border-white/55 bg-cover bg-center backdrop-blur-xl"
+        className="relative shadow-[0_8px_22px_rgba(15,23,42,0.08)] rounded-[30px] overflow-hidden flex min-h-0 flex-col h-full border border-white/60 bg-cover bg-center backdrop-blur-xl"
         style={{ backgroundImage: `url(${panelBackground})` }}
       >
         <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
@@ -176,7 +172,7 @@ export default function ChallengeInfoPanel({
                 {tab.title}
                 {activeTab === tab.id ? (
                   <span
-                    className="absolute bottom-0 left-0 h-[5px] w-full rounded-t-full shadow-[0_0_12px_rgba(131,123,189,0.35)]"
+                    className="absolute bottom-0 left-0 h-[5px] w-full rounded-t-full shadow-[0_2px_6px_rgba(131,123,189,0.20)]"
                     style={{ backgroundColor: TAB_ACCENT_COLOR_MAP[tab.id] }}
                   />
                 ) : null}
@@ -193,7 +189,7 @@ export default function ChallengeInfoPanel({
               }}
             >
               <div className="flex h-full min-h-0 flex-col overflow-y-auto pr-1">
-                <div className="rounded-[24px] border border-white/65 bg-white/65 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
+                <div className="rounded-[24px] border border-white/65 bg-white/65 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_3px_8px_rgba(15,23,42,0.05)] backdrop-blur-md">
                   <span className={`heading-3 font-700 ${activeTabContent.titleColor} block mb-6`}>
                     {activeTabContent.title}
                   </span>

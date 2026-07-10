@@ -64,8 +64,8 @@ const ResetModal = () => {
           className="absolute w-[380px] h-[60.45px] left-[30px] top-[496.28px]
             flex justify-center items-center gap-[4.88px]
             bg-[#FF4854] rounded-[18px] cursor-pointer
-            shadow-[0_8px_18px_rgba(255,72,84,0.18)]
-            hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)]
+            shadow-[0_3px_8px_rgba(255,72,84,0.16)]
+            hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]
             transition-all duration-200"
         >
           <span className="heading-3 font-700 text-white">새로운 대화 시작</span>

@@ -86,12 +86,12 @@ function ChallengeCard({ problem, index, onClick }) {
       onClick={onClick}
       className={`relative flex h-[132px] w-full cursor-pointer flex-col overflow-hidden rounded-[18px] px-6 pb-6 pt-7 text-left backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-white/64 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_22px_rgba(15,23,42,0.11)] ${
         solved
-          ? 'border border-white/70 bg-[linear-gradient(135deg,rgba(0,182,84,0.10)_0%,rgba(255,255,255,0.58)_56%,rgba(255,255,255,0.44)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_7px_18px_rgba(15,23,42,0.07)]'
-          : 'border border-white/60 bg-[linear-gradient(135deg,rgba(138,147,165,0.12)_0%,rgba(255,255,255,0.42)_58%,rgba(138,147,165,0.08)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.68),0_6px_18px_rgba(15,23,42,0.06)]'
+          ? 'border border-[#86EFAC]/70 bg-[linear-gradient(135deg,rgba(0,182,84,0.16)_0%,rgba(255,255,255,0.58)_56%,rgba(0,182,84,0.08)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_6px_18px_rgba(15,23,42,0.06)]'
+          : 'border border-[#D1D5DB]/70 bg-[linear-gradient(135deg,rgba(138,147,165,0.22)_0%,rgba(255,255,255,0.44)_56%,rgba(138,147,165,0.16)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.68),0_6px_18px_rgba(15,23,42,0.06)]'
       }`}
     >
       {solved ? (
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,182,84,0.10)_0%,rgba(255,255,255,0)_42%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,182,84,0.12)_0%,rgba(255,255,255,0)_42%)]" />
       ) : null}
       <h3 className="relative truncate text-[16px] leading-[22px] font-700 text-black 2xl:text-[20px] 2xl:leading-[26px]">
         {title}

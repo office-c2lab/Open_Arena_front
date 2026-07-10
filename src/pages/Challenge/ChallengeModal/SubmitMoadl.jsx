@@ -190,7 +190,7 @@ const SubmitModal = ({ setProgress }) => {
             ${
               cooldown > 0
                 ? 'bg-[#D9DADB] text-[#515151] cursor-not-allowed'
-                : 'bg-[#FF4854] shadow-[0_8px_18px_rgba(255,72,84,0.18)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_10px_22px_rgba(255,72,84,0.22)]'
+                : 'bg-[#FF4854] shadow-[0_3px_8px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]'
             }`}
           disabled={!sessionId || cooldown > 0}
         >
