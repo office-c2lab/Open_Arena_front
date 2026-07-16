@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import ArenaSymbol from '@/assets/icons/Arena.svg';
 import BackBtn from '@/assets/icons/backbtn.svg';
 
 export default function Signup() {
@@ -10,6 +11,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [showVerificationCode, setShowVerificationCode] = useState(false);
+  const [isSignupComplete, setIsSignupComplete] = useState(false);
   const PasswordRevealIcon = showPassword ? EyeOff : Eye;
   const PasswordConfirmRevealIcon = showPasswordConfirm ? EyeOff : Eye;
   const [formData, setFormData] = useState({
@@ -42,7 +44,7 @@ export default function Signup() {
       return;
     }
 
-    alert('회원가입 API 연결이 필요합니다.');
+    setIsSignupComplete(true);
   };
 
   const handleEmailVerification = () => {
@@ -66,6 +68,47 @@ export default function Signup() {
   const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
   const inputFieldStyle =
     'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
+
+  if (isSignupComplete) {
+    return (
+      <div className="flex justify-center bg-white px-[10px] py-14">
+        <section className="flex w-full max-w-[675px] flex-col items-center px-2 pb-10 pt-8 text-center">
+          <h1 className="heading-1 font-700 text-[#2D3035]">회원가입 완료!</h1>
+
+          <div className="relative mt-14 flex h-[260px] w-full overflow-hidden rounded-[36px] bg-[radial-gradient(circle_at_50%_48%,#FFEFF3_0%,#FFDCE5_42%,#FFB8CA_100%)]">
+            <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 shadow-[0_0_50px_rgba(255,255,255,0.76)]" />
+            <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/60" />
+            <div className="absolute left-[8%] top-[18%] h-8 w-8 rotate-45 bg-white shadow-[0_0_18px_rgba(255,255,255,0.9)] [clip-path:polygon(50%_0,62%_38%,100%_50%,62%_62%,50%_100%,38%_62%,0_50%,38%_38%)]" />
+            <div className="absolute right-[9%] bottom-[24%] h-7 w-7 rotate-45 bg-white/90 shadow-[0_0_16px_rgba(255,255,255,0.84)] [clip-path:polygon(50%_0,62%_38%,100%_50%,62%_62%,50%_100%,38%_62%,0_50%,38%_38%)]" />
+            <div className="absolute left-[28%] top-[21%] h-1.5 w-1.5 rounded-full bg-white" />
+            <div className="absolute right-[28%] top-[17%] h-3.5 w-3.5 rounded-full bg-white shadow-[0_0_16px_rgba(255,255,255,0.78)]" />
+            <div className="absolute bottom-[12%] left-[22%] h-3.5 w-3.5 rounded-full bg-white/90 shadow-[0_0_16px_rgba(255,255,255,0.78)]" />
+            <div className="absolute left-[9%] top-[50%] h-1 w-20 rounded-full bg-white/90" />
+            <div className="absolute left-[14%] top-[59%] h-1 w-20 rounded-full bg-white/80" />
+            <div className="absolute left-[6%] bottom-[16%] h-5 w-32 rounded-full bg-gradient-to-r from-white/0 via-[#FF7B9A]/70 to-white/0" />
+            <div className="absolute left-[13%] bottom-[34%] h-7 w-36 rounded-full bg-gradient-to-r from-[#FF6B8D] to-white/20" />
+            <div className="absolute right-[13%] top-[33%] h-6 w-32 rounded-full bg-gradient-to-r from-[#FF6B8D] to-white/10" />
+            <div className="absolute right-[6%] top-[22%] h-7 w-36 rounded-full bg-gradient-to-r from-[#FF6B8D] to-white/10" />
+            <div className="absolute right-[8%] bottom-[39%] h-1.5 w-28 rounded-full bg-gradient-to-r from-[#FF7B9A] to-white/30" />
+            <div className="absolute right-[11%] bottom-[31%] h-1.5 w-24 rounded-full bg-gradient-to-r from-[#FF9AAD] to-white/40" />
+            <img
+              src={ArenaSymbol}
+              alt=""
+              className="relative z-10 m-auto h-[160px] w-auto drop-shadow-[0_18px_24px_rgba(255,8,74,0.2)]"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate('/kategorie')}
+            className="mt-14 w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white heading-3 font-700 shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer"
+          >
+            ARENA 시작하기
+          </button>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center bg-white px-[10px] py-14">

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import leaderboardBg from '@/assets/images/leaderboard_bg.png';
 import AppHeader from '@/components/AppHeader/AppHeader';
 import FooterSection from '@/pages/LandingPage/FooterSection';
 
@@ -26,7 +25,7 @@ export default function LeaderboardLayout() {
         `}
       </style>
 
-      <div className="min-h-screen bg-[#0B021C] pt-16">
+      <div className="min-h-screen bg-white pt-16">
         <AppHeader />
 
         <div
@@ -40,15 +39,9 @@ export default function LeaderboardLayout() {
           leaderboard-scroll
 
           flex flex-col items-center
-          bg-[#0B021C]
+          bg-white
         "
-          style={{
-            backgroundImage: `url(${leaderboardBg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'top center',
-            backgroundRepeat: 'no-repeat',
-            overflowX: 'hidden', // 🔥🔥 확실하게 막기 위해 style에도 한 번 더
-          }}
+          style={{ overflowX: 'hidden' }}
         >
           {/* 콘텐츠 */}
           <main className="w-full">
