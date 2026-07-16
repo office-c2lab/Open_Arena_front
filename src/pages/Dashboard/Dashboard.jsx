@@ -156,7 +156,7 @@ const Dashboard = () => {
     );
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center bg-[#F2F4F6]">
+    <div className="flex min-h-screen w-full flex-col items-center bg-white">
       <div className="w-full space-y-6">
         <Banner />
 

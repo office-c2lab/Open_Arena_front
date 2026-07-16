@@ -13,7 +13,7 @@ export default function App() {
   }, [isLoggedIn]);
 
   return (
-    <div className="relative w-screen h-screen bg-gray-100">
+    <div className="relative w-screen h-screen bg-white">
       <AppInitializer>
         <AppRouter />
       </AppInitializer>

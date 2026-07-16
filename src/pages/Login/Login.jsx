@@ -69,13 +69,12 @@ export default function Login() {
     'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex justify-center items-center bg-[#F7F8FA] px-[10px] py-10">
+    <div className="flex justify-center bg-white px-[10px] py-14">
       <div
-        className="max-w-[675px] w-full rounded-[24px] border border-white/80 bg-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.08)] backdrop-blur-md flex flex-col 
-                  overflow-hidden"
+        className="max-w-[675px] w-full flex flex-col"
       >
         {/* Header */}
-        <header className="px-8 pt-8 pb-4 border-b border-white/75 rounded-t-[24px] bg-white/45">
+        <header className="px-2 pt-4 pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <h1 className="heading-3 font-500 text-black">로그인</h1>
@@ -84,8 +83,8 @@ export default function Login() {
         </header>
 
         {/* Main */}
-        <main className="flex flex-col p-8 md:p-10">
-          <h2 className="heading-2 font-500 text-black mt-8 mb-12">
+        <main className="flex flex-col px-2 pb-8 pt-3 md:pb-10 md:pt-4">
+          <h2 className="heading-2 font-500 text-black mb-10">
             로그인 정보를
             <br /> 입력해 주세요.
           </h2>
@@ -135,7 +134,7 @@ export default function Login() {
         </main>
 
         {/* Footer */}
-        <footer className="px-8 pt-4 pb-8 mt-8">
+        <footer className="px-2 pt-4 pb-8 mt-8">
           <button
             type="button"
             onClick={handleSubmit}

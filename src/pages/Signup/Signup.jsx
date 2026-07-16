@@ -9,11 +9,13 @@ export default function Signup() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [showVerificationCode, setShowVerificationCode] = useState(false);
   const PasswordRevealIcon = showPassword ? EyeOff : Eye;
   const PasswordConfirmRevealIcon = showPasswordConfirm ? EyeOff : Eye;
   const [formData, setFormData] = useState({
     nickname: '',
     login_id: '',
+    emailVerificationCode: '',
     password: '',
     passwordConfirm: '',
   });
@@ -49,7 +51,16 @@ export default function Signup() {
       return;
     }
 
-    alert('이메일 인증 API 연결이 필요합니다.');
+    setShowVerificationCode(true);
+  };
+
+  const handleVerificationCodeConfirm = () => {
+    if (!formData.emailVerificationCode) {
+      alert('인증번호를 입력해 주세요.');
+      return;
+    }
+
+    alert('이메일 인증 확인 API 연결이 필요합니다.');
   };
 
   const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
@@ -57,27 +68,26 @@ export default function Signup() {
     'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex justify-center items-center bg-[#F7F8FA] px-[10px] py-10">
+    <div className="flex justify-center bg-white px-[10px] py-14">
       <div
-        className="max-w-[675px] w-full rounded-[24px] border border-white/80 bg-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.08)] backdrop-blur-md flex flex-col
-                  overflow-hidden"
+        className="max-w-[675px] w-full flex flex-col"
       >
-        <header className="px-8 pt-8 pb-4 border-b border-white/75 rounded-t-[24px] bg-white/45">
+        <header className="px-2 pt-4 pb-4">
           <div className="flex items-center">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="flex h-[24px] w-[14px] items-center justify-center cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center rounded-md text-[#8A93A5] transition hover:bg-[#F4F6FA] hover:text-[#FF4854] cursor-pointer"
               aria-label="뒤로가기"
             >
               <img src={BackBtn} alt="" className="w-[10px] h-[18px]" />
             </button>
-            <h1 className="heading-3 font-500 text-black ml-4">회원가입</h1>
+            <h1 className="heading-3 font-500 text-black">회원가입</h1>
           </div>
         </header>
 
-        <main className="flex flex-1 flex-col p-8 md:p-10">
-          <h2 className="heading-2 font-500 text-black mt-8 mb-12">
+        <main className="flex flex-1 flex-col px-2 pb-8 pt-3 md:pb-10 md:pt-4">
+          <h2 className="heading-2 font-500 text-black mb-10">
             회원 정보를
             <br /> 입력해 주세요.
           </h2>
@@ -120,6 +130,35 @@ export default function Signup() {
                   이메일 인증
                 </button>
               </div>
+              {showVerificationCode && (
+                <div className="mt-5 flex flex-col">
+                  <label htmlFor="email-verification-code-input" className={inputLabelStyle}>
+                    인증번호
+                  </label>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                    <input
+                      id="email-verification-code-input"
+                      name="emailVerificationCode"
+                      type="text"
+                      inputMode="numeric"
+                      className={inputFieldStyle}
+                      placeholder="인증번호 입력"
+                      value={formData.emailVerificationCode}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleVerificationCodeConfirm}
+                      className="h-[42px] shrink-0 cursor-pointer rounded-[12px] bg-[#FF4854] px-5 body-medium font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]"
+                    >
+                      인증번호 확인
+                    </button>
+                  </div>
+                  <p className="mt-2 body-small font-500 text-[#FF4854]">
+                    이메일로 발송된 인증번호를 입력해 주세요.
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col">
@@ -180,7 +219,7 @@ export default function Signup() {
           </p> */}
         </main>
 
-        <footer className="px-8 pt-4 pb-8">
+        <footer className="px-2 pt-4 pb-8">
           <button
             type="button"
             onClick={handleSubmit}
