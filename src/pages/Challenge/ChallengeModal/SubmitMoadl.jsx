@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from 'react';
 import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
-import api from '@/api/axiosInstance';
+import { localJudgeResult } from '@/api/localMockData';
 import { successPanelsData, failedPanelsData } from '../data/challengeModalData';
 import CancelSvg from '@/assets/icons/cancel.svg';
 import ArenaSvg from '@/assets/icons/Arena.svg';
@@ -56,13 +56,12 @@ const SubmitModal = ({ setProgress }) => {
         setProgress(Math.min(fake, 0.95));
       }, 100);
 
-      const endpoint = `/judge/sessions/${sessionId}/submit`;
-      const res = await api.post(endpoint, {});
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       clearInterval(interval);
       setProgress(1);
 
-      const resultData = res.data;
+      const resultData = localJudgeResult;
       closeLoadingModal();
       // console.group('%c🔍 JUDGE 결과 전체 확인', 'color:#FF4848; font-size:14px;');
       // console.log('📦 resultData:', resultData);

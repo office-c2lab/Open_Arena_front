@@ -1,7 +1,6 @@
 // src/stores/authStore.js
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { logoutApi, adminLogoutApi } from '@/api/auth';
 
 export const useAuthStore = create(
   persist(
@@ -22,14 +21,7 @@ export const useAuthStore = create(
           isLoggedIn: true,
         }),
 
-      logout: async () => {
-        try {
-          await logoutApi();
-        } catch {
-          // Ignore logout API failures; local auth state still needs to be cleared.
-        }
-        set({ teamInfo: null, isLoggedIn: false });
-      },
+      logout: () => set({ teamInfo: null, isLoggedIn: false }),
 
       setUserLoggedOut: () => set({ teamInfo: null, isLoggedIn: false }),
 
@@ -45,14 +37,7 @@ export const useAuthStore = create(
           isAdminLoggedIn: true,
         }),
 
-      adminLogout: async () => {
-        try {
-          await adminLogoutApi();
-        } catch {
-          // Ignore logout API failures; local auth state still needs to be cleared.
-        }
-        set({ adminInfo: null, isAdminLoggedIn: false });
-      },
+      adminLogout: () => set({ adminInfo: null, isAdminLoggedIn: false }),
 
       setAdminLoggedOut: () => set({ adminInfo: null, isAdminLoggedIn: false }),
 

@@ -2,16 +2,12 @@ import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-// ⭐ axiosInstance
-import api from '@/api/axiosInstance';
 import { CHALLENGE_CATEGORY, normalizeProblemCategory } from '@/utils/problemCategory';
 
 // 컴포넌트
 import Banner from '../../components/Banner/Banner';
 import ProblemCard from '../../components/ProblemCard/ProblemCard';
 
-// API 경로
-const API_PATH = '/problem/all';
 // 스켈레톤 개수
 const SKELETON_COUNT = 9;
 
@@ -20,7 +16,6 @@ const getProblemRouteId = problem => problem?.problem_id ?? problem?.problemId ?
 const ChallengeSection = () => {
   const navigate = useNavigate();
 
-  // 🔥 React Query 기반 API 호출 + 폴링
   const {
     data: challenges = [],
     isLoading,
@@ -28,17 +23,9 @@ const ChallengeSection = () => {
     error,
   } = useQuery({
     queryKey: ['problems'],
-    queryFn: async () => {
-      const res = await api.get(API_PATH);
-      return res.data.map(problem => ({
-        ...problem,
-        id: problem.id,
-        score: problem.score,
-      }));
-    },
-    refetchInterval: 1000, // 🔥 1초 폴링
-    refetchOnWindowFocus: true, // 포커스 복귀하면 즉시 갱신
-    staleTime: 0,
+    queryFn: async () => [],
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
   });
 
   // --- 데이터 필터링 ---

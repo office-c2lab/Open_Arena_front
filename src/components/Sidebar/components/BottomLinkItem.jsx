@@ -3,7 +3,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
-import { logoutApi } from '@/api/auth'; // ⭐ 추가!
 
 export default function BottomLinkItem({ item, isCollapsed }) {
   const navigate = useNavigate();
@@ -12,18 +11,7 @@ export default function BottomLinkItem({ item, isCollapsed }) {
   const handleClick = async e => {
     if (item.label === '로그아웃') {
       e.preventDefault(); // 기본 이동 막기
-
-      try {
-        // 🔥 1) 백엔드에 실제 로그아웃 요청 (쿠키 삭제)
-        await logoutApi();
-      } catch (err) {
-        console.error('백엔드 로그아웃 실패:', err);
-      }
-
-      // 🔥 2) 클라이언트 상태 초기화
       logout();
-
-      // 🔥 3) 로그인/홈으로 이동
       navigate('/login');
       return;
     }

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import leaderboardBg from '@/assets/images/leaderboard_bg.png';
+import AppHeader from '@/components/AppHeader/AppHeader';
 
 export default function LeaderboardLayout() {
   useEffect(() => {
@@ -24,10 +25,13 @@ export default function LeaderboardLayout() {
         `}
       </style>
 
-      <div
-        className="
+      <div className="min-h-screen bg-[#0B021C]">
+        <AppHeader />
+
+        <div
+          className="
           w-full max-w-[1920px] mx-auto
-          h-full max-h-[1352px]
+          h-[calc(100vh-64px)] max-h-[1352px]
 
           overflow-y-scroll 
           overflow-x-hidden      /* 🔥🔥 가로 스크롤 완전 차단 */
@@ -37,18 +41,19 @@ export default function LeaderboardLayout() {
           flex flex-col items-center
           bg-[#0B021C]
         "
-        style={{
-          backgroundImage: `url(${leaderboardBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'top center',
-          backgroundRepeat: 'no-repeat',
-          overflowX: 'hidden', // 🔥🔥 확실하게 막기 위해 style에도 한 번 더
-        }}
-      >
-        {/* 콘텐츠 */}
-        <main className="w-full">
-          <Outlet />
-        </main>
+          style={{
+            backgroundImage: `url(${leaderboardBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'top center',
+            backgroundRepeat: 'no-repeat',
+            overflowX: 'hidden', // 🔥🔥 확실하게 막기 위해 style에도 한 번 더
+          }}
+        >
+          {/* 콘텐츠 */}
+          <main className="w-full">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </>
   );

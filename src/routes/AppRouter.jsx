@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import RootRedirect from './RootRedirect';
 import LoginRedirect from './LoginRedirect';
 import ProtectedRoute from './ProtectedRoute';
 import AdminGuard from './AdminGuard';
@@ -13,6 +12,7 @@ import LeaderboardLayout from '../ui/LeaderboardLayout'; // ✅ 추가
 
 // Pages
 import Login from '../pages/Login/Login';
+import LandingPage from '../pages/LandingPage/LandingPage';
 import Signup from '../pages/Signup/Signup';
 import AdminLogin from '../pages/admin/AdminLogin';
 import Dashboard from '../pages/Dashboard/Dashboard';
@@ -38,8 +38,8 @@ import AdminUserManagementPage from '../pages/admin/AdminUserManagementPage';
 export default function AppRouter() {
   return (
     <Routes>
-      {/* "/" → 로그인 여부에 따라 이동 */}
-      <Route path="/" element={<RootRedirect />} />
+      {/* 랜딩 페이지 */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/admin" element={<Navigate to="/admin/leaderboard" replace />} />
 
       {/* 로그인 페이지 */}
