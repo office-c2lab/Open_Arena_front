@@ -6,6 +6,7 @@ import AdminGuard from './AdminGuard';
 
 // Layouts
 import DefaultLayout from '../ui/DefaultLayout';
+import PublicLayout from '../ui/PublicLayout';
 import ChallengeLayout from '../ui/ChallengeLayout';
 import AdminLayout from '../ui/AdminLayout';
 import LeaderboardLayout from '../ui/LeaderboardLayout'; // ✅ 추가
@@ -38,28 +39,27 @@ import AdminUserManagementPage from '../pages/admin/AdminUserManagementPage';
 export default function AppRouter() {
   return (
     <Routes>
-      {/* 랜딩 페이지 */}
-      <Route path="/" element={<LandingPage />} />
+      {/* 공개 페이지 */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/login"
+          element={
+            <LoginRedirect>
+              <Login />
+            </LoginRedirect>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <LoginRedirect>
+              <Signup />
+            </LoginRedirect>
+          }
+        />
+      </Route>
       <Route path="/admin" element={<Navigate to="/admin/leaderboard" replace />} />
-
-      {/* 로그인 페이지 */}
-      <Route
-        path="/login"
-        element={
-          <LoginRedirect>
-            <Login />
-          </LoginRedirect>
-        }
-      />
-
-      <Route
-        path="/signup"
-        element={
-          <LoginRedirect>
-            <Signup />
-          </LoginRedirect>
-        }
-      />
 
       {/* 테스트 페이지(보호 X) */}
       <Route path="/test" element={<ChatTestPage />} />

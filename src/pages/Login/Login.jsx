@@ -35,7 +35,7 @@ export default function Login() {
       navigate('/dashboard');
     },
     onError: () => {
-      const errorMessage = '로그인 실패: 아이디/비번을 확인해주세요.';
+      const errorMessage = '로그인 실패: 이메일/비번을 확인해주세요.';
       alert(errorMessage);
     },
   });
@@ -43,7 +43,7 @@ export default function Login() {
   //  로그인 제출
   const handleSubmit = useCallback(() => {
     if (!formData.login_id || !formData.password) {
-      alert('아이디와 비밀번호를 입력해 주세요.');
+      alert('이메일과 비밀번호를 입력해 주세요.');
       return;
     }
     loginMutation.mutate(formData);
@@ -69,10 +69,10 @@ export default function Login() {
     'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-[#F7F8FA]">
+    <div className="min-h-[calc(100vh-64px)] flex justify-center items-center bg-[#F7F8FA] px-[10px] py-10">
       <div
         className="max-w-[675px] w-full rounded-[24px] border border-white/80 bg-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.08)] backdrop-blur-md flex flex-col 
-                  min-h-screen md:min-h-0 md:my-10 overflow-hidden"
+                  overflow-hidden"
       >
         {/* Header */}
         <header className="px-8 pt-8 pb-4 border-b border-white/75 rounded-t-[24px] bg-white/45">
@@ -91,16 +91,16 @@ export default function Login() {
           </h2>
 
           <form className="flex flex-col space-y-6" onSubmit={e => e.preventDefault()}>
-            {/* 아이디 */}
+            {/* 이메일 */}
             <div className="flex flex-col">
               <label htmlFor="id-input" className={inputLabelStyle}>
-                아이디
+                이메일
               </label>
               <input
                 id="id-input"
                 type="text"
                 className={inputFieldStyle}
-                placeholder="아이디"
+                placeholder="이메일"
                 value={formData.login_id}
                 onChange={handleChange}
               />

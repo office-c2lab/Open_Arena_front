@@ -164,8 +164,8 @@ const Dashboard = () => {
     );
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center bg-[#F2F4F6] p-6">
-      <div className="w-full max-w-[1080px] space-y-6">
+    <div className="flex min-h-screen w-full flex-col items-center bg-[#F2F4F6]">
+      <div className="w-full space-y-6">
         <Banner />
 
         <section className="flex items-center gap-4 px-1">

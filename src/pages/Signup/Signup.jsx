@@ -13,7 +13,6 @@ export default function Signup() {
   const PasswordConfirmRevealIcon = showPasswordConfirm ? EyeOff : Eye;
   const [formData, setFormData] = useState({
     nickname: '',
-    verificationCode: '',
     login_id: '',
     password: '',
     passwordConfirm: '',
@@ -21,18 +20,17 @@ export default function Signup() {
 
   const handleChange = e => {
     const { name, value } = e.target;
-    const nextValue = name === 'verificationCode' ? value.slice(0, 8) : value;
 
     setFormData(prev => ({
       ...prev,
-      [name]: nextValue,
+      [name]: value,
     }));
   };
 
   const handleSubmit = () => {
-    const { nickname, verificationCode, login_id, password, passwordConfirm } = formData;
+    const { nickname, login_id, password, passwordConfirm } = formData;
 
-    if (!nickname || !verificationCode || !login_id || !password || !passwordConfirm) {
+    if (!nickname || !login_id || !password || !passwordConfirm) {
       alert('회원 정보를 모두 입력해 주세요.');
       return;
     }
@@ -45,15 +43,24 @@ export default function Signup() {
     alert('회원가입 API 연결이 필요합니다.');
   };
 
+  const handleEmailVerification = () => {
+    if (!formData.login_id) {
+      alert('이메일 주소를 먼저 입력해 주세요.');
+      return;
+    }
+
+    alert('이메일 인증 API 연결이 필요합니다.');
+  };
+
   const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
   const inputFieldStyle =
     'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-[#F7F8FA] md:py-10">
+    <div className="min-h-[calc(100vh-64px)] flex justify-center items-center bg-[#F7F8FA] px-[10px] py-10">
       <div
         className="max-w-[675px] w-full rounded-[24px] border border-white/80 bg-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_14px_32px_rgba(15,23,42,0.08)] backdrop-blur-md flex flex-col
-                  min-h-screen md:min-h-0 overflow-hidden"
+                  overflow-hidden"
       >
         <header className="px-8 pt-8 pb-4 border-b border-white/75 rounded-t-[24px] bg-white/45">
           <div className="flex items-center">
@@ -76,52 +83,43 @@ export default function Signup() {
           </h2>
 
           <form className="flex flex-col gap-7" onSubmit={e => e.preventDefault()}>
-            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 sm:gap-8">
-              <div className="flex flex-col">
-                <label htmlFor="nickname-input" className={inputLabelStyle}>
-                  닉네임
-                </label>
-                <input
-                  id="nickname-input"
-                  name="nickname"
-                  type="text"
-                  className={inputFieldStyle}
-                  placeholder="띄어쓰기 없이 2~8자 입력"
-                  value={formData.nickname}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="verification-code-input" className={inputLabelStyle}>
-                  고유인증번호
-                </label>
-                <input
-                  id="verification-code-input"
-                  name="verificationCode"
-                  type="text"
-                  maxLength={8}
-                  className={inputFieldStyle}
-                  placeholder="8자리 입력"
-                  value={formData.verificationCode}
-                  onChange={handleChange}
-                />
-              </div>
+            <div className="flex flex-col">
+              <label htmlFor="nickname-input" className={inputLabelStyle}>
+                닉네임
+              </label>
+              <input
+                id="nickname-input"
+                name="nickname"
+                type="text"
+                className={inputFieldStyle}
+                placeholder="띄어쓰기 없이 2~8자 입력"
+                value={formData.nickname}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="flex flex-col">
               <label htmlFor="signup-id-input" className={inputLabelStyle}>
-                아이디
+                이메일
               </label>
-              <input
-                id="signup-id-input"
-                name="login_id"
-                type="email"
-                className={inputFieldStyle}
-                placeholder="이메일 주소 입력"
-                value={formData.login_id}
-                onChange={handleChange}
-              />
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                <input
+                  id="signup-id-input"
+                  name="login_id"
+                  type="email"
+                  className={inputFieldStyle}
+                  placeholder="이메일 주소 입력"
+                  value={formData.login_id}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  onClick={handleEmailVerification}
+                  className="h-[42px] shrink-0 cursor-pointer rounded-[12px] bg-[#FF4854] px-5 body-medium font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]"
+                >
+                  이메일 인증
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-col">

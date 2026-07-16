@@ -48,22 +48,21 @@ const ChallengeSection = () => {
   const titleText = `${CHALLENGE_CATEGORY} 목록`;
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center p-6 gap-8">
+    <div className="w-full min-h-screen flex flex-col items-center gap-8">
       <Banner />
 
-      <h1 className="heading-1 font-700 text-left max-w-[1080px] w-full mx-auto text-[#FF4854]">
+      <h1 className="heading-1 font-700 text-left w-full text-[#FF4854]">
         {titleText}
       </h1>
 
       {/* 챌린지 카드 리스트 */}
-      <div className="w-full p-4 flex justify-center">
+      <div className="w-full flex justify-center">
         <div
           className="
             grid
             grid-cols-[repeat(auto-fit,minmax(339px,1fr))]
             gap-3
             justify-items-center
-            max-w-[1080px]
             w-full
           "
         >

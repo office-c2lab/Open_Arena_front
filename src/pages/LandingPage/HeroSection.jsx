@@ -29,7 +29,7 @@ export default function HeroSection({ onVisibilityChange }) {
   return (
     <section
       ref={heroRef}
-      className="relative flex min-h-screen items-center overflow-hidden bg-black"
+      className="relative flex min-h-[calc(74vh-64px)] items-center overflow-hidden bg-black"
     >
       <motion.div
         className="absolute inset-0"

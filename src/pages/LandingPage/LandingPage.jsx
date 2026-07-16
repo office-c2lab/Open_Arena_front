@@ -1,10 +1,8 @@
-import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useInView } from 'framer-motion';
+import React, { Suspense, lazy, useEffect, useRef } from 'react';
+import { useInView } from 'framer-motion';
 
-import { JUDGE_SHOTS, SPONSOR_LOGOS } from './LandingPage.constants';
-import { LogoMarquee } from './LandingPage.primitives';
+import { JUDGE_SHOTS } from './LandingPage.constants';
 import Hero from './HeroSection';
-import NavbarSection from './NavbarSection';
 
 const Features = lazy(() => import('./FeaturesSection'));
 const JudgeStackOnlySection = lazy(() => import('./JudgeStackOnlySection'));
@@ -28,8 +26,6 @@ function LazySectionMount({ children, minHeight = 600, margin = '-10% 0px' }) {
 }
 
 export default function LandingPage() {
-  const [showFloatingNav, setShowFloatingNav] = useState(false);
-
   useEffect(() => {
     document.documentElement.classList.add('landing-scroll-hidden');
     document.body.classList.add('landing-scroll-hidden');
@@ -40,27 +36,9 @@ export default function LandingPage() {
     };
   }, []);
 
-  const handleHeroVisibilityChange = useCallback(isVisible => {
-    setShowFloatingNav(!isVisible);
-  }, []);
-
   return (
     <div className="min-h-screen bg-white text-[#171717]">
-      <AnimatePresence>
-        {showFloatingNav ? (
-          <motion.div
-            className="fixed inset-x-0 top-0 z-[70]"
-            initial={{ opacity: 0, y: -18 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -14 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-          >
-            <NavbarSection className="shadow-[0_10px_34px_rgba(23,23,23,0.08)]" />
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-
-      <Hero onVisibilityChange={handleHeroVisibilityChange} />
+      <Hero />
       {/* <div className="bg-[#050608] px-0 pt-10 pb-8 text-white sm:pt-10 sm:pb-10">
         <div className="mx-auto flex max-w-[1280px] items-center gap-5 px-5 sm:gap-8">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#ff8f98] to-[#3a3a3f]" />

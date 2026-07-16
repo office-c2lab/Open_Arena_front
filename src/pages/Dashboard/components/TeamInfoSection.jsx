@@ -4,7 +4,7 @@ import TeamInfoCard from './TeamInfoCard';
 
 export default function TeamInfoSection({ isLoading = false, solvedCount = 0, totalScore = 0 }) {
   return (
-    <div className="flex justify-center w-full max-w-[1060px] mx-auto">
+    <div className="flex justify-center w-full mx-auto">
       <TeamInfoCard
         title="해결한 챌린지"
         value={solvedCount}

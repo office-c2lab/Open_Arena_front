@@ -25,7 +25,7 @@ export default function LeaderboardLayout() {
         `}
       </style>
 
-      <div className="min-h-screen bg-[#0B021C]">
+      <div className="min-h-screen bg-[#0B021C] pt-16">
         <AppHeader />
 
         <div

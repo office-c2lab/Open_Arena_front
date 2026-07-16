@@ -15,8 +15,8 @@ export default function Tutorial() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center p-6">
-      <div className="w-full max-w-[1080px] flex flex-col gap-8">
+    <div className="w-full min-h-screen flex flex-col items-center">
+      <div className="w-full flex flex-col gap-8">
         <Banner />
 
         <h2 className="heading-1 font-700 text-[#FF4854]">튜토리얼</h2>
