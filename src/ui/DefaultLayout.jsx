@@ -2,6 +2,7 @@
 
 import { Outlet } from 'react-router-dom';
 import AppHeader from '@/components/AppHeader/AppHeader';
+import FooterSection from '@/pages/LandingPage/FooterSection';
 
 export default function DefaultLayout() {
   return (
@@ -12,6 +13,7 @@ export default function DefaultLayout() {
           <Outlet />
         </div>
       </main>
+      <FooterSection />
     </div>
   );
 }

@@ -9,7 +9,6 @@ const JudgeStackOnlySection = lazy(() => import('./JudgeStackOnlySection'));
 const Showcase = lazy(() => import('./ShowcaseSection'));
 const Testimonials = lazy(() => import('./TestimonialsSection'));
 const FAQ = lazy(() => import('./FaqCompositeSection'));
-const Footer = lazy(() => import('./FooterSection'));
 
 function LazySectionMount({ children, minHeight = 600, margin = '-10% 0px' }) {
   const ref = useRef(null);
@@ -80,9 +79,6 @@ export default function LandingPage() {
       </LazySectionMount>
       <Suspense fallback={<div aria-hidden="true" style={{ minHeight: 920 }} />}>
         <FAQ />
-      </Suspense>
-      <Suspense fallback={<div aria-hidden="true" style={{ minHeight: 280 }} />}>
-        <Footer />
       </Suspense>
     </div>
   );

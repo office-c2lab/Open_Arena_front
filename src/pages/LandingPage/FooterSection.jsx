@@ -4,7 +4,7 @@ import { Container } from './LandingPage.primitives';
 
 export default function FooterSection() {
   return (
-    <footer className="relative mt-10 overflow-hidden border-t border-white/10 bg-[#08090b] pb-10 pt-16 text-white sm:mt-14 sm:pb-12 sm:pt-20">
+    <footer className="relative mt-4 overflow-hidden border-t border-white/10 bg-[#08090b] pb-8 pt-8 text-white sm:mt-6 sm:pb-10 sm:pt-10">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#e2442f]/55 to-transparent"

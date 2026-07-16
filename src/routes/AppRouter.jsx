@@ -1,7 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import LoginRedirect from './LoginRedirect';
-import ProtectedRoute from './ProtectedRoute';
 import AdminGuard from './AdminGuard';
 
 // Layouts
@@ -44,19 +42,11 @@ export default function AppRouter() {
         <Route path="/" element={<LandingPage />} />
         <Route
           path="/login"
-          element={
-            <LoginRedirect>
-              <Login />
-            </LoginRedirect>
-          }
+          element={<Login />}
         />
         <Route
           path="/signup"
-          element={
-            <LoginRedirect>
-              <Signup />
-            </LoginRedirect>
-          }
+          element={<Signup />}
         />
       </Route>
       <Route path="/admin" element={<Navigate to="/admin/leaderboard" replace />} />
@@ -97,11 +87,7 @@ export default function AppRouter() {
           🔥 DefaultLayout 보호 구역
          --------------------------- */}
       <Route
-        element={
-          <ProtectedRoute>
-            <DefaultLayout />
-          </ProtectedRoute>
-        }
+        element={<DefaultLayout />}
       >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
@@ -113,11 +99,7 @@ export default function AppRouter() {
           🔥 Challenge 보호 Layout
          --------------------------- */}
       <Route
-        element={
-          <ProtectedRoute>
-            <ChallengeLayout />
-          </ProtectedRoute>
-        }
+        element={<ChallengeLayout />}
       >
         <Route path="/challenge/:problemId" element={<Challenge />} />
       </Route>

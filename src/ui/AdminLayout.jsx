@@ -2,6 +2,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import FloatingMenu from '../components/FloatingMenu/FloatingMenu';
+import FooterSection from '@/pages/LandingPage/FooterSection';
 
 export default function AdminLayout() {
   return (
@@ -10,6 +11,8 @@ export default function AdminLayout() {
       <div className="pb-20">
         <Outlet />
       </div>
+
+      <FooterSection />
 
       {/* 공통 Floating Menu */}
       <FloatingMenu />

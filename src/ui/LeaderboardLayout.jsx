@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import leaderboardBg from '@/assets/images/leaderboard_bg.png';
 import AppHeader from '@/components/AppHeader/AppHeader';
+import FooterSection from '@/pages/LandingPage/FooterSection';
 
 export default function LeaderboardLayout() {
   useEffect(() => {
@@ -53,6 +54,7 @@ export default function LeaderboardLayout() {
           <main className="w-full">
             <Outlet />
           </main>
+          <FooterSection />
         </div>
       </div>
     </>

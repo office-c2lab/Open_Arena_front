@@ -107,7 +107,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const teamInfo = useAuthStore(state => state.teamInfo);
-  const isLoggedIn = useAuthStore(state => state.isLoggedIn);
   const teamId = teamInfo?.id || teamInfo?.team_id;
 
   const { data, isLoading, isError } = useTeamDashboardQuery(teamId);
@@ -148,13 +147,6 @@ const Dashboard = () => {
 
     return buckets.map(item => ({ ...item, total: item.total || 1 }));
   }, [data?.category_solve_status, problems]);
-
-  if (!isLoggedIn)
-    return (
-      <div className="flex h-full items-center justify-center text-2xl text-gray-500">
-        로그인 후 이용 가능합니다.
-      </div>
-    );
 
   if (isError)
     return (
