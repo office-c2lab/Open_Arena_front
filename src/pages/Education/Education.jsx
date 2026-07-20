@@ -1,5 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, Search, ShieldCheck } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  CalendarDays,
+  CheckCircle2,
+  Search,
+  ShieldCheck,
+  XCircle,
+} from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
 
@@ -9,7 +18,8 @@ const articles = [
     date: '2026-07-20',
     title: 'AI Red Teaming이란 무엇인가요?',
     visualTitle: 'AI RED TEAMING',
-    summary: 'AI 시스템이 악의적 입력, 우회 프롬프트, 정책 충돌에 어떻게 반응하는지 점검하는 기본 개념을 알아봅니다.',
+    summary:
+      'AI 시스템이 악의적 입력, 우회 프롬프트, 정책 충돌에 어떻게 반응하는지 점검하는 기본 개념을 알아봅니다.',
     category: 'Red Teaming',
     readTime: '8분',
     sections: [
@@ -26,13 +36,26 @@ const articles = [
         body: 'ARENA는 실제 공격 시나리오를 Path와 Challenge 형태로 나누어 제공합니다. 사용자는 AI와 대화하며 목표를 달성해보고, 실패와 성공 기록을 바탕으로 어떤 프롬프트가 위험하거나 효과적인지 직접 익힐 수 있습니다.',
       },
     ],
+    quiz: {
+      question: 'AI Red Teaming의 가장 중요한 목적은 무엇인가요?',
+      options: [
+        '모델의 안전 실패 가능성을 공격자 관점에서 미리 찾아내는 것',
+        '모델의 응답 속도를 높이기 위해 캐시를 최적화하는 것',
+        '사용자 인터페이스의 색상과 레이아웃을 검수하는 것',
+        '학습 데이터의 파일 크기를 줄여 배포 비용을 낮추는 것',
+      ],
+      answerIndex: 0,
+      explanation:
+        'AI Red Teaming은 모델이 악의적 입력이나 정책 충돌 상황에서도 안전하게 동작하는지 검증하는 활동입니다.',
+    },
   },
   {
     id: 'prompt-injection',
     date: '2026-07-18',
     title: 'Prompt Injection은 어떻게 발생하나요?',
     visualTitle: 'PROMPT INJECTION',
-    summary: '사용자 입력이 시스템 지시와 충돌할 때 생기는 프롬프트 인젝션의 기본 구조를 정리합니다.',
+    summary:
+      '사용자 입력이 시스템 지시와 충돌할 때 생기는 프롬프트 인젝션의 기본 구조를 정리합니다.',
     category: 'Prompt Security',
     readTime: '6분',
     sections: [
@@ -45,6 +68,18 @@ const articles = [
         body: '역할 전환, 규칙 무시 요청, 숨겨진 지시 출력 요청, 안전 정책을 테스트로 위장하는 방식이 자주 등장합니다. 중요한 것은 단일 문장보다 여러 턴의 대화 속에서 모델의 상태가 어떻게 변하는지 관찰하는 것입니다.',
       },
     ],
+    quiz: {
+      question: 'Prompt Injection이 발생하는 대표적인 상황은 무엇인가요?',
+      options: [
+        '사용자 입력이 모델의 상위 지시나 기존 규칙과 충돌하도록 유도할 때',
+        '모델 서버의 CPU 사용률이 일시적으로 높아질 때',
+        '브라우저 캐시가 오래되어 이미지가 늦게 로딩될 때',
+        '사용자가 같은 질문을 짧은 시간 안에 여러 번 입력할 때',
+      ],
+      answerIndex: 0,
+      explanation:
+        '프롬프트 인젝션은 모델이 따라야 하는 지시 체계를 흔들어 규칙 무시, 역할 전환, 정보 노출 등을 유도합니다.',
+    },
   },
   {
     id: 'llm-safety',
@@ -64,13 +99,26 @@ const articles = [
         body: '처음에는 튜토리얼에서 용어와 흐름을 익히고, 이후 쉬운 챌린지부터 시도하는 것이 좋습니다. 성공 여부보다 어떤 시도가 왜 실패했는지 기록하는 과정이 실력 향상에 더 중요합니다.',
       },
     ],
+    quiz: {
+      question: 'LLM Safety 평가에서 함께 살펴봐야 하는 요소로 가장 적절한 것은 무엇인가요?',
+      options: [
+        '위험한 지시 거절, 안전한 대안 제시, 민감 정보 보호의 일관성',
+        '로고 크기, 버튼 색상, 페이지 전환 애니메이션의 화려함',
+        '응답을 항상 가장 길게 생성하는 능력',
+        '모든 요청에 예외 없이 순응하는 태도',
+      ],
+      answerIndex: 0,
+      explanation:
+        '안전성 평가는 단순 거절뿐 아니라 대안 제시와 민감 정보 보호가 반복 상황에서도 유지되는지 확인합니다.',
+    },
   },
   {
     id: 'tokens',
     date: '2026-07-12',
     title: '토큰은 무엇이고 왜 중요한가요?',
     visualTitle: 'TOKENS',
-    summary: 'LLM이 텍스트를 처리하는 단위인 토큰의 개념과 보안 테스트에서 토큰이 중요한 이유를 설명합니다.',
+    summary:
+      'LLM이 텍스트를 처리하는 단위인 토큰의 개념과 보안 테스트에서 토큰이 중요한 이유를 설명합니다.',
     category: 'LLM Basics',
     readTime: '4분',
     sections: [
@@ -83,6 +131,18 @@ const articles = [
         body: '긴 문맥, 반복 지시, 숨겨진 규칙 삽입은 모두 토큰 제한과 문맥 관리에 영향을 받습니다. 공격자가 긴 입력을 이용해 중요한 지시를 밀어내거나 모델의 주의를 흐리게 하는 경우도 있습니다.',
       },
     ],
+    quiz: {
+      question: '보안 테스트에서 긴 입력과 반복 지시가 문제가 될 수 있는 이유는 무엇인가요?',
+      options: [
+        '문맥 관리에 영향을 주어 중요한 지시를 밀어내거나 주의를 흐릴 수 있기 때문',
+        '토큰이 많을수록 모델이 자동으로 인터넷 검색을 수행하기 때문',
+        '긴 입력은 항상 모델의 안전 정책을 삭제하기 때문',
+        '반복 지시는 화면 배율을 바꾸어 UI를 깨뜨리기 때문',
+      ],
+      answerIndex: 0,
+      explanation:
+        'LLM은 토큰 단위로 문맥을 처리하므로 긴 입력과 반복 지시는 문맥 우선순위와 안전 지시 유지에 영향을 줄 수 있습니다.',
+    },
   },
   {
     id: 'agents',
@@ -102,13 +162,26 @@ const articles = [
         body: '권한 분리, 실행 전 확인, 민감 정보 차단, 도구 호출 로그 검토가 중요합니다. 프롬프트 인젝션은 Agent 환경에서 더 직접적인 행동으로 이어질 수 있으므로 별도의 안전 장치가 필요합니다.',
       },
     ],
+    quiz: {
+      question: 'AI Agent 보안에서 특히 중요한 이유는 무엇인가요?',
+      options: [
+        '도구 호출이나 파일 접근처럼 실제 행동으로 이어질 수 있기 때문',
+        '일반 챗봇보다 항상 더 짧은 답변만 생성하기 때문',
+        'Agent는 프롬프트 인젝션의 영향을 전혀 받지 않기 때문',
+        '모든 Agent가 별도 로그인 없이 관리자 권한을 갖기 때문',
+      ],
+      answerIndex: 0,
+      explanation:
+        'Agent는 외부 도구와 시스템을 사용할 수 있어 잘못된 지시를 따를 때 피해 범위가 커질 수 있습니다.',
+    },
   },
   {
     id: 'jailbreak',
     date: '2026-07-08',
     title: 'Jailbreak 시도는 어떻게 분석하나요?',
     visualTitle: 'JAILBREAK',
-    summary: '모델의 안전 정책을 우회하려는 Jailbreak 시도를 관찰하고 분류하는 기본 방법을 소개합니다.',
+    summary:
+      '모델의 안전 정책을 우회하려는 Jailbreak 시도를 관찰하고 분류하는 기본 방법을 소개합니다.',
     category: 'Analysis',
     readTime: '6분',
     sections: [
@@ -121,6 +194,18 @@ const articles = [
         body: '모델이 실제로 위험한 정보를 제공했는지, 단순히 안전한 설명에 머물렀는지, 거절 후 대안을 제시했는지를 기준으로 평가합니다. ARENA에서는 이런 판단 기준을 챌린지별 목표와 함께 익힐 수 있습니다.',
       },
     ],
+    quiz: {
+      question: 'Jailbreak 시도를 분석할 때 먼저 분리해 기록하면 좋은 것은 무엇인가요?',
+      options: [
+        '공격 의도와 사용된 우회 기법',
+        '사용자의 브라우저 종류와 화면 해상도',
+        '응답 글자 수와 줄바꿈 개수만',
+        '모델 이름의 알파벳 순서',
+      ],
+      answerIndex: 0,
+      explanation:
+        '역할극, 가상 시나리오, 규칙 재정의 같은 기법과 공격 의도를 나누어 보면 성공 여부와 위험도를 더 명확히 판단할 수 있습니다.',
+    },
   },
 ];
 
@@ -144,10 +229,14 @@ function EducationCard({ article, onOpen }) {
         <div className="flex items-center gap-2 text-[12px] font-700 text-[#8A93A5]">
           <CalendarDays className="h-3.5 w-3.5" />
           {article.date}
-          <span className="rounded-full bg-[#FFF0F2] px-2 py-0.5 text-[#FF4854]">{article.category}</span>
+          <span className="rounded-full bg-[#FFF0F2] px-2 py-0.5 text-[#FF4854]">
+            {article.category}
+          </span>
         </div>
         <h2 className="mt-3 text-[20px] font-900 leading-[26px] text-[#151A21]">{article.title}</h2>
-        <p className="mt-3 flex-1 text-[14px] font-500 leading-[23px] text-[#66717E]">{article.summary}</p>
+        <p className="mt-3 flex-1 text-[14px] font-500 leading-[23px] text-[#66717E]">
+          {article.summary}
+        </p>
         <button
           type="button"
           onClick={onOpen}
@@ -180,15 +269,19 @@ function EducationList() {
   return (
     <div className="w-full bg-white pb-16">
       <section className="relative mb-9 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
-        <img src={LearningBannerImage} alt="" className="h-full w-full object-cover object-center" />
+        <img
+          src={LearningBannerImage}
+          alt=""
+          className="h-full w-full object-cover object-center"
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/24 to-transparent" />
         <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
-          <p className="text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
-            AI Red Teaming을 더 깊게 이해하고 싶다면
-          </p>
-          <h1 className="mt-3 whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+          <h1 className="whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
             <span className="text-[#FF4854]">LLM Safety</span> 학습 자료로 시작하세요
           </h1>
+          <p className="mt-3 text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+            AI Red Teaming을 더 깊게 이해하고 싶다면
+          </p>
         </div>
       </section>
 
@@ -226,6 +319,74 @@ function EducationList() {
   );
 }
 
+function EducationQuiz({ quiz }) {
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const hasAnswered = selectedIndex !== null;
+  const isCorrect = selectedIndex === quiz.answerIndex;
+
+  return (
+    <section className="overflow-hidden border-y border-[#e7e1d9] bg-white">
+      <div className="border-b border-[#e7e1d9] bg-white px-5 py-5 sm:px-6">
+        <p className="text-[13px] font-900 uppercase tracking-[0.22em] text-[#FF4854]">Quiz</p>
+        <h2 className="mt-3 text-[16px] font-900 leading-[26px] text-[#30343b] sm:text-[18px]">
+          Q. {quiz.question}
+        </h2>
+      </div>
+
+      <div className="grid gap-0 bg-white">
+        {quiz.options.map((option, index) => {
+          const isSelected = selectedIndex === index;
+          const isAnswer = quiz.answerIndex === index;
+          const showCorrect = hasAnswered && isAnswer;
+          const showWrong = hasAnswered && isSelected && !isAnswer;
+
+          return (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setSelectedIndex(index)}
+              className={[
+                'group flex w-full cursor-pointer items-center justify-between gap-4 border-b border-[#f0ece7] px-5 py-4 text-left transition last:border-b-0 sm:px-6',
+                showCorrect
+                  ? 'bg-[#FFF7F7] text-[#FF4854]'
+                  : showWrong
+                    ? 'bg-[#F7F8FA] text-[#8A93A5]'
+                    : 'bg-white text-[#4D5968] hover:bg-[#fff7f7] hover:text-[#FF4854]',
+              ].join(' ')}
+            >
+              <span className="flex min-w-0 items-center gap-3 text-[14px] font-800 leading-[23px] sm:text-[15px]">
+                <span
+                  className={[
+                    'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-900 transition',
+                    showCorrect || isSelected
+                      ? 'border-[#FF4854] bg-[#FF4854] text-white'
+                      : 'border-[#e7e1d9] bg-white text-[#8A93A5] group-hover:border-[#FF4854] group-hover:text-[#FF4854]',
+                  ].join(' ')}
+                >
+                  {index + 1}
+                </span>
+                {option}
+              </span>
+
+              {showCorrect ? <CheckCircle2 className="h-5 w-5 shrink-0 text-[#FF4854]" /> : null}
+              {showWrong ? <XCircle className="h-5 w-5 shrink-0 text-[#A4ADB8]" /> : null}
+            </button>
+          );
+        })}
+      </div>
+
+      {hasAnswered ? (
+        <div className="border-t border-[#f0ece7] bg-[#fafafa] px-5 py-5 sm:px-6">
+          <p className="text-[15px] font-800 text-[#30343b]">
+            {isCorrect ? '정답입니다.' : '아쉽지만 정답을 다시 확인해보세요.'}
+          </p>
+          <p className="mt-2 text-[14px] font-500 leading-7 text-[#6b6f76]">{quiz.explanation}</p>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 function EducationDetail({ article }) {
   const navigate = useNavigate();
 
@@ -245,8 +406,12 @@ function EducationDetail({ article }) {
           <ShieldCheck className="h-4 w-4" />
           {article.category}
         </p>
-        <h1 className="mt-5 text-[38px] font-900 leading-tight text-[#151A21] md:text-[48px]">{article.title}</h1>
-        <p className="mt-4 text-[14px] font-700 text-[#8A93A5]">{article.date} · {article.readTime} 읽기</p>
+        <h1 className="mt-5 text-[38px] font-900 leading-tight text-[#151A21] md:text-[48px]">
+          {article.title}
+        </h1>
+        <p className="mt-4 text-[14px] font-700 text-[#8A93A5]">
+          {article.date} · {article.readTime} 읽기
+        </p>
       </header>
 
       <div className="mx-auto mt-10 max-w-[760px] space-y-9">
@@ -255,14 +420,19 @@ function EducationDetail({ article }) {
         {article.sections.map(section => (
           <section key={section.title}>
             <h2 className="text-[25px] font-900 text-[#151A21]">{section.title}</h2>
-            <p className="mt-4 text-[16px] font-500 leading-[31px] text-[#4D5968]">{section.body}</p>
+            <p className="mt-4 text-[16px] font-500 leading-[31px] text-[#4D5968]">
+              {section.body}
+            </p>
           </section>
         ))}
+
+        <EducationQuiz key={article.id} quiz={article.quiz} />
 
         <div className="rounded-[6px] border border-[#F0C8CD] bg-[#FFF7F8] p-6">
           <h2 className="text-[20px] font-900 text-[#151A21]">다음 단계</h2>
           <p className="mt-3 text-[15px] font-600 leading-[27px] text-[#596575]">
-            개념을 이해했다면 튜토리얼에서 기본 흐름을 익히고, 챌린지에서 직접 AI Red Teaming 시나리오를 실습해보세요.
+            개념을 이해했다면 튜토리얼에서 기본 흐름을 익히고, 챌린지에서 직접 AI Red Teaming
+            시나리오를 실습해보세요.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <button
