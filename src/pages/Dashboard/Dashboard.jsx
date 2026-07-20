@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight, BookOpen, Building2, Instagram, MessageCircle, ShieldCheck, Twitter } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import UserIcon from '@/assets/icons/user.svg';
 import TigerImage from '@/assets/images/tiger.png';
 import PhoenixImage from '@/assets/images/phoenix.png';
 import ArenaBannerImage from '@/assets/images/banner.svg';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
-import TutorialBannerImage from '@/assets/images/tutorial.png';
+import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 
 const notices = [
   ['공지사항', '2026년 6월의 드림핵 노트', '2026.07.01.'],
@@ -56,6 +57,7 @@ const dashboardBanners = [
 ];
 
 function DashboardBannerSlider() {
+  const navigate = useNavigate();
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
 
   useEffect(() => {
@@ -76,7 +78,25 @@ function DashboardBannerSlider() {
           <article key={banner.id} className="relative h-full w-full shrink-0">
             <div className="relative mx-auto h-full w-full max-w-[1200px] overflow-hidden">
               <img src={banner.image} alt="" className="h-full w-full object-cover object-center" />
-              {banner.type !== 'arena' && (
+              {banner.type === 'tutorial' && (
+                <div className="absolute left-6 top-8 max-w-[760px] text-left sm:left-10 md:left-14 md:top-11">
+                  <p className="text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+                    레드티밍이 뭔가요? ARENA는 어떻게 시작하나요?
+                  </p>
+                  <h1 className="mt-3 whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+                    <span className="text-[#FF4854]">Beginners</span>를 위한 완벽한 입문 가이드 시작하기
+                  </h1>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/tutorial')}
+                    className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
+                  >
+                    튜토리얼 문제 풀기
+                    <ArrowRight className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1 sm:h-8 sm:w-8" strokeWidth={1.8} />
+                  </button>
+                </div>
+              )}
+              {banner.type === 'challenge' && (
                 <>
                   <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
                   <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
@@ -94,9 +114,10 @@ function DashboardBannerSlider() {
                     </p>
                     <button
                       type="button"
+                      onClick={() => navigate('/kategorie')}
                       className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
                     >
-                      지금 바로 확인하기
+                      챌린지에 도전하기
                       <ArrowRight className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1 sm:h-8 sm:w-8" strokeWidth={1.8} />
                     </button>
                   </div>

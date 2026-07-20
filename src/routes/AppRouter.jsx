@@ -18,6 +18,7 @@ import Dashboard from '../pages/Dashboard/Dashboard';
 // import Leaderboard from '../pages/Leaderboard/Leaderboard';
 import Education from '../pages/Education/Education';
 import Tutorial from '../pages/Tutorial/Tutorial';
+import TutorialList from '../pages/Tutorial/TutorialList';
 import Kategorie from '../pages/Kategorie/Kategorie';
 import Challenge from '../pages/Challenge/ui/Challenge';
 import ChallengePlay from '../pages/Challenge/ui/ChallengePlay';
@@ -94,7 +95,8 @@ export default function AppRouter() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/education" element={<Education />} />
-        <Route path="/tutorial" element={<Tutorial />} />
+        <Route path="/tutorial" element={<TutorialList />} />
+        <Route path="/tutorial/:tutorialId" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
       </Route>
 
