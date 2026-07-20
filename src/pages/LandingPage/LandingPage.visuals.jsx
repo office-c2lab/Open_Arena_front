@@ -619,14 +619,14 @@ function FocusConstellation({
   onSelect,
   onHoverChange,
   hitAreaOffset = { x: 0, y: 0 },
-  tone = 'orange',
+  tone = 'red',
 }) {
   const main = { x: 60, y: 60 };
   const companionPoints = companions;
   const [isHovered, setIsHovered] = useState(false);
   const emphasized = active || isHovered;
-  const mainGlowColor = tone === 'orange' ? '251,146,60' : '232,121,249';
-  const companionGlowColor = tone === 'orange' ? '253,186,116' : '245,208,254';
+  const mainGlowColor = tone === 'deepRed' ? '225,53,65' : '255,72,84';
+  const companionGlowColor = tone === 'deepRed' ? '255,156,166' : '255,184,190';
   const lineColor = emphasized ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.84)';
   const secondaryLineColor = emphasized ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.72)';
   const mainGlowOpacity = emphasized ? 0.9 : 0.72;
@@ -944,7 +944,7 @@ export function MoneyMovementVisual() {
                 setHoveredView(hovered ? 'season' : activeView === 'season' ? 'season' : null)
               }
               hitAreaOffset={{ x: 0, y: -22 }}
-              tone="fuchsia"
+              tone="red"
             />
             <FocusConstellation
               position={competitionVisualPos}
@@ -965,7 +965,7 @@ export function MoneyMovementVisual() {
                 )
               }
               hitAreaOffset={{ x: 36, y: 0 }}
-              tone="orange"
+              tone="deepRed"
             />
             <motion.div
               initial={false}
@@ -980,7 +980,7 @@ export function MoneyMovementVisual() {
               onPointerDown={event => event.stopPropagation()}
             >
               <div className="rounded-2xl border border-white/10 bg-black/60 px-4 py-3 backdrop-blur-md">
-                <p className="mb-2 text-xs font-semibold tracking-[0.18em] text-fuchsia-200/90">
+                <p className="mb-2 text-xs font-semibold tracking-[0.18em] text-[#FFB8BE]">
                   시즌
                 </p>
                 <div className="space-y-1.5 text-sm text-white/88">
@@ -1012,7 +1012,7 @@ export function MoneyMovementVisual() {
               onPointerDown={event => event.stopPropagation()}
             >
               <div className="rounded-2xl border border-white/10 bg-black/60 px-4 py-3 backdrop-blur-md">
-                <p className="mb-2 text-xs font-semibold tracking-[0.18em] text-orange-200/90">
+                <p className="mb-2 text-xs font-semibold tracking-[0.18em] text-[#FFB8BE]">
                   대회
                 </p>
                 <div className="space-y-1.5 text-sm text-white/88">

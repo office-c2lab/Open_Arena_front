@@ -11,9 +11,9 @@ import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
 
 const notices = [
-  ['공지사항', '2026년 6월의 드림핵 노트', '2026.07.01.'],
+  ['공지사항', '2026년 6월의 아레나 노트', '2026.07.01.'],
   ['공지사항', '새로워진 학습 메뉴, 이렇게 달라졌어요', '2026.06.08.'],
-  ['공지사항', '2026년 5월의 드림핵 노트', '2026.06.05.'],
+  ['공지사항', '2026년 5월의 아레나 노트', '2026.06.05.'],
 ];
 
 const missions = [
@@ -237,31 +237,31 @@ function ProfileCard() {
 function MissionCard() {
   return (
     <section>
-      <h2 className="mb-3 text-[14px] font-900 text-[#2E3338]">진행중인 미션</h2>
+      <h2 className="mb-3 text-[14px] font-900 text-[#2E3338]">진행중인 챌린지</h2>
       <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-4">
-        <div className="rounded-[3px] bg-[#F6F5FF] p-3">
+        <div className="rounded-[3px] bg-[#FFF0F2] p-3">
           <div className="flex items-center justify-between text-[11px] font-700 text-[#9AA3AF]">
-            <span>드림핵 모험가</span>
+            <span>아레나 모험가</span>
             <span>900 XP</span>
             <span>50 코인</span>
           </div>
           <div className="mt-3 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-[#DAD6FF]">
-              <BookOpen className="h-6 w-6 text-[#756CFF]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-[#FFDCE0]">
+              <BookOpen className="h-6 w-6 text-[#FF4854]" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-900 text-[#2E3338]">드림핵 입문 여정</p>
-              <p className="mt-1 text-[11px] font-600 text-[#8A93A5]">미션 완료까지 4개 남았어요!</p>
+              <p className="text-[13px] font-900 text-[#2E3338]">아레나 입문 여정</p>
+              <p className="mt-1 text-[11px] font-600 text-[#8A93A5]">챌린지 완료까지 4개 남았어요!</p>
             </div>
-            <button type="button" className="cursor-pointer rounded-[4px] bg-[#756CFF] px-3 py-2 text-[11px] font-900 text-white">
+            <button type="button" className="cursor-pointer rounded-[4px] bg-[#FF4854] px-3 py-2 text-[11px] font-900 text-white transition hover:bg-[#E73541]">
               자세히 보기
             </button>
           </div>
           <div className="mt-4">
-            <div className="h-1.5 rounded-full bg-[#E3E1FF]">
-              <div className="h-full w-[20%] rounded-full bg-[#756CFF]" />
+            <div className="h-1.5 rounded-full bg-[#FFDCE0]">
+              <div className="h-full w-[20%] rounded-full bg-[#FF4854]" />
             </div>
-            <p className="mt-1 text-right text-[11px] font-800 text-[#756CFF]">20%</p>
+            <p className="mt-1 text-right text-[11px] font-800 text-[#FF4854]">20%</p>
           </div>
         </div>
 
@@ -274,7 +274,7 @@ function MissionCard() {
                 </p>
                 <p className="mt-1 text-[11px] font-600 text-[#9AA3AF]">{mission.desc}</p>
               </div>
-              <button type="button" className="flex cursor-pointer items-center gap-1 text-[11px] font-900 text-[#756CFF]">
+              <button type="button" className="flex cursor-pointer items-center gap-1 text-[11px] font-900 text-[#FF4854]">
                 바로가기 <ArrowRight className="h-3 w-3" />
               </button>
             </div>
@@ -292,11 +292,11 @@ function PromoCard({ type }) {
     <section className="relative overflow-hidden rounded-[3px] bg-[#F6F7F9] p-5">
       <div className="relative z-10">
         <p className="text-[14px] font-900 leading-[22px] text-[#2E3338]">
-          {isGift ? '프로필 완성하고 코인 받기!' : '더 나은 드림핵 서비스를 위해'}
+          {isGift ? '프로필 완성하고 코인 받기!' : '더 나은 아레나 서비스를 위해'}
           <br />
           {isGift ? '가입 후 1달 동안만 참여 가능해요!' : '오류를 제보해 주세요!'}
         </p>
-        <button type="button" className="mt-4 flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#756CFF]">
+        <button type="button" className="mt-4 flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#FF4854]">
           {isGift ? '참여하고 코인 받기' : '제보하고 코인 받기'} <ArrowRight className="h-3 w-3" />
         </button>
       </div>
@@ -325,7 +325,7 @@ function Timeline() {
         {notices.map(([category, title, date]) => (
           <div key={title} className="grid grid-cols-[96px_58px_minmax(0,1fr)_110px] items-center gap-4 text-[14px]">
             <span className="font-700 text-[#6B7280]">{category}</span>
-            <span className="w-fit rounded-[3px] border border-[#CCD6FF] bg-[#F5F7FF] px-3 py-1 text-[12px] font-800 text-[#6D75FF]">
+            <span className="w-fit rounded-[3px] border border-[#FFB8BE] bg-[#FFF0F2] px-3 py-1 text-[12px] font-800 text-[#FF4854]">
               new
             </span>
             <strong className="truncate font-900 text-black">{title}</strong>
@@ -340,7 +340,7 @@ function Timeline() {
 function NewsSection() {
   return (
     <section className="mt-10">
-      <h2 className="mb-5 text-[27px] font-900 text-[#2E3338]">드림핵 인기 소식</h2>
+      <h2 className="mb-5 text-[27px] font-900 text-[#2E3338]">아레나 인기 소식</h2>
       <div className="flex gap-6">
         <div className="h-[230px] w-[180px] rounded-[3px] border border-[#DDE3EA] bg-white p-5">
           <div className="h-5 w-20 rounded bg-[#E2E4E8]" />

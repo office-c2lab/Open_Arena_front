@@ -252,6 +252,7 @@ function EducationCard({ article, onOpen }) {
 
 function EducationList() {
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
 
   const filteredArticles = useMemo(() => {
@@ -265,6 +266,11 @@ function EducationList() {
         .includes(normalizedKeyword)
     );
   }, [keyword]);
+
+  const handleSearch = event => {
+    event.preventDefault();
+    setKeyword(searchInput);
+  };
 
   return (
     <div className="w-full bg-white pb-16">
@@ -285,16 +291,24 @@ function EducationList() {
         </div>
       </section>
 
-      <label className="relative mb-7 block">
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
-        <input
-          type="search"
-          value={keyword}
-          onChange={event => setKeyword(event.target.value)}
-          placeholder="관심 있는 교육 자료를 검색해보세요."
-          className="h-11 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
-        />
-      </label>
+      <form onSubmit={handleSearch} className="mb-7 flex gap-3">
+        <label className="relative min-w-0 flex-1">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
+          <input
+            type="search"
+            value={searchInput}
+            onChange={event => setSearchInput(event.target.value)}
+            placeholder="관심 있는 교육 자료를 검색해보세요."
+            className="h-11 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+          />
+        </label>
+        <button
+          type="submit"
+          className="flex h-11 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
+        >
+          검색
+        </button>
+      </form>
 
       <div className="mb-5 flex items-center justify-between">
         <h2 className="text-[18px] font-900 text-[#151A21]">

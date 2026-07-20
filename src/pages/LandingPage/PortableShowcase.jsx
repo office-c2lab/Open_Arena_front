@@ -273,7 +273,7 @@ export default function PortableShowcase({
   return (
     <main
       className={[
-        "min-h-screen overflow-x-clip bg-[radial-gradient(1300px_700px_at_10%_-10%,rgba(180,120,40,0.14),transparent_60%),radial-gradient(1200px_700px_at_95%_110%,rgba(130,85,25,0.1),transparent_55%),#050507] text-[#f5f2ea]",
+        "min-h-screen overflow-x-clip bg-[radial-gradient(1300px_700px_at_10%_-10%,rgba(255,72,84,0.14),transparent_60%),radial-gradient(1200px_700px_at_95%_110%,rgba(225,53,65,0.1),transparent_55%),#050507] text-[#f5f2ea]",
         className
       ]
         .filter(Boolean)
@@ -289,11 +289,11 @@ export default function PortableShowcase({
 
       <section className="pb-24">
         <div className="mx-auto flex max-w-4xl flex-col items-center px-6 text-center">
-          <p className="mb-6 text-lg font-medium tracking-wide text-amber-100/82 sm:text-2xl">
+          <p className="mb-6 text-lg font-medium tracking-wide text-[#FFDCE0] sm:text-2xl">
           </p>
           <a
             href="/login"
-            className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-amber-200/24 bg-amber-100/90 px-8 py-3 text-base font-semibold text-black shadow-[0_10px_22px_rgba(255,214,153,0.12)] transition duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:border-amber-100/50 hover:bg-amber-50 hover:shadow-[0_14px_28px_rgba(255,214,153,0.2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
+            className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#FFB8BE]/40 bg-[#FF4854] px-8 py-3 text-base font-semibold text-white shadow-[0_10px_22px_rgba(255,72,84,0.18)] transition duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:border-[#FFDCE0] hover:bg-[#E73541] hover:shadow-[0_14px_28px_rgba(255,72,84,0.26)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF4854]"
           >
             <span>{copy.ctaLabel || "참가 신청"}</span>
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />

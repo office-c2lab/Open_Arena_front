@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Bookmark, Clock3, Search, Star } from 'lucide-react';
+import { ArrowRight, Clock3, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 
@@ -90,45 +90,6 @@ const TUTORIALS = [
   },
 ];
 
-const TONE_CLASSES = {
-  pink: {
-    bg: 'bg-[#FFF0F7]',
-    line: 'border-[#FF87BA]/55',
-    flag: 'bg-[#FF45A2]',
-    text: 'text-[#2F2F36]',
-  },
-  red: {
-    bg: 'bg-[#FFF0F0]',
-    line: 'border-[#FF7A7A]/55',
-    flag: 'bg-[#FF4854]',
-    text: 'text-[#4A2D2F]',
-  },
-  purple: {
-    bg: 'bg-[#F1EDFF]',
-    line: 'border-[#9C7CFF]/60',
-    flag: 'bg-[#8057FF]',
-    text: 'text-[#4F39A8]',
-  },
-  cyan: {
-    bg: 'bg-[#E9FBFF]',
-    line: 'border-[#6FDBEA]/70',
-    flag: 'bg-[#5ED9E8]',
-    text: 'text-[#168BA0]',
-  },
-  green: {
-    bg: 'bg-[#F1FFE8]',
-    line: 'border-[#91D76D]/65',
-    flag: 'bg-[#76C94D]',
-    text: 'text-[#315A23]',
-  },
-  yellow: {
-    bg: 'bg-[#FFF8E5]',
-    line: 'border-[#F2C14E]/65',
-    flag: 'bg-[#FFBD3E]',
-    text: 'text-[#5D4515]',
-  },
-};
-
 const tagColors = {
   Beginner: 'border-[#8FE07A] text-[#38A12A]',
   Easy: 'border-[#9CDE7B] text-[#4FAF2F]',
@@ -136,25 +97,14 @@ const tagColors = {
 };
 
 function TutorialPreview({ tutorial }) {
-  const tone = TONE_CLASSES[tutorial.tone] ?? TONE_CLASSES.pink;
-
   return (
-    <div className={`relative h-[156px] overflow-hidden rounded-[4px] ${tone.bg}`}>
-      <div className="absolute inset-0 opacity-90">
-        <div className={`absolute -left-10 top-10 h-32 w-32 rounded-full border ${tone.line}`} />
-        <div className={`absolute left-[42%] -top-10 h-36 w-36 rounded-full border ${tone.line}`} />
-        <div className={`absolute right-7 bottom-5 h-28 w-28 rounded-full border ${tone.line}`} />
-        <div className={`absolute left-8 top-6 h-28 w-[1px] rotate-[29deg] ${tone.line} border-l`} />
-        <div className={`absolute left-[53%] top-0 h-44 w-[1px] rotate-[29deg] ${tone.line} border-l`} />
-        <div className={`absolute right-10 top-4 h-32 w-[1px] rotate-[29deg] ${tone.line} border-l`} />
-      </div>
-      <div className={`absolute right-4 top-0 h-12 w-8 ${tone.flag}`}>
-        <Bookmark className="mx-auto mt-2 h-4 w-4 fill-white text-white" strokeWidth={1.8} />
-        <div className="absolute bottom-[-1px] left-0 h-0 w-0 border-l-[16px] border-r-[16px] border-t-[10px] border-l-transparent border-r-transparent border-t-white/90" />
-      </div>
-      <h3 className={`relative z-10 max-w-[76%] p-4 text-[22px] font-500 leading-[25px] ${tone.text}`}>
+    <div className="relative flex h-[150px] w-full items-center overflow-hidden bg-[#0B0D18] px-5 text-left">
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+      <div className="absolute -right-8 -top-10 h-40 w-40 rounded-full border border-[#FF4854]/30" />
+      <div className="absolute right-10 bottom-[-54px] h-36 w-36 rounded-full border border-[#FF4854]/20" />
+      <strong className="relative z-10 text-[26px] font-900 uppercase leading-[31px] text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
         {tutorial.title}
-      </h3>
+      </strong>
     </div>
   );
 }
@@ -168,13 +118,16 @@ function TutorialCard({ tutorial, onClick }) {
         : 'bg-[#353B44] text-white';
 
   return (
-    <article className="group min-w-0 cursor-pointer" onClick={onClick}>
+    <article
+      className="group flex min-h-[392px] min-w-0 cursor-pointer flex-col overflow-hidden rounded-[6px] border border-[#E1E6EE] bg-white transition hover:-translate-y-1 hover:border-[#FFB8BE] hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]"
+      onClick={onClick}
+    >
       <TutorialPreview tutorial={tutorial} />
-      <div className="pt-3">
-        <h2 className="min-h-[42px] text-[16px] font-700 leading-[21px] text-black transition-colors group-hover:text-[#FF4854]">
+      <div className="flex flex-1 flex-col p-5">
+        <h2 className="text-[20px] font-900 leading-[26px] text-[#151A21] transition-colors group-hover:text-[#FF4854]">
           {tutorial.title}
         </h2>
-        <div className="mt-2 flex flex-wrap gap-1">
+        <div className="mt-3 flex flex-wrap gap-1.5">
           <span className="rounded-[3px] border border-[#C9D8FF] px-1.5 py-0.5 text-[10px] font-600 leading-none text-[#5578EA]">
             {tutorial.tier}
           </span>
@@ -197,12 +150,19 @@ function TutorialCard({ tutorial, onClick }) {
             약 {tutorial.duration}
           </span>
         </div>
-        <div className="mt-3 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between">
           <span className="text-[12px] font-500 text-[#2E3338]">{tutorial.price}</span>
           <span className={`rounded-[4px] px-2 py-1 text-[11px] font-700 ${levelClass}`}>
             {tutorial.level}
           </span>
         </div>
+        <button
+          type="button"
+          className="mt-auto flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[4px] bg-[#FF4854] text-[14px] font-900 text-white transition hover:bg-[#E73541]"
+        >
+          튜토리얼 보기
+          <ArrowRight className="h-4 w-4" />
+        </button>
       </div>
     </article>
   );
@@ -210,6 +170,7 @@ function TutorialCard({ tutorial, onClick }) {
 
 export default function TutorialList() {
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
 
   const filteredTutorials = useMemo(() => {
@@ -231,6 +192,11 @@ export default function TutorialList() {
     [navigate]
   );
 
+  const handleSearch = useCallback(event => {
+    event.preventDefault();
+    setKeyword(searchInput);
+  }, [searchInput]);
+
   return (
     <div className="w-full bg-white pb-14">
       <section className="relative mb-8 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
@@ -248,25 +214,29 @@ export default function TutorialList() {
       </section>
 
       <div id="tutorial-list-section" className="mb-7 flex items-center gap-3 border-b border-[#E6E9EE] pb-4">
-        <button type="button" className="cursor-pointer text-[18px] font-700 text-black">
+        <button type="button" className="cursor-pointer border-b-2 border-[#FF4854] pb-3 text-[18px] font-700 text-black">
           Tutorial
-        </button>
-        <span className="text-[#D5D9DF]">|</span>
-        <button type="button" className="cursor-pointer text-[18px] font-700 text-[#9BA4B0] transition-colors hover:text-[#FF4854]">
-          Unit
         </button>
       </div>
 
-      <label className="relative mb-8 block">
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
-        <input
-          type="search"
-          value={keyword}
-          onChange={event => setKeyword(event.target.value)}
-          placeholder="관심 있는 튜토리얼을 검색해보세요."
-          className="h-10 w-full rounded-[2px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
-        />
-      </label>
+      <form onSubmit={handleSearch} className="mb-8 flex gap-3">
+        <label className="relative min-w-0 flex-1">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
+          <input
+            type="search"
+            value={searchInput}
+            onChange={event => setSearchInput(event.target.value)}
+            placeholder="관심 있는 튜토리얼을 검색해보세요."
+            className="h-10 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+          />
+        </label>
+        <button
+          type="submit"
+          className="flex h-10 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
+        >
+          검색
+        </button>
+      </form>
 
       <div>
         <section className="min-w-0">
@@ -274,11 +244,6 @@ export default function TutorialList() {
             <h1 className="text-[16px] font-700 text-[#2E3338]">
               Tutorial <span className="text-[#FF4854]">{filteredTutorials.length}</span>
             </h1>
-            <select className="h-8 cursor-pointer rounded-[2px] border border-[#D8DDE4] bg-white px-3 text-[12px] text-[#566170] outline-none">
-              <option>인기순</option>
-              <option>최신순</option>
-              <option>난이도순</option>
-            </select>
           </div>
 
           <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">

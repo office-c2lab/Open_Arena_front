@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
+  ArrowLeft,
   Bookmark,
   Check,
   CircleHelp,
@@ -269,8 +270,19 @@ function PurchasePanel() {
 }
 
 export default function Challenge() {
+  const navigate = useNavigate();
+
   return (
     <div className="w-full bg-white pb-16">
+      <button
+        type="button"
+        onClick={() => navigate('/kategorie')}
+        className="mb-8 flex cursor-pointer items-center gap-2 rounded-[4px] px-2 py-2 text-[14px] font-800 text-[#66717E] transition hover:bg-[#F3F5F7] hover:text-[#FF4854]"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        챌린지 목록으로
+      </button>
+
       <section className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
         <PathPreview />
         <div className="pt-1">
