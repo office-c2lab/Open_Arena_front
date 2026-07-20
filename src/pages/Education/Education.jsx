@@ -1,21 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, Search, ShieldCheck } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import ChallengeBannerImage from '@/assets/images/chalbenner.png';
-import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
-import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
-import ArenaBannerImage from '@/assets/images/banner.svg';
-import AiPosterImage from '@/assets/application/ai01.png';
-import AiRecruitImage from '@/assets/application/ai02.png';
+import LearningBannerImage from '@/assets/images/learning_banner.png';
 
 const articles = [
   {
     id: 'ai-red-teaming',
     date: '2026-07-20',
     title: 'AI Red Teaming이란 무엇인가요?',
+    visualTitle: 'AI RED TEAMING',
     summary: 'AI 시스템이 악의적 입력, 우회 프롬프트, 정책 충돌에 어떻게 반응하는지 점검하는 기본 개념을 알아봅니다.',
     category: 'Red Teaming',
-    image: ChallengeBannerImage,
     readTime: '8분',
     sections: [
       {
@@ -36,9 +31,9 @@ const articles = [
     id: 'prompt-injection',
     date: '2026-07-18',
     title: 'Prompt Injection은 어떻게 발생하나요?',
+    visualTitle: 'PROMPT INJECTION',
     summary: '사용자 입력이 시스템 지시와 충돌할 때 생기는 프롬프트 인젝션의 기본 구조를 정리합니다.',
     category: 'Prompt Security',
-    image: TutorialBannerImage,
     readTime: '6분',
     sections: [
       {
@@ -55,9 +50,9 @@ const articles = [
     id: 'llm-safety',
     date: '2026-07-15',
     title: 'LLM Safety Challenge 준비하기',
+    visualTitle: 'LLM SAFETY',
     summary: 'LLM Safety Challenge에 들어가기 전 알아두면 좋은 평가 관점과 학습 순서를 소개합니다.',
     category: 'Challenge',
-    image: LlmSafetyBannerImage,
     readTime: '5분',
     sections: [
       {
@@ -74,9 +69,9 @@ const articles = [
     id: 'tokens',
     date: '2026-07-12',
     title: '토큰은 무엇이고 왜 중요한가요?',
+    visualTitle: 'TOKENS',
     summary: 'LLM이 텍스트를 처리하는 단위인 토큰의 개념과 보안 테스트에서 토큰이 중요한 이유를 설명합니다.',
     category: 'LLM Basics',
-    image: ArenaBannerImage,
     readTime: '4분',
     sections: [
       {
@@ -93,9 +88,9 @@ const articles = [
     id: 'agents',
     date: '2026-07-10',
     title: 'AI Agent는 일반 챗봇과 무엇이 다른가요?',
+    visualTitle: 'AI AGENTS',
     summary: '도구 사용과 행동 실행 권한을 가진 Agent형 AI의 특징과 보안상 주의점을 다룹니다.',
     category: 'Agent Security',
-    image: AiPosterImage,
     readTime: '7분',
     sections: [
       {
@@ -112,9 +107,9 @@ const articles = [
     id: 'jailbreak',
     date: '2026-07-08',
     title: 'Jailbreak 시도는 어떻게 분석하나요?',
+    visualTitle: 'JAILBREAK',
     summary: '모델의 안전 정책을 우회하려는 Jailbreak 시도를 관찰하고 분류하는 기본 방법을 소개합니다.',
     category: 'Analysis',
-    image: AiRecruitImage,
     readTime: '6분',
     sections: [
       {
@@ -131,10 +126,20 @@ const articles = [
 
 function EducationCard({ article, onOpen }) {
   return (
-    <article className="flex min-h-[396px] flex-col overflow-hidden rounded-[6px] border border-[#E1E6EE] bg-white transition hover:-translate-y-1 hover:border-[#FFB8BE] hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]">
-      <button type="button" onClick={onOpen} className="block h-[150px] w-full cursor-pointer overflow-hidden bg-[#0B0D18]">
-        <img src={article.image} alt="" className="h-full w-full object-cover object-center transition duration-300 hover:scale-[1.03]" />
+    <article className="flex min-h-[392px] flex-col overflow-hidden rounded-[6px] border border-[#E1E6EE] bg-white transition hover:-translate-y-1 hover:border-[#FFB8BE] hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]">
+      <button
+        type="button"
+        onClick={onOpen}
+        className="relative flex h-[150px] w-full cursor-pointer items-center overflow-hidden bg-[#0B0D18] px-5 text-left"
+      >
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+        <div className="absolute -right-8 -top-10 h-40 w-40 rounded-full border border-[#FF4854]/30" />
+        <div className="absolute right-10 bottom-[-54px] h-36 w-36 rounded-full border border-[#FF4854]/20" />
+        <strong className="relative z-10 text-[34px] font-900 leading-[36px] text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
+          {article.visualTitle}
+        </strong>
       </button>
+
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center gap-2 text-[12px] font-700 text-[#8A93A5]">
           <CalendarDays className="h-3.5 w-3.5" />
@@ -174,28 +179,16 @@ function EducationList() {
 
   return (
     <div className="w-full bg-white pb-16">
-      <section className="mb-9 rounded-[6px] border border-[#F0C8CD] bg-[#FFF7F8] px-6 py-8 md:px-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-[13px] font-900 uppercase tracking-normal text-[#FF4854]">Learn</p>
-            <h1 className="mt-2 text-[44px] font-900 leading-none text-[#151A21] md:text-[58px]">교육</h1>
-            <p className="mt-5 max-w-[780px] text-[16px] font-600 leading-[28px] text-[#596575]">
-              AI Red Teaming, 프롬프트 보안, LLM Safety를 이해하는 데 필요한 학습 자료를 모았습니다.
-              튜토리얼과 챌린지에 들어가기 전 핵심 개념을 먼저 확인해보세요.
-            </p>
-          </div>
-          <div className="grid grid-cols-3 divide-x divide-[#F0C8CD] rounded-[4px] border border-[#F0C8CD] bg-white">
-            {[
-              [articles.length, '자료'],
-              ['6', '주제'],
-              ['무료', '열람'],
-            ].map(([value, label]) => (
-              <div key={label} className="min-w-[88px] px-4 py-3 text-center">
-                <p className="text-[18px] font-900 text-[#FF4854]">{value}</p>
-                <p className="mt-1 text-[11px] font-800 text-[#7B8491]">{label}</p>
-              </div>
-            ))}
-          </div>
+      <section className="relative mb-9 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
+        <img src={LearningBannerImage} alt="" className="h-full w-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/24 to-transparent" />
+        <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
+          <p className="text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+            AI Red Teaming을 더 깊게 이해하고 싶다면
+          </p>
+          <h1 className="mt-3 whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+            <span className="text-[#FF4854]">LLM Safety</span> 학습 자료로 시작하세요
+          </h1>
         </div>
       </section>
 
@@ -255,10 +248,6 @@ function EducationDetail({ article }) {
         <h1 className="mt-5 text-[38px] font-900 leading-tight text-[#151A21] md:text-[48px]">{article.title}</h1>
         <p className="mt-4 text-[14px] font-700 text-[#8A93A5]">{article.date} · {article.readTime} 읽기</p>
       </header>
-
-      <div className="mt-8 overflow-hidden rounded-[8px] border border-[#E1E6EE] bg-[#0B0D18]">
-        <img src={article.image} alt="" className="h-[240px] w-full object-cover object-center md:h-[360px]" />
-      </div>
 
       <div className="mx-auto mt-10 max-w-[760px] space-y-9">
         <p className="text-[18px] font-700 leading-[32px] text-[#3D4754]">{article.summary}</p>

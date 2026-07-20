@@ -235,13 +235,15 @@ export default function TutorialList() {
     <div className="w-full bg-white pb-14">
       <section className="relative mb-8 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
         <img src={TutorialBannerImage} alt="" className="h-full w-full object-cover object-center" />
-        <div className="absolute left-6 top-8 max-w-[760px] text-left sm:left-10 md:left-14 md:top-11">
-          <p className="text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
-            레드티밍이 뭔가요? ARENA는 어떻게 시작하나요?
-          </p>
-          <h1 className="mt-3 whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
-            <span className="text-[#FF4854]">Beginners</span>를 위한 완벽한 입문 가이드 시작하기
-          </h1>
+        <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
+          <div className="max-w-[760px]">
+            <p className="text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+              레드티밍이 뭔가요? ARENA는 어떻게 시작하나요?
+            </p>
+            <h1 className="mt-3 whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+              <span className="text-[#FF4854]">Beginners</span>를 위한 완벽한 입문 가이드 시작하기
+            </h1>
+          </div>
         </div>
       </section>
 
