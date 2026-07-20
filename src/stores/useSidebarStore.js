@@ -10,7 +10,7 @@ const getActiveLabelByPath = pathname => {
   }
 
   const PATH_TO_LABEL_MAP = {
-    '/dashboard': '대시보드',
+    '/dashboard': '홈',
     '/leaderboard': '리더보드',
     '/tutorial': '튜토리얼',
     '/kategorie': '챌린지',
@@ -19,7 +19,7 @@ const getActiveLabelByPath = pathname => {
     return PATH_TO_LABEL_MAP[pathname];
   }
 
-  return '대시보드';
+  return '홈';
 };
 
 // create 함수를 persist로 감싸서 로컬 스토리지에 상태를 영구 저장합니다.
@@ -31,7 +31,7 @@ export const useSidebarStore = create(
       // --------------------
       isCollapsed: false,
 
-      activeItem: '대시보드',
+      activeItem: '홈',
       isSettingsDropdownOpen: false, // --------------------
       // 2. 액션 (Actions)
       // --------------------

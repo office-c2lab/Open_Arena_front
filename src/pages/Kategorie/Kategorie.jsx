@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Bookmark, Clock3, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 
 const PATHS = [
   {
@@ -367,6 +368,21 @@ const ChallengeSection = () => {
 
   return (
     <div className="w-full bg-white pb-14">
+      <section className="relative mb-8 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
+        <img src={ChallengeBannerImage} alt="" className="h-full w-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
+        <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
+          <h1 className="max-w-full whitespace-nowrap text-[18px] font-900 leading-tight tracking-normal text-white sm:text-[26px] md:text-[34px] lg:text-[42px]">
+            지금 바로 <span className="text-[#FF4854]">Red Teaming</span>에 도전하세요
+          </h1>
+          <p className="mt-3 max-w-[620px] text-[14px] font-700 leading-relaxed text-white/72 sm:text-[17px] md:mt-4 md:text-[22px]">
+            AI 레드팀 평가로 실제 공격 시나리오를 경험하고,
+            <br />
+            실전형 보안 역량을 강화하세요.
+          </p>
+        </div>
+      </section>
+
       <div id="challenge-path-section" className="mb-7 flex items-center gap-3 border-b border-[#E6E9EE] pb-4">
         <button
           type="button"

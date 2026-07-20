@@ -22,7 +22,7 @@ export const mainNavigationData = [
   {
     icon: DashboardIcon,
     activeIcon: DashboardIconWhite,
-    label: '대시보드',
+    label: '홈',
     path: '/dashboard',
   },
   {

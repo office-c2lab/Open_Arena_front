@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Bookmark, Clock3, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 
 const TUTORIALS = [
   {
@@ -87,12 +88,6 @@ const TUTORIALS = [
     level: 'Pro',
     tone: 'yellow',
   },
-];
-
-const FILTER_GROUPS = [
-  { title: '카테고리', items: ['AI Security', 'ARENA', 'Red Teaming', 'Defense', 'Practice'] },
-  { title: 'Tier', items: ['Tier 0', 'Tier 1', 'Tier 2'] },
-  { title: '난이도', items: ['Beginner', 'Easy', 'Medium'] },
 ];
 
 const TONE_CLASSES = {
@@ -213,22 +208,6 @@ function TutorialCard({ tutorial, onClick }) {
   );
 }
 
-function FilterGroup({ title, items }) {
-  return (
-    <section className="border-b border-[#E2E6EA] pb-5">
-      <h3 className="mb-3 text-[13px] font-700 text-[#33383F]">{title}</h3>
-      <div className="space-y-2">
-        {items.map(item => (
-          <label key={item} className="flex cursor-pointer items-center gap-2 text-[12px] text-[#606B78]">
-            <input type="checkbox" className="h-3.5 w-3.5 cursor-pointer accent-[#FF4854]" />
-            {item}
-          </label>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export default function TutorialList() {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState('');
@@ -254,7 +233,19 @@ export default function TutorialList() {
 
   return (
     <div className="w-full bg-white pb-14">
-      <div className="mb-7 flex items-center gap-3 border-b border-[#E6E9EE] pb-4">
+      <section className="relative mb-8 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
+        <img src={TutorialBannerImage} alt="" className="h-full w-full object-cover object-center" />
+        <div className="absolute left-6 top-8 max-w-[760px] text-left sm:left-10 md:left-14 md:top-11">
+          <p className="text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+            레드티밍이 뭔가요? ARENA는 어떻게 시작하나요?
+          </p>
+          <h1 className="mt-3 whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+            <span className="text-[#FF4854]">Beginners</span>를 위한 완벽한 입문 가이드 시작하기
+          </h1>
+        </div>
+      </section>
+
+      <div id="tutorial-list-section" className="mb-7 flex items-center gap-3 border-b border-[#E6E9EE] pb-4">
         <button type="button" className="cursor-pointer text-[18px] font-700 text-black">
           Tutorial
         </button>
@@ -275,20 +266,7 @@ export default function TutorialList() {
         />
       </label>
 
-      <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="space-y-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[14px] font-700 text-black">필터</h2>
-            <button type="button" className="cursor-pointer text-[11px] font-500 text-[#98A1AD]">
-              초기화
-            </button>
-          </div>
-
-          {FILTER_GROUPS.map(group => (
-            <FilterGroup key={group.title} {...group} />
-          ))}
-        </aside>
-
+      <div>
         <section className="min-w-0">
           <div className="mb-5 flex items-center justify-between">
             <h1 className="text-[16px] font-700 text-[#2E3338]">
@@ -301,7 +279,7 @@ export default function TutorialList() {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
             {filteredTutorials.map(tutorial => (
               <TutorialCard
                 key={tutorial.id}

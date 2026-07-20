@@ -7,6 +7,7 @@ import PhoenixImage from '@/assets/images/phoenix.png';
 import ArenaBannerImage from '@/assets/images/banner.svg';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
+import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 
 const notices = [
   ['공지사항', '2026년 6월의 드림핵 노트', '2026.07.01.'],
@@ -42,6 +43,13 @@ const dashboardBanners = [
     title: 'ARENA',
     caption: 'AI 보안 실습 플랫폼',
     image: ArenaBannerImage,
+  },
+  {
+    id: 'llm-safety',
+    type: 'llm-safety',
+    title: 'LLM Safety Challenge',
+    caption: 'Coming Soon',
+    image: LlmSafetyBannerImage,
   },
   {
     id: 'tutorial',
@@ -91,10 +99,18 @@ function DashboardBannerSlider() {
                     onClick={() => navigate('/tutorial')}
                     className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
                   >
-                    튜토리얼 문제 풀기
+                    지금 바로 확인하기
                     <ArrowRight className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1 sm:h-8 sm:w-8" strokeWidth={1.8} />
                   </button>
                 </div>
+              )}
+              {banner.type === 'llm-safety' && (
+                <button
+                  type="button"
+                  aria-label="LLM Safety Challenge 배너"
+                  onClick={() => navigate('/kategorie')}
+                  className="absolute inset-0 cursor-pointer"
+                />
               )}
               {banner.type === 'challenge' && (
                 <>

@@ -95,6 +95,7 @@ export default function AppRouter() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/education" element={<Education />} />
+        <Route path="/education/:articleId" element={<Education />} />
         <Route path="/tutorial" element={<TutorialList />} />
         <Route path="/tutorial/:tutorialId" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />

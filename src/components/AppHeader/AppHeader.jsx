@@ -8,11 +8,11 @@ import UserIcon from '@/assets/icons/user.svg';
 import { useAuthStore } from '@/stores/authStore';
 
 const navItems = [
-  { label: '대시보드', path: '/dashboard', match: ['/dashboard'] },
+  { label: '홈', path: '/dashboard', match: ['/dashboard'] },
+  { label: '학습', path: '/education', match: ['/education'] },
   { label: '튜토리얼', path: '/tutorial', match: ['/tutorial'] },
   { label: '챌린지', path: '/kategorie', match: ['/kategorie', '/challenge'] },
   { label: '랭킹', path: '/leaderboard', match: ['/leaderboard'] },
-  { label: '교육', path: '/education', match: ['/education'] },
 ];
 
 const isNavItemActive = (item, pathname) =>
