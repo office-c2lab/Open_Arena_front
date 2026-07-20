@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ArrowRight, Check, ChevronDown, Clock3, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
@@ -199,9 +199,9 @@ const CATEGORIES = [
 ];
 
 const FILTER_GROUPS = [
-  { title: '카테고리', items: CATEGORIES },
-  { title: 'Tier', items: ['Tier 0', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4'] },
-  { title: '난이도', items: ['Beginner', 'Easy', 'Medium', 'Hard'] },
+  { key: 'category', title: '카테고리', items: CATEGORIES },
+  { key: 'tier', title: 'Tier', items: ['Tier 0', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4'] },
+  { key: 'difficulty', title: '난이도', items: ['Beginner', 'Easy', 'Medium', 'Hard'] },
 ];
 
 const DEFAULT_FILTERS = {
@@ -294,86 +294,107 @@ function PathCard({ path, onClick }) {
   );
 }
 
-function FilterSelect({ label, value, options, onChange }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const selectedLabel = value || `${label} 전체`;
-  const allOptions = [{ label: `${label} 전체`, value: '' }, ...options.map(option => ({ label: option, value: option }))];
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handlePointerDown = event => {
-      if (!dropdownRef.current?.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    window.addEventListener('pointerdown', handlePointerDown);
-
-    return () => window.removeEventListener('pointerdown', handlePointerDown);
-  }, [isOpen]);
+function FilterColumn({ title, value, options, onChange }) {
+  const allOptions = [{ label: `${title} 전체`, value: '' }, ...options.map(option => ({ label: option, value: option }))];
 
   return (
-    <div ref={dropdownRef} className="relative min-w-[144px]">
-      <button
-        type="button"
-        onClick={() => setIsOpen(current => !current)}
-        className={`flex h-9 w-full cursor-pointer items-center justify-between gap-2 rounded-[3px] border bg-white px-3 text-left text-[12px] font-800 outline-none transition ${
-          isOpen
-            ? 'border-[#FFB8BE] text-[#FF4854] shadow-[0_8px_18px_rgba(255,72,84,0.08)]'
-            : 'border-[#D8DDE4] text-[#566170] hover:border-[#FFB8BE] hover:text-[#FF4854]'
-        }`}
-      >
-        <span className="truncate">{selectedLabel}</span>
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 transition ${isOpen ? 'rotate-180 text-[#FF4854]' : 'text-[#A4ADB8]'}`}
-          strokeWidth={2.2}
-        />
-      </button>
+    <div className="min-w-0">
+      <p className="mb-3 text-[13px] font-900 text-[#2E3338]">{title}</p>
+      <div className="flex flex-col gap-2">
+        {allOptions.map(option => {
+          const isSelected = value === option.value;
 
-      {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[190px] overflow-hidden rounded-[6px] border border-[#E1E6EE] bg-white p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.14)]">
-          {allOptions.map(option => {
-            const isSelected = value === option.value;
-
-            return (
-              <button
-                key={option.label}
-                type="button"
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-                className={`flex h-9 w-full cursor-pointer items-center justify-between gap-3 rounded-[4px] px-3 text-left text-[12px] font-800 transition ${
+          return (
+            <button
+              key={option.label}
+              type="button"
+              onClick={() => onChange(option.value)}
+              className={`group flex h-9 w-full cursor-pointer items-center gap-2 rounded-[3px] border px-3 text-left text-[12px] font-800 transition ${
+                isSelected
+                  ? 'border-[#FF4854] bg-[#FFF3F4] text-[#151A21]'
+                  : 'border-[#D8DDE4] bg-white text-[#596575] hover:border-[#FFB8BE] hover:text-[#FF4854]'
+              }`}
+            >
+              <span
+                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px] border transition ${
                   isSelected
-                    ? 'bg-[#FFF0F2] text-[#FF4854]'
-                    : 'text-[#596575] hover:bg-[#F7F8FA] hover:text-[#FF4854]'
+                    ? 'border-[#FF4854] bg-[#FF4854]'
+                    : 'border-[#C9D0DA] bg-white group-hover:border-[#FF4854]'
                 }`}
               >
-                <span className="truncate">{option.label}</span>
-                {isSelected ? <Check className="h-4 w-4 shrink-0 text-[#FF4854]" strokeWidth={2.4} /> : null}
-              </button>
-            );
-          })}
-        </div>
-      ) : null}
+                {isSelected ? <Check className="h-3 w-3 text-white" strokeWidth={3} /> : null}
+              </span>
+              <span>{option.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function SeasonColumn({ value, options, onChange }) {
+  const allOptions = [{ label: '전체 시즌', value: '' }, ...options.map(option => ({ label: option, value: option }))];
+
+  return (
+    <div className="min-w-0">
+      <p className="mb-3 text-[13px] font-900 text-[#2E3338]">시즌</p>
+      <div className="flex flex-col gap-2">
+        {allOptions.map(option => {
+          const isSelected = value === option.value;
+
+          return (
+            <button
+              key={option.label}
+              type="button"
+              onClick={() => onChange(option.value)}
+              className={`group flex h-9 w-full cursor-pointer items-center gap-2 rounded-[3px] border px-3 text-left text-[12px] font-800 transition ${
+                isSelected
+                  ? 'border-[#FF4854] bg-[#FFF3F4] text-[#151A21]'
+                  : 'border-[#D8DDE4] bg-white text-[#596575] hover:border-[#FFB8BE] hover:text-[#FF4854]'
+              }`}
+            >
+              <span
+                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px] border transition ${
+                  isSelected
+                    ? 'border-[#FF4854] bg-[#FF4854]'
+                    : 'border-[#C9D0DA] bg-white group-hover:border-[#FF4854]'
+                }`}
+              >
+                {isSelected ? <Check className="h-3 w-3 text-white" strokeWidth={3} /> : null}
+              </span>
+              <span>{option.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
 const ChallengeSection = () => {
   const navigate = useNavigate();
-  const [activeSeason, setActiveSeason] = useState(SEASONS[0]);
+  const [activeSeason, setActiveSeason] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const filterSummary = useMemo(
+    () =>
+      [
+        activeSeason || '전체 시즌',
+        filters.category || '카테고리 전체',
+        filters.tier || 'Tier 전체',
+        filters.difficulty || '난이도 전체',
+      ].join(' · '),
+    [activeSeason, filters]
+  );
 
   const filteredPaths = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
 
     return PATHS.filter(path =>
-      path.season === activeSeason &&
+      (!activeSeason || path.season === activeSeason) &&
       (!filters.category || path.category === filters.category) &&
       (!filters.tier || path.tier === filters.tier) &&
       (!filters.difficulty || path.difficulty === filters.difficulty) &&
@@ -422,29 +443,64 @@ const ChallengeSection = () => {
         </div>
       </section>
 
-      <div id="challenge-path-section" className="mb-7 flex items-center border-b border-[#E6E9EE] pb-4">
-        {SEASONS.map((season, index) => {
-          const isActive = activeSeason === season;
+      <div
+        id="challenge-path-section"
+        className={`border-b border-[#E6E9EE] ${isFilterOpen ? 'mb-7 pb-5' : 'mb-5 pb-3'}`}
+      >
+        <div className={`${isFilterOpen ? 'mb-5' : 'mb-0'} flex items-start justify-between gap-3`}>
+          <button
+            type="button"
+            className="cursor-default border-b-2 border-[#FF4854] pb-3 text-[18px] font-700 text-black"
+          >
+            {activeSeason || '전체 시즌'}
+          </button>
+          <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
+            {!isFilterOpen ? (
+              <p className="min-w-0 truncate text-right text-[12px] font-700 text-[#7A8491]">
+                {filterSummary}
+              </p>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => setIsFilterOpen(current => !current)}
+              className={`flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-[3px] border px-3 text-[12px] font-900 transition ${
+                isFilterOpen
+                  ? 'border-[#FFB8BE] text-[#FF4854]'
+                  : 'border-[#D8DDE4] text-[#596575] hover:border-[#FFB8BE] hover:text-[#FF4854]'
+              }`}
+            >
+              {isFilterOpen ? '필터 접기' : '필터 펼치기'}
+              <ChevronDown className={`h-4 w-4 transition ${isFilterOpen ? 'rotate-180' : ''}`} strokeWidth={2.4} />
+            </button>
+          </div>
+        </div>
 
-          return (
-            <React.Fragment key={season}>
+        {isFilterOpen ? (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <SeasonColumn value={activeSeason} options={SEASONS} onChange={setActiveSeason} />
+              {FILTER_GROUPS.map(group => (
+                <FilterColumn
+                  key={group.key}
+                  title={group.title}
+                  value={filters[group.key]}
+                  options={group.items}
+                  onChange={value => updateFilter(group.key, value)}
+                />
+              ))}
+            </div>
+
+            <div className="mt-4 flex justify-end">
               <button
                 type="button"
-                onClick={() => setActiveSeason(season)}
-                className={`cursor-pointer border-b-2 pb-3 text-[18px] font-700 transition-colors ${
-                  isActive
-                    ? 'border-[#FF4854] text-black'
-                    : 'border-transparent text-[#9BA4B0] hover:text-[#FF4854]'
-                }`}
+                onClick={resetFilters}
+                className="flex h-9 min-w-[92px] cursor-pointer items-center justify-center rounded-[3px] border border-[#D8DDE4] bg-white px-3 text-[12px] font-800 text-[#98A1AD] transition hover:border-[#FF4854] hover:text-[#FF4854]"
               >
-                {season}
+                초기화
               </button>
-              {index < SEASONS.length - 1 && (
-                <span className="px-4 pb-3 text-[18px] font-500 text-[#C7CED8]">|</span>
-              )}
-            </React.Fragment>
-          );
-        })}
+            </div>
+          </>
+        ) : null}
       </div>
 
       <form onSubmit={handleSearch} className="mb-8 flex gap-3">
@@ -468,37 +524,10 @@ const ChallengeSection = () => {
 
       <div>
         <section className="min-w-0">
-          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-5 flex items-center justify-between">
             <h1 className="text-[16px] font-700 text-[#2E3338]">
-              {activeSeason} <span className="text-[#FF4854]">{filteredPaths.length}</span>
+              {activeSeason || '전체 시즌'} <span className="text-[#FF4854]">{filteredPaths.length}</span>
             </h1>
-            <div className="flex flex-wrap items-center gap-2">
-              <FilterSelect
-                label="카테고리"
-                value={filters.category}
-                options={FILTER_GROUPS[0].items}
-                onChange={value => updateFilter('category', value)}
-              />
-              <FilterSelect
-                label="Tier"
-                value={filters.tier}
-                options={FILTER_GROUPS[1].items}
-                onChange={value => updateFilter('tier', value)}
-              />
-              <FilterSelect
-                label="난이도"
-                value={filters.difficulty}
-                options={FILTER_GROUPS[2].items}
-                onChange={value => updateFilter('difficulty', value)}
-              />
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="h-9 cursor-pointer rounded-[3px] border border-[#D8DDE4] bg-white px-3 text-[12px] font-800 text-[#98A1AD] transition hover:border-[#FF4854] hover:text-[#FF4854]"
-              >
-                초기화
-              </button>
-            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
