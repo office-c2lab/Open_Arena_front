@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Bookmark,
   Check,
@@ -128,6 +129,8 @@ function InfoSection({ section }) {
 }
 
 function PurchasePanel() {
+  const navigate = useNavigate();
+  const { problemId } = useParams();
   const progressItems = [
     { icon: TableOfContents, label: '강의', value: '0 / 33', locked: 24, extra: '제외' },
     { icon: Flag, label: '워게임', value: '0 / 21', locked: 15 },
@@ -169,8 +172,12 @@ function PurchasePanel() {
             </div>
           </label>
 
-          <button type="button" className="h-12 w-full cursor-pointer rounded-[4px] bg-[#FF4854] text-[15px] font-800 text-white transition hover:bg-[#E73541]">
-            구독하고 수강하기
+          <button
+            type="button"
+            onClick={() => navigate(`/challenge/${problemId}/play`)}
+            className="h-12 w-full cursor-pointer rounded-[4px] bg-[#FF4854] text-[15px] font-800 text-white transition hover:bg-[#E73541]"
+          >
+            챌린지 도전하기
           </button>
           <button type="button" className="h-10 w-full cursor-pointer rounded-[4px] border border-[#DDE3EA] bg-white text-[14px] font-700 text-[#2E3338] transition hover:border-[#FF4854] hover:text-[#FF4854]">
             무료 Unit 체험하기

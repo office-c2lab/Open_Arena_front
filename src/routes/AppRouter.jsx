@@ -19,6 +19,7 @@ import Dashboard from '../pages/Dashboard/Dashboard';
 import Tutorial from '../pages/Tutorial/Tutorial';
 import Kategorie from '../pages/Kategorie/Kategorie';
 import Challenge from '../pages/Challenge/ui/Challenge';
+import ChallengePlay from '../pages/Challenge/ui/ChallengePlay';
 import ChatTestPage from '../pages/ChatTestPage';
 import AdminLeaderboard from '../pages/admin/AdminLeaderboard';
 import LeaderboardMatrix from '../pages/admin/LeaderboardMatrix';
@@ -101,6 +102,7 @@ export default function AppRouter() {
       <Route
         element={<ChallengeLayout />}
       >
+        <Route path="/challenge/:problemId/play" element={<ChallengePlay />} />
         <Route path="/challenge/:problemId" element={<Challenge />} />
       </Route>
       {/* ⭐ 추가된 403 페이지 */}
