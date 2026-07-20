@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ArrowRight,
   Bookmark,
   Check,
   CircleHelp,
@@ -14,7 +13,6 @@ import {
   Star,
   TableOfContents,
 } from 'lucide-react';
-import TutorialImage from '@/assets/images/tutorial.png';
 
 const tutorial = {
   title: 'Prompt Injection Basics',
@@ -244,30 +242,7 @@ function SidePanel() {
 export default function Tutorial() {
   return (
     <div className="w-full bg-white pb-16">
-      <section className="relative mb-8 h-[220px] overflow-hidden rounded-[8px] bg-black md:h-[300px]">
-        <img src={TutorialImage} alt="" className="h-full w-full object-cover object-center" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
-        <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
-          <h1 className="max-w-[680px] text-[24px] font-800 leading-tight text-white sm:text-[34px] md:text-[46px]">
-            튜토리얼로 <span className="text-[#FF4854]">ARENA</span>를 시작하세요
-          </h1>
-          <p className="mt-3 max-w-[560px] text-[14px] font-600 leading-relaxed text-white/72 sm:text-[17px] md:mt-4 md:text-[22px]">
-            기초 개념부터 실전 흐름까지,
-            <br />
-            단계별 학습으로 보안 감각을 익혀보세요.
-          </p>
-          <button
-            type="button"
-            onClick={() => document.getElementById('tutorial-detail-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-800 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
-          >
-            지금 바로 확인하기
-            <ArrowRight className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1 sm:h-8 sm:w-8" strokeWidth={1.8} />
-          </button>
-        </div>
-      </section>
-
-      <section id="tutorial-detail-section" className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
+      <section className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
         <PathPreview />
         <div className="pt-1">
           <h1 className="text-[28px] font-900 leading-tight text-black">{tutorial.title}</h1>

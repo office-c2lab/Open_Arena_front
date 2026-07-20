@@ -6,8 +6,6 @@ import PhoenixImage from '@/assets/images/phoenix.png';
 import ArenaBannerImage from '@/assets/images/banner.svg';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 import TutorialBannerImage from '@/assets/images/tutorial.png';
-import ChallengeImage from '@/assets/images/challenge.png';
-import ComingSoonImage from '@/assets/images/ARENA_Coming_Soon.png';
 
 const notices = [
   ['공지사항', '2026년 6월의 드림핵 노트', '2026.07.01.'],
@@ -25,29 +23,35 @@ const missions = [
 
 const dashboardBanners = [
   {
+    id: 'challenge',
+    type: 'challenge',
     title: '지금 바로 Red Teaming에 도전하세요',
-    caption: '실전형 보안 역량을 강화하세요.',
+    caption: (
+      <>
+        AI 레드팀 평가로 실제 공격 시나리오를 경험하고,
+        <br />
+        실전형 보안 역량을 강화하세요.
+      </>
+    ),
     image: ChallengeBannerImage,
   },
   {
+    id: 'arena',
+    type: 'arena',
     title: 'ARENA',
     caption: 'AI 보안 실습 플랫폼',
     image: ArenaBannerImage,
   },
   {
-    title: '튜토리얼',
-    caption: '기초부터 차근차근 시작하기',
+    id: 'tutorial',
+    type: 'tutorial',
+    title: (
+      <>
+        튜토리얼로 <span className="text-[#FF4854]">ARENA</span>를 시작하세요
+      </>
+    ),
+    caption: '기초 개념부터 실전 흐름까지, 단계별 학습으로 보안 감각을 익혀보세요.',
     image: TutorialBannerImage,
-  },
-  {
-    title: '챌린지',
-    caption: 'Path 기반 실전 문제',
-    image: ChallengeImage,
-  },
-  {
-    title: 'Coming Soon',
-    caption: '새로운 대회를 준비 중입니다.',
-    image: ComingSoonImage,
   },
 ];
 
@@ -63,36 +67,40 @@ function DashboardBannerSlider() {
   }, []);
 
   return (
-    <section className="relative h-[220px] overflow-hidden rounded-[8px] bg-black md:h-[300px] lg:col-span-2">
+    <section className="relative h-[220px] w-full overflow-hidden bg-black md:h-[320px]">
       <div
         className="flex h-full transition-transform duration-700 ease-out"
         style={{ transform: `translateX(-${activeBannerIndex * 100}%)` }}
       >
-        {dashboardBanners.map((banner, index) => (
-          <article key={banner.title} className="relative h-full w-full shrink-0">
-            <img src={banner.image} alt="" className="h-full w-full object-cover object-center" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
-            <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
-              <h1 className="max-w-[720px] text-[24px] font-900 leading-tight text-white sm:text-[34px] md:text-[46px]">
-                {banner.title.includes('Red Teaming') ? (
-                  <>
-                    지금 바로 <span className="text-[#FF4854]">Red Teaming</span>에 도전하세요
-                  </>
-                ) : (
-                  banner.title
-                )}
-              </h1>
-              <p className="mt-3 max-w-[560px] text-[14px] font-700 leading-relaxed text-white/72 sm:text-[17px] md:mt-4 md:text-[22px]">
-                {banner.caption}
-              </p>
-              {index === 0 && (
-                <button
-                  type="button"
-                  className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
-                >
-                  자세히 보기
-                  <ArrowRight className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1 sm:h-8 sm:w-8" strokeWidth={1.8} />
-                </button>
+        {dashboardBanners.map(banner => (
+          <article key={banner.id} className="relative h-full w-full shrink-0">
+            <div className="relative mx-auto h-full w-full max-w-[1200px] overflow-hidden">
+              <img src={banner.image} alt="" className="h-full w-full object-cover object-center" />
+              {banner.type !== 'arena' && (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
+                  <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
+                    <h1 className="max-w-full whitespace-nowrap text-[18px] font-900 leading-tight tracking-normal text-white sm:text-[26px] md:text-[34px] lg:text-[42px]">
+                      {banner.type === 'challenge' ? (
+                        <>
+                          지금 바로 <span className="text-[#FF4854]">Red Teaming</span>에 도전하세요
+                        </>
+                      ) : (
+                        banner.title
+                      )}
+                    </h1>
+                    <p className="mt-3 max-w-[620px] text-[14px] font-700 leading-relaxed text-white/72 sm:text-[17px] md:mt-4 md:text-[22px]">
+                      {banner.caption}
+                    </p>
+                    <button
+                      type="button"
+                      className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
+                    >
+                      지금 바로 확인하기
+                      <ArrowRight className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1 sm:h-8 sm:w-8" strokeWidth={1.8} />
+                    </button>
+                  </div>
+                </>
               )}
             </div>
           </article>
@@ -102,7 +110,7 @@ function DashboardBannerSlider() {
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
         {dashboardBanners.map((banner, index) => (
           <button
-            key={banner.title}
+            key={banner.id}
             type="button"
             aria-label={`${index + 1}번째 배너 보기`}
             onClick={() => setActiveBannerIndex(index)}
@@ -280,34 +288,36 @@ function NewsSection() {
 
 export default function Dashboard() {
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] gap-10 bg-white py-2 lg:grid-cols-[370px_minmax(0,1fr)]">
+    <div className="w-full bg-white">
       <DashboardBannerSlider />
 
-      <aside className="space-y-5">
-        <ProfileCard />
-        <button type="button" className="h-11 w-full cursor-pointer rounded-[3px] bg-[#FF4854] text-[15px] font-900 text-white transition hover:bg-[#E73541]">
-          프로필 커스터
-        </button>
-        <button type="button" className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[3px] border border-[#DDE3EA] bg-white text-[13px] font-800 text-[#596575] transition hover:border-[#FF4854] hover:text-[#FF4854]">
-          <ArrowRight className="h-4 w-4" />
-          마이페이지로 이동
-        </button>
-        <MissionCard />
-        <PromoCard type="gift" />
-        <PromoCard type="report" />
-        <div className="grid grid-cols-4 gap-2">
-          {[Twitter, Instagram, Building2, MessageCircle].map((Icon, index) => (
-            <button key={index} type="button" className="flex h-9 cursor-pointer items-center justify-center rounded-[3px] border border-[#DDE3EA] text-[#A0A8B3] transition hover:border-[#FF4854] hover:text-[#FF4854]">
-              <Icon className="h-4 w-4" />
-            </button>
-          ))}
-        </div>
-      </aside>
+      <div className="mx-auto grid w-full max-w-[1200px] gap-10 bg-white py-10 lg:grid-cols-[370px_minmax(0,1fr)]">
+        <aside className="space-y-5">
+          <ProfileCard />
+          <button type="button" className="h-11 w-full cursor-pointer rounded-[3px] bg-[#FF4854] text-[15px] font-900 text-white transition hover:bg-[#E73541]">
+            프로필 커스터
+          </button>
+          <button type="button" className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[3px] border border-[#DDE3EA] bg-white text-[13px] font-800 text-[#596575] transition hover:border-[#FF4854] hover:text-[#FF4854]">
+            <ArrowRight className="h-4 w-4" />
+            마이페이지로 이동
+          </button>
+          <MissionCard />
+          <PromoCard type="gift" />
+          <PromoCard type="report" />
+          <div className="grid grid-cols-4 gap-2">
+            {[Twitter, Instagram, Building2, MessageCircle].map((Icon, index) => (
+              <button key={index} type="button" className="flex h-9 cursor-pointer items-center justify-center rounded-[3px] border border-[#DDE3EA] text-[#A0A8B3] transition hover:border-[#FF4854] hover:text-[#FF4854]">
+                <Icon className="h-4 w-4" />
+              </button>
+            ))}
+          </div>
+        </aside>
 
-      <main className="min-w-0 pt-1">
-        <Timeline />
-        <NewsSection />
-      </main>
+        <main className="min-w-0 pt-1">
+          <Timeline />
+          <NewsSection />
+        </main>
+      </div>
     </div>
   );
 }

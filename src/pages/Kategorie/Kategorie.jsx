@@ -1,8 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowRight, Bookmark, Clock3, Search, Star } from 'lucide-react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Bookmark, Clock3, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ArenaBannerImage from '@/assets/images/banner.svg';
-import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 
 const PATHS = [
   {
@@ -346,16 +344,7 @@ function FilterGroup({ title, items }) {
 const ChallengeSection = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('Path');
-  const [activeBannerIndex, setActiveBannerIndex] = useState(0);
   const [keyword, setKeyword] = useState('');
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveBannerIndex(current => (current + 1) % 2);
-    }, 5000);
-
-    return () => window.clearInterval(timer);
-  }, []);
 
   const filteredPaths = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
@@ -378,62 +367,6 @@ const ChallengeSection = () => {
 
   return (
     <div className="w-full bg-white pb-14">
-      <div className="relative mb-8 overflow-hidden rounded-[8px] bg-black">
-        <div
-          className="flex transition-transform duration-700 ease-out"
-          style={{ transform: `translateX(-${activeBannerIndex * 100}%)` }}
-        >
-          <section className="relative h-[220px] w-full shrink-0 md:h-[300px]">
-            <img
-              src={ChallengeBannerImage}
-              alt=""
-              className="h-full w-full object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/34 to-transparent" />
-            <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
-              <h1 className="max-w-[760px] text-[24px] font-800 leading-tight text-white sm:text-[34px] md:text-[46px]">
-                지금 바로 <span className="text-[#FF1F2D]">Red Teaming</span>에 도전하세요
-              </h1>
-              <p className="mt-3 max-w-[620px] text-[14px] font-600 leading-relaxed text-white/72 sm:text-[17px] md:mt-4 md:text-[22px]">
-                AI 레드팀 평가로 실제 공격 시나리오를 경험하고,
-                <br />
-                실전형 보안 역량을 강화하세요.
-              </p>
-              <button
-                type="button"
-                onClick={() => document.getElementById('challenge-path-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-800 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
-              >
-                지금 바로 확인하기
-                <ArrowRight className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1 sm:h-8 sm:w-8" strokeWidth={1.8} />
-              </button>
-            </div>
-          </section>
-
-          <section className="h-[220px] w-full shrink-0 bg-[#11002E] md:h-[300px]">
-            <img
-              src={ArenaBannerImage}
-              alt="ARENA 배너"
-              className="h-full w-full object-cover object-center"
-            />
-          </section>
-        </div>
-
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-          {[0, 1].map(index => (
-            <button
-              key={index}
-              type="button"
-              aria-label={`${index + 1}번째 배너 보기`}
-              onClick={() => setActiveBannerIndex(index)}
-              className={`h-2.5 cursor-pointer rounded-full transition-all ${
-                activeBannerIndex === index ? 'w-8 bg-[#FF4854]' : 'w-2.5 bg-white/55 hover:bg-white'
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
       <div id="challenge-path-section" className="mb-7 flex items-center gap-3 border-b border-[#E6E9EE] pb-4">
         <button
           type="button"
