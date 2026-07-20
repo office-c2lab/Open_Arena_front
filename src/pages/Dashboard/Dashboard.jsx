@@ -1,252 +1,313 @@
-// src/pages/Dashboard/Dashboard.jsx
-import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Banner from '@/components/Banner/Banner';
-import Skeleton from '@/components/Skeleton/Skeleton';
-import { useAuthStore } from '@/stores/authStore';
-import { useTeamDashboardQuery } from '@/hooks/useTeamDashboardQuery';
+import React, { useEffect, useState } from 'react';
+import { ArrowRight, BookOpen, Building2, Instagram, MessageCircle, ShieldCheck, Twitter } from 'lucide-react';
+import UserIcon from '@/assets/icons/user.svg';
+import TigerImage from '@/assets/images/tiger.png';
+import PhoenixImage from '@/assets/images/phoenix.png';
+import ArenaBannerImage from '@/assets/images/banner.svg';
+import ChallengeBannerImage from '@/assets/images/chalbenner.png';
+import TutorialBannerImage from '@/assets/images/tutorial.png';
+import ChallengeImage from '@/assets/images/challenge.png';
+import ComingSoonImage from '@/assets/images/ARENA_Coming_Soon.png';
 
-const CATEGORY_OPTIONS = ['전체', '법률', '군사', '사회', '일반'];
-const GLASS_CARD_CLASS =
-  'border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md';
+const notices = [
+  ['공지사항', '2026년 6월의 드림핵 노트', '2026.07.01.'],
+  ['공지사항', '새로워진 학습 메뉴, 이렇게 달라졌어요', '2026.06.08.'],
+  ['공지사항', '2026년 5월의 드림핵 노트', '2026.06.05.'],
+];
 
-function DashboardCard({
-  title,
-  value,
-  unit,
-  description,
-  isLoading,
-  unitColor = '#FF4854',
-  isPrivate = false,
-}) {
+const missions = [
+  { title: '프레시맨', state: '미완료', desc: '강의 1개 수강 완료' },
+  { title: '스포트맨', state: '미완료', desc: '강의 10개 수강 완료' },
+  { title: '비기너즈 졸업', state: '미완료', desc: '1개 이상의 비기너즈 분야의 Path 수강 완료' },
+  { title: '스쿼드', state: '미완료', desc: '워게임 15문제 해결' },
+  { title: '비기너즈 입문', state: '완료', desc: '1개 이상의 비기너즈 분야의 Path 수강 시작' },
+];
+
+const dashboardBanners = [
+  {
+    title: '지금 바로 Red Teaming에 도전하세요',
+    caption: '실전형 보안 역량을 강화하세요.',
+    image: ChallengeBannerImage,
+  },
+  {
+    title: 'ARENA',
+    caption: 'AI 보안 실습 플랫폼',
+    image: ArenaBannerImage,
+  },
+  {
+    title: '튜토리얼',
+    caption: '기초부터 차근차근 시작하기',
+    image: TutorialBannerImage,
+  },
+  {
+    title: '챌린지',
+    caption: 'Path 기반 실전 문제',
+    image: ChallengeImage,
+  },
+  {
+    title: 'Coming Soon',
+    caption: '새로운 대회를 준비 중입니다.',
+    image: ComingSoonImage,
+  },
+];
+
+function DashboardBannerSlider() {
+  const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveBannerIndex(current => (current + 1) % dashboardBanners.length);
+    }, 5000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   return (
-    <section
-      className={`relative min-h-[150px] overflow-hidden rounded-[20px] p-6 transition-all duration-200 hover:-translate-y-[1px] hover:bg-white/64 ${GLASS_CARD_CLASS}`}
-    >
-      <p className="relative body-large font-700 text-black">{title}</p>
-      {isLoading ? (
-        <Skeleton className="relative mt-5 h-9 w-28" />
-      ) : (
-        <div className="relative mt-5 flex flex-wrap items-baseline gap-2">
-          <span
-            className={
-              isPrivate
-                ? 'text-[22px] font-700 leading-none text-[#8A93A5]'
-                : 'heading-1 font-700 leading-none text-[#FF4854]'
-            }
-          >
-            {value}
-          </span>
-          {unit ? (
-            <span className="heading-3 font-700 leading-none" style={{ color: unitColor }}>
-              {unit}
-            </span>
-          ) : null}
-        </div>
-      )}
-      <p className="relative mt-4 body-medium font-500 text-[#6B6B6B]">{description}</p>
+    <section className="relative h-[220px] overflow-hidden rounded-[8px] bg-black md:h-[300px] lg:col-span-2">
+      <div
+        className="flex h-full transition-transform duration-700 ease-out"
+        style={{ transform: `translateX(-${activeBannerIndex * 100}%)` }}
+      >
+        {dashboardBanners.map((banner, index) => (
+          <article key={banner.title} className="relative h-full w-full shrink-0">
+            <img src={banner.image} alt="" className="h-full w-full object-cover object-center" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
+            <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
+              <h1 className="max-w-[720px] text-[24px] font-900 leading-tight text-white sm:text-[34px] md:text-[46px]">
+                {banner.title.includes('Red Teaming') ? (
+                  <>
+                    지금 바로 <span className="text-[#FF4854]">Red Teaming</span>에 도전하세요
+                  </>
+                ) : (
+                  banner.title
+                )}
+              </h1>
+              <p className="mt-3 max-w-[560px] text-[14px] font-700 leading-relaxed text-white/72 sm:text-[17px] md:mt-4 md:text-[22px]">
+                {banner.caption}
+              </p>
+              {index === 0 && (
+                <button
+                  type="button"
+                  className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
+                >
+                  자세히 보기
+                  <ArrowRight className="h-6 w-6 transition-transform duration-200 group-hover:translate-x-1 sm:h-8 sm:w-8" strokeWidth={1.8} />
+                </button>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+        {dashboardBanners.map((banner, index) => (
+          <button
+            key={banner.title}
+            type="button"
+            aria-label={`${index + 1}번째 배너 보기`}
+            onClick={() => setActiveBannerIndex(index)}
+            className={`h-2.5 cursor-pointer rounded-full transition-all ${
+              activeBannerIndex === index ? 'w-8 bg-[#FF4854]' : 'w-2.5 bg-white/55 hover:bg-white'
+            }`}
+          />
+        ))}
+      </div>
     </section>
   );
 }
 
-function ProgressBar({ label, solved, total }) {
-  const percent = total > 0 ? Math.min((solved / total) * 100, 100) : 0;
-
+function ProfileCard() {
   return (
-    <div className="min-w-0">
-      <div className="mb-3 flex items-center justify-between body-medium font-700 text-black">
-        <span>{label}</span>
-        <span className="font-700">
-          <span className="text-[#FF4854]">{solved}</span>
-          <span className="text-[#6B6B6B]"> / {total}</span>
-        </span>
+    <section className="overflow-hidden rounded-[3px] border border-[#DDE3EA] bg-white">
+      <div className="relative h-[92px] bg-[#FAFBFC]">
+        <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20px_20px,#EEF1F5_8px,transparent_9px)] [background-size:42px_42px]" />
       </div>
-      <div className="h-[5px] overflow-hidden rounded-full bg-[#E5E7EB]">
-        <div className="h-full rounded-full bg-[#FF4854]" style={{ width: `${percent}%` }} />
-      </div>
-    </div>
-  );
-}
-
-function ProblemStatusBadge({ solved }) {
-  return (
-    <span className={`body-large font-700 ${solved ? 'text-[#00B654]' : 'text-[#6B6B6B]'}`}>
-      {solved ? '완료' : '미해결'}
-    </span>
-  );
-}
-
-function ChallengeCard({ problem, index, onClick }) {
-  const title = problem.title || `챌린지 ${index + 1}`;
-  const solved = Boolean(problem.solved);
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`relative flex h-[132px] w-full cursor-pointer flex-col overflow-hidden rounded-[18px] px-6 pb-6 pt-7 text-left backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-white/64 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_22px_rgba(15,23,42,0.11)] ${
-        solved
-          ? 'border border-[#86EFAC]/70 bg-[linear-gradient(135deg,rgba(0,182,84,0.16)_0%,rgba(255,255,255,0.58)_56%,rgba(0,182,84,0.08)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_6px_18px_rgba(15,23,42,0.06)]'
-          : 'border border-[#D1D5DB]/70 bg-[linear-gradient(135deg,rgba(138,147,165,0.22)_0%,rgba(255,255,255,0.44)_56%,rgba(138,147,165,0.16)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.68),0_6px_18px_rgba(15,23,42,0.06)]'
-      }`}
-    >
-      {solved ? (
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,182,84,0.12)_0%,rgba(255,255,255,0)_42%)]" />
-      ) : null}
-      <h3 className="relative truncate text-[16px] leading-[22px] font-700 text-black 2xl:text-[20px] 2xl:leading-[26px]">
-        {title}
-      </h3>
-      <div className="relative mt-auto border-t border-white/60 pt-5">
-        <ProblemStatusBadge solved={solved} />
-      </div>
-    </button>
-  );
-}
-
-const Dashboard = () => {
-  const navigate = useNavigate();
-
-  const teamInfo = useAuthStore(state => state.teamInfo);
-  const teamId = teamInfo?.id || teamInfo?.team_id;
-
-  const { data, isLoading, isError } = useTeamDashboardQuery(teamId);
-
-  const solvedCount = data?.solved_count ?? 0;
-  const totalScore = data?.total_score ?? 0;
-  const problems = useMemo(() => data?.problems ?? [], [data?.problems]);
-  const totalProblems = data?.total_problem_count ?? problems.length ?? 0;
-  const currentRank = data?.rank ?? '-';
-  const nextRankGap =
-    data?.score_gap_to_next_rank ?? data?.next_rank_score_gap ?? data?.next_rank_gap ?? 0;
-  const showCompetitionStatus = data?.dashboard_summary_enabled !== false;
-  const hiddenSummaryValue = '비공개';
-
-  const categoryStats = useMemo(() => {
-    if (Array.isArray(data?.category_solve_status) && data.category_solve_status.length > 0) {
-      return data.category_solve_status.map(item => ({
-        label: item.category,
-        solved: item.solved_count ?? 0,
-        total: item.total_count ?? 0,
-      }));
-    }
-
-    const activeCategories = CATEGORY_OPTIONS.slice(1);
-    const buckets = activeCategories.map(label => ({ label, solved: 0, total: 0 }));
-
-    problems.forEach((problem, index) => {
-      const label = problem.category || activeCategories[index % activeCategories.length];
-      const bucket = buckets.find(item => item.label === label);
-      if (!bucket) return;
-      bucket.total += 1;
-      if (problem.solved) bucket.solved += 1;
-    });
-
-    if (problems.length === 0) {
-      return buckets.map(item => ({ ...item, total: 10 }));
-    }
-
-    return buckets.map(item => ({ ...item, total: item.total || 1 }));
-  }, [data?.category_solve_status, problems]);
-
-  if (isError)
-    return (
-      <div className="flex h-full items-center justify-center text-xl text-red-500">
-        데이터를 불러오는 중 오류가 발생했습니다.
-      </div>
-    );
-
-  return (
-    <div className="flex min-h-screen w-full flex-col items-center bg-white">
-      <div className="w-full space-y-6">
-        <Banner />
-
-        <section className="flex items-center gap-4 px-1">
-          <p className="heading-1 font-700 text-[#FF4854]">대회 현황</p>
-        </section>
-
-        <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <DashboardCard
-            title="현재 순위"
-            value={showCompetitionStatus ? currentRank : hiddenSummaryValue}
-            unit={showCompetitionStatus && currentRank !== '-' ? '위' : ''}
-            description="전체 참가자 중"
-            isLoading={isLoading}
-            isPrivate={!showCompetitionStatus}
-          />
-          <DashboardCard
-            title="해결한 챌린지"
-            value={showCompetitionStatus ? solvedCount : hiddenSummaryValue}
-            unit={showCompetitionStatus ? `/ ${totalProblems}` : ''}
-            unitColor="#6B6B6B"
-            description="해결한 챌린지 수"
-            isLoading={isLoading}
-            isPrivate={!showCompetitionStatus}
-          />
-          <DashboardCard
-            title="획득 점수"
-            value={showCompetitionStatus ? totalScore.toLocaleString() : hiddenSummaryValue}
-            unit={showCompetitionStatus ? '점' : ''}
-            description="누적 획득 점수"
-            isLoading={isLoading}
-            isPrivate={!showCompetitionStatus}
-          />
-          <DashboardCard
-            title="다음 순위까지"
-            value={showCompetitionStatus ? nextRankGap : hiddenSummaryValue}
-            unit={showCompetitionStatus ? '점' : ''}
-            description="앞 순위와의 점수 차이"
-            isLoading={isLoading}
-            isPrivate={!showCompetitionStatus}
-          />
-        </section>
-
-        <section className={`rounded-[24px] p-7 ${GLASS_CARD_CLASS}`}>
-          <div>
-            <p className="body-large font-700 text-black">카테고리별 해결 현황</p>
-            <div className="mt-6 grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-4">
-              {categoryStats.map(item => (
-                <ProgressBar key={item.label} {...item} />
-              ))}
+      <div className="px-5 pb-5">
+        <div className="-mt-10 flex items-end gap-3">
+          <div className="relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-[#E6EAF0] bg-[#F2F4F6]">
+            <img src={UserIcon} alt="" className="h-11 w-11 opacity-35 grayscale" />
+          </div>
+          <div className="pb-1">
+            <div className="flex items-center gap-1.5 text-[18px] font-900 text-[#3A414B]">
+              돌킹왕짱
+              <ShieldCheck className="h-4 w-4 fill-[#C3C8D0] text-white" />
             </div>
           </div>
-        </section>
+        </div>
 
-        <section className="space-y-5">
-          <h2 className="heading-1 font-700 text-[#FF4854]">챌린지 목록</h2>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {isLoading
-              ? [...Array(8)].map((_, index) => (
-                  <div
-                    key={`dashboard-problem-skeleton-${index}`}
-                    className={`h-[132px] rounded-[18px] p-5 ${GLASS_CARD_CLASS}`}
-                  >
-                    <Skeleton className="h-full w-full" />
-                  </div>
-                ))
-              : problems.map((problem, index) => (
-                  <ChallengeCard
-                    key={problem.id ?? `${problem.title}-${index}`}
-                    problem={problem}
-                    index={index}
-                    onClick={() => {
-                      if (!problem.id) return;
-                      navigate(`/challenge/${problem.id}`);
-                    }}
-                  />
-                ))}
+        <p className="mt-5 text-[13px] font-600 text-[#8A93A5]">아직 자기소개가 없습니다.</p>
+        <div className="mt-3 space-y-1 text-[12px] font-600 text-[#8A93A5]">
+          <p>대표 업적 없음</p>
+          <p>등록된 기관 없음</p>
+        </div>
 
-            {!isLoading && problems.length === 0 ? (
-              <div
-                className={`col-span-full rounded-[20px] p-10 text-center body-large font-500 text-[#6B6B6B] ${GLASS_CARD_CLASS}`}
-              >
-                등록된 챌린지가 없습니다.
-              </div>
-            ) : null}
-          </div>
-        </section>
+        <div className="mt-5 grid grid-cols-3 divide-x divide-[#DDE3EA] text-center">
+          {[
+            ['CTF', 0],
+            ['WARGAME', 0],
+            ['LEVEL', 1],
+          ].map(([label, value]) => (
+            <div key={label}>
+              <p className="text-[10px] font-800 text-[#A0A8B3]">{label}</p>
+              <p className="mt-1 text-[16px] font-900 text-[#4B5563]">{value}</p>
+            </div>
+          ))}
+        </div>
       </div>
+    </section>
+  );
+}
+
+function MissionCard() {
+  return (
+    <section>
+      <h2 className="mb-3 text-[14px] font-900 text-[#2E3338]">진행중인 미션</h2>
+      <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-4">
+        <div className="rounded-[3px] bg-[#F6F5FF] p-3">
+          <div className="flex items-center justify-between text-[11px] font-700 text-[#9AA3AF]">
+            <span>드림핵 모험가</span>
+            <span>900 XP</span>
+            <span>50 코인</span>
+          </div>
+          <div className="mt-3 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-[#DAD6FF]">
+              <BookOpen className="h-6 w-6 text-[#756CFF]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-900 text-[#2E3338]">드림핵 입문 여정</p>
+              <p className="mt-1 text-[11px] font-600 text-[#8A93A5]">미션 완료까지 4개 남았어요!</p>
+            </div>
+            <button type="button" className="cursor-pointer rounded-[4px] bg-[#756CFF] px-3 py-2 text-[11px] font-900 text-white">
+              자세히 보기
+            </button>
+          </div>
+          <div className="mt-4">
+            <div className="h-1.5 rounded-full bg-[#E3E1FF]">
+              <div className="h-full w-[20%] rounded-full bg-[#756CFF]" />
+            </div>
+            <p className="mt-1 text-right text-[11px] font-800 text-[#756CFF]">20%</p>
+          </div>
+        </div>
+
+        <div className="mt-3 space-y-2">
+          {missions.map(mission => (
+            <div key={mission.title} className="flex items-center justify-between rounded-[3px] border border-[#DDE3EA] px-3 py-3">
+              <div>
+                <p className="text-[13px] font-900 text-[#2E3338]">
+                  {mission.title} <span className="text-[11px] text-[#A0A8B3]">{mission.state}</span>
+                </p>
+                <p className="mt-1 text-[11px] font-600 text-[#9AA3AF]">{mission.desc}</p>
+              </div>
+              <button type="button" className="flex cursor-pointer items-center gap-1 text-[11px] font-900 text-[#756CFF]">
+                바로가기 <ArrowRight className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PromoCard({ type }) {
+  const isGift = type === 'gift';
+
+  return (
+    <section className="relative overflow-hidden rounded-[3px] bg-[#F6F7F9] p-5">
+      <div className="relative z-10">
+        <p className="text-[14px] font-900 leading-[22px] text-[#2E3338]">
+          {isGift ? '프로필 완성하고 코인 받기!' : '더 나은 드림핵 서비스를 위해'}
+          <br />
+          {isGift ? '가입 후 1달 동안만 참여 가능해요!' : '오류를 제보해 주세요!'}
+        </p>
+        <button type="button" className="mt-4 flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#756CFF]">
+          {isGift ? '참여하고 코인 받기' : '제보하고 코인 받기'} <ArrowRight className="h-3 w-3" />
+        </button>
+      </div>
+      {isGift ? (
+        <img src={TigerImage} alt="" className="absolute bottom-2 right-5 h-20 w-20 object-contain" />
+      ) : (
+        <img src={PhoenixImage} alt="" className="absolute bottom-2 right-5 h-20 w-20 object-contain opacity-80" />
+      )}
+    </section>
+  );
+}
+
+function Timeline() {
+  return (
+    <section>
+      <div className="mb-8 flex gap-8 border-b border-[#DDE3EA]">
+        <button type="button" className="cursor-pointer border-b-2 border-[#FF4854] pb-3 text-[14px] font-900 text-[#2E3338]">
+          타임라인
+        </button>
+        <button type="button" className="cursor-pointer border-b-2 border-transparent pb-3 text-[14px] font-900 text-[#7B8491] hover:text-[#FF4854]">
+          알림
+        </button>
+      </div>
+
+      <div className="space-y-5">
+        {notices.map(([category, title, date]) => (
+          <div key={title} className="grid grid-cols-[96px_58px_minmax(0,1fr)_110px] items-center gap-4 text-[14px]">
+            <span className="font-700 text-[#6B7280]">{category}</span>
+            <span className="w-fit rounded-[3px] border border-[#CCD6FF] bg-[#F5F7FF] px-3 py-1 text-[12px] font-800 text-[#6D75FF]">
+              new
+            </span>
+            <strong className="truncate font-900 text-black">{title}</strong>
+            <span className="text-right font-700 text-[#9AA3AF]">{date}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function NewsSection() {
+  return (
+    <section className="mt-10">
+      <h2 className="mb-5 text-[27px] font-900 text-[#2E3338]">드림핵 인기 소식</h2>
+      <div className="flex gap-6">
+        <div className="h-[230px] w-[180px] rounded-[3px] border border-[#DDE3EA] bg-white p-5">
+          <div className="h-5 w-20 rounded bg-[#E2E4E8]" />
+          <div className="mt-24 h-5 w-16 rounded bg-[#E2E4E8]" />
+          <div className="mt-3 h-4 w-24 rounded bg-[#E2E4E8]" />
+          <div className="mt-8 h-5 w-20 rounded bg-[#E2E4E8]" />
+        </div>
+      </div>
+      <p className="mt-16 text-center text-[15px] font-700 text-[#A0A8B3]">지난 활동들을 모두 확인하셨습니다.</p>
+    </section>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <div className="mx-auto grid w-full max-w-[1200px] gap-10 bg-white py-2 lg:grid-cols-[370px_minmax(0,1fr)]">
+      <DashboardBannerSlider />
+
+      <aside className="space-y-5">
+        <ProfileCard />
+        <button type="button" className="h-11 w-full cursor-pointer rounded-[3px] bg-[#FF4854] text-[15px] font-900 text-white transition hover:bg-[#E73541]">
+          프로필 커스터
+        </button>
+        <button type="button" className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[3px] border border-[#DDE3EA] bg-white text-[13px] font-800 text-[#596575] transition hover:border-[#FF4854] hover:text-[#FF4854]">
+          <ArrowRight className="h-4 w-4" />
+          마이페이지로 이동
+        </button>
+        <MissionCard />
+        <PromoCard type="gift" />
+        <PromoCard type="report" />
+        <div className="grid grid-cols-4 gap-2">
+          {[Twitter, Instagram, Building2, MessageCircle].map((Icon, index) => (
+            <button key={index} type="button" className="flex h-9 cursor-pointer items-center justify-center rounded-[3px] border border-[#DDE3EA] text-[#A0A8B3] transition hover:border-[#FF4854] hover:text-[#FF4854]">
+              <Icon className="h-4 w-4" />
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      <main className="min-w-0 pt-1">
+        <Timeline />
+        <NewsSection />
+      </main>
     </div>
   );
-};
-
-export default Dashboard;
+}
