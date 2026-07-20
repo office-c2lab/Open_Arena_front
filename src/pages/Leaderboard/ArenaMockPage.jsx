@@ -63,7 +63,7 @@ const LEADERBOARD_ROWS = [
 }));
 
 const avatarColors = [
-  'bg-[#E7F0FF]',
+  'bg-[#FFF0F2]',
   'bg-[#F2F4F6]',
   'bg-[#FFF2D8]',
   'bg-[#FFE8EF]',
@@ -101,8 +101,8 @@ function Avatar({ name, rank, large = false }) {
 function RankRibbon({ rank }) {
   const colors = {
     1: 'from-[#FF3946] to-[#B30010] border-[#FFBE3D]',
-    2: 'from-[#319DFF] to-[#1263BA] border-[#9AD0FF]',
-    3: 'from-[#26B94A] to-[#0E872B] border-[#86E293]',
+    2: 'from-[#FF6570] to-[#D81927] border-[#FFB5BC]',
+    3: 'from-[#FF8A93] to-[#C91E2B] border-[#FFD0D5]',
   };
 
   return (
@@ -115,7 +115,7 @@ function RankRibbon({ rank }) {
 }
 
 function TopRankCard({ row }) {
-  const rankTextColor = row.rank === 1 ? 'text-[#4EA1FF]' : row.rank === 2 ? 'text-[#4EA1FF]' : 'text-[#52A8FF]';
+  const rankTextColor = 'text-[#FF4854]';
 
   return (
     <article className="relative min-h-[282px] rounded-[3px] border border-[#DDE3EA] bg-white px-7 pb-7 pt-8">
@@ -124,7 +124,7 @@ function TopRankCard({ row }) {
         <Avatar name={row.name} rank={row.rank} large />
         <div className="mt-6 flex items-center gap-1.5 text-[14px] font-800 text-[#4A515B]">
           {row.name}
-          <ShieldCheck className="h-4 w-4 fill-[#4EA1FF] text-white" />
+          <ShieldCheck className="h-4 w-4 fill-[#FF4854] text-white" />
         </div>
         <div className="mt-4 grid w-full grid-cols-2 divide-x divide-[#E5E9EF] text-center">
           <div>
@@ -145,8 +145,8 @@ function RatingBadge({ rank, rating }) {
   const isTop10 = rank <= 10;
 
   return (
-    <span className={`inline-flex items-center gap-2 text-[14px] font-800 ${isTop10 ? 'text-[#4EA1FF]' : 'text-[#59BF89]'}`}>
-      <ShieldCheck className={`h-5 w-5 ${isTop10 ? 'fill-[#4EA1FF]' : 'fill-[#59BF89]'} text-white`} />
+    <span className={`inline-flex items-center gap-2 text-[14px] font-800 ${isTop10 ? 'text-[#FF4854]' : 'text-[#D84A55]'}`}>
+      <ShieldCheck className={`h-5 w-5 ${isTop10 ? 'fill-[#FF4854]' : 'fill-[#D84A55]'} text-white`} />
       {rating}
     </span>
   );
@@ -176,7 +176,7 @@ export default function Leaderboard() {
             type="button"
             onClick={() => setActiveCategory('CTF')}
             className={`block cursor-pointer text-left text-[21px] font-800 transition-colors ${
-              activeCategory === 'CTF' ? 'text-[#6973FF]' : 'text-[#6A7482] hover:text-[#6973FF]'
+              activeCategory === 'CTF' ? 'text-[#FF4854]' : 'text-[#6A7482] hover:text-[#FF4854]'
             }`}
           >
             CTF
@@ -187,8 +187,8 @@ export default function Leaderboard() {
               onClick={() => setActiveCategory('Wargame')}
               className={`block cursor-pointer text-left text-[21px] font-800 transition-colors ${
                 activeCategory === 'Wargame'
-                  ? 'text-[#6973FF]'
-                  : 'text-[#6A7482] hover:text-[#6973FF]'
+                  ? 'text-[#FF4854]'
+                  : 'text-[#6A7482] hover:text-[#FF4854]'
               }`}
             >
               Wargame
@@ -205,7 +205,7 @@ export default function Leaderboard() {
                   className={`block cursor-pointer text-left text-[17px] font-800 transition-colors ${
                     activeCategory === 'Wargame' && activeScope === tab
                       ? 'text-[#111827]'
-                      : 'text-[#A0A8B3] hover:text-[#6973FF]'
+                      : 'text-[#A0A8B3] hover:text-[#FF4854]'
                   }`}
                 >
                   {tab}
@@ -217,7 +217,7 @@ export default function Leaderboard() {
             type="button"
             onClick={() => setActiveCategory('커뮤니티')}
             className={`block cursor-pointer text-left text-[21px] font-800 transition-colors ${
-              activeCategory === '커뮤니티' ? 'text-[#6973FF]' : 'text-[#6A7482] hover:text-[#6973FF]'
+              activeCategory === '커뮤니티' ? 'text-[#FF4854]' : 'text-[#6A7482] hover:text-[#FF4854]'
             }`}
           >
             커뮤니티
@@ -234,7 +234,7 @@ export default function Leaderboard() {
               onClick={() => setActiveCategory(category)}
               className={`h-9 cursor-pointer rounded-full px-4 text-[14px] font-700 transition-colors ${
                 activeCategory === category
-                  ? 'bg-[#F0F2FF] text-[#6973FF]'
+                  ? 'bg-[#FFF0F2] text-[#FF4854]'
                   : 'text-[#7B8491] hover:bg-[#F6F8FB]'
               }`}
             >
@@ -251,7 +251,7 @@ export default function Leaderboard() {
               }}
               className={`h-9 cursor-pointer rounded-full px-4 text-[14px] font-700 transition-colors ${
                 activeCategory === 'Wargame' && activeScope === tab
-                  ? 'bg-[#F0F2FF] text-[#6973FF]'
+                  ? 'bg-[#FFF0F2] text-[#FF4854]'
                   : 'text-[#7B8491] hover:bg-[#F6F8FB]'
               }`}
             >
@@ -265,7 +265,7 @@ export default function Leaderboard() {
           {activeCategory === 'Wargame' && (
             <>
               <span>/</span>
-              <span className="text-[#6973FF]">{activeScope}</span>
+              <span className="text-[#FF4854]">{activeScope}</span>
             </>
           )}
         </div>
@@ -281,7 +281,7 @@ export default function Leaderboard() {
               }}
               className={`h-11 cursor-pointer rounded-full px-5 text-[17px] font-800 transition-colors ${
                 activeCategory === 'Wargame' && activeScope === tab
-                  ? 'bg-[#F0F2FF] text-[#6973FF]'
+                  ? 'bg-[#FFF0F2] text-[#FF4854]'
                   : 'text-[#7B8491] hover:bg-[#F6F8FB]'
               }`}
             >
@@ -356,7 +356,7 @@ export default function Leaderboard() {
             key={page}
             type="button"
             className={`h-7 w-7 cursor-pointer rounded-[4px] ${
-              page === 1 ? 'bg-[#6B73FF] text-white' : 'hover:bg-[#F1F4F8]'
+              page === 1 ? 'bg-[#FF4854] text-white' : 'hover:bg-[#F1F4F8]'
             }`}
           >
             {page}
