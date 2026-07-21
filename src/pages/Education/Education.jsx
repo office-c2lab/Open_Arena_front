@@ -432,28 +432,22 @@ function EducationDetail({ article }) {
 
         <EducationQuiz key={article.id} quiz={article.quiz} />
 
-        <div className="rounded-[6px] border border-[#F0C8CD] bg-[#FFF7F8] p-6">
-          <h2 className="text-[20px] font-900 text-[#151A21]">다음 단계</h2>
-          <p className="mt-3 text-[15px] font-600 leading-[27px] text-[#596575]">
-            개념을 이해했다면 튜토리얼에서 기본 흐름을 익히고, 챌린지에서 직접 AI Red Teaming
-            시나리오를 실습해보세요.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={() => navigate('/tutorial')}
-              className="h-10 cursor-pointer rounded-[4px] bg-[#FF4854] px-5 text-[14px] font-900 text-white transition hover:bg-[#E73541]"
-            >
-              튜토리얼 보기
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/kategorie')}
-              className="h-10 cursor-pointer rounded-[4px] border border-[#FFB8BE] bg-white px-5 text-[14px] font-900 text-[#FF4854] transition hover:bg-[#FFF0F2]"
-            >
-              챌린지 보기
-            </button>
+        <div className="flex flex-wrap gap-x-10 gap-y-4 border-t border-[#E3E6EB] pt-7">
+          <div className="w-full">
+            <h2 className="text-[20px] font-900 text-[#151A21]">다음 단계</h2>
+            <p className="mt-3 text-[15px] font-600 leading-[27px] text-[#596575]">
+              개념을 이해했다면 튜토리얼에서 기본 흐름을 익히고, 챌린지에서 직접 AI Red Teaming
+              시나리오를 실습해보세요.
+            </p>
           </div>
+          <button
+            type="button"
+            onClick={() => navigate('/tutorial')}
+            className="group flex cursor-pointer items-center gap-3 text-[20px] font-900 text-[#151A21] transition hover:text-[#FF4854]"
+          >
+            튜토리얼 풀기
+            <ArrowRight className="h-6 w-6 transition group-hover:translate-x-1" strokeWidth={2.5} />
+          </button>
         </div>
       </div>
     </article>

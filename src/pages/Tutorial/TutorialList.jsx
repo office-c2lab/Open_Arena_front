@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ArrowRight, Clock3, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
+import ChallengeCardImage from '@/assets/images/challenge.png';
 
 export const TUTORIALS = [
   {
@@ -88,6 +89,21 @@ export const TUTORIALS = [
     level: 'Pro',
     tone: 'yellow',
   },
+  {
+    id: 7,
+    title: '튜토리얼 문제',
+    subtitle: '메가코프사의 알파 프로젝트 1급 기밀 알아내기',
+    tier: 'Tier 1',
+    difficulty: 'Easy',
+    category: 'Mission',
+    tags: ['Tutorial', 'Mission'],
+    rating: '10.0',
+    reviews: 0,
+    duration: '1시간',
+    price: '무료',
+    level: 'Starter',
+    tone: 'red',
+  },
 ];
 
 const tagColors = {
@@ -110,6 +126,31 @@ function TutorialPreview({ tutorial }) {
 }
 
 function TutorialCard({ tutorial, onClick }) {
+  if (tutorial.id === 7) {
+    return (
+      <article
+        className="group flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.13)] transition hover:-translate-y-1 hover:shadow-[0_18px_30px_rgba(15,23,42,0.18)]"
+        onClick={onClick}
+      >
+        <img src={ChallengeCardImage} alt="알파 프로젝트" className="h-[220px] w-full object-cover" />
+        <div className="flex flex-1 flex-col p-5">
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full border border-[#FF6B75] px-3 py-1 text-[12px] font-800 text-[#FF4854]">챌린지</span>
+            <span className="rounded-full bg-[#FFF0F2] px-3 py-1 text-[12px] font-900 text-[#FF4854]">점수: 100점</span>
+          </div>
+          <h2 className="mt-4 text-[21px] font-900 text-[#151A21]">{tutorial.title}</h2>
+          <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">{tutorial.subtitle}</p>
+          <button
+            type="button"
+            className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center rounded-[6px] bg-[#FF6470] text-[14px] font-900 text-white transition hover:bg-[#E94D59]"
+          >
+            문제풀기
+          </button>
+        </div>
+      </article>
+    );
+  }
+
   const levelClass =
     tutorial.level === 'Start'
       ? 'bg-[#FF4854] text-white'
@@ -127,6 +168,9 @@ function TutorialCard({ tutorial, onClick }) {
         <h2 className="text-[20px] font-900 leading-[26px] text-[#151A21] transition-colors group-hover:text-[#FF4854]">
           {tutorial.title}
         </h2>
+        {tutorial.subtitle ? (
+          <p className="mt-2 line-clamp-2 text-[13px] font-600 leading-[19px] text-[#66717E]">{tutorial.subtitle}</p>
+        ) : null}
         <div className="mt-3 flex flex-wrap gap-1.5">
           <span className="rounded-[3px] border border-[#C9D8FF] px-1.5 py-0.5 text-[10px] font-600 leading-none text-[#5578EA]">
             {tutorial.tier}
@@ -178,7 +222,7 @@ export default function TutorialList() {
     if (!normalizedKeyword) return TUTORIALS;
 
     return TUTORIALS.filter(tutorial =>
-      [tutorial.title, tutorial.category, tutorial.difficulty, tutorial.tier, ...tutorial.tags]
+      [tutorial.title, tutorial.subtitle, tutorial.category, tutorial.difficulty, tutorial.tier, ...tutorial.tags]
         .join(' ')
         .toLowerCase()
         .includes(normalizedKeyword)
