@@ -6,7 +6,6 @@ import {
   CalendarDays,
   CheckCircle2,
   Search,
-  ShieldCheck,
   XCircle,
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -209,43 +208,35 @@ const articles = [
   },
 ];
 
-function EducationCard({ article, onOpen }) {
+function EducationListItem({ article, onOpen }) {
   return (
-    <article className="flex min-h-[392px] flex-col overflow-hidden rounded-[6px] border border-[#E1E6EE] bg-white transition hover:-translate-y-1 hover:border-[#FFB8BE] hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]">
+    <article className="border-b border-[#E1E6EE] first:border-t">
       <button
         type="button"
         onClick={onOpen}
-        className="relative flex h-[150px] w-full cursor-pointer items-center overflow-hidden bg-[#0B0D18] px-5 text-left"
+        className="group flex w-full cursor-pointer items-start gap-5 px-1 py-6 text-left transition sm:px-4 sm:py-7"
       >
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
-        <div className="absolute -right-8 -top-10 h-40 w-40 rounded-full border border-[#FF4854]/30" />
-        <div className="absolute right-10 bottom-[-54px] h-36 w-36 rounded-full border border-[#FF4854]/20" />
-        <strong className="relative z-10 text-[34px] font-900 leading-[36px] text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
+        <div className="hidden w-[170px] shrink-0 text-[18px] font-900 leading-tight text-[#FF4854] md:block">
           {article.visualTitle}
-        </strong>
-      </button>
-
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-center gap-2 text-[12px] font-700 text-[#8A93A5]">
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-700 text-[#8A93A5]">
+            <span>{article.category}</span>
+            <span aria-hidden="true">·</span>
+            <span className="flex items-center gap-1.5">
           <CalendarDays className="h-3.5 w-3.5" />
           {article.date}
-          <span className="rounded-full bg-[#FFF0F2] px-2 py-0.5 text-[#FF4854]">
-            {article.category}
-          </span>
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>{article.readTime} 읽기</span>
+          </div>
+          <h2 className="mt-2 text-[19px] font-900 leading-[26px] text-[#151A21] transition group-hover:text-[#FF4854] sm:text-[21px]">
+            {article.title}
+          </h2>
+          <p className="mt-2 text-[14px] font-500 leading-[23px] text-[#66717E]">{article.summary}</p>
         </div>
-        <h2 className="mt-3 text-[20px] font-900 leading-[26px] text-[#151A21]">{article.title}</h2>
-        <p className="mt-3 flex-1 text-[14px] font-500 leading-[23px] text-[#66717E]">
-          {article.summary}
-        </p>
-        <button
-          type="button"
-          onClick={onOpen}
-          className="mt-5 flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[4px] bg-[#FF4854] text-[14px] font-900 text-white transition hover:bg-[#E73541]"
-        >
-          더 읽기
-          <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
+        <ArrowRight className="mt-1 h-5 w-5 shrink-0 text-[#A4ADB8] transition group-hover:translate-x-1 group-hover:text-[#FF4854]" />
+      </button>
     </article>
   );
 }
@@ -320,9 +311,9 @@ function EducationList() {
         </div>
       </div>
 
-      <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      <section>
         {filteredArticles.map(article => (
-          <EducationCard
+          <EducationListItem
             key={article.id}
             article={article}
             onOpen={() => navigate(`/education/${article.id}`)}
@@ -416,11 +407,10 @@ function EducationDetail({ article }) {
       </button>
 
       <header className="text-center">
-        <p className="inline-flex items-center gap-2 rounded-full bg-[#FFF0F2] px-3 py-1 text-[13px] font-900 text-[#FF4854]">
-          <ShieldCheck className="h-4 w-4" />
+        <p className="text-[13px] font-900 uppercase tracking-[0.14em] text-[#FF4854]">
           {article.category}
         </p>
-        <h1 className="mt-5 text-[38px] font-900 leading-tight text-[#151A21] md:text-[48px]">
+        <h1 className="mt-3 text-[38px] font-900 leading-tight text-[#151A21] md:text-[48px]">
           {article.title}
         </h1>
         <p className="mt-4 text-[14px] font-700 text-[#8A93A5]">
