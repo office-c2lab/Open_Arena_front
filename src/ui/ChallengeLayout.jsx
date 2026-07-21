@@ -3,13 +3,14 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import AppHeader from '@/components/AppHeader/AppHeader';
+import FooterSection from '@/pages/LandingPage/FooterSection';
 
 export default function ChallengeLayout() {
   const { pathname } = useLocation();
   const isPlayView = pathname.endsWith('/play');
 
   return (
-    <div className="min-h-screen w-full bg-white pt-16">
+    <div className="flex min-h-screen w-full flex-col bg-white pt-16">
       <AppHeader />
       <main
         className={
@@ -22,6 +23,7 @@ export default function ChallengeLayout() {
           <Outlet />
         </div>
       </main>
+      {!isPlayView && <FooterSection />}
     </div>
   );
 }

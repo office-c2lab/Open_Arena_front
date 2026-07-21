@@ -13,6 +13,7 @@ import LeaderboardLayout from '../ui/LeaderboardLayout'; // ✅ 추가
 import Login from '../pages/Login/Login';
 import LandingPage from '../pages/LandingPage/LandingPage';
 import Signup from '../pages/Signup/Signup';
+import Legal from '../pages/Legal/Legal';
 import AdminLogin from '../pages/admin/AdminLogin';
 import Dashboard from '../pages/Dashboard/Dashboard';
 // import Leaderboard from '../pages/Leaderboard/Leaderboard';
@@ -43,14 +44,10 @@ export default function AppRouter() {
       {/* 공개 페이지 */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-        <Route
-          path="/signup"
-          element={<Signup />}
-        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/terms" element={<Legal type="terms" />} />
+        <Route path="/privacy" element={<Legal type="privacy" />} />
       </Route>
       <Route path="/admin" element={<Navigate to="/admin/leaderboard" replace />} />
 
@@ -89,9 +86,7 @@ export default function AppRouter() {
       {/* ---------------------------  
           🔥 DefaultLayout 보호 구역
          --------------------------- */}
-      <Route
-        element={<DefaultLayout />}
-      >
+      <Route element={<DefaultLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/education" element={<Education />} />
@@ -104,9 +99,7 @@ export default function AppRouter() {
       {/* ---------------------------
           🔥 Challenge 보호 Layout
          --------------------------- */}
-      <Route
-        element={<ChallengeLayout />}
-      >
+      <Route element={<ChallengeLayout />}>
         <Route path="/challenge/:problemId/play" element={<ChallengePlay />} />
         <Route path="/challenge/:problemId" element={<Challenge />} />
       </Route>

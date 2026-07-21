@@ -1,21 +1,17 @@
 import c2LabLogo from '@/assets/images/C2Lab_logo.svg';
-
-import { Container } from './LandingPage.primitives';
+import { Link } from 'react-router-dom';
 
 export default function FooterSection() {
+  const containerClassName = 'mx-auto w-full max-w-[1200px] px-[10px]';
+
   return (
-    <footer className="relative mt-4 overflow-hidden border-t border-[#E5E7EB] bg-[#F2F4F6] px-5 py-8 text-[#171717] sm:mt-6 sm:px-12 sm:py-10">
+    <footer className="relative mt-4 overflow-hidden border-t border-[#E5E7EB] bg-[#F2F4F6] py-8 text-[#171717] sm:mt-6 sm:py-10">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FF4854]/45 to-transparent"
       />
-      <Container className="grid items-center gap-8 md:grid-cols-[220px_1fr]">
-        <a
-          href="https://c2lab.kr/"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex w-fit"
-        >
+      <div className={`${containerClassName} grid items-center gap-8 md:grid-cols-[220px_1fr]`}>
+        <a href="https://c2lab.kr/" target="_blank" rel="noreferrer" className="inline-flex w-fit">
           <img src={c2LabLogo} alt="C2LAB" className="h-auto w-[180px] sm:w-[210px]" />
         </a>
 
@@ -29,11 +25,25 @@ export default function FooterSection() {
             >
               (주)씨투랩
             </a>
-            <div className="text-sm text-[#57534e]">© 2026 C2LAB. All rights reserved.</div>
+            <p className="text-[#303030]">
+              씨투랩 C2Lab은 신뢰할 수 있는 AI 보안을 만드는 AI 보안 전문 기업입니다.
+            </p>
           </div>
-          <p className="text-[#303030]">
-            씨투랩 C2Lab은 신뢰할 수 있는 AI 보안을 만드는 AI 보안 전문 기업입니다.
-          </p>
+
+          <nav
+            aria-label="정책 링크"
+            className="flex items-center gap-3 text-[14px] font-500 text-[#57534E]"
+          >
+            <Link to="/terms" className="transition hover:text-[#FF4854]">
+              이용약관
+            </Link>
+            <span aria-hidden="true" className="text-[#B6BBC3]">
+              |
+            </span>
+            <Link to="/privacy" className="transition hover:text-[#FF4854]">
+              개인정보처리방침
+            </Link>
+          </nav>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span>대표이사 정미심</span>
             <span>|</span>
@@ -48,9 +58,9 @@ export default function FooterSection() {
             <span>|</span>
             <span>FAX 02-2247-7001</span>
           </div>
+          <div className="text-sm text-[#57534e]">© 2026 C2LAB. All rights reserved.</div>
         </div>
-
-      </Container>
+      </div>
     </footer>
   );
 }

@@ -1,12 +1,12 @@
 // src/pages/Signup/Signup.jsx
 
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import ArenaSymbol from '@/assets/icons/Arena.svg';
 import BackBtn from '@/assets/icons/backbtn.svg';
 
-const agreementContents = {
+/* 이전 인라인 약관 내용은 /terms 및 /privacy 상세 페이지로 이동했습니다.
   terms: {
     title: '서비스 이용약관',
     sections: [
@@ -81,19 +81,14 @@ const agreementContents = {
       },
     ],
   },
-};
+}; */
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { search } = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [showVerificationCode, setShowVerificationCode] = useState(false);
   const [isSignupComplete, setIsSignupComplete] = useState(false);
-  const [expandedAgreement, setExpandedAgreement] = useState(() => {
-    const agreement = new URLSearchParams(search).get('agreement');
-    return agreement === 'terms' || agreement === 'privacy' ? agreement : null;
-  });
   const [agreements, setAgreements] = useState({
     terms: false,
     privacy: false,
@@ -163,10 +158,6 @@ export default function Signup() {
       ...prev,
       [name]: checked,
     }));
-  };
-
-  const handleAgreementExpand = agreementName => {
-    setExpandedAgreement(prev => (prev === agreementName ? null : agreementName));
   };
 
   const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
@@ -375,42 +366,15 @@ export default function Signup() {
                 >
                   <span className="font-700">[필수]</span> 이용약관에 동의합니다.
                 </label>
-                <button
-                  type="button"
-                  onClick={() => handleAgreementExpand('terms')}
-                  aria-expanded={expandedAgreement === 'terms'}
-                  aria-controls="terms-agreement-content"
-                  aria-label="이용약관 내용 펼치기"
-                  className="ml-auto flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-[#6B6B6B] transition hover:bg-[#F4F6FA] hover:text-[#FF4854]"
+                <a
+                  href="/terms"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ml-auto shrink-0 body-large font-500 text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
                 >
-                  <ChevronDown
-                    className={`h-6 w-6 transition-transform duration-200 ${expandedAgreement === 'terms' ? 'rotate-180' : ''}`}
-                    strokeWidth={2}
-                  />
-                </button>
+                  자세히 보기 &gt;
+                </a>
               </div>
-              {expandedAgreement === 'terms' && (
-                <div
-                  id="terms-agreement-content"
-                  role="region"
-                  aria-label={agreementContents.terms.title}
-                  className="rounded-2xl bg-[#F8F8F8] px-6 py-6 text-[#5B5B5B]"
-                >
-                  <h3 className="heading-3 font-700 text-[#2D3035]">
-                    {agreementContents.terms.title}
-                  </h3>
-                  <div className="mt-5 flex flex-col gap-5">
-                    {agreementContents.terms.sections.map(section => (
-                      <section key={section.heading}>
-                        <h4 className="heading-3 font-700 text-[#3D3D3D]">{section.heading}</h4>
-                        <p className="mt-2 whitespace-pre-line body-large font-500 leading-7">
-                          {section.content}
-                        </p>
-                      </section>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               <div className="flex min-h-8 items-center gap-3">
                 <input
@@ -427,40 +391,15 @@ export default function Signup() {
                 >
                   <span className="font-700">[필수]</span> 개인정보 수집 및 이용에 동의합니다.
                 </label>
-                <button
-                  type="button"
-                  onClick={() => handleAgreementExpand('privacy')}
-                  aria-expanded={expandedAgreement === 'privacy'}
-                  aria-controls="privacy-agreement-content"
-                  aria-label="개인정보 수집 및 이용 동의 내용 펼치기"
-                  className="ml-auto flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-[#6B6B6B] transition hover:bg-[#F4F6FA] hover:text-[#FF4854]"
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ml-auto shrink-0 body-large font-500 text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
                 >
-                  <ChevronDown
-                    className={`h-6 w-6 transition-transform duration-200 ${expandedAgreement === 'privacy' ? 'rotate-180' : ''}`}
-                    strokeWidth={2}
-                  />
-                </button>
+                  자세히 보기 &gt;
+                </a>
               </div>
-              {expandedAgreement === 'privacy' && (
-                <div
-                  id="privacy-agreement-content"
-                  role="region"
-                  aria-label={agreementContents.privacy.title}
-                  className="rounded-2xl bg-[#F8F8F8] px-6 py-6 text-[#5B5B5B]"
-                >
-                  <h3 className="heading-3 font-700 text-[#2D3035]">
-                    {agreementContents.privacy.title}
-                  </h3>
-                  <div className="mt-5 flex flex-col gap-5">
-                    {agreementContents.privacy.sections.map(section => (
-                      <section key={section.heading}>
-                        <h4 className="heading-3 font-700 text-[#3D3D3D]">{section.heading}</h4>
-                        <p className="mt-2 body-large font-500 leading-7">{section.content}</p>
-                      </section>
-                    ))}
-                  </div>
-                </div>
-              )}
             </fieldset>
           </form>
 

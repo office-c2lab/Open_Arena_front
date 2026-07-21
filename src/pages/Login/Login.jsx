@@ -159,13 +159,13 @@ export default function Login() {
           </div>
 
           <div className="mt-3 flex items-center justify-center gap-2 body-large font-500 text-[#8A93A5]">
-            <Link to="/signup?agreement=terms" className="transition hover:text-[#FF4854]">
+            <Link to="/terms" className="transition hover:text-[#FF4854]">
               이용약관
             </Link>
             <span aria-hidden="true" className="text-[#D9DADB]">
               |
             </span>
-            <Link to="/signup?agreement=privacy" className="transition hover:text-[#FF4854]">
+            <Link to="/privacy" className="transition hover:text-[#FF4854]">
               개인정보처리방침
             </Link>
           </div>
