@@ -181,19 +181,19 @@ export default function AppHeader() {
 
                     <div className="mt-4 flex flex-col gap-1">
                       <Link
-                        to="/dashboard"
+                        to="/mypage"
                         className="flex items-center gap-3 rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
                       >
                         <User className="h-5 w-5 text-[#AAACB0]" />
                         마이페이지
                       </Link>
-                      <button
-                        type="button"
+                      <Link
+                        to="/settings"
                         className="flex cursor-pointer items-center gap-3 rounded-[4px] px-2 py-2 text-left text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
                       >
                         <Settings className="h-5 w-5 text-[#AAACB0]" />
                         계정 설정
-                      </button>
+                      </Link>
                       <button
                         type="button"
                         onClick={handleLogout}

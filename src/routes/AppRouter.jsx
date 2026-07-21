@@ -16,6 +16,8 @@ import Signup from '../pages/Signup/Signup';
 import Legal from '../pages/Legal/Legal';
 import AdminLogin from '../pages/admin/AdminLogin';
 import Dashboard from '../pages/Dashboard/Dashboard';
+import AccountSettings from '../pages/MyPage/MyPage';
+import MyPage from '../pages/MyPage/ProfilePage';
 // import Leaderboard from '../pages/Leaderboard/Leaderboard';
 import Education from '../pages/Education/Education';
 import Tutorial from '../pages/Tutorial/Tutorial';
@@ -88,6 +90,8 @@ export default function AppRouter() {
          --------------------------- */}
       <Route element={<DefaultLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/settings" element={<AccountSettings />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/education" element={<Education />} />
         <Route path="/education/:articleId" element={<Education />} />
