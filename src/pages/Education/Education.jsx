@@ -287,33 +287,28 @@ function EducationList() {
         </div>
       </section>
 
-      <form onSubmit={handleSearch} className="mb-7 flex gap-3">
-        <label className="relative min-w-0 flex-1">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
-          <input
-            type="search"
-            value={searchInput}
-            onChange={event => setSearchInput(event.target.value)}
-            placeholder="관심 있는 교육 자료를 검색해보세요."
-            className="h-11 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
-          />
-        </label>
-        <button
-          type="submit"
-          className="flex h-11 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
-        >
-          검색
-        </button>
-      </form>
-
-      <div className="mb-5 flex items-center justify-between">
-        <h2 className="text-[18px] font-900 text-[#151A21]">
-          학습 자료 <span className="text-[#FF4854]">{filteredArticles.length}</span>
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-[18px] font-700 text-black]">
+          학습 자료
         </h2>
-        <div className="flex items-center gap-2 text-[13px] font-800 text-[#7B8491]">
-          <BookOpen className="h-4 w-4" />
-          ARENA Knowledge Base
-        </div>
+        <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,440px)]">
+          <label className="relative min-w-0 flex-1">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
+            <input
+              type="search"
+              value={searchInput}
+              onChange={event => setSearchInput(event.target.value)}
+              placeholder="관심 있는 교육 자료를 검색해보세요."
+              className="h-11 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+            />
+          </label>
+          <button
+            type="submit"
+            className="flex h-11 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
+          >
+            검색
+          </button>
+        </form>
       </div>
 
       <section>
