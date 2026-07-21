@@ -23,7 +23,7 @@ const termsSections = [
   ],
   [
     '제6조(게시물 및 저작권)',
-    '회원이 서비스에 게시한 글, 답변, 의견, 코드 및 기타 콘텐츠의 책임은 회원에게 있습니다. 회원은 게시물을 등록할 권한을 보유해야 하며 타인의 저작권 등 권리를 침해해서는 안 됩니다.\n\n서비스와 회사가 제공하는 콘텐츠의 저작권 및 지식재산권은 회사 또는 정당한 권리자에게 귀속됩니다. 회사는 서비스 운영·홍보·개선에 필요한 범위에서 회원 게시물을 이용할 수 있으며, 법령 위반 또는 권리 침해 우려가 있는 게시물은 필요한 조치를 할 수 있습니다.',
+    '회원이 서비스에 직접 작성하여 입력하거나 제출한 프롬프트, 코드 및 기타 콘텐츠에 관한 권리는 해당 회원 또는 정당한 권리자에게 귀속됩니다. 다만, 일반적으로 알려진 공격 기법, 아이디어, 사실 또는 창작성이 인정되지 않는 표현 자체에 대하여 회원에게 독점적인 권리가 인정된다는 의미는 아닙니다.\n\n회원은 타인의 저작권 등 권리를 침해하거나, 개인정보 또는 기밀정보를 정당한 권한 없이 입력·제출해서는 안 됩니다.\n\n회원은 회사가 서비스 운영, 보안 연구, 데이터 분석, AI 모델·탐지 기술 개발 및 개선, 신규 서비스 개발 및 제공을 위해 해당 콘텐츠를 수집, 저장, 복제, 수정, 가공 및 분석할 수 있도록 비독점적이고 무상인 이용권을 부여합니다. 회사는 다른 프로젝트 또는 상용 서비스 개발·제공에 콘텐츠를 이용할 경우 개인정보와 식별 가능한 정보를 제거하거나, 필요한 경우 별도의 동의를 받습니다.\n\n원문을 외부에 공개하거나 제3자에게 제공·판매하는 경우에는 별도의 동의를 받습니다. 서비스와 회사가 제공하는 콘텐츠의 저작권 및 지식재산권은 회사 또는 정당한 권리자에게 귀속됩니다.',
   ],
   [
     '제7조(외부 서비스 및 링크)',
@@ -54,7 +54,7 @@ const termsSections = [
 const privacySections = [
   [
     '1. 개인정보의 처리 목적 및 법적 근거',
-    '씨투랩 C2Lab(이하 “회사”)은 ARENA의 회원 가입, 계정 관리, AI 기반 학습·챌린지 서비스 제공, 부정 이용 방지, 고지 및 문의 대응을 위해 개인정보를 처리합니다. 회사는 서비스 이용계약의 체결·이행, 이용자의 동의 및 관계 법령상 의무 이행 등 적법한 근거에 따라 개인정보를 처리합니다.',
+    '씨투랩 C2Lab(이하 “회사”)은 ARENA의 회원 가입, 계정 관리, AI 기반 학습·챌린지 서비스 제공, 부정 이용 방지, 고지 및 문의 대응을 위해 개인정보를 처리합니다. 회원이 입력·제출한 프롬프트 등 콘텐츠에 개인정보 또는 식별 가능한 정보가 포함된 경우, 회사는 서비스 보안과 연구·개발 목적으로 이용하기 전에 이를 제거하거나 가명·익명 처리하는 것을 원칙으로 합니다.\n\n회사는 서비스 이용계약의 체결·이행, 이용자의 동의 및 관계 법령상 의무 이행 등 적법한 근거에 따라 개인정보를 처리합니다.',
   ],
   [
     '2. 처리하는 개인정보 항목',
@@ -127,7 +127,7 @@ export default function Legal({ type }) {
           <p className="mt-3 body-large font-500 text-[#6B6B6B]">{document.description}</p>
           <p className="mt-5 body-medium font-500 text-[#8A93A5]">시행일: 2026년 7월 21일</p>
         </div>
-        <div className="mt-10 grid gap-10 lg:grid-cols-[240px_minmax(0,1fr)]">
+        <div className="mt-10 grid gap-10 lg:grid-cols-[300px_minmax(0,1fr)]">
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <p className="body-large font-700 text-[#2D3035]">목차</p>
             <ol className="mt-4 flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible">
@@ -135,7 +135,7 @@ export default function Legal({ type }) {
                 <li key={heading} className="shrink-0">
                   <a
                     href={`#section-${index + 1}`}
-                    className="block rounded-lg px-3 py-2 body-medium font-500 text-[#6B6B6B] transition hover:bg-[#FFF0F2] hover:text-[#FF4854]"
+                    className="block whitespace-nowrap rounded-lg px-3 py-2 body-medium font-500 text-[#6B6B6B] transition hover:bg-[#FFF0F2] hover:text-[#FF4854]"
                   >
                     {heading}
                   </a>
@@ -143,7 +143,7 @@ export default function Legal({ type }) {
               ))}
             </ol>
           </aside>
-          <article className="min-w-0">
+          <article className="min-w-0 max-w-[780px]">
             {document.sections.map(([heading, content], index) => (
               <section
                 id={`section-${index + 1}`}
@@ -151,9 +151,16 @@ export default function Legal({ type }) {
                 className="scroll-mt-24 border-b border-[#EDEEF0] py-8 first:pt-0 last:border-b-0"
               >
                 <h2 className="heading-2 font-700 text-[#2D3035]">{heading}</h2>
-                <p className="mt-4 whitespace-pre-line body-large font-500 leading-8 text-[#4B4B4B]">
-                  {content}
-                </p>
+                <div className="mt-4">
+                  {content.split('\n\n').map((paragraph, paragraphIndex) => (
+                    <p
+                      key={`${heading}-${paragraphIndex}`}
+                      className={`whitespace-pre-line body-large font-500 leading-8 text-[#4B4B4B] ${paragraphIndex > 0 ? 'mt-5' : ''}`}
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
               </section>
             ))}
           </article>
