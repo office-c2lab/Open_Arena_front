@@ -86,7 +86,7 @@ export default function Login() {
             로그인 정보를
             <br /> 입력해 주세요.
           </h2>
-          
+
           <form className="flex flex-col space-y-6" onSubmit={e => e.preventDefault()}>
             {/* 이메일 */}
             <div className="flex flex-col">

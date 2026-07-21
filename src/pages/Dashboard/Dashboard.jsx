@@ -363,7 +363,7 @@ export default function Dashboard() {
         <aside className="space-y-5">
           <ProfileCard />
           <button type="button" className="h-11 w-full cursor-pointer rounded-[3px] bg-[#FF4854] text-[15px] font-900 text-white transition hover:bg-[#E73541]">
-            프로필 커스터
+            프로필 커스텀
           </button>
           <button type="button" className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[3px] border border-[#DDE3EA] bg-white text-[13px] font-800 text-[#596575] transition hover:border-[#FF4854] hover:text-[#FF4854]">
             <ArrowRight className="h-4 w-4" />

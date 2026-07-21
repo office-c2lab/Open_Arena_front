@@ -28,6 +28,8 @@ export default function AppHeader() {
   const displayName = teamInfo?.teamname || teamInfo?.username || teamInfo?.login_id || 'ARENA 유저';
   const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
   const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
+  const isPaidMember = teamInfo?.membershipType === 'paid';
+  const profileStats = teamInfo?.profileStats || {};
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -140,21 +142,42 @@ export default function AppHeader() {
                       type="button"
                       className="mt-4 h-10 w-full cursor-pointer rounded-[4px] bg-[#FF4854] text-sm font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
                     >
-                      프로필 커스터
+                      프로필 커스텀
                     </button>
 
-                    <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-sm font-500 text-[#76787a]">
-                    무료 도전 횟수 <span className="font-700 text-[#1ec186]">1 / 3</span>
-                    </div>
+                    {isPaidMember ? (
+                      <>
+                        <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-sm font-500 text-[#76787a]">
+                          성공한 챌린지{' '}
+                          <span className="font-700 text-[#1ec186]">{profileStats.solvedChallenges || 0} 개</span>
+                        </div>
 
-                    <div className="mt-3 grid grid-cols-2 gap-2">
-                      <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                      무료 채팅 <span className="font-700 text-[#A8AAFF]">10</span>
-                      </div>
-                       <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                      무료 토큰 <span className="font-700 text-[#FFB155]">1000</span>
-                      </div>
-                    </div>
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
+                            총 성공 갯수{' '}
+                            <span className="font-700 text-[#A8AAFF]">{profileStats.totalSuccesses || 0} 개</span>
+                          </div>
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
+                            랭킹 <span className="font-700 text-[#FFB155]">{profileStats.rank || '-'} 위</span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-sm font-500 text-[#76787a]">
+                          무료 도전 횟수 <span className="font-700 text-[#1ec186]">1 / 6</span>
+                        </div>
+
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
+                            무료 채팅 <span className="font-700 text-[#A8AAFF]">10</span>
+                          </div>
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
+                            무료 토큰 <span className="font-700 text-[#FFB155]">1000</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     <div className="mt-4 flex flex-col gap-1">
                       <Link
