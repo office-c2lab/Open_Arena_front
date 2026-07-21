@@ -148,6 +148,7 @@ export default function Login() {
           </button>
 
           <div className="mt-7 text-center body-large font-500 text-[#6B6B6B]">
+            
             <span>계정이 없으신가요? </span>
             <button
               type="button"
@@ -158,17 +159,7 @@ export default function Login() {
             </button>
           </div>
 
-          <div className="mt-3 flex items-center justify-center gap-2 body-large font-500 text-[#8A93A5]">
-            <Link to="/terms" className="transition hover:text-[#FF4854]">
-              이용약관
-            </Link>
-            <span aria-hidden="true" className="text-[#D9DADB]">
-              |
-            </span>
-            <Link to="/privacy" className="transition hover:text-[#FF4854]">
-              개인정보처리방침
-            </Link>
-          </div>
+          
         </footer>
       </div>
     </div>

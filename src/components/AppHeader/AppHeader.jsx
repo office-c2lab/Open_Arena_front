@@ -216,14 +216,6 @@ export default function AppHeader() {
             </button>
           )}
 
-          <span className="hidden text-sm font-700 text-[#9a948d] sm:inline">|</span>
-
-          <Link
-            to="/kategorie"
-            className="hidden text-sm font-700 text-[#FF4854] transition hover:text-[#e63d48] sm:inline"
-          >
-            대회 살펴보기
-          </Link>
         </div>
       </div>
 

@@ -166,7 +166,7 @@ export default function Signup() {
 
   if (isSignupComplete) {
     return (
-      <div className="flex justify-center bg-white px-[10px] py-14">
+      <div className="flex justify-center bg-white px-[10px] py-4">
         <section className="flex w-full max-w-[675px] flex-col items-center px-2 pb-10 pt-8 text-center">
           <h1 className="heading-1 font-700 text-[#2D3035]">회원가입 완료!</h1>
 
@@ -193,10 +193,15 @@ export default function Signup() {
             />
           </div>
 
+          <p className="mt-8 text-[17px] font-800 leading-7 text-[#3D4754]">
+            관리자 승인 후 <span className="text-[#FF4854]">유료 회원</span>으로 전환됩니다.
+            <br />승인 완료 시 서비스를 이용할 수 있습니다.
+          </p>
+
           <button
             type="button"
             onClick={() => navigate('/kategorie')}
-            className="mt-14 w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white heading-3 font-700 shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer"
+            className="mt-8 w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white heading-3 font-700 shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer"
           >
             ARENA 시작하기
           </button>
