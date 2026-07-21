@@ -375,7 +375,7 @@ function SeasonColumn({ value, options, onChange }) {
 const ChallengeSection = () => {
   const navigate = useNavigate();
   const [activeSeason, setActiveSeason] = useState('');
-  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
   const [filters, setFilters] = useState(DEFAULT_FILTERS);

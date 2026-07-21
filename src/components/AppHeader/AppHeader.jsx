@@ -27,6 +27,7 @@ export default function AppHeader() {
 
   const displayName = teamInfo?.teamname || teamInfo?.username || teamInfo?.login_id || 'ARENA 유저';
   const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
+  const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -120,14 +121,17 @@ export default function AppHeader() {
                     onClick={() => setIsProfileOpen(false)}
                   />
                   <div className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[326px] rounded-[3px] border border-[#ece7e1] bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.16)]">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-start gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F2F4F6]">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF4854]">
                           <img src={UserIcon} alt="" className="h-6 w-6" aria-hidden="true" />
                         </div>
                       </div>
-                      <div className="min-w-0">
-                        <div className="truncate text-lg font-700 text-[#303030]">{displayName}</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="truncate text-lg font-700 text-[#303030]">{displayName}</div>
+                          <div className="shrink-0 text-xs font-700 text-[#FF4854]">{membershipLabel}</div>
+                        </div>
                         <div className="truncate text-sm font-500 text-[#76787a]">{displayEmail}</div>
                       </div>
                     </div>
