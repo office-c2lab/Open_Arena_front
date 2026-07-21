@@ -3,7 +3,7 @@ import { ArrowRight, Check, ChevronDown, Clock3, Search, Star } from 'lucide-rea
 import { useNavigate } from 'react-router-dom';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 
-const PATHS = [
+export const PATHS = [
   {
     id: 1,
     title: 'System Hacking Basics',

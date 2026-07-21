@@ -1,27 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, BookOpen, Building2, Instagram, MessageCircle, ShieldCheck, Twitter } from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import UserIcon from '@/assets/icons/user.svg';
-import TigerImage from '@/assets/images/tiger.png';
-import PhoenixImage from '@/assets/images/phoenix.png';
+import { useAuthStore } from '@/stores/authStore';
 import ArenaBannerImage from '@/assets/images/banner.svg';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
+import { articles as educationArticles } from '@/pages/Education/Education';
+import { PATHS as challengePaths } from '@/pages/Kategorie/Kategorie';
+import { TUTORIALS } from '@/pages/Tutorial/TutorialList';
 
 const notices = [
   ['공지사항', '2026년 6월의 아레나 노트', '2026.07.01.'],
   ['공지사항', '새로워진 학습 메뉴, 이렇게 달라졌어요', '2026.06.08.'],
   ['공지사항', '2026년 5월의 아레나 노트', '2026.06.05.'],
-];
-
-const missions = [
-  { title: '프레시맨', state: '미완료', desc: '강의 1개 수강 완료' },
-  { title: '스포트맨', state: '미완료', desc: '강의 10개 수강 완료' },
-  { title: '비기너즈 졸업', state: '미완료', desc: '1개 이상의 비기너즈 분야의 Path 수강 완료' },
-  { title: '스쿼드', state: '미완료', desc: '워게임 15문제 해결' },
-  { title: '비기너즈 입문', state: '완료', desc: '1개 이상의 비기너즈 분야의 Path 수강 시작' },
 ];
 
 const dashboardBanners = [
@@ -193,132 +187,374 @@ function DashboardBannerSlider() {
 }
 
 function ProfileCard() {
+  const teamInfo = useAuthStore(state => state.teamInfo);
+  const displayName = teamInfo?.teamname || teamInfo?.username || 'ARENA 유저';
+  const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
+  const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
+  const isPaidMember = teamInfo?.membershipType === 'paid';
+  const profileStats = teamInfo?.profileStats || {};
+
   return (
     <section className="overflow-hidden rounded-[3px] border border-[#DDE3EA] bg-white">
-      <div className="relative h-[92px] bg-[#FAFBFC]">
-        <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20px_20px,#EEF1F5_8px,transparent_9px)] [background-size:42px_42px]" />
-      </div>
-      <div className="px-5 pb-5">
-        <div className="-mt-10 flex items-end gap-3">
+      <div className="px-5 py-5">
+        <div className="flex items-center gap-3">
           <div className="relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-[#E6EAF0] bg-[#F2F4F6]">
             <img src={UserIcon} alt="" className="h-11 w-11 opacity-35 grayscale" />
           </div>
-          <div className="pb-1">
-            <div className="flex items-center gap-1.5 text-[18px] font-900 text-[#3A414B]">
-              돌킹왕짱
-              <ShieldCheck className="h-4 w-4 fill-[#C3C8D0] text-white" />
+          <div className="min-w-0 flex-1 pb-1">
+            <div className="flex items-center justify-between gap-2">
+              <div className="truncate text-[18px] font-900 text-[#3A414B]">{displayName}</div>
+              <div className="shrink-0 text-[12px] font-800 text-[#FF4854]">{membershipLabel}</div>
             </div>
+            <p className="mt-1 truncate text-[12px] font-600 text-[#8A93A5]">{displayEmail}</p>
           </div>
         </div>
 
-        <p className="mt-5 text-[13px] font-600 text-[#8A93A5]">아직 자기소개가 없습니다.</p>
-        <div className="mt-3 space-y-1 text-[12px] font-600 text-[#8A93A5]">
-          <p>대표 업적 없음</p>
-          <p>등록된 기관 없음</p>
-        </div>
-
-        <div className="mt-5 grid grid-cols-3 divide-x divide-[#DDE3EA] text-center">
-          {[
-            ['CTF', 0],
-            ['WARGAME', 0],
-            ['LEVEL', 1],
-          ].map(([label, value]) => (
-            <div key={label}>
-              <p className="text-[10px] font-800 text-[#A0A8B3]">{label}</p>
-              <p className="mt-1 text-[16px] font-900 text-[#4B5563]">{value}</p>
-            </div>
-          ))}
-        </div>
+        {isPaidMember ? (
+          <div className="mt-5 grid grid-cols-3 divide-x divide-[#DDE3EA] text-center">
+            {[
+              ['성공한 챌린지', profileStats.solvedChallenges || 0],
+              ['총 성공 갯수', profileStats.totalSuccesses || 0],
+              ['랭킹', `${profileStats.rank || '-'}위`],
+            ].map(([label, value]) => (
+              <div key={label}>
+                <p className="text-[10px] font-800 text-[#A0A8B3]">{label}</p>
+                <p className="mt-1 text-[16px] font-900 text-[#4B5563]">{value}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-5 grid grid-cols-3 divide-x divide-[#DDE3EA] text-center">
+            {[
+              ['무료 도전 횟수', '1 / 6'],
+              ['무료 채팅', 10],
+              ['무료 토큰', 1000],
+            ].map(([label, value]) => (
+              <div key={label}>
+                <p className="text-[10px] font-800 text-[#A0A8B3]">{label}</p>
+                <p className="mt-1 text-[16px] font-900 text-[#4B5563]">{value}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function MissionCard() {
+function MissionCard({ onShowDetails }) {
+  const challenge = challengePaths[0];
+
+  if (!challenge) return null;
+
   return (
     <section>
-      <h2 className="mb-3 text-[14px] font-900 text-[#2E3338]">진행중인 챌린지</h2>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-[14px] font-900 text-[#2E3338]">진행중인 챌린지</h2>
+        <button
+          type="button"
+          onClick={onShowDetails}
+          className="flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#FF4854]"
+        >
+          자세히 보기 <ArrowRight className="h-3 w-3" />
+        </button>
+      </div>
       <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-4">
-        <div className="rounded-[3px] bg-[#FFF0F2] p-3">
-          <div className="flex items-center justify-between text-[11px] font-700 text-[#9AA3AF]">
-            <span>아레나 모험가</span>
-            <span>900 XP</span>
-            <span>50 코인</span>
+        <div className="flex items-start gap-3">
+          <div className="relative flex h-16 w-20 shrink-0 items-center overflow-hidden bg-[#0B0D18] px-2">
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+            <strong className="relative text-[11px] font-900 leading-[12px] text-white">{challenge.title}</strong>
           </div>
-          <div className="mt-3 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-[#FFDCE0]">
-              <BookOpen className="h-6 w-6 text-[#FF4854]" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-900 text-[#2E3338]">아레나 입문 여정</p>
-              <p className="mt-1 text-[11px] font-600 text-[#8A93A5]">챌린지 완료까지 4개 남았어요!</p>
-            </div>
-            <button type="button" className="cursor-pointer rounded-[4px] bg-[#FF4854] px-3 py-2 text-[11px] font-900 text-white transition hover:bg-[#E73541]">
-              자세히 보기
-            </button>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-800 text-[#FF4854]">
+              {challenge.tier} · {challenge.difficulty}
+            </p>
+            <p className="mt-1 line-clamp-2 text-[14px] font-900 leading-[18px] text-[#2E3338]">{challenge.title}</p>
+            <p className="mt-1 truncate text-[11px] font-600 text-[#8A93A5]">{challenge.category}</p>
           </div>
-          <div className="mt-4">
-            <div className="h-1.5 rounded-full bg-[#FFDCE0]">
-              <div className="h-full w-[20%] rounded-full bg-[#FF4854]" />
-            </div>
-            <p className="mt-1 text-right text-[11px] font-800 text-[#FF4854]">20%</p>
-          </div>
-        </div>
-
-        <div className="mt-3 space-y-2">
-          {missions.map(mission => (
-            <div key={mission.title} className="flex items-center justify-between rounded-[3px] border border-[#DDE3EA] px-3 py-3">
-              <div>
-                <p className="text-[13px] font-900 text-[#2E3338]">
-                  {mission.title} <span className="text-[11px] text-[#A0A8B3]">{mission.state}</span>
-                </p>
-                <p className="mt-1 text-[11px] font-600 text-[#9AA3AF]">{mission.desc}</p>
-              </div>
-              <button type="button" className="flex cursor-pointer items-center gap-1 text-[11px] font-900 text-[#FF4854]">
-                바로가기 <ArrowRight className="h-3 w-3" />
-              </button>
-            </div>
-          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function PromoCard({ type }) {
-  const isGift = type === 'gift';
+function LearningProgressCard({ onShowDetails }) {
+  const article = educationArticles[0];
+
+  if (!article) return null;
 
   return (
-    <section className="relative overflow-hidden rounded-[3px] bg-[#F6F7F9] p-5">
-      <div className="relative z-10">
-        <p className="text-[14px] font-900 leading-[22px] text-[#2E3338]">
-          {isGift ? '프로필 완성하고 코인 받기!' : '더 나은 아레나 서비스를 위해'}
-          <br />
-          {isGift ? '가입 후 1달 동안만 참여 가능해요!' : '오류를 제보해 주세요!'}
-        </p>
-        <button type="button" className="mt-4 flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#FF4854]">
-          {isGift ? '참여하고 코인 받기' : '제보하고 코인 받기'} <ArrowRight className="h-3 w-3" />
+    <section>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-[14px] font-900 text-[#2E3338]">진행중인 학습</h2>
+        <button
+          type="button"
+          onClick={onShowDetails}
+          className="flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#FF4854]"
+        >
+          자세히 보기 <ArrowRight className="h-3 w-3" />
         </button>
       </div>
-      {isGift ? (
-        <img src={TigerImage} alt="" className="absolute bottom-2 right-5 h-20 w-20 object-contain" />
-      ) : (
-        <img src={PhoenixImage} alt="" className="absolute bottom-2 right-5 h-20 w-20 object-contain opacity-80" />
-      )}
+      <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-4">
+        <div className="flex items-start gap-3">
+          <div className="relative flex h-16 w-20 shrink-0 items-center overflow-hidden bg-[#0B0D18] px-2">
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+            <strong className="relative text-[11px] font-900 leading-[12px] text-white">{article.visualTitle}</strong>
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-800 text-[#FF4854]">{article.category}</p>
+            <p className="mt-1 truncate text-[14px] font-900 text-[#2E3338]">{article.title}</p>
+            <p className="mt-1 line-clamp-2 text-[11px] font-600 leading-[16px] text-[#8A93A5]">{article.summary}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LearningDetailPanel() {
+  const [selectedLearningStatus, setSelectedLearningStatus] = useState('in-progress');
+  const learningStatusOptions = [
+    { key: 'in-progress', label: '진행 중', count: 1 },
+    { key: 'completed', label: '완료', count: 0 },
+  ];
+  const visibleArticles = selectedLearningStatus === 'in-progress' ? educationArticles.slice(0, 1) : [];
+
+  return (
+    <section>
+      <h1 className="text-[22px] font-900 text-[#151A21]">학습</h1>
+
+      <div className="mt-5 flex flex-wrap items-center gap-3 text-[13px] font-800">
+        {learningStatusOptions.map(option => {
+          const isSelected = selectedLearningStatus === option.key;
+
+          return (
+            <button
+              key={option.key}
+              type="button"
+              onClick={() => setSelectedLearningStatus(option.key)}
+              className={`cursor-pointer rounded-full px-3 py-1.5 transition ${
+                isSelected ? 'bg-[#FFF0F2] text-[#FF4854]' : 'text-[#7B8491] hover:bg-[#F6F7F9]'
+              }`}
+            >
+              {option.label} {option.count}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-7 divide-y divide-[#E6E9EE] border-y border-[#E6E9EE]">
+        {visibleArticles.map(article => (
+          <article key={article.id} className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center">
+            <div className="relative flex h-[112px] w-full shrink-0 items-center overflow-hidden bg-[#0B0D18] px-4 sm:w-[184px]">
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+              <strong className="relative text-[17px] font-900 leading-[19px] text-white">{article.visualTitle}</strong>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-800 text-[#FF4854]">
+                {article.category} · {article.date}
+              </p>
+              <h2 className="mt-2 text-[18px] font-900 text-[#151A21]">{article.title}</h2>
+              <p className="mt-2 line-clamp-2 text-[13px] font-500 leading-[20px] text-[#66717E]">{article.summary}</p>
+              <p className="mt-3 text-[11px] font-700 text-[#8A93A5]">{article.readTime} 읽기</p>
+            </div>
+          </article>
+        ))}
+        {!visibleArticles.length ? (
+          <p className="py-12 text-center text-[13px] font-700 text-[#8A93A5]">완료한 학습 자료가 없습니다.</p>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function TutorialDetailPanel() {
+  const [selectedTutorialStatus, setSelectedTutorialStatus] = useState('in-progress');
+  const visibleTutorials = selectedTutorialStatus === 'in-progress' ? TUTORIALS.slice(0, 1) : [];
+
+  return (
+    <section>
+      <h1 className="text-[22px] font-900 text-[#151A21]">튜토리얼</h1>
+      <div className="mt-5 flex items-center gap-3 text-[13px] font-800">
+        {[
+          { key: 'in-progress', label: '진행 중', count: 1 },
+          { key: 'completed', label: '완료', count: 0 },
+        ].map(option => (
+          <button
+            key={option.key}
+            type="button"
+            onClick={() => setSelectedTutorialStatus(option.key)}
+            className={`cursor-pointer rounded-full px-3 py-1.5 transition ${
+              selectedTutorialStatus === option.key
+                ? 'bg-[#FFF0F2] text-[#FF4854]'
+                : 'text-[#7B8491] hover:bg-[#F6F7F9]'
+            }`}
+          >
+            {option.label} {option.count}
+          </button>
+        ))}
+      </div>
+      <div className="mt-5 divide-y divide-[#E6E9EE] border-y border-[#E6E9EE]">
+        {visibleTutorials.map(tutorial => (
+          <article key={tutorial.id} className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center">
+            <div className="relative flex h-[112px] w-full shrink-0 items-center overflow-hidden bg-[#0B0D18] px-4 sm:w-[184px]">
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+              <strong className="relative text-[17px] font-900 leading-[19px] text-white">{tutorial.title}</strong>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-800 text-[#FF4854]">
+                {tutorial.tier} · {tutorial.difficulty}
+              </p>
+              <h2 className="mt-2 text-[18px] font-900 text-[#151A21]">{tutorial.title}</h2>
+              <p className="mt-2 text-[13px] font-500 text-[#66717E]">{tutorial.category}</p>
+              <p className="mt-3 text-[11px] font-700 text-[#8A93A5]">약 {tutorial.duration}</p>
+            </div>
+          </article>
+        ))}
+        {!visibleTutorials.length ? (
+          <p className="py-12 text-center text-[13px] font-700 text-[#8A93A5]">완료한 튜토리얼이 없습니다.</p>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function ChallengeDetailPanel() {
+  const [selectedChallengeStatus, setSelectedChallengeStatus] = useState('in-progress');
+  const visibleChallenges = selectedChallengeStatus === 'in-progress' ? challengePaths.slice(0, 1) : [];
+
+  return (
+    <section>
+      <h1 className="text-[22px] font-900 text-[#151A21]">챌린지</h1>
+      <div className="mt-5 flex items-center gap-3 text-[13px] font-800">
+        {[
+          { key: 'in-progress', label: '진행 중', count: 1 },
+          { key: 'completed', label: '완료', count: 0 },
+        ].map(option => (
+          <button
+            key={option.key}
+            type="button"
+            onClick={() => setSelectedChallengeStatus(option.key)}
+            className={`cursor-pointer rounded-full px-3 py-1.5 transition ${
+              selectedChallengeStatus === option.key
+                ? 'bg-[#FFF0F2] text-[#FF4854]'
+                : 'text-[#7B8491] hover:bg-[#F6F7F9]'
+            }`}
+          >
+            {option.label} {option.count}
+          </button>
+        ))}
+      </div>
+      <div className="mt-5 divide-y divide-[#E6E9EE] border-y border-[#E6E9EE]">
+        {visibleChallenges.map(challenge => (
+          <article key={challenge.id} className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center">
+            <div className="relative flex h-[112px] w-full shrink-0 items-center overflow-hidden bg-[#0B0D18] px-4 sm:w-[184px]">
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+              <strong className="relative text-[17px] font-900 leading-[19px] text-white">{challenge.title}</strong>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-800 text-[#FF4854]">
+                {challenge.tier} · {challenge.difficulty}
+              </p>
+              <h2 className="mt-2 text-[18px] font-900 text-[#151A21]">{challenge.title}</h2>
+              <p className="mt-2 text-[13px] font-500 text-[#66717E]">{challenge.category}</p>
+              <p className="mt-3 text-[11px] font-700 text-[#8A93A5]">약 {challenge.duration}</p>
+            </div>
+          </article>
+        ))}
+        {!visibleChallenges.length ? (
+          <p className="py-12 text-center text-[13px] font-700 text-[#8A93A5]">완료한 챌린지가 없습니다.</p>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function TutorialProgressCard({ onShowDetails }) {
+  const [selectedTutorialId, setSelectedTutorialId] = useState(null);
+  const tutorials = TUTORIALS;
+
+  if (!tutorials.length) return null;
+
+  return (
+    <section>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-[14px] font-900 text-[#2E3338]">진행중인 튜토리얼</h2>
+        <button
+          type="button"
+          onClick={onShowDetails}
+          className="flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#FF4854]"
+        >
+          자세히 보기 <ArrowRight className="h-3 w-3" />
+        </button>
+      </div>
+      <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-4">
+        <div className="rounded-[3px] bg-[#FFF0F2] p-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] bg-[#FFDCE0]">
+              <BookOpen className="h-5 w-5 text-[#FF4854]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-900 text-[#2E3338]">튜토리얼 입문 여정</p>
+              <p className="mt-1 text-[11px] font-600 text-[#8A93A5]">튜토리얼 완료까지 4개 남았어요!</p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-3">
+            <div className="h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-white">
+              <div className="h-full w-1/5 rounded-full bg-[#FF4854]" />
+            </div>
+            <span className="text-[11px] font-800 text-[#FF4854]">20%</span>
+          </div>
+        </div>
+
+        <div className="mt-3 divide-y divide-[#DDE3EA]">
+          {tutorials.map((tutorial, index) => {
+            const isSelected = selectedTutorialId === tutorial.id;
+            const status = index < 2 ? '완료' : '미완료';
+
+            return (
+              <div key={tutorial.id}>
+                <button
+                  type="button"
+                  aria-expanded={isSelected}
+                  onClick={() => setSelectedTutorialId(current => (current === tutorial.id ? null : tutorial.id))}
+                  className="flex w-full cursor-pointer items-center justify-between gap-3 py-3 text-left"
+                >
+                  <p className="min-w-0 truncate text-[13px] font-900 text-[#2E3338]">{tutorial.title}</p>
+                  <span className={`shrink-0 text-[11px] font-800 ${status === '완료' ? 'text-[#1BAE5B]' : 'text-[#A0A8B3]'}`}>
+                    {status}
+                  </span>
+                </button>
+
+                {isSelected ? (
+                  <div className="mb-3 flex items-start gap-3">
+                    <div className="relative flex h-16 w-20 shrink-0 items-center overflow-hidden bg-[#0B0D18] px-2">
+                      <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+                      <strong className="relative text-[11px] font-900 leading-[12px] text-white">{tutorial.title}</strong>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-800 text-[#FF4854]">
+                        {tutorial.tier} · {tutorial.difficulty}
+                      </p>
+                      <p className="mt-1 line-clamp-2 text-[14px] font-900 leading-[18px] text-[#2E3338]">{tutorial.title}</p>
+                      <p className="mt-1 truncate text-[11px] font-600 text-[#8A93A5]">{tutorial.category}</p>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 }
 
 function Timeline() {
   return (
-    <section>
-      <div className="mb-8 flex gap-8 border-b border-[#DDE3EA]">
-        <button type="button" className="cursor-pointer border-b-2 border-[#FF4854] pb-3 text-[14px] font-900 text-[#2E3338]">
-          타임라인
-        </button>
-        <button type="button" className="cursor-pointer border-b-2 border-transparent pb-3 text-[14px] font-900 text-[#7B8491] hover:text-[#FF4854]">
-          알림
-        </button>
+    <section className="lg:min-h-[308px]">
+      <div className="mb-6 border-b border-[#DDE3EA] pb-3">
+        <h2 className="text-[18px] font-900 text-[#2E3338]">공지사항</h2>
       </div>
 
       <div className="space-y-5">
@@ -337,24 +573,9 @@ function Timeline() {
   );
 }
 
-function NewsSection() {
-  return (
-    <section className="mt-10">
-      <h2 className="mb-5 text-[27px] font-900 text-[#2E3338]">아레나 인기 소식</h2>
-      <div className="flex gap-6">
-        <div className="h-[230px] w-[180px] rounded-[3px] border border-[#DDE3EA] bg-white p-5">
-          <div className="h-5 w-20 rounded bg-[#E2E4E8]" />
-          <div className="mt-24 h-5 w-16 rounded bg-[#E2E4E8]" />
-          <div className="mt-3 h-4 w-24 rounded bg-[#E2E4E8]" />
-          <div className="mt-8 h-5 w-20 rounded bg-[#E2E4E8]" />
-        </div>
-      </div>
-      <p className="mt-16 text-center text-[15px] font-700 text-[#A0A8B3]">지난 활동들을 모두 확인하셨습니다.</p>
-    </section>
-  );
-}
-
 export default function Dashboard() {
+  const [activeDetail, setActiveDetail] = useState(null);
+
   return (
     <div className="w-full bg-white">
       <DashboardBannerSlider />
@@ -369,21 +590,16 @@ export default function Dashboard() {
             <ArrowRight className="h-4 w-4" />
             마이페이지로 이동
           </button>
-          <MissionCard />
-          <PromoCard type="gift" />
-          <PromoCard type="report" />
-          <div className="grid grid-cols-4 gap-2">
-            {[Twitter, Instagram, Building2, MessageCircle].map((Icon, index) => (
-              <button key={index} type="button" className="flex h-9 cursor-pointer items-center justify-center rounded-[3px] border border-[#DDE3EA] text-[#A0A8B3] transition hover:border-[#FF4854] hover:text-[#FF4854]">
-                <Icon className="h-4 w-4" />
-              </button>
-            ))}
-          </div>
+          <LearningProgressCard onShowDetails={() => setActiveDetail('learning')} />
+          <TutorialProgressCard onShowDetails={() => setActiveDetail('tutorial')} />
+          <MissionCard onShowDetails={() => setActiveDetail('challenge')} />
         </aside>
 
         <main className="min-w-0 pt-1">
           <Timeline />
-          <NewsSection />
+          {activeDetail === 'learning' ? <LearningDetailPanel /> : null}
+          {activeDetail === 'tutorial' ? <TutorialDetailPanel /> : null}
+          {activeDetail === 'challenge' ? <ChallengeDetailPanel /> : null}
         </main>
       </div>
     </div>

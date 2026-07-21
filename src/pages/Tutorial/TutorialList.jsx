@@ -3,7 +3,7 @@ import { ArrowRight, Clock3, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 
-const TUTORIALS = [
+export const TUTORIALS = [
   {
     id: 1,
     title: 'Prompt Injection Basics',

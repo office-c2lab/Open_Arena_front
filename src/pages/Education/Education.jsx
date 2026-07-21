@@ -11,7 +11,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
 
-const articles = [
+export const articles = [
   {
     id: 'ai-red-teaming',
     date: '2026-07-20',
