@@ -1,7 +1,7 @@
 // src/pages/Login/Login.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff } from 'lucide-react';
 import { login } from '@/api/auth';
@@ -70,9 +70,7 @@ export default function Login() {
 
   return (
     <div className="flex justify-center bg-white px-[10px] py-14">
-      <div
-        className="max-w-[675px] w-full flex flex-col"
-      >
+      <div className="max-w-[675px] w-full flex flex-col">
         {/* Header */}
         <header className="px-2 pt-4 pb-4">
           <div className="flex items-center justify-between">
@@ -149,7 +147,7 @@ export default function Login() {
             {isPending ? '로그인 중...' : '로그인'}
           </button>
 
-          <div className="mt-7 text-center body-medium font-500 text-[#6B6B6B]">
+          <div className="mt-7 text-center body-large font-500 text-[#6B6B6B]">
             <span>계정이 없으신가요? </span>
             <button
               type="button"
@@ -158,6 +156,18 @@ export default function Login() {
             >
               회원가입
             </button>
+          </div>
+
+          <div className="mt-3 flex items-center justify-center gap-2 body-large font-500 text-[#8A93A5]">
+            <Link to="/signup?agreement=terms" className="transition hover:text-[#FF4854]">
+              이용약관
+            </Link>
+            <span aria-hidden="true" className="text-[#D9DADB]">
+              |
+            </span>
+            <Link to="/signup?agreement=privacy" className="transition hover:text-[#FF4854]">
+              개인정보처리방침
+            </Link>
           </div>
         </footer>
       </div>
