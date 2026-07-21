@@ -386,7 +386,7 @@ const ChallengeSection = () => {
         filters.category || '카테고리 전체',
         filters.tier || 'Tier 전체',
         filters.difficulty || '난이도 전체',
-      ].join(' · '),
+      ].join(' | '),
     [activeSeason, filters]
   );
 
