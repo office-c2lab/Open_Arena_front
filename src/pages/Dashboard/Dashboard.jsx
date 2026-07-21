@@ -193,13 +193,15 @@ function ProfileCard() {
   const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
   const isPaidMember = teamInfo?.membershipType === 'paid';
   const profileStats = teamInfo?.profileStats || {};
+  const profileImage = teamInfo?.profileImage || UserIcon;
+  const hasProfileImage = Boolean(teamInfo?.profileImage);
 
   return (
     <section className="overflow-hidden rounded-[3px] border border-[#DDE3EA] bg-white">
       <div className="px-5 py-5">
         <div className="flex items-center gap-3">
-          <div className="relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-[#E6EAF0] bg-[#F2F4F6]">
-            <img src={UserIcon} alt="" className="h-11 w-11 opacity-35 grayscale" />
+          <div className={`relative flex h-[74px] w-[74px] items-center justify-center overflow-hidden rounded-full ${hasProfileImage ? 'bg-[#F2F4F6]' : 'border border-[#E6EAF0] bg-[#F2F4F6]'}`}>
+            <img src={profileImage} alt="" className={hasProfileImage ? 'h-full w-full object-cover' : 'h-11 w-11 opacity-35 grayscale'} />
           </div>
           <div className="min-w-0 flex-1 pb-1">
             <div className="flex items-center justify-between gap-2">

@@ -20,7 +20,7 @@ function InfoSection({ title, children }) {
   );
 }
 
-export default function MyPage() {
+export default function MyPage({ embedded = false }) {
   const teamInfo = useAuthStore(state => state.teamInfo);
   const login = useAuthStore(state => state.login);
   const nickname = teamInfo?.teamname || teamInfo?.username || 'ARENA 유저';
@@ -51,7 +51,7 @@ export default function MyPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-[900px] bg-white px-5 py-12 sm:px-8">
+    <section className={embedded ? 'mt-10 border-t border-[#E3E6EB] pt-8' : 'mx-auto w-full max-w-[1200px] bg-white px-5 py-10 sm:px-8'}>
       <div className="flex items-center gap-8">
         <h1 className="text-[23px] font-900 text-[#151A21]">기본정보</h1>
         <button
@@ -182,6 +182,6 @@ export default function MyPage() {
           회원 탈퇴하기
         </button>
       )}
-    </main>
+    </section>
   );
 }

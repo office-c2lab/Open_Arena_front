@@ -1,4 +1,4 @@
-import { LogOut, Menu, Settings, User, X } from 'lucide-react';
+import { LogOut, Menu, Settings, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
@@ -30,6 +30,8 @@ export default function AppHeader() {
   const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
   const isPaidMember = teamInfo?.membershipType === 'paid';
   const profileStats = teamInfo?.profileStats || {};
+  const profileImage = teamInfo?.profileImage || UserIcon;
+  const hasProfileImage = Boolean(teamInfo?.profileImage);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -109,9 +111,9 @@ export default function AppHeader() {
                 aria-label="프로필 메뉴"
                 aria-expanded={isProfileOpen}
                 onClick={() => setIsProfileOpen(current => !current)}
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#FF4854] shadow-[0_3px_10px_rgba(255,72,84,0.18)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
+                className={`flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full shadow-[0_3px_10px_rgba(255,72,84,0.18)] transition hover:-translate-y-0.5 ${hasProfileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854] hover:bg-[#FF4854]/90'}`}
               >
-                <img src={UserIcon} alt="" className="h-6 w-6" aria-hidden="true" />
+                <img src={profileImage} alt="" className={hasProfileImage ? 'h-full w-full object-cover' : 'h-6 w-6'} aria-hidden="true" />
               </button>
 
               {isProfileOpen ? (
@@ -124,10 +126,14 @@ export default function AppHeader() {
                   />
                   <div className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[326px] rounded-[3px] border border-[#ece7e1] bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.16)]">
                     <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F2F4F6]">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF4854]">
-                          <img src={UserIcon} alt="" className="h-6 w-6" aria-hidden="true" />
-                        </div>
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F2F4F6]">
+                        {hasProfileImage ? (
+                          <img src={profileImage} alt="" className="h-full w-full object-cover" aria-hidden="true" />
+                        ) : (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF4854]">
+                            <img src={UserIcon} alt="" className="h-6 w-6" aria-hidden="true" />
+                          </div>
+                        )}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
@@ -138,12 +144,12 @@ export default function AppHeader() {
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      className="mt-4 h-10 w-full cursor-pointer rounded-[4px] bg-[#FF4854] text-sm font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
+                    <Link
+                      to="/mypage"
+                      className="mt-4 flex h-10 w-full items-center justify-center rounded-[4px] bg-[#FF4854] text-sm font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
                     >
-                      프로필 커스텀
-                    </button>
+                      마이페이지
+                    </Link>
 
                     {isPaidMember ? (
                       <>
@@ -181,15 +187,8 @@ export default function AppHeader() {
 
                     <div className="mt-4 flex flex-col gap-1">
                       <Link
-                        to="/mypage"
-                        className="flex items-center gap-3 rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
-                      >
-                        <User className="h-5 w-5 text-[#AAACB0]" />
-                        마이페이지
-                      </Link>
-                      <Link
                         to="/settings"
-                        className="flex cursor-pointer items-center gap-3 rounded-[4px] px-2 py-2 text-left text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                        className="flex items-center gap-3 rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
                       >
                         <Settings className="h-5 w-5 text-[#AAACB0]" />
                         계정 설정

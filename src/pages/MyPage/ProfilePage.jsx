@@ -1,16 +1,9 @@
-import { ArrowRight, BookOpen, Medal, Target } from 'lucide-react';
+import { ArrowRight, BookOpen, CalendarDays, Camera, Mail, Medal, Target } from 'lucide-react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import UserIcon from '@/assets/icons/user.svg';
+import ProfileBannerImage from '@/assets/images/profile_banner.png';
 import { useAuthStore } from '@/stores/authStore';
-
-function Stat({ label, value }) {
-  return (
-    <div className="border-l border-[#E3E6EB] px-5 first:border-l-0">
-      <p className="text-[11px] font-800 text-[#8A93A5]">{label}</p>
-      <p className="mt-1 text-[22px] font-900 text-[#151A21]">{value}</p>
-    </div>
-  );
-}
 
 function SummaryCard({ icon: Icon, title, description, action, to }) {
   return (
@@ -31,58 +24,55 @@ function SummaryCard({ icon: Icon, title, description, action, to }) {
 
 export default function ProfilePage() {
   const teamInfo = useAuthStore(state => state.teamInfo);
+  const login = useAuthStore(state => state.login);
+  const profileImageInputRef = useRef(null);
   const nickname = teamInfo?.teamname || teamInfo?.username || 'ARENA 유저';
   const email = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
   const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
-  const isPaidMember = teamInfo?.membershipType === 'paid';
-  const stats = teamInfo?.profileStats || {};
+  const profileImage = teamInfo?.profileImage || UserIcon;
+  const handleProfileImageChange = event => {
+    const [file] = event.target.files || [];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => login({ ...teamInfo, profileImage: reader.result });
+    reader.readAsDataURL(file);
+    event.target.value = '';
+  };
 
   return (
     <main className="mx-auto w-full max-w-[1200px] bg-white px-5 py-10 sm:px-8">
-      <section className="overflow-hidden rounded-[4px] border border-[#DDE3EA] bg-white">
-        <div className="relative h-[132px] bg-[#FAFBFC]">
-          <div className="absolute inset-0 opacity-70 [background-image:radial-gradient(circle_at_20px_20px,#EEF1F5_8px,transparent_9px)] [background-size:42px_42px]" />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,72,84,0.05))]" />
-        </div>
-        <div className="px-6 pb-6">
-          <div className="-mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div className="flex items-end gap-4">
-              <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-[#F2F4F6] shadow-sm">
-                <img src={UserIcon} alt="" className="h-12 w-12 opacity-45 grayscale" />
-              </div>
+      <section className="relative min-h-[202px] overflow-hidden rounded-[10px] border border-[#E3E6EB] bg-white shadow-[0_8px_22px_rgba(15,23,42,0.06)]">
+        <img src={ProfileBannerImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="relative flex min-h-[202px] flex-col justify-end px-6 pb-6 sm:px-9">
+          <div className="flex items-end">
+            <div className="flex items-center gap-5">
+              <button
+                type="button"
+                aria-label="프로필 이미지 변경"
+                onClick={() => profileImageInputRef.current?.click()}
+                className="group relative flex h-[112px] w-[112px] shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#20242B] shadow-[0_5px_14px_rgba(15,23,42,0.2)]"
+              >
+                <img src={profileImage} alt="프로필 이미지" className="h-full w-full object-cover" />
+                <span className="absolute inset-0 flex items-center justify-center bg-black/45 text-white opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <Camera className="h-6 w-6" />
+                </span>
+              </button>
+              <input ref={profileImageInputRef} type="file" accept="image/*" onChange={handleProfileImageChange} className="hidden" />
               <div className="pb-1">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-[25px] font-900 text-[#151A21]">{nickname}</h1>
-                  <span className="text-[12px] font-800 text-[#FF4854]">{membershipLabel}</span>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <h1 className="text-[26px] font-900 text-[#151A21]">{nickname}</h1>
+                  <span className="rounded-full bg-[#FF4854] px-3 py-1 text-[12px] font-900 text-white">{membershipLabel}</span>
                 </div>
-                <p className="mt-1 text-[13px] font-600 text-[#8A93A5]">{email}</p>
+                <p className="mt-2 flex items-center gap-2 text-[13px] font-700 text-[#596575]"><Mail className="h-4 w-4 text-[#7B8491]" />{email}</p>
+                <p className="mt-2 flex items-center gap-2 text-[13px] font-700 text-[#596575]"><CalendarDays className="h-4 w-4 text-[#7B8491]" />가입일 2026.07.01</p>
               </div>
             </div>
-            <Link to="/settings" className="w-fit rounded-[3px] border border-[#FFB8BE] px-4 py-2 text-[13px] font-800 text-[#FF4854] transition hover:bg-[#FFF0F2]">
-              프로필 편집
-            </Link>
-          </div>
-
-          <p className="mt-6 text-[14px] font-600 text-[#66717E]">AI 보안 실습을 통해 한 단계씩 성장하고 있습니다.</p>
-          <div className="mt-6 flex flex-wrap divide-x divide-[#E3E6EB]">
-            {isPaidMember ? (
-              <>
-                <Stat label="성공한 챌린지" value={stats.solvedChallenges || 0} />
-                <Stat label="총 성공 횟수" value={stats.totalSuccesses || 0} />
-                <Stat label="랭킹" value={`${stats.rank || '-'}위`} />
-              </>
-            ) : (
-              <>
-                <Stat label="무료 도전" value="1 / 6" />
-                <Stat label="무료 채팅" value="10" />
-                <Stat label="무료 토큰" value="1,000" />
-              </>
-            )}
           </div>
         </div>
       </section>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="mt-10">
         <section>
           <div className="flex items-center justify-between">
             <h2 className="text-[20px] font-900 text-[#151A21]">나의 성장 현황</h2>
@@ -113,20 +103,6 @@ export default function ProfilePage() {
             </div>
           </section>
         </section>
-
-        <aside>
-          <section className="rounded-[4px] border border-[#DDE3EA] bg-white p-5">
-            <h2 className="text-[16px] font-900 text-[#151A21]">프로필 정보</h2>
-            <dl className="mt-5 space-y-4 text-[13px]">
-              <div className="flex justify-between gap-4"><dt className="font-700 text-[#8A93A5]">자기소개</dt><dd className="text-right font-700 text-[#596575]">아직 자기소개가 없습니다.</dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-700 text-[#8A93A5]">국가</dt><dd className="font-700 text-[#596575]">대한민국</dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-700 text-[#8A93A5]">가입일</dt><dd className="font-700 text-[#596575]">2026.07.01</dd></div>
-            </dl>
-            <Link to="/settings" className="mt-6 flex h-10 items-center justify-center rounded-[3px] bg-[#FF4854] text-[13px] font-900 text-white transition hover:bg-[#E73541]">
-              계정 설정
-            </Link>
-          </section>
-        </aside>
       </div>
     </main>
   );

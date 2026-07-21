@@ -3,7 +3,7 @@
 import React from 'react';
 import UserIcon from '@/assets/icons/user.svg';
 
-export default function SidebarProfile({ isCollapsed, name, role }) {
+export default function SidebarProfile({ isCollapsed, name, role, profileImage }) {
   return (
     <div
       className={`flex items-center h-[40px]
@@ -15,8 +15,8 @@ export default function SidebarProfile({ isCollapsed, name, role }) {
       `}
     >
       {/* 프로필 이미지 (기본 아이콘) */}
-      <div className="w-[40px] h-[40px] rounded-full bg-[#FF4854] flex items-center justify-center flex-shrink-0">
-        <img src={UserIcon} alt="User" className="w-[24px] h-[24px]" />
+      <div className={`w-[40px] h-[40px] overflow-hidden rounded-full flex items-center justify-center flex-shrink-0 ${profileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854]'}`}>
+        <img src={profileImage || UserIcon} alt="User" className={profileImage ? 'h-full w-full object-cover' : 'w-[24px] h-[24px]'} />
       </div>
 
       {/* 접힘 상태가 아닐 때만 텍스트 표시 */}
