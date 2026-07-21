@@ -1,26 +1,9 @@
-import { ArrowRight, BookOpen, CalendarDays, Camera, Mail, Medal, Target } from 'lucide-react';
+import { CalendarDays, Camera, Mail } from 'lucide-react';
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
 import UserIcon from '@/assets/icons/user.svg';
 import ProfileBannerImage from '@/assets/images/profile_banner.png';
 import { useAuthStore } from '@/stores/authStore';
-
-function SummaryCard({ icon: Icon, title, description, action, to }) {
-  return (
-    <Link to={to} className="group flex items-center gap-4 rounded-[4px] border border-[#DDE3EA] bg-white p-4 transition hover:border-[#FFB8BE] hover:bg-[#FFF9FA]">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] bg-[#FFF0F2]">
-        <Icon className="h-5 w-5 text-[#FF4854]" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <h3 className="text-[14px] font-900 text-[#2E3338]">{title}</h3>
-        <p className="mt-1 truncate text-[12px] font-600 text-[#8A93A5]">{description}</p>
-      </div>
-      <span className="flex shrink-0 items-center gap-1 text-[12px] font-800 text-[#FF4854]">
-        {action} <ArrowRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
-      </span>
-    </Link>
-  );
-}
+import AccountSettings from './MyPage';
 
 export default function ProfilePage() {
   const teamInfo = useAuthStore(state => state.teamInfo);
@@ -72,38 +55,7 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      <div className="mt-10">
-        <section>
-          <div className="flex items-center justify-between">
-            <h2 className="text-[20px] font-900 text-[#151A21]">나의 성장 현황</h2>
-            <Link to="/education" className="flex items-center gap-1 text-[12px] font-800 text-[#FF4854]">
-              전체 보기 <ArrowRight className="h-3 w-3" />
-            </Link>
-          </div>
-          <div className="mt-4 space-y-3">
-            <SummaryCard icon={BookOpen} title="학습" description="AI Red Teaming 기초를 학습 중입니다." action="학습 보기" to="/education" />
-            <SummaryCard icon={Target} title="튜토리얼" description="Prompt Injection Basics 튜토리얼을 진행 중입니다." action="튜토리얼 보기" to="/tutorial" />
-            <SummaryCard icon={Medal} title="챌린지" description="System Hacking Basics 챌린지를 탐색해 보세요." action="챌린지 보기" to="/kategorie" />
-          </div>
-
-          <section className="mt-10">
-            <h2 className="text-[20px] font-900 text-[#151A21]">최근 활동</h2>
-            <div className="mt-4 divide-y divide-[#E3E6EB] border-y border-[#E3E6EB]">
-              {[
-                ['학습 시작', 'AI Red Teaming이란 무엇인가요?', '방금 전'],
-                ['튜토리얼', 'Prompt Injection Basics', '어제'],
-                ['챌린지', 'System Hacking Basics', '3일 전'],
-              ].map(([type, title, time]) => (
-                <div key={title} className="grid grid-cols-[88px_minmax(0,1fr)_70px] items-center gap-3 py-4 text-[13px]">
-                  <span className="font-800 text-[#FF4854]">{type}</span>
-                  <span className="truncate font-700 text-[#3D4754]">{title}</span>
-                  <span className="text-right font-600 text-[#A0A8B3]">{time}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        </section>
-      </div>
+      <AccountSettings embedded />
     </main>
   );
 }

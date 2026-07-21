@@ -1,4 +1,4 @@
-import { LogOut, Menu, Settings, X } from 'lucide-react';
+import { LogOut, Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
@@ -145,10 +145,10 @@ export default function AppHeader() {
                     </div>
 
                     <Link
-                      to="/mypage"
+                      to="/settings"
                       className="mt-4 flex h-10 w-full items-center justify-center rounded-[4px] bg-[#FF4854] text-sm font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
                     >
-                      마이페이지
+                      계정 설정
                     </Link>
 
                     {isPaidMember ? (
@@ -186,13 +186,6 @@ export default function AppHeader() {
                     )}
 
                     <div className="mt-4 flex flex-col gap-1">
-                      <Link
-                        to="/settings"
-                        className="flex items-center gap-3 rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
-                      >
-                        <Settings className="h-5 w-5 text-[#AAACB0]" />
-                        계정 설정
-                      </Link>
                       <button
                         type="button"
                         onClick={handleLogout}

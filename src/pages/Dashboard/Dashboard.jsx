@@ -591,11 +591,11 @@ export default function Dashboard() {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/mypage')}
+            onClick={() => navigate('/settings')}
             className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[3px] border border-[#DDE3EA] bg-white text-[13px] font-800 text-[#596575] transition hover:border-[#FF4854] hover:text-[#FF4854]"
           >
             <ArrowRight className="h-4 w-4" />
-            마이페이지로 이동
+            계정 설정으로 이동
           </button>
           <LearningProgressCard onShowDetails={() => setActiveDetail('learning')} />
           <TutorialProgressCard onShowDetails={() => setActiveDetail('tutorial')} />
