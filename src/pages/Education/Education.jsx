@@ -216,8 +216,13 @@ function EducationListItem({ article, onOpen }) {
         onClick={onOpen}
         className="group flex w-full cursor-pointer items-start gap-5 px-1 py-6 text-left transition sm:px-4 sm:py-7"
       >
-        <div className="hidden w-[170px] shrink-0 text-[18px] font-900 leading-tight text-[#FF4854] md:block">
-          {article.visualTitle}
+        <div className="relative hidden h-[104px] w-[190px] shrink-0 items-center overflow-hidden bg-[#0B0D18] px-4 md:flex">
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
+          <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full border border-[#FF4854]/30" />
+          <div className="absolute -bottom-12 right-5 h-28 w-28 rounded-full border border-[#FF4854]/20" />
+          <strong className="relative z-10 text-[20px] font-900 leading-[22px] text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
+            {article.visualTitle}
+          </strong>
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-700 text-[#8A93A5]">
