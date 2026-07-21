@@ -144,15 +144,15 @@ export default function AppHeader() {
                     </button>
 
                     <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-sm font-500 text-[#76787a]">
-                      내 VM 크레딧 <span className="font-700 text-[#1ec186]">3</span>
+                    무료 도전 횟수 <span className="font-700 text-[#1ec186]">1 / 3</span>
                     </div>
 
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                        내 유료 코인 <span className="font-700 text-[#FFB155]">0</span>
+                      무료 채팅 <span className="font-700 text-[#A8AAFF]">10</span>
                       </div>
-                      <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                        내 무료 코인 <span className="font-700 text-[#A8AAFF]">0</span>
+                       <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
+                      무료 토큰 <span className="font-700 text-[#FFB155]">1000</span>
                       </div>
                     </div>
 
