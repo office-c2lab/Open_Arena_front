@@ -258,7 +258,7 @@ function PathCard({ path, onClick }) {
         <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">{path.category} 실전 보안 챌린지</p>
         <div className="mt-5 grid grid-cols-[0.85fr_1.35fr_1.35fr_0.8fr] divide-x divide-[#D8DDE4] text-[12px] text-[#2E3338]">
           <span className="flex items-center justify-center whitespace-nowrap pr-1 font-700">
-            성공 <em className="ml-1 not-italic text-[#FF4854]">{path.reviews}명</em>
+            성공 <em className="ml-1 not-italic text-[#FF4854]">{path.reviews}</em>명
           </span>
           <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
             평균 <em className="mx-1 not-italic text-[#FF4854]">1,240</em> 토큰
