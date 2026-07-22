@@ -1,14 +1,34 @@
 // src/pages/admin/AdminJudgePromptPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 import { useAdminProblemsQuery } from '@/hooks/useAdminProblemsQuery';
 import { useJudgePromptQuery, useJudgePromptMutation } from '@/hooks/useAdminJudgePrompt';
 
 export default function AdminJudgePromptPage() {
   const [selectedProblemId, setSelectedProblemId] = useState(null);
   const [promptText, setPromptText] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   // 🔹 문제 전체 목록 가져오기
   const { data: problems = [], isLoading: problemsLoading } = useAdminProblemsQuery();
+  const filteredProblems = useMemo(() => {
+    const keyword = searchKeyword.trim().toLowerCase();
+    if (!keyword) return problems;
+
+    return problems.filter(problem => {
+      const searchableText = [problem.id, problem.title, problem.description]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+      return searchableText.includes(keyword);
+    });
+  }, [problems, searchKeyword]);
+
+  const handleSearch = () => {
+    setSearchKeyword(searchInput);
+  };
 
   // 🔹 현재 선택된 문제의 프롬프트 GET
   const {
@@ -47,8 +67,38 @@ export default function AdminJudgePromptPage() {
       <div className="w-[300px] bg-[#0B021C]/70 border border-white/10 rounded-xl p-5">
         <h2 className="text-lg font-bold mb-4">문제 목록</h2>
 
+        <div className="mb-4 flex flex-col gap-3">
+          <label className="relative">
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              value={searchInput}
+              onChange={event => setSearchInput(event.target.value)}
+              onKeyDown={event => {
+                if (event.key === 'Enter') handleSearch();
+              }}
+              placeholder="문제 검색"
+              className="h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-10 pr-4 text-white outline-none placeholder:text-gray-500 focus:border-[#FF4854]"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="h-11 rounded-lg bg-[#FF4854] px-5 font-bold text-white transition hover:bg-[#ff3242]"
+          >
+            검색
+          </button>
+        </div>
+
         <div className="flex flex-col gap-2 max-h-[70vh] overflow-y-auto">
-          {problems.map(problem => (
+          {filteredProblems.length === 0 && (
+            <div className="rounded-lg border border-white/10 bg-[#10050F]/50 p-4 text-sm text-gray-400">
+              검색 결과가 없습니다.
+            </div>
+          )}
+          {filteredProblems.map(problem => (
             <button
               key={problem.id}
               onClick={() => setSelectedProblemId(problem.id)}

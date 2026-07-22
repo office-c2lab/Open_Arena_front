@@ -176,7 +176,7 @@ export default function AppHeader() {
 
                         <div className="mt-3 grid grid-cols-2 gap-2">
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                            무료 채팅 <span className="font-700 text-[#A8AAFF]">10</span>
+                            무료 제출 <span className="font-700 text-[#A8AAFF]">2/10</span>
                           </div>
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
                             무료 토큰 <span className="font-700 text-[#FFB155]">1000</span>

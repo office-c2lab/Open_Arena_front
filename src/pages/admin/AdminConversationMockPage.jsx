@@ -1,5 +1,6 @@
 // src/pages/AdminConversationReview/AdminConversationReviewPage.jsx
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { Search } from 'lucide-react';
 import {
   useJudgeTeams,
   useJudgeProblems,
@@ -14,6 +15,8 @@ export default function AdminConversationReviewPage() {
   const [teamId, setTeamId] = useState(null);
   const [problemId, setProblemId] = useState(null);
   const [sessionId, setSessionId] = useState(null);
+  const [searchInput, setSearchInput] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   /* ============================================
      1) 데이터 로드
@@ -24,9 +27,84 @@ export default function AdminConversationReviewPage() {
   const { data: messages = [] } = useJudgeMessages(sessionId);
   const { data: judgeResult } = useJudgeResult(sessionId);
 
+  const keyword = searchKeyword.trim().toLowerCase();
+  const filteredTeams = useMemo(() => {
+    if (!keyword) return teams;
+
+    return teams.filter(team =>
+      [team.id, team.username, team.teamname, team.nickname]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(keyword)
+    );
+  }, [keyword, teams]);
+  const filteredProblems = useMemo(() => {
+    if (!keyword) return problems;
+
+    return problems.filter(problem =>
+      [problem.id, problem.title, problem.description]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(keyword)
+    );
+  }, [keyword, problems]);
+  const filteredSessions = useMemo(() => {
+    if (!keyword) return sessions;
+
+    return sessions.filter(session =>
+      [session.id, session.status, session.judge]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(keyword)
+    );
+  }, [keyword, sessions]);
+  const filteredMessages = useMemo(() => {
+    if (!keyword) return messages;
+
+    return messages.filter(message =>
+      [message.id, message.role, message.content]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(keyword)
+    );
+  }, [keyword, messages]);
+
+  const handleSearch = () => {
+    setSearchKeyword(searchInput);
+  };
+
   return (
     <div className="w-full p-10 text-white flex flex-col gap-6">
       <h1 className="text-3xl font-bold text-[#FF4854]">관리자 세션 / 판정 관리 페이지</h1>
+
+      <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-[#0B021C]/70 p-4 sm:flex-row sm:items-center">
+        <label className="relative flex-1">
+          <Search
+            size={18}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            value={searchInput}
+            onChange={event => setSearchInput(event.target.value)}
+            onKeyDown={event => {
+              if (event.key === 'Enter') handleSearch();
+            }}
+            placeholder="팀, 문제, 세션, 대화 내용 검색"
+            className="h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-10 pr-4 text-white outline-none placeholder:text-gray-500 focus:border-[#FF4854]"
+          />
+        </label>
+        <button
+          type="button"
+          onClick={handleSearch}
+          className="h-11 rounded-lg bg-[#FF4854] px-5 font-bold text-white transition hover:bg-[#ff3242]"
+        >
+          검색
+        </button>
+      </div>
 
       {/* ============================================
           1) 팀 / 문제 / 세션 목록
@@ -34,7 +112,8 @@ export default function AdminConversationReviewPage() {
       <div className="grid grid-cols-3 gap-4">
         {/* 팀 목록 */}
         <Column title="팀 목록">
-          {teams.map(t => (
+          {filteredTeams.length === 0 && <Empty>검색 결과가 없습니다.</Empty>}
+          {filteredTeams.map(t => (
             <Item
               key={t.id}
               label={t.username ?? t.teamname ?? `Team ${t.id}`}
@@ -51,7 +130,10 @@ export default function AdminConversationReviewPage() {
         {/* 문제 목록 */}
         <Column title="문제 목록">
           {problems.length === 0 && <Empty>문제를 불러오는 중...</Empty>}
-          {problems.map(p => (
+          {problems.length > 0 && filteredProblems.length === 0 && (
+            <Empty>검색 결과가 없습니다.</Empty>
+          )}
+          {filteredProblems.map(p => (
             <Item
               key={p.id}
               label={p.title}
@@ -68,7 +150,10 @@ export default function AdminConversationReviewPage() {
         <Column title="세션 목록">
           {(!teamId || !problemId) && <Empty>팀/문제를 먼저 선택하세요</Empty>}
 
-          {sessions.map(s => (
+          {teamId && problemId && filteredSessions.length === 0 && (
+            <Empty>검색 결과가 없습니다.</Empty>
+          )}
+          {filteredSessions.map(s => (
             <Item
               key={s.id}
               label={`세션 #${s.id} (${s.status})`}
@@ -88,7 +173,8 @@ export default function AdminConversationReviewPage() {
         {!sessionId && <Empty>세션을 선택하세요</Empty>}
 
         <div className="flex flex-col gap-3">
-          {messages.map(m => (
+          {sessionId && filteredMessages.length === 0 && <Empty>검색 결과가 없습니다.</Empty>}
+          {filteredMessages.map(m => (
             <ChatBubble key={m.id} msg={m} />
           ))}
         </div>
