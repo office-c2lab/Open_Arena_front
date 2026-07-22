@@ -11,7 +11,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import TutorialImage from '@/assets/images/tutorial.png';
-import TutorialStartCardBg from '@/assets/images/tutorial_start_cardbg.png';
+import StartCardBg from '@/assets/images/start_cardbg.png';
 import SuccessCardBg from '@/assets/images/succescard.png';
 import FailCardBg from '@/assets/images/failcard.png';
 import NoTryCardBg from '@/assets/images/notry.png';
@@ -97,7 +97,7 @@ function SidePanel({ tutorial }) {
     <aside className="space-y-4">
       <div className="relative aspect-[1619/842] overflow-hidden rounded-[12px] border border-[#DDE3EA] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
         <div className="absolute inset-0 overflow-hidden rounded-[12px]">
-          <img src={TutorialStartCardBg} alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
+          <img src={StartCardBg} alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
           <div className="absolute left-[40%] right-[5%] top-[18%] z-10">
             <h3 className="text-[22px] font-900 leading-[28px] text-[#202832]">튜토리얼 챌린지</h3>
             <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
@@ -161,7 +161,7 @@ export default function Tutorial() {
     { id: 'learning', label: '학습 목표' },
     { id: 'overview', label: '챌린지 개요' },
     { id: 'history', label: '도전 기록' },
-    { id: 'solvers', label: '푼 사람들' },
+    { id: 'solvers', label: '순위 현황' },
   ];
 
   return (
@@ -313,7 +313,7 @@ export default function Tutorial() {
 
           {activeTab === 'solvers' ? (
             <section>
-              <h2 className="text-[26px] font-900 text-black">푼 사람들</h2>
+              <h2 className="text-[26px] font-900 text-black">순위 현황</h2>
               <div className="mt-5 flex min-h-[180px] items-center justify-center rounded-[6px] border border-[#DDE3EA] bg-[#FAFBFC] px-6 text-center">
                 <div>
                   <p className="text-[16px] font-800 text-[#3D4754]">아직 성공한 사용자가 없습니다.</p>

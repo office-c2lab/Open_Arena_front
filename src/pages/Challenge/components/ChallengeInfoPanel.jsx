@@ -3,6 +3,8 @@ import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import ApiInfoPanel from './ApiInfoPanel';
+import PointInfoCard from './PointInfoCard';
+import TokenInfoCard from './TokenInfoCard';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 import leftGreenBg from '@/assets/images/leftgreen.png';
 import leftYellowBg from '@/assets/images/leftyellow.png';
@@ -101,6 +103,8 @@ export default function ChallengeInfoPanel({
   problemApiHeaderName,
   problemApiKey,
   problemCode,
+  problemId,
+  teamId,
 }) {
   const navigate = useNavigate();
   const [hoveredTab, setHoveredTab] = useState(null);
@@ -145,6 +149,11 @@ export default function ChallengeInfoPanel({
               {CHALLENGE_HEADER_INFO?.title}
             </span>
           </div>
+        </div>
+
+        <div className="relative flex-shrink-0 space-y-3 px-4 pb-4">
+          <PointInfoCard isLoading={isLoading} />
+          <TokenInfoCard problemId={problemId} teamId={teamId} />
         </div>
 
         {/* 탭 영역 */}
@@ -221,6 +230,7 @@ export default function ChallengeInfoPanel({
                     />
                   </div>
                 )}
+
               </div>
             </div>
           )}
