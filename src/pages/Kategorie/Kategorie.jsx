@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { ArrowRight, Check, ChevronDown, Clock3, Search, Star } from 'lucide-react';
+import { Check, ChevronDown, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
+import ChallengeCardImage from '@/assets/images/challenge.png';
 
 export const PATHS = [
   {
@@ -15,10 +16,11 @@ export const PATHS = [
     reviews: 7,
     duration: '9시간 30분',
     price: '1000 포인트',
-    level: 'Pro',
+    level: 'Premium',
     season: '시즌1',
     tone: 'pink',
     featured: true,
+    maximumPoints: 100,
   },
   {
     id: 2,
@@ -219,13 +221,20 @@ const tagColors = {
 
 function PathPreview({ path }) {
   return (
-    <div className="relative flex h-[150px] w-full items-center overflow-hidden bg-[#0B0D18] px-5 text-left">
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
-      <div className="absolute -right-8 -top-10 h-40 w-40 rounded-full border border-[#FF4854]/30" />
-      <div className="absolute right-10 bottom-[-54px] h-36 w-36 rounded-full border border-[#FF4854]/20" />
-      <strong className="relative z-10 text-[26px] font-900 uppercase leading-[31px] text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
-        {path.title}
-      </strong>
+    <div className="relative h-[180px] overflow-hidden">
+      <img
+        src={ChallengeCardImage}
+        alt={`${path.title} 챌린지`}
+        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+      />
+      <div className="absolute inset-0 flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        <p className="text-[13px] font-800 leading-[18px] text-white">
+          {path.title} 시나리오에서 AI의 보안 규칙과 취약점을 분석해 목표를 달성하세요.
+        </p>
+        <p className="mt-3 text-[13px] font-900 leading-[18px] text-[#FF5A65]">
+          {path.category} 분야의 핵심 보안 과제를 해결하는 것.
+        </p>
+      </div>
     </div>
   );
 }
@@ -240,54 +249,34 @@ function PathCard({ path, onClick }) {
 
   return (
     <article
-      className="group flex min-h-[392px] min-w-0 cursor-pointer flex-col overflow-hidden rounded-[6px] border border-[#E1E6EE] bg-white transition hover:-translate-y-1 hover:border-[#FFB8BE] hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]"
+      className="group flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.13)] transition hover:-translate-y-1 hover:shadow-[0_18px_30px_rgba(15,23,42,0.18)]"
       onClick={onClick}
     >
       <PathPreview path={path} />
       <div className="flex flex-1 flex-col p-5">
-        <h2 className="text-[20px] font-900 leading-[26px] text-[#151A21] transition-colors group-hover:text-[#FF4854]">
-          {path.title}
-        </h2>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          <span className="rounded-[3px] border border-[#C9D8FF] px-1.5 py-0.5 text-[10px] font-600 leading-none text-[#5578EA]">
-            {path.tier}
+        <h2 className="text-[21px] font-900 text-[#151A21]">{path.title}</h2>
+        <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">{path.category} 실전 보안 챌린지</p>
+        <div className="mt-5 grid grid-cols-[0.85fr_1.35fr_1.35fr_0.8fr] divide-x divide-[#D8DDE4] text-[12px] text-[#2E3338]">
+          <span className="flex items-center justify-center whitespace-nowrap pr-1 font-700">
+            성공 <em className="ml-1 not-italic text-[#FF4854]">{path.reviews}명</em>
           </span>
-          <span
-            className={`rounded-[3px] border px-1.5 py-0.5 text-[10px] font-600 leading-none ${tagColors[path.difficulty] ?? tagColors.Easy}`}
-          >
-            {path.difficulty}
+          <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
+            평균 <em className="mx-1 not-italic text-[#FF4854]">1,240</em> 토큰
           </span>
-          {path.tags.map(tag => (
-            <span
-              key={tag}
-              className="rounded-[3px] border border-[#D7DDE6] px-1.5 py-0.5 text-[10px] font-500 leading-none text-[#677281]"
-            >
-              {tag}
+          <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
+            최대 <em className="mx-1 not-italic text-[#FF4854]">{path.maximumPoints ?? 100}</em> 포인트
+          </span>
+          <span className="flex items-center justify-center pl-1">
+            <span className={`rounded-[4px] px-2 py-1 text-[12px] font-700 ${levelClass}`}>
+              {path.level}
             </span>
-          ))}
-        </div>
-        <div className="mt-5 flex items-center justify-between text-[12px] text-[#77808C]">
-          <span className="flex items-center gap-1 font-700 text-black">
-            <Star className="h-3.5 w-3.5 fill-black text-black" />
-            {path.rating} <span className="font-500 text-[#77808C]">({path.reviews})</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <Clock3 className="h-3.5 w-3.5" />
-            약 {path.duration}
-          </span>
-        </div>
-        <div className="mt-4 flex items-center justify-between">
-          <span className="text-[12px] font-500 text-[#2E3338]">{path.price}</span>
-          <span className={`rounded-[4px] px-2 py-1 text-[11px] font-700 ${levelClass}`}>
-            {path.level}
           </span>
         </div>
         <button
           type="button"
-          className="mt-auto flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[4px] bg-[#FF4854] text-[14px] font-900 text-white transition hover:bg-[#E73541]"
+          className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center rounded-[6px] bg-[#FF6470] text-[14px] font-900 text-white transition hover:bg-[#E94D59]"
         >
-          챌린지 보기
-          <ArrowRight className="h-4 w-4" />
+          문제풀기
         </button>
       </div>
     </article>
@@ -405,6 +394,8 @@ const ChallengeSection = () => {
           .includes(normalizedKeyword))
     );
   }, [activeSeason, filters, keyword]);
+
+  const visiblePaths = filteredPaths.slice(0, 1);
 
   const updateFilter = useCallback((key, value) => {
     setFilters(current => ({ ...current, [key]: value }));
@@ -526,12 +517,12 @@ const ChallengeSection = () => {
         <section className="min-w-0">
           <div className="mb-5 flex items-center justify-between">
             <h1 className="text-[16px] font-700 text-[#2E3338]">
-              {activeSeason || '전체 시즌'} <span className="text-[#FF4854]">{filteredPaths.length}</span>
+              {activeSeason || '전체 시즌'} <span className="text-[#FF4854]">{visiblePaths.length}</span>
             </h1>
           </div>
 
           <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredPaths.map(path => (
+            {visiblePaths.map(path => (
               <PathCard
                 key={path.id}
                 path={path}
