@@ -4,19 +4,17 @@ import {
   ArrowLeft,
   Activity,
   Check,
+  CheckCircle2,
   ChevronRight,
-  ClipboardCheck,
-  Clock3,
   Coins,
-  Gauge,
-  MessageCircle,
-  RefreshCcw,
-  ShieldCheck,
   Trophy,
   XCircle,
 } from 'lucide-react';
 import TutorialImage from '@/assets/images/tutorial.png';
 import TutorialStartCardBg from '@/assets/images/tutorial_start_cardbg.png';
+import SuccessCardBg from '@/assets/images/succescard.png';
+import FailCardBg from '@/assets/images/failcard.png';
+import NoTryCardBg from '@/assets/images/notry.png';
 import { TUTORIALS } from './TutorialList';
 
 const learningSections = [
@@ -71,10 +69,32 @@ function SidePanel({ tutorial }) {
   const challengeSummary = tutorial.myRecord;
   const statusMeta =
     challengeSummary.status === '성공'
-      ? { label: '도전 성공', badge: 'bg-[#EAF8EF] text-[#229A52]', text: 'text-[#229A52]' }
+      ? {
+          icon: CheckCircle2,
+          text: 'text-[#168F98]',
+          panel: 'border-[#BFE8EC]',
+          iconStyle: 'bg-white/85 text-[#20A7B2]',
+          description: '목표를 달성했습니다.',
+          backgroundImage: SuccessCardBg,
+        }
       : challengeSummary.status === '실패'
-        ? { label: '도전 실패', badge: 'bg-[#FFF0F2] text-[#FF4854]', text: 'text-[#FF4854]' }
-        : { label: '진행 전', badge: 'bg-[#E9ECF0] text-[#7B8491]', text: 'text-[#2E3338]' };
+        ? {
+            icon: XCircle,
+            text: 'text-[#FF4854]',
+            panel: 'border-[#FFD1D5] bg-[#FFF7F8]',
+            iconStyle: 'bg-white text-[#FF4854]',
+            description: '이번 도전은 실패했습니다.',
+            backgroundImage: FailCardBg,
+          }
+        : {
+            icon: Activity,
+            text: 'text-[#2E3338]',
+            panel: 'border-[#E3E7EC] bg-[#F7F8FA]',
+            iconStyle: 'bg-white text-[#9AA3AF]',
+            description: '아직 도전 기록이 없습니다.',
+            backgroundImage: NoTryCardBg,
+          };
+  const StatusIcon = statusMeta.icon;
 
   return (
     <aside className="space-y-4">
@@ -98,62 +118,33 @@ function SidePanel({ tutorial }) {
         </div>
       </div>
 
-      <div className="rounded-[12px] border border-[#DDE3EA] bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
-        <h3 className="mb-3 text-[18px] font-900 text-[#202832]">진행 안내</h3>
-        <dl className="divide-y divide-[#E5E9EF] text-[13px] text-[#596575]">
-          <div className="flex items-center justify-between gap-4 py-3">
-            <dt className="flex items-center gap-2 font-700"><Gauge className="h-4 w-4" />난이도</dt>
-            <dd className="font-800 text-[#2E3338]">입문</dd>
-          </div>
-          <div className="flex items-center justify-between gap-4 py-3">
-            <dt className="flex items-center gap-2 font-700"><MessageCircle className="h-4 w-4" />진행 방식</dt>
-            <dd className="font-800 text-[#2E3338]">AI 채팅</dd>
-          </div>
-          <div className="flex items-center justify-between gap-4 py-3">
-            <dt className="flex items-center gap-2 font-700"><ClipboardCheck className="h-4 w-4" />완료 조건</dt>
-            <dd className="font-800 text-[#2E3338]">정답 제출</dd>
-          </div>
-          <div className="flex items-center justify-between gap-4 py-3">
-            <dt className="flex items-center gap-2 font-700"><ShieldCheck className="h-4 w-4" />판정 방식</dt>
-            <dd className="font-800 text-[#2E3338]">자동 판정</dd>
-          </div>
-          <div className="flex items-center justify-between gap-4 py-3">
-            <dt className="flex items-center gap-2 font-700"><RefreshCcw className="h-4 w-4" />도전 횟수</dt>
-            <dd className="font-800 text-[#2E3338]">무제한</dd>
-          </div>
-          <div className="flex items-center justify-between gap-4 py-3">
-            <dt className="flex items-center gap-2 font-700"><Clock3 className="h-4 w-4" />제출 대기시간</dt>
-            <dd className="font-800 text-[#2E3338]">최대 30초</dd>
-          </div>
-        </dl>
-      </div>
-
       <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-6">
         <h3 className="text-[18px] font-900 text-[#202832]">내 도전 기록</h3>
 
-        <div className="mt-5 flex items-center justify-between rounded-[5px] bg-[#F7F8FA] px-4 py-4">
-          <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#9AA3AF] shadow-sm">
-              <Activity className="h-5 w-5" />
-            </span>
-            <div>
-              <p className="text-[12px] font-700 text-[#7B8491]">챌린지 성공 여부</p>
-              <strong className={`mt-1 block text-[20px] font-900 ${statusMeta.text}`}>{challengeSummary.status}</strong>
-            </div>
+        <div
+          className={`relative mt-5 flex min-h-[112px] items-center justify-between overflow-hidden rounded-[10px] border bg-cover bg-center px-5 py-5 ${statusMeta.panel}`}
+          style={{ backgroundImage: `url(${statusMeta.backgroundImage})` }}
+        >
+          <div className="relative z-10">
+            <p className="text-[12px] font-800 text-[#6E7B88]">챌린지 성공 여부</p>
+            <strong className={`mt-1 block text-[25px] font-900 leading-none ${statusMeta.text}`}>{challengeSummary.status}</strong>
+            <p className="mt-2 text-[12px] font-600 text-[#7B8793]">{statusMeta.description}</p>
           </div>
-          <span className={`rounded-[4px] px-2.5 py-1 text-[12px] font-800 ${statusMeta.badge}`}>{statusMeta.label}</span>
+          <span className={`relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full shadow-[0_8px_18px_rgba(15,23,42,0.08)] ${statusMeta.iconStyle}`}>
+            <StatusIcon className="h-7 w-7" strokeWidth={2.2} />
+          </span>
         </div>
 
         <div className="mt-5 grid grid-cols-3 divide-x divide-[#E1E5EA] border-y border-[#E1E5EA] py-4 text-center">
           <div>
             <p className="text-[12px] font-700 text-[#7B8491]">제출 횟수</p>
-            <strong className="mt-1 block text-[20px] font-900 text-[#2E3338]"><em className="not-italic text-[#FF4854]">{challengeSummary.attempts}</em>회</strong>
+            <strong className="mt-1 block text-[20px] font-900 text-[#2E3338]"><em className="not-italic text-[#7B8491]">{challengeSummary.attempts}</em>회</strong>
           </div>
           <div>
             <p className="flex items-center justify-center gap-1 text-[12px] font-700 text-[#7B8491]">
             성공
             </p>
-            <strong className="mt-1 block text-[20px] font-900 text-[#2E3338]"><em className="not-italic text-[#FF4854]">{challengeSummary.successes}</em>회</strong>
+            <strong className="mt-1 block text-[20px] font-900 text-[#2E3338]"><em className="not-italic text-[#229A52]">{challengeSummary.successes}</em>회</strong>
           </div>
           <div>
             <p className="flex items-center justify-center gap-1 text-[12px] font-700 text-[#7B8491]">
@@ -178,15 +169,6 @@ function SidePanel({ tutorial }) {
           </div>
         </dl>
 
-        <div className="mt-6">
-          <button
-            type="button"
-            onClick={() => navigate('/challenge/44/play')}
-            className="h-[52px] w-full cursor-pointer rounded-[4px] bg-[#4A4A4A] text-[18px] font-900 text-white transition hover:bg-[#333333]"
-          >
-            도전 시작하기
-          </button>
-        </div>
       </div>
     </aside>
   );
