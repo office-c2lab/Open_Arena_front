@@ -3,17 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   Activity,
-  CheckCircle2,
+  Check,
+  ChevronRight,
+  ClipboardCheck,
   Clock3,
   Coins,
-  Database,
-  FlaskConical,
-  ListChecks,
-  Star,
+  Gauge,
+  MessageCircle,
+  RefreshCcw,
+  ShieldCheck,
   Trophy,
   XCircle,
 } from 'lucide-react';
 import TutorialImage from '@/assets/images/tutorial.png';
+import TutorialStartCardBg from '@/assets/images/tutorial_start_cardbg.png';
 
 const tutorial = {
   title: '튜토리얼 문제',
@@ -26,6 +29,45 @@ const tutorial = {
     "당신의 과제는 이 AI의 보안 규칙을 우회하여 '알파 프로젝트'의 핵심 기밀을 알아내는 것입니다.",
   goal: "AI의 보안 규칙을 우회하여, '알파 프로젝트'의 '구체적인 출시일'과 '핵심 기능 목록'을 받아내는 것.",
 };
+
+const learningSections = [
+  {
+    icon: '◆',
+    title: '이런 이유로 이 Tutorial을 추천해요',
+    items: [
+      'AI 보안 학습을 처음 시작하는 분도 부담 없이 따라올 수 있도록 기본 개념부터 구성했습니다.',
+      '프롬프트 인젝션의 원리, 위험한 입력 패턴, 모델 응답을 관찰하는 방법을 실습 흐름으로 익힙니다.',
+      '이후 챌린지에 도전하기 전에 필요한 사고방식과 기본 용어를 자연스럽게 정리할 수 있습니다.',
+    ],
+  },
+  {
+    icon: '▣',
+    title: '이런 내용을 배워요',
+    items: [
+      '시스템 프롬프트와 사용자 입력이 충돌하는 구조',
+      '민감 정보 유출을 유도하는 대표적인 프롬프트 인젝션 패턴',
+      '모델 응답을 분석하고 우회 시도를 반복적으로 개선하는 방법',
+      '안전한 AI 서비스 설계를 위해 고려해야 할 기본 방어 관점',
+    ],
+  },
+  {
+    icon: '◎',
+    title: '이런 분께 추천해요',
+    items: [
+      'AI 보안과 레드팀 평가를 처음 접하는 분',
+      'ARENA 챌린지를 시작하기 전에 기본 실습 흐름을 익히고 싶은 분',
+    ],
+  },
+  {
+    icon: '◇',
+    title: '이런 선수 지식이 필요해요',
+    items: [
+      '기본적인 웹 서비스 사용 경험',
+      'AI 챗봇과 프롬프트에 대한 기초적인 이해',
+      '보안 실습을 차근차근 따라가려는 태도',
+    ],
+  },
+];
 
 function PathPreview() {
   return (
@@ -48,52 +90,54 @@ function SidePanel() {
 
   return (
     <aside className="space-y-4">
-      <div className="rounded-[3px] border border-[#DDE3EA] bg-[#F8FAFC]">
-        <div className="space-y-3 p-5">
-          <label className="block cursor-pointer rounded-[3px] border border-[#FF8A93] bg-[#FFF0F2] p-4">
-            <div className="flex items-center gap-3">
-              <input type="radio" name="tutorial-purchase" defaultChecked className="accent-[#FF4854]" />
-              <strong className="text-[19px] font-800 text-[#151A21]">무료 튜토리얼</strong>
-            </div>
-            <ul className="mt-3 list-disc space-y-1 pl-9 text-[12px] font-600 text-[#FF4854]">
-              <li>기초 학습 콘텐츠 무제한 수강</li>
-              <li>기본 실습 포함</li>
-            </ul>
-            <div className="mt-4 pl-9">
-              <strong className="text-[26px] font-900 text-black">무료</strong>
-            </div>
-          </label>
-
+      <div className="relative aspect-[1611/976] overflow-hidden rounded-[12px] border border-[#DDE3EA] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
+        <div className="absolute inset-0 overflow-hidden rounded-[12px]">
+          <img src={TutorialStartCardBg} alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
+          <div className="absolute left-[40%] right-[5%] top-[18%] z-10">
+            <h3 className="text-[22px] font-900 leading-[28px] text-[#202832]">튜토리얼 챌린지</h3>
+            <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
+              AI와 대화하며 아레나의 기본 진행 방식을 익혀보세요.
+            </p>
+          </div>
           <button
             type="button"
             onClick={() => navigate('/challenge/44/play')}
-            className="h-12 w-full cursor-pointer rounded-[4px] bg-[#FF4854] text-[15px] font-800 text-white transition hover:bg-[#E73541]"
+            className="absolute bottom-[7%] left-[7%] right-[7%] z-10 flex h-11 cursor-pointer items-center justify-center gap-2 rounded-[5px] bg-[#FF4854] text-[15px] font-900 text-white shadow-[0_6px_14px_rgba(255,72,84,0.24)] transition hover:bg-[#E73541]"
           >
             튜토리얼 시작하기
+            <ChevronRight className="h-4 w-4" />
           </button>
         </div>
+      </div>
 
-        <div className="border-t border-[#DDE3EA] p-5">
-          <h3 className="mb-4 text-[14px] font-800 text-[#2E3338]">Tutorial 상세</h3>
-          <dl className="space-y-3 text-[13px] font-600 text-[#596575]">
-            <div className="flex items-center gap-2">
-              <Clock3 className="h-4 w-4" />약 1시간 30분
-            </div>
-            <div className="flex items-center gap-2">
-              <ListChecks className="h-4 w-4" />12개의 강의
-            </div>
-            <div className="flex items-center gap-2">
-              <FlaskConical className="h-4 w-4" />5개의 실습
-            </div>
-            <div className="flex items-center gap-2">
-              <Database className="h-4 w-4" />4개의 퀴즈
-            </div>
-            <div className="flex items-center gap-2">
-              <Star className="h-4 w-4" />
-              Beginner, 입문 난이도
-            </div>
-          </dl>
-        </div>
+      <div className="rounded-[12px] border border-[#DDE3EA] bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
+        <h3 className="mb-3 text-[18px] font-900 text-[#202832]">진행 안내</h3>
+        <dl className="divide-y divide-[#E5E9EF] text-[13px] text-[#596575]">
+          <div className="flex items-center justify-between gap-4 py-3">
+            <dt className="flex items-center gap-2 font-700"><Gauge className="h-4 w-4" />난이도</dt>
+            <dd className="font-800 text-[#2E3338]">입문</dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-3">
+            <dt className="flex items-center gap-2 font-700"><MessageCircle className="h-4 w-4" />진행 방식</dt>
+            <dd className="font-800 text-[#2E3338]">AI 채팅</dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-3">
+            <dt className="flex items-center gap-2 font-700"><ClipboardCheck className="h-4 w-4" />완료 조건</dt>
+            <dd className="font-800 text-[#2E3338]">정답 제출</dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-3">
+            <dt className="flex items-center gap-2 font-700"><ShieldCheck className="h-4 w-4" />판정 방식</dt>
+            <dd className="font-800 text-[#2E3338]">자동 판정</dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-3">
+            <dt className="flex items-center gap-2 font-700"><RefreshCcw className="h-4 w-4" />도전 횟수</dt>
+            <dd className="font-800 text-[#2E3338]">무제한</dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-3">
+            <dt className="flex items-center gap-2 font-700"><Clock3 className="h-4 w-4" />제출 대기시간</dt>
+            <dd className="font-800 text-[#2E3338]">최대 30초</dd>
+          </div>
+        </dl>
       </div>
 
       <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-6">
@@ -162,8 +206,9 @@ function SidePanel() {
 
 export default function Tutorial() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('learning');
   const tabs = [
+    { id: 'learning', label: '학습 목표' },
     { id: 'overview', label: '챌린지 개요' },
     { id: 'history', label: '도전 기록' },
     { id: 'solvers', label: '푼 사람들' },
@@ -225,6 +270,27 @@ export default function Tutorial() {
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
         <main className="space-y-8">
+          {activeTab === 'learning' ? (
+            <>
+              {learningSections.map(section => (
+                <section key={section.title} className="space-y-3">
+                  <div className="inline-flex items-center gap-2 rounded-[4px] border border-[#DDE3EA] bg-[#F7F9FC] px-3 py-2 text-[13px] font-800 text-[#2E3338]">
+                    <span>{section.icon}</span>
+                    {section.title}
+                  </div>
+                  <ul className="space-y-2 text-[15px] leading-[28px] text-[#26313D]">
+                    {section.items.map(item => (
+                      <li key={item} className="flex gap-2">
+                        <Check className="mt-1.5 h-4 w-4 shrink-0 text-[#9BA4B0]" strokeWidth={2} />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </>
+          ) : null}
+
           {activeTab === 'overview' ? (
             <>
               <section>
