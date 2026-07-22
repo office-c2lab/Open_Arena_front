@@ -1,5 +1,77 @@
-import { emptyList } from './localMockData';
+const adminTeamsMockData = [
+  {
+    id: 101,
+    teamname: '김민지',
+    login_id: 'minji.kim',
+    email: 'minji.kim@example.com',
+    score: 1280,
+    solved_count: 14,
+    created_at: '2026-06-18',
+    is_active: true,
+    membership: 'free',
+    token_limit: 1000,
+  },
+  {
+    id: 102,
+    teamname: '이도윤',
+    login_id: 'doyoon.lee',
+    email: 'doyoon.lee@example.com',
+    score: 2340,
+    solved_count: 23,
+    created_at: '2026-05-29',
+    is_active: true,
+    membership: 'paid',
+  },
+  {
+    id: 103,
+    teamname: '박서연',
+    login_id: 'seoyeon.park',
+    email: 'seoyeon.park@example.com',
+    score: 860,
+    solved_count: 9,
+    created_at: '2026-07-03',
+    is_active: true,
+    membership: 'free',
+    token_limit: 1500,
+  },
+  {
+    id: 104,
+    teamname: '최현우',
+    login_id: 'hyunwoo.choi',
+    email: 'hyunwoo.choi@example.com',
+    score: 615,
+    solved_count: 6,
+    created_at: '2026-07-10',
+    is_active: false,
+    membership: 'free',
+    token_limit: 500,
+  },
+  {
+    id: 105,
+    teamname: '정하린',
+    login_id: 'harin.jung',
+    email: 'harin.jung@example.com',
+    score: 3190,
+    solved_count: 31,
+    created_at: '2026-04-22',
+    is_active: true,
+    membership: 'paid',
+  },
+  {
+    id: 106,
+    teamname: '오지훈',
+    login_id: 'jihoon.oh',
+    email: 'jihoon.oh@example.com',
+    score: 1420,
+    solved_count: 15,
+    created_at: '2026-06-30',
+    is_active: true,
+    membership: 'free',
+    token_limit: 2000,
+  },
+];
 
-export const fetchAdminTeams = async () => emptyList;
+export const fetchAdminTeams = async ({ activeOnly = false } = {}) =>
+  activeOnly ? adminTeamsMockData.filter(team => team.is_active) : adminTeamsMockData;
 export const toggleAdminTeamActive = async () => ({ ok: true });
 export const resetAdminTeamPassword = async () => ({ ok: true });

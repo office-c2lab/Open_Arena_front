@@ -12,11 +12,9 @@ export default function FloatingMenu() {
 
   // 버튼 목록 (🔥 빨간 테마)
   const buttons = [
-    { label: '순위현황', path: '/admin/leaderboard', fontSize: '10px' },
-    { label: '메트릭스', path: '/admin/matrix', fontSize: '12px' },
+    { label: '사용자', path: '/admin/user-management', fontSize: '12px' },
     { label: '문제관리', path: '/admin/problems', fontSize: '12px' },
     { label: '채팅관리', path: '/admin/users', fontSize: '12px' },
-    { label: '사용자', path: '/admin/user-management', fontSize: '12px' },
     { label: '저지관리', path: '/admin/judge', fontSize: '12px' },
 
     // 🔥 로그아웃 버튼 추가

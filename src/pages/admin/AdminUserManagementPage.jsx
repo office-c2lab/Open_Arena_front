@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { RefreshCw, Search } from 'lucide-react';
+import { RefreshCw, Save, Search, X } from 'lucide-react';
 import { useAdminTeamActions, useAdminTeams } from '@/hooks/useAdminTeams';
 
 const getUserId = user => user.id ?? user.user_id ?? user.team_id;
@@ -16,6 +16,12 @@ const getIsActive = user => {
   if (typeof user.enabled === 'boolean') return user.enabled;
   return true;
 };
+const getMembership = user => {
+  const value = user.membership ?? user.plan ?? user.member_type ?? user.subscription_type;
+  return ['paid', 'premium', 'pro', '유료'].includes(String(value).toLowerCase()) ? 'paid' : 'free';
+};
+const getTokenLimit = user =>
+  Number(user.token_limit ?? user.free_token_limit ?? user.tokenLimit ?? 1000);
 
 const formatDate = value => {
   if (!value) return '-';
@@ -36,6 +42,11 @@ export default function AdminUserManagementPage() {
   const [keyword, setKeyword] = useState('');
   const [actionError, setActionError] = useState('');
   const [activeOnly, setActiveOnly] = useState(false);
+  const [membershipOverrides, setMembershipOverrides] = useState({});
+  const [tokenLimitOverrides, setTokenLimitOverrides] = useState({});
+  const [tokenInputs, setTokenInputs] = useState({});
+  const [activeOverrides, setActiveOverrides] = useState({});
+  const [selectedUser, setSelectedUser] = useState(null);
   const { data, isLoading, isError, refetch, isFetching } = useAdminTeams({ activeOnly });
   const { toggleActive, resetPassword, isToggling, isResettingPassword } = useAdminTeamActions();
 
@@ -59,8 +70,12 @@ export default function AdminUserManagementPage() {
     });
   }, [keyword, users]);
 
-  const activeCount = users.filter(getIsActive).length;
+  const getCurrentIsActive = user => activeOverrides[getUserId(user)] ?? getIsActive(user);
+  const activeCount = users.filter(getCurrentIsActive).length;
   const totalScore = users.reduce((sum, user) => sum + Number(getScore(user) || 0), 0);
+  const getCurrentMembership = user => membershipOverrides[getUserId(user)] ?? getMembership(user);
+  const getCurrentTokenLimit = user => tokenLimitOverrides[getUserId(user)] ?? getTokenLimit(user);
+  const freeCount = users.filter(user => getCurrentMembership(user) === 'free').length;
 
   const handleRefresh = () => {
     refetch();
@@ -72,6 +87,7 @@ export default function AdminUserManagementPage() {
     setActionError('');
     try {
       await toggleActive(userId);
+      setActiveOverrides(prev => ({ ...prev, [userId]: !getCurrentIsActive(user) }));
     } catch (error) {
       setActionError(
         error.response?.data?.detail ?? error.message ?? '활성 상태 변경에 실패했습니다.'
@@ -95,6 +111,35 @@ export default function AdminUserManagementPage() {
     }
   };
 
+  const handleTokenInputChange = (userId, value) => {
+    setTokenInputs(prev => ({ ...prev, [userId]: value }));
+  };
+
+  const handleSaveTokenLimit = user => {
+    const userId = getUserId(user);
+    const rawValue = tokenInputs[userId] ?? String(getCurrentTokenLimit(user));
+    const tokenLimit = Number(rawValue);
+
+    if (!Number.isInteger(tokenLimit) || tokenLimit < 0) {
+      setActionError('토큰 한도는 0 이상의 정수로 입력해 주세요.');
+      return;
+    }
+
+    setActionError('');
+    setTokenLimitOverrides(prev => ({ ...prev, [userId]: tokenLimit }));
+    setTokenInputs(prev => ({ ...prev, [userId]: String(tokenLimit) }));
+  };
+
+  const handleUpgradeToPaid = user => {
+    const userId = getUserId(user);
+    const confirmed = window.confirm(
+      `${getDisplayName(user)} 사용자를 유료회원으로 전환할까요? (목업에서는 화면에만 반영됩니다.)`
+    );
+    if (!confirmed) return;
+
+    setMembershipOverrides(prev => ({ ...prev, [userId]: 'paid' }));
+  };
+
   return (
     <div className="w-full min-h-screen p-10 pb-40 text-white">
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-6">
@@ -114,9 +159,10 @@ export default function AdminUserManagementPage() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           <SummaryCard label="전체 사용자" value={users.length} />
           <SummaryCard label="활성 사용자" value={activeCount} />
+          <SummaryCard label="무료회원" value={freeCount} />
           <SummaryCard label="전체 점수" value={totalScore.toLocaleString()} />
         </div>
 
@@ -125,7 +171,7 @@ export default function AdminUserManagementPage() {
             <div>
               <h2 className="heading-2 font-700 text-[#FF4854]">사용자 목록</h2>
               <p className="body-medium text-gray-400 mt-1">
-                팀별 활성 상태를 변경하고 비밀번호를 login_id 기준으로 초기화할 수 있습니다.
+                무료회원 토큰 한도와 회원 등급은 목업으로 화면에서만 변경됩니다.
               </p>
             </div>
 
@@ -168,7 +214,7 @@ export default function AdminUserManagementPage() {
 
           {!isLoading && !isError && filteredUsers.length > 0 && (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[920px] text-left">
+              <table className="w-full min-w-[900px] text-left">
                 <thead className="text-[#FF4854] border-b border-white/10 bg-[#10050F]/50">
                   <tr>
                     <Th>사용자</Th>
@@ -178,19 +224,21 @@ export default function AdminUserManagementPage() {
                     <Th>해결 문제</Th>
                     <Th>가입일</Th>
                     <Th>상태</Th>
-                    <Th>활성화</Th>
-                    <Th>비밀번호</Th>
+                    <Th>회원 등급</Th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredUsers.map(user => {
                     const userId = getUserId(user);
-                    const isActive = getIsActive(user);
+                    const isActive = getCurrentIsActive(user);
+                    const membership = getCurrentMembership(user);
 
                     return (
                       <tr
                         key={userId ?? getDisplayName(user)}
-                        className="border-b border-white/10 hover:bg-[#1A0B15]/70 transition"
+                        onClick={() => setSelectedUser(user)}
+                        className="border-b border-white/10 hover:bg-[#1A0B15]/70 cursor-pointer transition"
+                        title={`${getDisplayName(user)} 상세 보기`}
                       >
                         <Td>
                           <div className="font-700 text-white">{getDisplayName(user)}</div>
@@ -215,22 +263,15 @@ export default function AdminUserManagementPage() {
                           </span>
                         </Td>
                         <Td>
-                          <ActiveToggle
-                            enabled={isActive}
-                            disabled={!userId || isToggling}
-                            onToggle={() => handleToggleActive(user)}
-                          />
-                        </Td>
-                        <Td>
-                          <button
-                            type="button"
-                            onClick={() => handleResetPassword(user)}
-                            disabled={!userId || isResettingPassword}
-                            className="h-9 px-4 rounded-lg bg-[#FF4854] text-white font-bold hover:bg-[#ff3242] disabled:opacity-50 cursor-pointer transition"
-                            title="비밀번호 초기화"
+                          <span
+                            className={`px-3 py-1 rounded-full body-small leading-4 font-700 border ${
+                              membership === 'paid'
+                                ? 'bg-[#FFB155]/15 text-[#FFD08A] border-[#FFB155]/30'
+                                : 'bg-sky-500/15 text-sky-300 border-sky-400/30'
+                            }`}
                           >
-                            초기화
-                          </button>
+                            {membership === 'paid' ? '유료회원' : '무료회원'}
+                          </span>
                         </Td>
                       </tr>
                     );
@@ -241,6 +282,24 @@ export default function AdminUserManagementPage() {
           )}
         </div>
       </div>
+
+      {selectedUser && (
+        <UserDetailModal
+          user={selectedUser}
+          membership={getCurrentMembership(selectedUser)}
+          tokenLimit={getCurrentTokenLimit(selectedUser)}
+          isActive={getCurrentIsActive(selectedUser)}
+          tokenInput={tokenInputs[getUserId(selectedUser)]}
+          isToggling={isToggling}
+          isResettingPassword={isResettingPassword}
+          onClose={() => setSelectedUser(null)}
+          onTokenInputChange={handleTokenInputChange}
+          onSaveTokenLimit={handleSaveTokenLimit}
+          onUpgradeToPaid={handleUpgradeToPaid}
+          onToggleActive={handleToggleActive}
+          onResetPassword={handleResetPassword}
+        />
+      )}
     </div>
   );
 }
@@ -256,6 +315,156 @@ function SummaryCard({ label, value }) {
 
 function StateMessage({ children }) {
   return <div className="p-10 text-center text-gray-400">{children}</div>;
+}
+
+function UserDetailModal({
+  user,
+  membership,
+  tokenLimit,
+  isActive,
+  tokenInput,
+  isToggling,
+  isResettingPassword,
+  onClose,
+  onTokenInputChange,
+  onSaveTokenLimit,
+  onUpgradeToPaid,
+  onToggleActive,
+  onResetPassword,
+}) {
+  const userId = getUserId(user);
+  return (
+    <div
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/65 p-5"
+      role="presentation"
+      onMouseDown={event => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="user-detail-title"
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#10050F] text-white shadow-2xl"
+      >
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#10050F] px-6 py-5">
+          <div>
+            <p className="body-small text-gray-400">사용자 상세 · 목업 설정</p>
+            <h2 id="user-detail-title" className="heading-2 font-700 text-[#FF4854] mt-1">
+              {getDisplayName(user)}
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-10 w-10 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white flex items-center justify-center cursor-pointer transition"
+            aria-label="상세 닫기"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+            <DetailItem label="로그인 ID" value={getLoginId(user)} />
+            <DetailItem label="이메일" value={getEmail(user)} />
+            <DetailItem label="가입일" value={formatDate(getCreatedAt(user))} />
+            <DetailItem label="해결 문제" value={`${getSolvedCount(user)}개`} />
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+            <h3 className="font-700 text-white">회원 등급</h3>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+              <span
+                className={`px-3 py-1 rounded-full body-small font-700 border ${
+                  membership === 'paid'
+                    ? 'bg-[#FFB155]/15 text-[#FFD08A] border-[#FFB155]/30'
+                    : 'bg-sky-500/15 text-sky-300 border-sky-400/30'
+                }`}
+              >
+                {membership === 'paid' ? '유료회원' : '무료회원'}
+              </span>
+              {membership === 'free' ? (
+                <button
+                  type="button"
+                  onClick={() => onUpgradeToPaid(user)}
+                  disabled={!userId}
+                  className="h-10 px-4 rounded-lg bg-[#FFB155] text-[#241206] font-bold hover:bg-[#ffc171] disabled:opacity-50 cursor-pointer transition"
+                >
+                  유료회원으로 전환
+                </button>
+              ) : (
+                <span className="body-small text-[#FFD08A]">유료회원으로 전환되었습니다.</span>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+            <h3 className="font-700 text-white">무료 토큰 한도</h3>
+            {membership === 'free' ? (
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={tokenInput ?? String(tokenLimit)}
+                  onChange={event => onTokenInputChange(userId, event.target.value)}
+                  className="h-11 w-40 rounded-lg border border-white/10 bg-[#1A0B15] px-4 text-white outline-none focus:border-[#FF4854]"
+                  aria-label="무료 토큰 한도"
+                />
+                <span className="text-gray-400">토큰</span>
+                <button
+                  type="button"
+                  onClick={() => onSaveTokenLimit(user)}
+                  className="h-11 px-4 rounded-lg bg-[#FF4854] text-white font-bold hover:bg-[#ff3242] flex items-center gap-2 cursor-pointer transition"
+                >
+                  <Save size={17} /> 저장
+                </button>
+              </div>
+            ) : (
+              <p className="mt-3 text-gray-400">유료회원은 토큰 한도가 적용되지 않습니다.</p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="font-700 text-white">계정 활성화</h3>
+              <p className="body-small text-gray-400 mt-1">현재 {isActive ? '활성' : '비활성'} 상태입니다.</p>
+            </div>
+            <ActiveToggle
+              enabled={isActive}
+              disabled={!userId || isToggling}
+              onToggle={() => onToggleActive(user)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="font-700 text-white">비밀번호 초기화</h3>
+              <p className="body-small text-gray-400 mt-1">login_id 기준으로 비밀번호를 초기화합니다.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onResetPassword(user)}
+              disabled={!userId || isResettingPassword}
+              className="h-10 px-4 rounded-lg bg-white/10 text-white font-bold hover:bg-[#FF4854] disabled:opacity-50 cursor-pointer transition"
+            >
+              초기화
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function DetailItem({ label, value }) {
+  return (
+    <div>
+      <div className="body-small text-gray-400">{label}</div>
+      <div className="mt-1 font-700 text-white break-all">{value}</div>
+    </div>
+  );
 }
 
 function ActiveToggle({ enabled, disabled, onToggle }) {

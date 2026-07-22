@@ -25,11 +25,7 @@ import Kategorie from '../pages/Kategorie/Kategorie';
 import Challenge from '../pages/Challenge/ui/Challenge';
 import ChallengePlay from '../pages/Challenge/ui/ChallengePlay';
 import ChatTestPage from '../pages/ChatTestPage';
-import AdminLeaderboard from '../pages/admin/AdminLeaderboard';
-import LeaderboardMatrix from '../pages/admin/LeaderboardMatrix';
 import NotFound from '../pages/NotFound/NotFound';
-import ProblemStatusMatrix from '../pages/admin/ProblemStatusMatrix';
-import AdminProblemToggleList from '../pages/admin/AdminProblemToggleList';
 
 import ArenaMockPage from '../pages/Leaderboard/ArenaMockPage'; // ✅ 추가
 import Leaderboard from '../pages/Leaderboard/ArenaMockPage';
@@ -50,7 +46,7 @@ export default function AppRouter() {
         <Route path="/terms" element={<Legal type="terms" />} />
         <Route path="/privacy" element={<Legal type="privacy" />} />
       </Route>
-      <Route path="/admin" element={<Navigate to="/admin/leaderboard" replace />} />
+      <Route path="/admin" element={<Navigate to="/admin/problems" replace />} />
 
       {/* 테스트 페이지(보호 X) */}
       <Route path="/test" element={<ChatTestPage />} />
@@ -69,8 +65,6 @@ export default function AppRouter() {
           </AdminGuard>
         }
       >
-        <Route path="leaderboard" element={<AdminLeaderboard />} />
-        <Route path="matrix" element={<ProblemStatusMatrix />} />
         <Route path="problems" element={<AdminProblemPage />} />
         <Route path="users" element={<AdminConversationMockPage />} />
         <Route path="user-management" element={<AdminUserManagementPage />} />

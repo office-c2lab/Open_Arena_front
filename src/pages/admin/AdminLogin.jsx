@@ -32,7 +32,7 @@ export default function AdminLogin() {
       // ⭐ Zustand에 관리자 로그인 상태 저장
       setAdminLoggedIn({ username: formData.username });
 
-      navigate('/admin/leaderboard');
+      navigate('/admin/problems');
     },
     onError: () => {
       alert('로그인 실패: 관리자 계정을 확인하세요.');
