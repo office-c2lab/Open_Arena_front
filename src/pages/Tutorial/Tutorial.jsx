@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
-  CircleHelp,
+  Activity,
+  CheckCircle2,
   Clock3,
+  Coins,
   Database,
-  Flag,
   FlaskConical,
   ListChecks,
-  Lock,
   Star,
-  TableOfContents,
+  Trophy,
+  XCircle,
 } from 'lucide-react';
 import TutorialImage from '@/assets/images/tutorial.png';
 
@@ -36,11 +37,14 @@ function PathPreview() {
 
 function SidePanel() {
   const navigate = useNavigate();
-  const progressItems = [
-    { icon: TableOfContents, label: '강의', value: '0 / 12', locked: 6, extra: '제외' },
-    { icon: Flag, label: '실습', value: '0 / 5', locked: 2 },
-    { icon: CircleHelp, label: '퀴즈', value: '0 / 4', locked: 1 },
-  ];
+  const challengeSummary = {
+    status: '미도전',
+    attempts: 0,
+    successes: 0,
+    failures: 0,
+    tokens: 0,
+    score: 0,
+  };
 
   return (
     <aside className="space-y-4">
@@ -93,52 +97,62 @@ function SidePanel() {
       </div>
 
       <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-6">
-        <div className="flex items-center gap-5">
-          <div className="h-[74px] w-[74px] rounded-full border-[4px] border-[#E8EAEE]" />
+        <h3 className="text-[18px] font-900 text-[#202832]">내 도전 기록</h3>
+
+        <div className="mt-5 flex items-center justify-between rounded-[5px] bg-[#F7F8FA] px-4 py-4">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#9AA3AF] shadow-sm">
+              <Activity className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="text-[12px] font-700 text-[#7B8491]">챌린지 성공 여부</p>
+              <strong className="mt-1 block text-[20px] font-900 text-[#2E3338]">{challengeSummary.status}</strong>
+            </div>
+          </div>
+          <span className="rounded-[4px] bg-[#E9ECF0] px-2.5 py-1 text-[12px] font-800 text-[#7B8491]">진행 전</span>
+        </div>
+
+        <div className="mt-5 grid grid-cols-3 divide-x divide-[#E1E5EA] border-y border-[#E1E5EA] py-4 text-center">
           <div>
-            <strong className="text-[24px] font-900 text-[#111827]">0% 진행중</strong>
-            <p className="mt-1 text-[14px] font-600 text-[#7B8491]">총 0개 항목 완료</p>
+            <p className="text-[12px] font-700 text-[#7B8491]">제출 횟수</p>
+            <strong className="mt-1 block text-[20px] font-900 text-[#FF4854]">{challengeSummary.attempts}회</strong>
+          </div>
+          <div>
+            <p className="flex items-center justify-center gap-1 text-[12px] font-700 text-[#7B8491]">
+            성공
+            </p>
+            <strong className="mt-1 block text-[20px] font-900 text-[#FF4854]">{challengeSummary.successes}회</strong>
+          </div>
+          <div>
+            <p className="flex items-center justify-center gap-1 text-[12px] font-700 text-[#7B8491]">
+            실패
+            </p>
+            <strong className="mt-1 block text-[20px] font-900 text-[#FF4854]">{challengeSummary.failures}회</strong>
           </div>
         </div>
 
-        <div className="mt-6 space-y-5">
-          {progressItems.map(item => {
-            const Icon = item.icon;
-
-            return (
-              <div key={item.label}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-[18px] font-800 text-[#2E3338]">
-                    <Icon className="h-5 w-5 text-[#606B78]" />
-                    {item.label} <span className="text-[#7B8491]">{item.value}</span>
-                    {item.extra && (
-                      <span className="rounded-[3px] bg-[#EEF1F5] px-1.5 py-0.5 text-[13px] font-800 text-[#9AA3AF]">
-                        {item.extra}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1 text-[14px] font-700 text-[#A0A8B3]">
-                    <Lock className="h-4 w-4 fill-[#A0A8B3] text-[#A0A8B3]" />
-                    {item.locked}
-                  </div>
-                </div>
-                <div className="mt-4 h-1 rounded-full bg-[#ECEFF3]" />
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-8 flex flex-col items-center gap-4">
-          <div className="flex items-center gap-2 text-[16px] font-800 text-[#66717E]">
-            <TableOfContents className="h-4 w-4" />
-            프롬프트 인젝션 개요
+        <dl className="mt-5 space-y-3 text-[14px]">
+          <div className="flex items-center justify-between">
+            <dt className="flex items-center gap-2 font-700 text-[#66717E]">
+              <Coins className="h-4 w-4" /> 최소 소모 토큰
+            </dt>
+            <dd className="font-900 text-[#2E3338]">{challengeSummary.tokens.toLocaleString()} 토큰</dd>
           </div>
+          <div className="flex items-center justify-between">
+            <dt className="flex items-center gap-2 font-700 text-[#66717E]">
+              <Trophy className="h-4 w-4" /> 최대 획득 포인트
+            </dt>
+            <dd className="font-900 text-[#FF4854]">{challengeSummary.score} 포인트</dd>
+          </div>
+        </dl>
+
+        <div className="mt-6">
           <button
             type="button"
             onClick={() => navigate('/challenge/44/play')}
             className="h-[52px] w-full cursor-pointer rounded-[4px] bg-[#4A4A4A] text-[18px] font-900 text-white transition hover:bg-[#333333]"
           >
-            이어서 학습하기
+            도전 시작하기
           </button>
         </div>
       </div>
