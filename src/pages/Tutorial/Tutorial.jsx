@@ -72,7 +72,6 @@ function SidePanel({ tutorial }) {
       ? {
           icon: CheckCircle2,
           text: 'text-[#168F98]',
-          panel: 'border-[#BFE8EC]',
           iconStyle: 'bg-white/85 text-[#20A7B2]',
           description: '목표를 달성했습니다.',
           backgroundImage: SuccessCardBg,
@@ -81,7 +80,6 @@ function SidePanel({ tutorial }) {
         ? {
             icon: XCircle,
             text: 'text-[#FF4854]',
-            panel: 'border-[#FFD1D5] bg-[#FFF7F8]',
             iconStyle: 'bg-white text-[#FF4854]',
             description: '이번 도전은 실패했습니다.',
             backgroundImage: FailCardBg,
@@ -89,7 +87,6 @@ function SidePanel({ tutorial }) {
         : {
             icon: Activity,
             text: 'text-[#2E3338]',
-            panel: 'border-[#E3E7EC] bg-[#F7F8FA]',
             iconStyle: 'bg-white text-[#9AA3AF]',
             description: '아직 도전 기록이 없습니다.',
             backgroundImage: NoTryCardBg,
@@ -118,58 +115,39 @@ function SidePanel({ tutorial }) {
         </div>
       </div>
 
-      <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-6">
-        <h3 className="text-[18px] font-900 text-[#202832]">내 도전 기록</h3>
-
-        <div
-          className={`relative mt-5 flex min-h-[112px] items-center justify-between overflow-hidden rounded-[10px] border bg-cover bg-center px-5 py-5 ${statusMeta.panel}`}
-          style={{ backgroundImage: `url(${statusMeta.backgroundImage})` }}
-        >
-          <div className="relative z-10">
-            <p className="text-[12px] font-800 text-[#6E7B88]">챌린지 성공 여부</p>
-            <strong className={`mt-1 block text-[25px] font-900 leading-none ${statusMeta.text}`}>{challengeSummary.status}</strong>
-            <p className="mt-2 text-[12px] font-600 text-[#7B8793]">{statusMeta.description}</p>
+      <section>
+        <div className="overflow-hidden rounded-[14px]">
+          <div
+            className="relative flex min-h-[200px] items-center justify-between bg-center bg-no-repeat px-7 py-7"
+            style={{ backgroundImage: `url(${statusMeta.backgroundImage})`, backgroundSize: '100% 100%' }}
+          >
+            <div className="relative z-10">
+              <p className="text-[14px] font-800 text-[#6E7B88]">챌린지 성공 여부</p>
+              <strong className={`mt-3 block text-[38px] font-900 leading-none ${statusMeta.text}`}>{challengeSummary.status}</strong>
+              <p className="mt-4 text-[14px] font-600 text-[#6F7985]">{statusMeta.description}</p>
+            </div>
+            <span className={`relative z-10 flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-full shadow-[0_10px_24px_rgba(15,23,42,0.1)] ${statusMeta.iconStyle}`}>
+              <StatusIcon className="h-10 w-10" strokeWidth={2.1} />
+            </span>
           </div>
-          <span className={`relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full shadow-[0_8px_18px_rgba(15,23,42,0.08)] ${statusMeta.iconStyle}`}>
-            <StatusIcon className="h-7 w-7" strokeWidth={2.2} />
-          </span>
+
+          <dl className="divide-y divide-[#E5E9EF] rounded-b-[14px] border-x border-b border-[#DDE3EA] bg-white px-6 text-[15px]">
+            <div className="flex items-center justify-between py-5">
+              <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
+                <Coins className="h-5 w-5 text-[#77808C]" /> 최소 토큰
+              </dt>
+              <dd className="font-900 text-[#2E3338]">{challengeSummary.tokens.toLocaleString()} 토큰</dd>
+            </div>
+            <div className="flex items-center justify-between py-5">
+              <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
+                <Trophy className="h-5 w-5 text-[#77808C]" /> 최대 포인트
+              </dt>
+              <dd className="font-900 text-[#FF4854]">{challengeSummary.score} 포인트</dd>
+            </div>
+          </dl>
         </div>
 
-        <div className="mt-5 grid grid-cols-3 divide-x divide-[#E1E5EA] border-y border-[#E1E5EA] py-4 text-center">
-          <div>
-            <p className="text-[12px] font-700 text-[#7B8491]">제출 횟수</p>
-            <strong className="mt-1 block text-[20px] font-900 text-[#2E3338]"><em className="not-italic text-[#7B8491]">{challengeSummary.attempts}</em>회</strong>
-          </div>
-          <div>
-            <p className="flex items-center justify-center gap-1 text-[12px] font-700 text-[#7B8491]">
-            성공
-            </p>
-            <strong className="mt-1 block text-[20px] font-900 text-[#2E3338]"><em className="not-italic text-[#229A52]">{challengeSummary.successes}</em>회</strong>
-          </div>
-          <div>
-            <p className="flex items-center justify-center gap-1 text-[12px] font-700 text-[#7B8491]">
-            실패
-            </p>
-            <strong className="mt-1 block text-[20px] font-900 text-[#2E3338]"><em className="not-italic text-[#FF4854]">{challengeSummary.failures}</em>회</strong>
-          </div>
-        </div>
-
-        <dl className="mt-5 space-y-3 text-[14px]">
-          <div className="flex items-center justify-between">
-            <dt className="flex items-center gap-2 font-700 text-[#66717E]">
-              <Coins className="h-4 w-4" /> 최소 소모 토큰
-            </dt>
-            <dd className="font-900 text-[#2E3338]">{challengeSummary.tokens.toLocaleString()} 토큰</dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="flex items-center gap-2 font-700 text-[#66717E]">
-              <Trophy className="h-4 w-4" /> 최대 획득 포인트
-            </dt>
-            <dd className="font-900 text-[#FF4854]">{challengeSummary.score} 포인트</dd>
-          </div>
-        </dl>
-
-      </div>
+      </section>
     </aside>
   );
 }
