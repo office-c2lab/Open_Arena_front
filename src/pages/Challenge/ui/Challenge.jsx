@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Coins,
   Flag,
-  Star,
   Trophy,
   XCircle,
 } from 'lucide-react';
@@ -214,6 +213,12 @@ export default function Challenge() {
     tokens: 0,
     score: challenge.maximumPoints ?? 0,
   };
+  const levelClass =
+    challenge.level === 'Try for Free'
+      ? 'bg-[#D8F9E4] text-[#1BAE5B]'
+      : challenge.level === 'Starter'
+        ? 'bg-[#3F454C] text-white'
+        : 'bg-[#353B44] text-white';
   const [activeTab, setActiveTab] = useState('learning');
   const tabs = [
     { id: 'learning', label: '학습 목표' },
@@ -241,16 +246,17 @@ export default function Challenge() {
             {challenge.category} 실전 보안 챌린지
           </p>
           <div className="mt-6 flex w-fit items-center divide-x divide-[#D8DDE4] text-[13px] text-[#2E3338]">
-            <span className="flex items-center gap-1 whitespace-nowrap pr-4 font-700">
-              <Star className="h-3.5 w-3.5 fill-[#2E3338] text-[#2E3338]" />
-              {challenge.rating} <em className="not-italic text-[#66717E]">({challenge.reviews})</em>
+            <span className="whitespace-nowrap pr-4 font-700">
+              성공 <em className="ml-1 not-italic text-[#FF4854]">{challenge.reviews}</em>명
+            </span>
+            <span className="whitespace-nowrap px-4 font-700">
+              평균 <em className="mx-1 not-italic text-[#FF4854]">1,240</em> 토큰
             </span>
             <span className="whitespace-nowrap px-4 font-700">
               최대 <em className="mx-1 not-italic text-[#FF4854]">{challenge.maximumPoints ?? 100}</em> 포인트
             </span>
-            <span className="whitespace-nowrap px-4 font-500">{challenge.price}</span>
             <span className="whitespace-nowrap pl-4">
-              <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-[12px] font-700 text-white">
+              <span className={`rounded-[4px] px-2 py-1 text-[12px] font-700 ${levelClass}`}>
                 {challenge.level}
               </span>
             </span>
