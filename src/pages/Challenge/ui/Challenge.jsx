@@ -22,7 +22,7 @@ import NoTryCardBg from '@/assets/images/notry.png';
 import { PATHS } from '@/pages/Kategorie/Kategorie';
 import { useProblemBundle } from '@/hooks/useProblemBundle';
 import { useAuthStore } from '@/stores/authStore';
-import ChatBubble from '../components/ChatBubble';
+import { useSessionStore } from '@/stores/useSessionStore';
 
 const challengeOverview = {
   title: '시스템 보안 목표 달성하기',
@@ -139,12 +139,6 @@ function getAttemptStatus(status) {
   return 'unsubmitted';
 }
 
-function getSessionMessages(session) {
-  const messages = session.messages ?? session.chat_messages ?? session.conversation;
-
-  return Array.isArray(messages) ? messages : [];
-}
-
 function SolverAvatar({ solver }) {
   if (solver.avatar) {
     return (
@@ -233,9 +227,49 @@ function ChallengePreview({ challenge }) {
   );
 }
 
-function ChallengeAttemptHistory({ sessions, isLoading }) {
+function ChallengeOverviewContent() {
+  return (
+    <>
+      <section>
+        <h2 className="text-[26px] font-900 text-black">챌린지 개요</h2>
+        <h3 className="mt-4 text-[20px] font-900 text-[#202832]">
+          {challengeOverview.title}
+        </h3>
+        <p className="mt-5 text-[15px] leading-[27px] text-[#3D4754]">
+          {challengeOverview.description}
+        </p>
+      </section>
+
+      <section>
+        <h2 className="text-[20px] font-900 text-[#202832]">도전 목표</h2>
+        <p className="mt-3 text-[15px] font-700 leading-[27px] text-[#3D4754]">
+          {challengeOverview.goal}
+        </p>
+      </section>
+
+      <section>
+        <h2 className="text-[20px] font-900 text-[#202832]">성공 조건</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-[26px] text-[#3D4754]">
+          {challengeOverview.successItems.map(item => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="text-[20px] font-900 text-[#202832]">실패 조건</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-[26px] text-[#3D4754]">
+          {challengeOverview.failureItems.map(item => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+    </>
+  );
+}
+
+function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
   const [statusFilter, setStatusFilter] = useState('all');
-  const [expandedSessionId, setExpandedSessionId] = useState(null);
 
   if (isLoading) {
     return (
@@ -296,9 +330,6 @@ function ChallengeAttemptHistory({ sessions, isLoading }) {
           const points = Number(session.points ?? session.earned_points ?? session.score ?? 0);
           const tokens = Number(session.tokens ?? session.token_count ?? 0);
           const createdAt = session.createdAt ?? session.created_at ?? '-';
-          const messages = getSessionMessages(session);
-          const judgeReason = session.judge_reason || session.judgeReason || '아직 저지 사유가 없습니다.';
-          const isExpanded = expandedSessionId === session.id;
           const statusMeta = isSuccess
             ? {
                 label: '성공',
@@ -323,19 +354,13 @@ function ChallengeAttemptHistory({ sessions, isLoading }) {
           return (
             <li
               key={session.id}
-              className={`rounded-[8px] border bg-white transition-all ${
-                isExpanded
-                  ? 'border-[#FFB8BD] shadow-[0_8px_20px_rgba(255,72,84,0.08)]'
-                  : 'border-[#E1E6EB] shadow-[0_8px_20px_rgba(15,23,42,0.04)]'
-              }`}
+              className="rounded-[8px] border border-[#E1E6EB] bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)] transition-all"
             >
               <button
                 type="button"
-                onClick={() => setExpandedSessionId(currentId => (currentId === session.id ? null : session.id))}
-                className={`group flex w-full cursor-pointer flex-col gap-4 rounded-[8px] px-4 py-4 text-left transition-colors hover:bg-[#FAFBFC] ${
-                  isExpanded ? 'bg-[#FFF8F8]' : ''
-                }`}
-                aria-expanded={isExpanded}
+                onClick={() => onSessionOpen(session.id, status)}
+                className="group flex w-full cursor-pointer flex-col gap-4 rounded-[8px] px-4 py-4 text-left transition-colors hover:bg-[#FAFBFC]"
+                aria-label={`${statusMeta.label} 도전 기록 플레이 화면으로 이동`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -368,41 +393,6 @@ function ChallengeAttemptHistory({ sessions, isLoading }) {
                   </span>
                 </div>
               </button>
-
-              {isExpanded ? (
-                <div className="border-t border-[#EEF1F4] bg-[#FAFBFC] px-4 py-4">
-                  <div>
-                    <h3 className="text-[13px] font-900 text-[#303843]">대화내역</h3>
-                    {messages.length > 0 ? (
-                      <div className="mt-3 max-h-[360px] overflow-y-auto rounded-[8px] bg-white px-3 py-4">
-                        {messages.map((message, index) => {
-                          const role = message.role === 'assistant' || message.role === 'ai' ? 'assistant' : 'user';
-                          const content = message.content ?? message.message ?? message.text ?? '';
-
-                          return (
-                            <ChatBubble
-                              key={message.id ?? `${session.id}-message-${index}`}
-                              role={role}
-                              content={content || '-'}
-                            />
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <p className="mt-3 rounded-[6px] bg-white px-3 py-3 text-[13px] font-700 text-[#8A94A1]">
-                        저장된 대화내역이 없습니다.
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="mt-4">
-                    <h3 className="text-[13px] font-900 text-[#303843]">저지 사유</h3>
-                    <p className="mt-3 whitespace-pre-wrap rounded-[6px] bg-white px-3 py-3 text-[13px] font-700 leading-5 text-[#5C6875]">
-                      {judgeReason}
-                    </p>
-                  </div>
-                </div>
-              ) : null}
             </li>
           );
         })}
@@ -514,6 +504,8 @@ export default function Challenge() {
   const navigate = useNavigate();
   const { problemId } = useParams();
   const currentTeamId = useAuthStore(state => state.teamInfo?.id);
+  const setSessionId = useSessionStore(state => state.setSessionId);
+  const setSessionStatus = useSessionStore(state => state.setSessionStatus);
   const challenge = useMemo(
     () => PATHS.find(item => item.id === Number(problemId)) ?? PATHS[0],
     [problemId]
@@ -535,6 +527,11 @@ export default function Challenge() {
         ? 'bg-[#3F454C] text-white'
         : 'bg-[#353B44] text-white';
   const [activeTab, setActiveTab] = useState('overview');
+  const handleSessionOpen = (sessionId, status) => {
+    setSessionId(sessionId);
+    setSessionStatus(status === 'failed' ? 'fail' : status);
+    navigate(`/challenge/${challenge.id}/play`);
+  };
   const tabs = [
     { id: 'overview', label: '챌린지 개요' },
     { id: 'history', label: '도전 기록' },
@@ -606,42 +603,7 @@ export default function Challenge() {
       <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
         <main className="space-y-8">
           {activeTab === 'overview' ? (
-            <>
-              <section>
-                <h2 className="text-[26px] font-900 text-black">챌린지 개요</h2>
-                <h3 className="mt-4 text-[20px] font-900 text-[#202832]">
-                  {challengeOverview.title}
-                </h3>
-                <p className="mt-5 text-[15px] leading-[27px] text-[#3D4754]">
-                  {challengeOverview.description}
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-[20px] font-900 text-[#202832]">도전 목표</h2>
-                <p className="mt-3 text-[15px] font-700 leading-[27px] text-[#3D4754]">
-                  {challengeOverview.goal}
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-[20px] font-900 text-[#202832]">성공 조건</h2>
-                <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-[26px] text-[#3D4754]">
-                  {challengeOverview.successItems.map(item => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </section>
-
-              <section>
-                <h2 className="text-[20px] font-900 text-[#202832]">실패 조건</h2>
-                <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-[26px] text-[#3D4754]">
-                  {challengeOverview.failureItems.map(item => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </section>
-            </>
+            <ChallengeOverviewContent />
           ) : null}
 
           {activeTab === 'history' ? (
@@ -650,6 +612,7 @@ export default function Challenge() {
               <ChallengeAttemptHistory
                 sessions={sessions}
                 isLoading={isHistoryLoading && !problemBundleData}
+                onSessionOpen={handleSessionOpen}
               />
             </section>
           ) : null}
