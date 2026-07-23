@@ -59,6 +59,7 @@ const AttemptHistoryCard = ({
   promptSummary,
   onClick,
   isActive,
+  showAttemptNumber = true,
 }) => {
   let resultText, resultBgColor, summaryBgColor;
 
@@ -90,23 +91,24 @@ const AttemptHistoryCard = ({
       }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 (Flex Row) */}
-      <div className="flex justify-between items-center flex-shrink-0 h-[32px]">
-        {/* 시도 번호 태그 */}
-        <div
-          className="flex justify-center items-center w-[32px] h-[32px] rounded-[10px] box-border bg-white/45 backdrop-blur-md transition-all duration-200 group-hover:bg-white/65"
-          style={{
-            border: `1.5px solid ${COLOR_PURPLE_LIGHT}`,
-            backgroundColor: isActive ? COLOR_PURPLE_LIGHT : 'transparent',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(131,123,189,0.18)',
-          }}
-        >
-          <span
-            className="heading-3 font-700"
-            style={{ color: isActive ? COLOR_WHITE : COLOR_PURPLE_LIGHT }}
+      <div className={`flex items-center flex-shrink-0 h-[32px] ${showAttemptNumber ? 'justify-between' : 'justify-end'}`}>
+        {showAttemptNumber ? (
+          <div
+            className="flex justify-center items-center w-[32px] h-[32px] rounded-[10px] box-border bg-white/45 backdrop-blur-md transition-all duration-200 group-hover:bg-white/65"
+            style={{
+              border: `1.5px solid ${COLOR_PURPLE_LIGHT}`,
+              backgroundColor: isActive ? COLOR_PURPLE_LIGHT : 'transparent',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(131,123,189,0.18)',
+            }}
           >
-            {attemptNumber}
-          </span>
-        </div>
+            <span
+              className="heading-3 font-700"
+              style={{ color: isActive ? COLOR_WHITE : COLOR_PURPLE_LIGHT }}
+            >
+              {attemptNumber}
+            </span>
+          </div>
+        ) : null}
         {/* 성공/실패/미제출 태그 */}
         <div
           className="flex justify-center items-center min-w-[72px] h-[28px] rounded-full px-4 transition-transform duration-200 group-hover:scale-[1.03]"
