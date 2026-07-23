@@ -17,6 +17,10 @@ import SuccessCardBg from '@/assets/images/succescard.png';
 import FailCardBg from '@/assets/images/failcard.png';
 import NoTryCardBg from '@/assets/images/notry.png';
 import { PATHS } from '@/pages/Kategorie/Kategorie';
+import { useProblemBundle } from '@/hooks/useProblemBundle';
+import { useAuthStore } from '@/stores/authStore';
+import { useSessionStore } from '@/stores/useSessionStore';
+import AttemptHistoryCard, { AttemptHistoryCardSkeleton } from '../components/AttemptHistoryCard';
 
 const challengeSections = [
   {
@@ -78,6 +82,24 @@ const challengeRecords = {
   3: { status: '성공', attempts: 5, successes: 1, failures: 4, tokens: 6120, score: 88 },
 };
 
+const mockChallengeSessions = [
+  {
+    id: 'mock-session-3',
+    status: 'success',
+    title: '관리자 권한으로 승인 코드를 받아냈습니다.',
+  },
+  {
+    id: 'mock-session-2',
+    status: 'failed',
+    judge_reason: '성공 조건에 필요한 승인 코드가 응답에 포함되지 않았습니다.',
+  },
+  {
+    id: 'mock-session-1',
+    status: 'unsubmitted',
+    title: '시스템 프롬프트의 제약 조건을 확인하는 중입니다.',
+  },
+];
+
 function ChallengePreview({ challenge }) {
   return (
     <div className="h-[210px] overflow-hidden rounded-[4px] bg-[#12070A]">
@@ -102,6 +124,56 @@ function InfoSection({ section }) {
         ))}
       </ul>
     </section>
+  );
+}
+
+function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
+  const currentSessionId = useSessionStore(state => state.sessionId);
+
+  if (isLoading) {
+    return (
+      <div className="mt-5 grid gap-4">
+        {[0, 1].map(index => (
+          <AttemptHistoryCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  if (sessions.length === 0) {
+    return (
+      <div className="mt-5 flex min-h-[180px] items-center justify-center rounded-[6px] border border-[#DDE3EA] bg-[#FAFBFC] px-6 text-center">
+        <div>
+          <p className="text-[16px] font-800 text-[#3D4754]">아직 도전 기록이 없습니다.</p>
+          <p className="mt-2 text-[13px] text-[#8A94A1]">챌린지를 시작하면 시도 결과와 소모 토큰이 여기에 표시됩니다.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-5 grid gap-4">
+      {sessions.map((session, index) => {
+        const status = session.status?.toLowerCase() || 'unsubmitted';
+        const isSuccess = status === 'success';
+        const isSubmitted = isSuccess || status === 'fail' || status === 'failed';
+        const promptSummary = isSuccess
+          ? session.title || '성공한 시도'
+          : session.judge_reason?.split('\n')[0]?.slice(0, 50) || session.title || '새로운 대화';
+
+        return (
+          <AttemptHistoryCard
+            key={session.id}
+            attemptNumber={sessions.length - index}
+            isSubmitted={isSubmitted}
+            isSuccess={isSuccess}
+            promptSummary={promptSummary}
+            isActive={session.id === currentSessionId}
+            onClick={() => onSessionOpen(session.id, status)}
+          />
+        );
+      })}
+    </div>
   );
 }
 
@@ -201,10 +273,15 @@ function SidePanel({ challenge, record }) {
 export default function Challenge() {
   const navigate = useNavigate();
   const { problemId } = useParams();
+  const currentTeamId = useAuthStore(state => state.teamInfo?.id);
+  const setSessionId = useSessionStore(state => state.setSessionId);
+  const setSessionStatus = useSessionStore(state => state.setSessionStatus);
   const challenge = useMemo(
     () => PATHS.find(item => item.id === Number(problemId)) ?? PATHS[0],
     [problemId]
   );
+  const { data: problemBundleData, isLoading: isHistoryLoading } = useProblemBundle(challenge.id, currentTeamId);
+  const sessions = problemBundleData?.sessions?.length ? problemBundleData.sessions : mockChallengeSessions;
   const record = challengeRecords[challenge.id] ?? {
     status: '미도전',
     attempts: 0,
@@ -220,6 +297,11 @@ export default function Challenge() {
         ? 'bg-[#3F454C] text-white'
         : 'bg-[#353B44] text-white';
   const [activeTab, setActiveTab] = useState('learning');
+  const handleSessionOpen = (sessionId, status) => {
+    setSessionId(sessionId);
+    setSessionStatus(status);
+    navigate(`/challenge/${challenge.id}/play`);
+  };
   const tabs = [
     { id: 'learning', label: '학습 목표' },
     { id: 'overview', label: '챌린지 개요' },
@@ -341,19 +423,11 @@ export default function Challenge() {
           {activeTab === 'history' ? (
             <section>
               <h2 className="text-[26px] font-900 text-black">도전 기록</h2>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <RecordCard label="시도" value={`${record.attempts}회`} />
-                <RecordCard label="성공" value={`${record.successes}회`} />
-                <RecordCard label="실패" value={`${record.failures}회`} />
-              </div>
-              {record.attempts === 0 ? (
-                <div className="mt-5 flex min-h-[180px] items-center justify-center rounded-[6px] border border-[#DDE3EA] bg-[#FAFBFC] px-6 text-center">
-                  <div>
-                    <p className="text-[16px] font-800 text-[#3D4754]">아직 도전 기록이 없습니다.</p>
-                    <p className="mt-2 text-[13px] text-[#8A94A1]">챌린지를 시작하면 시도 결과와 소모 토큰이 여기에 표시됩니다.</p>
-                  </div>
-                </div>
-              ) : null}
+              <ChallengeAttemptHistory
+                sessions={sessions}
+                isLoading={isHistoryLoading && !problemBundleData}
+                onSessionOpen={handleSessionOpen}
+              />
             </section>
           ) : null}
 
@@ -372,15 +446,6 @@ export default function Challenge() {
 
         <SidePanel challenge={challenge} record={record} />
       </div>
-    </div>
-  );
-}
-
-function RecordCard({ label, value }) {
-  return (
-    <div className="rounded-[6px] border border-[#DDE3EA] bg-[#FAFBFC] p-5">
-      <div className="text-[13px] font-800 text-[#7B8491]">{label}</div>
-      <div className="mt-2 text-[24px] font-900 text-[#2E3338]">{value}</div>
     </div>
   );
 }
