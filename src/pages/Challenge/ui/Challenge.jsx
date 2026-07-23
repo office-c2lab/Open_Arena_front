@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   Activity,
   ArrowLeft,
-  Check,
   CheckCircle2,
   ChevronRight,
   Coins,
@@ -21,44 +20,6 @@ import { useProblemBundle } from '@/hooks/useProblemBundle';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionStore } from '@/stores/useSessionStore';
 import AttemptHistoryCard, { AttemptHistoryCardSkeleton } from '../components/AttemptHistoryCard';
-
-const challengeSections = [
-  {
-    icon: '◆',
-    title: '이런 이유로 이 Challenge를 추천해요',
-    items: [
-      '실제 공격 시나리오에 가까운 상황에서 AI와 대화하며 목표를 달성하는 흐름을 익힐 수 있습니다.',
-      '문제의 성공 조건을 읽고, 거절 응답을 분석하며, 프롬프트를 반복적으로 개선하는 경험을 쌓습니다.',
-      '튜토리얼에서 배운 기본기를 실전 감각으로 연결하기 좋은 단계입니다.',
-    ],
-  },
-  {
-    icon: '▣',
-    title: '이런 내용을 연습해요',
-    items: [
-      '문제 설명에서 핵심 목표와 제약 조건을 분리해 읽는 방법',
-      '모델의 방어 규칙을 관찰하고 우회 가능성을 점검하는 방법',
-      '실패한 시도에서 단서를 찾아 다음 프롬프트를 개선하는 방법',
-      '제출 전 성공 조건을 기준으로 응답을 검증하는 방법',
-    ],
-  },
-  {
-    icon: '◎',
-    title: '이런 분께 추천해요',
-    items: [
-      '튜토리얼 이후 실제 챌린지에 도전해보고 싶은 분',
-      'AI Red Teaming 실습 기록을 쌓고 랭킹에 도전하고 싶은 분',
-    ],
-  },
-  {
-    icon: '◇',
-    title: '이런 선수 지식이 필요해요',
-    items: [
-      '프롬프트 인젝션과 안전 거절 응답에 대한 기본 이해',
-      '목표 달성을 위해 여러 시도를 비교하는 태도',
-    ],
-  },
-];
 
 const challengeOverview = {
   title: '시스템 보안 목표 달성하기',
@@ -105,25 +66,6 @@ function ChallengePreview({ challenge }) {
     <div className="h-[210px] overflow-hidden rounded-[4px] bg-[#12070A]">
       <img src={ChallengeImage} alt={challenge.title} className="h-full w-full object-cover" />
     </div>
-  );
-}
-
-function InfoSection({ section }) {
-  return (
-    <section className="space-y-3">
-      <div className="inline-flex items-center gap-2 rounded-[4px] border border-[#DDE3EA] bg-[#F7F9FC] px-3 py-2 text-[13px] font-800 text-[#2E3338]">
-        <span>{section.icon}</span>
-        {section.title}
-      </div>
-      <ul className="space-y-2 text-[15px] leading-[28px] text-[#26313D]">
-        {section.items.map(item => (
-          <li key={item} className="flex gap-2">
-            <Check className="mt-1.5 h-4 w-4 shrink-0 text-[#9BA4B0]" strokeWidth={2} />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
   );
 }
 
@@ -296,14 +238,13 @@ export default function Challenge() {
       : challenge.level === 'Starter'
         ? 'bg-[#3F454C] text-white'
         : 'bg-[#353B44] text-white';
-  const [activeTab, setActiveTab] = useState('learning');
+  const [activeTab, setActiveTab] = useState('overview');
   const handleSessionOpen = (sessionId, status) => {
     setSessionId(sessionId);
     setSessionStatus(status);
     navigate(`/challenge/${challenge.id}/play`);
   };
   const tabs = [
-    { id: 'learning', label: '학습 목표' },
     { id: 'overview', label: '챌린지 개요' },
     { id: 'history', label: '도전 기록' },
     { id: 'solvers', label: '순위 현황' },
@@ -373,14 +314,6 @@ export default function Challenge() {
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
         <main className="space-y-8">
-          {activeTab === 'learning' ? (
-            <>
-              {challengeSections.map(section => (
-                <InfoSection key={section.title} section={section} />
-              ))}
-            </>
-          ) : null}
-
           {activeTab === 'overview' ? (
             <>
               <section>
