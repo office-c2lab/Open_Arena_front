@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowRight, BookOpen } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ArrowRight, BookOpen, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import UserIcon from '@/assets/icons/user.svg';
 import { useAuthStore } from '@/stores/authStore';
@@ -65,6 +65,93 @@ const dashboardBanners = [
     image: TutorialBannerImage,
   },
 ];
+
+const activityLevels = [
+  'bg-[#F3F4F6]',
+  'bg-[#FFE8EA]',
+  'bg-[#FFB8BE]',
+  'bg-[#FF7D86]',
+  'bg-[#FF4854]',
+  'bg-[#CF1723]',
+];
+
+const dayLabels = ['월', '화', '수', '목', '금', '토', '일'];
+const timeBlocks = Array.from({ length: 8 }, (_, index) => {
+  const startHour = index * 3;
+
+  return {
+    startHour,
+    hours: [startHour, startHour + 1, startHour + 2],
+    label: `${String(startHour).padStart(2, '0')}:00-${String(startHour + 3).padStart(2, '0')}:00`,
+  };
+});
+
+function getActivityCount(date, dayIndex, startHour) {
+  const daySeed = date.getDate() + (date.getMonth() + 1) * 7 + dayIndex * 5 + startHour * 3;
+
+  if (startHour < 6 || startHour > 21 || daySeed % 11 === 0) return 0;
+  if (daySeed % 23 === 0) return 6;
+  if (daySeed % 17 === 0) return 5;
+  if (daySeed % 7 === 0) return 4;
+  if (daySeed % 5 === 0) return 3;
+  if (daySeed % 3 === 0) return 2;
+
+  return 1;
+}
+
+function getActivityLevel(count) {
+  if (count === 0) return 0;
+  if (count <= 1) return 1;
+  if (count <= 2) return 2;
+  if (count <= 4) return 3;
+  if (count <= 5) return 4;
+
+  return 5;
+}
+
+function buildActivityHeatmap() {
+  const today = new Date();
+  const mondayOffset = (today.getDay() + 6) % 7;
+  const startDate = new Date(today);
+  startDate.setHours(0, 0, 0, 0);
+  startDate.setDate(startDate.getDate() - mondayOffset);
+
+  const days = Array.from({ length: 7 }, (_, dayIndex) => {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + dayIndex);
+    const blocks = timeBlocks.map(({ label, startHour, hours }) => {
+      const cells = hours.map(hour => {
+        const count = getActivityCount(date, dayIndex, hour);
+
+        return {
+          hour,
+          count,
+          level: getActivityLevel(count),
+        };
+      });
+
+      return {
+        label,
+        startHour,
+        cells,
+      };
+    });
+
+    return {
+      date,
+      blocks,
+    };
+  });
+
+  return {
+    days,
+    totalCount: days.reduce(
+      (daySum, day) =>
+        daySum + day.blocks.reduce((blockSum, block) => blockSum + block.cells.reduce((cellSum, cell) => cellSum + cell.count, 0), 0),
+      0
+    ),
+  };
+}
 
 function DashboardBannerSlider() {
   const navigate = useNavigate();
@@ -575,40 +662,68 @@ function Timeline() {
   );
 }
 
-export default function Dashboard() {
-  const navigate = useNavigate();
-  const [activeDetail, setActiveDetail] = useState(null);
+function ChallengeActivityHeatmap() {
+  const { days, totalCount } = useMemo(() => buildActivityHeatmap(), []);
 
+  return (
+    <section className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-0">
+      <div className="w-fit max-w-full rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-[16px] font-900 leading-none text-[#202832]">도전 활동 히트맵</h2>
+            <p className="mt-2 text-[13px] font-700 text-[#6F7885]">일별 도전 참여 현황</p>
+          </div>
+
+          
+        </div>
+
+        <div className="mt-5 overflow-x-auto pb-1">
+          <div className="w-max">
+            <div className="grid grid-cols-[32px_repeat(24,22px)] gap-x-[6px] gap-y-[6px]">
+              {days.map((day, dayIndex) => {
+                const cells = day.blocks.flatMap(block => block.cells);
+
+                return (
+                  <React.Fragment key={dayLabels[dayIndex]}>
+                    <span className="flex h-[22px] items-center text-[13px] font-900 text-[#596575]">{dayLabels[dayIndex]}</span>
+                    {cells.map(cell => (
+                      <div
+                        key={`${dayLabels[dayIndex]}-${cell.hour}`}
+                        title={`${day.date.toLocaleDateString('ko-KR')} ${String(cell.hour).padStart(2, '0')}:00 도전 ${cell.count}회`}
+                        className={`h-[22px] w-[22px] rounded-[5px] ${activityLevels[cell.level]}`}
+                      />
+                    ))}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 flex items-center justify-between gap-4 text-[12px] font-800 text-[#596575]">
+              <div className="flex items-center gap-2">
+                <span>낮음</span>
+                <div className="flex gap-[4px]">
+                  {activityLevels.map(levelClass => (
+                    <span key={levelClass} className={`h-3 w-3 rounded-[2px] ${levelClass}`} />
+                  ))}
+                </div>
+                <span>높음</span>
+              </div>
+              <p>
+                총 도전 <strong className="font-900 text-[#202832]">{totalCount.toLocaleString()}회</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function Dashboard() {
   return (
     <div className="w-full bg-white">
       <DashboardBannerSlider />
-
-      <div className="mx-auto grid w-full max-w-[1200px] gap-10 bg-white py-10 lg:grid-cols-[370px_minmax(0,1fr)]">
-        <aside className="space-y-5">
-          <ProfileCard />
-          <button type="button" className="h-11 w-full cursor-pointer rounded-[3px] bg-[#FF4854] text-[15px] font-900 text-white transition hover:bg-[#E73541]">
-            프로필 커스텀
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/settings')}
-            className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[3px] border border-[#DDE3EA] bg-white text-[13px] font-800 text-[#596575] transition hover:border-[#FF4854] hover:text-[#FF4854]"
-          >
-            <ArrowRight className="h-4 w-4" />
-            계정 설정으로 이동
-          </button>
-          <LearningProgressCard onShowDetails={() => setActiveDetail('learning')} />
-          <TutorialProgressCard onShowDetails={() => setActiveDetail('tutorial')} />
-          <MissionCard onShowDetails={() => setActiveDetail('challenge')} />
-        </aside>
-
-        <main className="min-w-0 pt-1">
-          <Timeline />
-          {activeDetail === 'learning' ? <LearningDetailPanel /> : null}
-          {activeDetail === 'tutorial' ? <TutorialDetailPanel /> : null}
-          {activeDetail === 'challenge' ? <ChallengeDetailPanel /> : null}
-        </main>
-      </div>
+      <ChallengeActivityHeatmap />
     </div>
   );
 }
