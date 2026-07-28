@@ -221,7 +221,6 @@ export default function ChallengeInfoPanel({
                     />
                   </div>
                 )}
-
               </div>
             </div>
           )}

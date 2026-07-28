@@ -44,12 +44,7 @@ export default function FaqSection() {
         <SectionTitle
           eyebrow="FAQ"
           title="자주 묻는 질문"
-          desc={
-            <>
-              ARENA 참여와 운영 방식에 대해
-              자주 묻는 질문을 정리했습니다.
-            </>
-          }
+          desc={<>ARENA 참여와 운영 방식에 대해 자주 묻는 질문을 정리했습니다.</>}
         />
       </motion.div>
 

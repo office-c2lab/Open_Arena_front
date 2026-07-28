@@ -15,8 +15,7 @@ const navItems = [
   { label: '랭킹', path: '/leaderboard', match: ['/leaderboard'] },
 ];
 
-const isNavItemActive = (item, pathname) =>
-  item.match.some(path => pathname.startsWith(path));
+const isNavItemActive = (item, pathname) => item.match.some(path => pathname.startsWith(path));
 
 export default function AppHeader() {
   const location = useLocation();
@@ -25,7 +24,8 @@ export default function AppHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const displayName = teamInfo?.teamname || teamInfo?.username || teamInfo?.login_id || 'ARENA 유저';
+  const displayName =
+    teamInfo?.teamname || teamInfo?.username || teamInfo?.login_id || 'ARENA 유저';
   const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
   const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
   const isPaidMember = teamInfo?.membershipType === 'paid';
@@ -113,7 +113,12 @@ export default function AppHeader() {
                 onClick={() => setIsProfileOpen(current => !current)}
                 className={`flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full shadow-[0_3px_10px_rgba(255,72,84,0.18)] transition hover:-translate-y-0.5 ${hasProfileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854] hover:bg-[#FF4854]/90'}`}
               >
-                <img src={profileImage} alt="" className={hasProfileImage ? 'h-full w-full object-cover' : 'h-6 w-6'} aria-hidden="true" />
+                <img
+                  src={profileImage}
+                  alt=""
+                  className={hasProfileImage ? 'h-full w-full object-cover' : 'h-6 w-6'}
+                  aria-hidden="true"
+                />
               </button>
 
               {isProfileOpen ? (
@@ -128,7 +133,12 @@ export default function AppHeader() {
                     <div className="flex items-start gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F2F4F6]">
                         {hasProfileImage ? (
-                          <img src={profileImage} alt="" className="h-full w-full object-cover" aria-hidden="true" />
+                          <img
+                            src={profileImage}
+                            alt=""
+                            className="h-full w-full object-cover"
+                            aria-hidden="true"
+                          />
                         ) : (
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF4854]">
                             <img src={UserIcon} alt="" className="h-6 w-6" aria-hidden="true" />
@@ -137,10 +147,16 @@ export default function AppHeader() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <div className="truncate text-lg font-700 text-[#303030]">{displayName}</div>
-                          <div className="shrink-0 text-xs font-700 text-[#FF4854]">{membershipLabel}</div>
+                          <div className="truncate text-lg font-700 text-[#303030]">
+                            {displayName}
+                          </div>
+                          <div className="shrink-0 text-xs font-700 text-[#FF4854]">
+                            {membershipLabel}
+                          </div>
                         </div>
-                        <div className="truncate text-sm font-500 text-[#76787a]">{displayEmail}</div>
+                        <div className="truncate text-sm font-500 text-[#76787a]">
+                          {displayEmail}
+                        </div>
                       </div>
                     </div>
 
@@ -155,16 +171,23 @@ export default function AppHeader() {
                       <>
                         <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-sm font-500 text-[#76787a]">
                           성공한 챌린지{' '}
-                          <span className="font-700 text-[#1ec186]">{profileStats.solvedChallenges || 0} 개</span>
+                          <span className="font-700 text-[#1ec186]">
+                            {profileStats.solvedChallenges || 0} 개
+                          </span>
                         </div>
 
                         <div className="mt-3 grid grid-cols-2 gap-2">
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
                             총 성공 갯수{' '}
-                            <span className="font-700 text-[#A8AAFF]">{profileStats.totalSuccesses || 0} 개</span>
+                            <span className="font-700 text-[#A8AAFF]">
+                              {profileStats.totalSuccesses || 0} 개
+                            </span>
                           </div>
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                            랭킹 <span className="font-700 text-[#FFB155]">{profileStats.rank || '-'} 위</span>
+                            랭킹{' '}
+                            <span className="font-700 text-[#FFB155]">
+                              {profileStats.rank || '-'} 위
+                            </span>
                           </div>
                         </div>
                       </>
@@ -208,7 +231,6 @@ export default function AppHeader() {
               로그인
             </button>
           )}
-
         </div>
       </div>
 

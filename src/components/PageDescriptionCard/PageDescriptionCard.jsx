@@ -19,7 +19,9 @@ export default function PageDescriptionCard({ eyebrow, title, description, items
             {items.map(item => (
               <div key={item.label} className="min-w-[96px] px-4 py-3 text-center">
                 <p className="text-[18px] font-900 text-[#FF4854]">{item.value}</p>
-                <p className="mt-1 whitespace-nowrap text-[11px] font-800 text-[#7B8491]">{item.label}</p>
+                <p className="mt-1 whitespace-nowrap text-[11px] font-800 text-[#7B8491]">
+                  {item.label}
+                </p>
               </div>
             ))}
           </div>

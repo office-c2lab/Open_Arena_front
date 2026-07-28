@@ -87,7 +87,12 @@ export default function Sidebar({ isChallengeLayout = false, isOpen = true }) {
           ))}
         </nav>
 
-        <SidebarProfile isCollapsed={isCollapsed} name={displayName} role={role} profileImage={teamInfo?.profileImage} />
+        <SidebarProfile
+          isCollapsed={isCollapsed}
+          name={displayName}
+          role={role}
+          profileImage={teamInfo?.profileImage}
+        />
       </div>
     </aside>
   );

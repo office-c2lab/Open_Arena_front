@@ -1,8 +1,8 @@
 // src/api/auth.js
 // 임시 프론트 인증: 실제 인증 API가 연결되면 이 목업을 교체합니다.
 export const MOCK_MEMBERSHIP = Object.freeze({
-  '1111': { type: 'free', label: '무료 회원', nickname: '백종현' },
-  '2222': {
+  1111: { type: 'free', label: '무료 회원', nickname: '백종현' },
+  2222: {
     type: 'paid',
     label: '유료 회원',
     nickname: '유동석',

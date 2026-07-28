@@ -1,43 +1,43 @@
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const lerp = (start, end, t) => start + (end - start) * t;
-const smoothstep = (t) => t * t * (3 - 2 * t);
+const smoothstep = t => t * t * (3 - 2 * t);
 const START_PROGRESS_OFFSET = 0.25;
 const CONVERGENCE_SCROLL_RATIO = 0.82;
 const DEFAULT_SERVICE_CARDS = [
   {
-    title: "Workflow Optimization",
+    title: 'Workflow Optimization',
     description:
-      "We automate your workflow by connecting your favorite applications, boosting efficiency and enhancing productivity.",
-    visual: "ring"
+      'We automate your workflow by connecting your favorite applications, boosting efficiency and enhancing productivity.',
+    visual: 'ring',
   },
   {
-    title: "Business consulting",
+    title: 'Business consulting',
     description:
-      "We develop advanced chatbots that are reactive, understand nuances, and are capable of solving extremely complex queries.",
-    visual: "triangle"
+      'We develop advanced chatbots that are reactive, understand nuances, and are capable of solving extremely complex queries.',
+    visual: 'triangle',
   },
   {
-    title: "Chatbot development",
+    title: 'Chatbot development',
     description:
-      "Using our expertise, we dive deep into your organization and consult you on how AI-driven automations could enhance your operations.",
-    visual: "diamond"
-  }
+      'Using our expertise, we dive deep into your organization and consult you on how AI-driven automations could enhance your operations.',
+    visual: 'diamond',
+  },
 ];
 
-const DEFAULT_NAV_ITEMS = ["Home", "Services", "Work", "Plans", "Team", "Contact"];
+const DEFAULT_NAV_ITEMS = ['Home', 'Services', 'Work', 'Plans', 'Team', 'Contact'];
 
 const DEFAULT_COPY = {
-  brand: "OPTIMIND",
-  progressLabel: "02 / 005",
-  sectionTitle: ["DISCOVER", "OUR SERVICES"],
-  sectionDescription: "We deliver complete AI automation services under one roof.",
-  footerCount: "0",
-  footerLabel: "Share",
-  bottomHeadline: "니들의 @@가 모여서 하나가 된다",
-  ctaLabel: "지금 바로 Red Teaming 에 도전하세요"
+  brand: 'OPTIMIND',
+  progressLabel: '02 / 005',
+  sectionTitle: ['DISCOVER', 'OUR SERVICES'],
+  sectionDescription: 'We deliver complete AI automation services under one roof.',
+  footerCount: '0',
+  footerLabel: 'Share',
+  bottomHeadline: '니들의 @@가 모여서 하나가 된다',
+  ctaLabel: '지금 바로 Red Teaming 에 도전하세요',
 };
 
 function spherePoint(index, total) {
@@ -48,7 +48,7 @@ function spherePoint(index, total) {
   return {
     x: Math.cos(theta) * Math.sin(phi),
     y: Math.cos(phi),
-    z: Math.sin(theta) * Math.sin(phi)
+    z: Math.sin(theta) * Math.sin(phi),
   };
 }
 
@@ -64,10 +64,10 @@ function createSeededRng(seed) {
 }
 
 export default function PortableShowcase({
-  className = "",
+  className = '',
   navItems = DEFAULT_NAV_ITEMS,
   serviceCards = DEFAULT_SERVICE_CARDS,
-  copy = DEFAULT_COPY
+  copy = DEFAULT_COPY,
 }) {
   const [heroProgress, setHeroProgress] = useState(START_PROGRESS_OFFSET);
   const [isActive, setIsActive] = useState(false);
@@ -98,7 +98,7 @@ export default function PortableShowcase({
     const section = sectionRef.current;
     if (!canvas || !section || !isActive) return undefined;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return undefined;
     const scrollElement = document.scrollingElement || document.documentElement;
 
@@ -106,7 +106,7 @@ export default function PortableShowcase({
       width: 0,
       height: 0,
       dpr: 1,
-      progress: 0
+      progress: 0,
     };
 
     const particles = [];
@@ -143,7 +143,7 @@ export default function PortableShowcase({
           speed: 0.45 + rng() * 1.25,
           size: (0.5 + rng() * 1.5) * (isRing ? 1.2 : 1),
           glow: rng(),
-          tint: rng()
+          tint: rng(),
         });
       }
     }
@@ -157,7 +157,7 @@ export default function PortableShowcase({
       const raw = clamp(scrolled / activeDistance, 0, 1);
       const nextProgress = START_PROGRESS_OFFSET + raw * (1 - START_PROGRESS_OFFSET);
       state.progress = nextProgress;
-      setHeroProgress((prev) => (Math.abs(prev - nextProgress) > 0.002 ? nextProgress : prev));
+      setHeroProgress(prev => (Math.abs(prev - nextProgress) > 0.002 ? nextProgress : prev));
     }
 
     function trackProgress() {
@@ -190,19 +190,16 @@ export default function PortableShowcase({
       const rotY = time * (0.0002 * dynamic + 0.00003) + 0.42 * t;
       const rotX = Math.sin(time * 0.00014) * (0.22 * dynamic + 0.02) + 0.05 * t;
 
-      ctx.fillStyle = "rgba(3, 2, 6, 0.24)";
+      ctx.fillStyle = 'rgba(3, 2, 6, 0.24)';
       ctx.fillRect(0, 0, state.width, state.height);
 
       ctx.save();
-      ctx.globalCompositeOperation = "lighter";
+      ctx.globalCompositeOperation = 'lighter';
 
       for (const particle of particles) {
-        const noiseX =
-          Math.sin(time * 0.0013 * particle.speed + particle.phaseX) * drift;
-        const noiseY =
-          Math.cos(time * 0.0012 * particle.speed + particle.phaseY) * drift * 0.75;
-        const noiseZ =
-          Math.sin(time * 0.0011 * particle.speed + particle.phaseY) * drift;
+        const noiseX = Math.sin(time * 0.0013 * particle.speed + particle.phaseX) * drift;
+        const noiseY = Math.cos(time * 0.0012 * particle.speed + particle.phaseY) * drift * 0.75;
+        const noiseZ = Math.sin(time * 0.0011 * particle.speed + particle.phaseY) * drift;
 
         let x = particle.scatterX * (1 - t) + particle.sx * radius * t + noiseX;
         let y = particle.scatterY * (1 - t) + particle.sy * radius * t + noiseY;
@@ -231,8 +228,7 @@ export default function PortableShowcase({
           continue;
         }
 
-        const alpha =
-          (0.08 + particle.glow * 0.74) * (0.44 + t * 0.75) * Math.min(depth, 1.8);
+        const alpha = (0.08 + particle.glow * 0.74) * (0.44 + t * 0.75) * Math.min(depth, 1.8);
         const size = particle.size * depth * (0.55 + t * 0.45);
         const green = 182 + Math.floor(45 * particle.tint);
         const blue = 116 + Math.floor(26 * particle.tint);
@@ -246,7 +242,7 @@ export default function PortableShowcase({
       const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.35);
       glow.addColorStop(0, `rgba(255, 235, 180, ${0.18 * t})`);
       glow.addColorStop(0.48, `rgba(255, 202, 130, ${0.06 * t})`);
-      glow.addColorStop(1, "rgba(255, 175, 95, 0)");
+      glow.addColorStop(1, 'rgba(255, 175, 95, 0)');
       ctx.fillStyle = glow;
       ctx.beginPath();
       ctx.arc(cx, cy, radius * 1.35, 0, Math.PI * 2);
@@ -257,27 +253,27 @@ export default function PortableShowcase({
     }
 
     resize();
-    window.addEventListener("resize", resize);
-    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+    window.addEventListener('resize', resize);
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
     animationId = window.requestAnimationFrame(draw);
     progressFrame = window.requestAnimationFrame(trackProgress);
 
     return () => {
       window.cancelAnimationFrame(animationId);
       window.cancelAnimationFrame(progressFrame);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("scroll", updateScrollProgress);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('scroll', updateScrollProgress);
     };
   }, [isActive]);
 
   return (
     <main
       className={[
-        "min-h-screen overflow-x-clip bg-[radial-gradient(1300px_700px_at_10%_-10%,rgba(255,72,84,0.14),transparent_60%),radial-gradient(1200px_700px_at_95%_110%,rgba(225,53,65,0.1),transparent_55%),#050507] text-[#f5f2ea]",
-        className
+        'min-h-screen overflow-x-clip bg-[radial-gradient(1300px_700px_at_10%_-10%,rgba(255,72,84,0.14),transparent_60%),radial-gradient(1200px_700px_at_95%_110%,rgba(225,53,65,0.1),transparent_55%),#050507] text-[#f5f2ea]',
+        className,
       ]
         .filter(Boolean)
-        .join(" ")}
+        .join(' ')}
     >
       <section ref={sectionRef} className="relative h-[250vh]">
         <div className="sticky top-0 h-screen overflow-hidden">
@@ -289,13 +285,12 @@ export default function PortableShowcase({
 
       <section className="pb-24">
         <div className="mx-auto flex max-w-4xl flex-col items-center px-6 text-center">
-          <p className="mb-6 text-lg font-medium tracking-wide text-[#FFDCE0] sm:text-2xl">
-          </p>
+          <p className="mb-6 text-lg font-medium tracking-wide text-[#FFDCE0] sm:text-2xl"></p>
           <a
             href="/login"
             className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#FFB8BE]/40 bg-[#FF4854] px-8 py-3 text-base font-semibold text-white shadow-[0_10px_22px_rgba(255,72,84,0.18)] transition duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:border-[#FFDCE0] hover:bg-[#E73541] hover:shadow-[0_14px_28px_rgba(255,72,84,0.26)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF4854]"
           >
-            <span>{copy.ctaLabel || "참가 신청"}</span>
+            <span>{copy.ctaLabel || '참가 신청'}</span>
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
           </a>
         </div>

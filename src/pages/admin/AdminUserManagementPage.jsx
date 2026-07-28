@@ -637,8 +637,18 @@ function UserDetailModal({
             {membership === 'free' ? (
               <div className="mt-3 space-y-4">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <LimitUsageCard label="도전" used={challengeUsed} limit={challengeLimit} suffix="회" />
-                  <LimitUsageCard label="제출" used={submissionUsed} limit={submissionLimit} suffix="회" />
+                  <LimitUsageCard
+                    label="도전"
+                    used={challengeUsed}
+                    limit={challengeLimit}
+                    suffix="회"
+                  />
+                  <LimitUsageCard
+                    label="제출"
+                    used={submissionUsed}
+                    limit={submissionLimit}
+                    suffix="회"
+                  />
                   <LimitUsageCard label="토큰" used={tokenUsed} limit={tokenLimit} suffix="토큰" />
                 </div>
 
@@ -678,14 +688,18 @@ function UserDetailModal({
                 </button>
               </div>
             ) : (
-              <p className="mt-3 text-gray-400">유료회원은 무료회원 일일 한도가 적용되지 않습니다.</p>
+              <p className="mt-3 text-gray-400">
+                유료회원은 무료회원 일일 한도가 적용되지 않습니다.
+              </p>
             )}
           </div>
 
           <div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="font-700 text-white">계정 활성화</h3>
-              <p className="body-small text-gray-400 mt-1">현재 {isActive ? '활성' : '비활성'} 상태입니다.</p>
+              <p className="body-small text-gray-400 mt-1">
+                현재 {isActive ? '활성' : '비활성'} 상태입니다.
+              </p>
             </div>
             <ActiveToggle
               enabled={isActive}

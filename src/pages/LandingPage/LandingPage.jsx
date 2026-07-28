@@ -54,13 +54,13 @@ export default function LandingPage() {
         />
       </div> */}
       <section className="bg-white px-5 py-14 text-center sm:py-20">
-  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#ff4854]">
-    AI Red Teaming Evaluation Next-gen AI
-  </p>
-  <h2 className="mt-5 text-balance text-3xl font-semibold tracking-[-0.04em] text-[#171717] sm:text-5xl">
-    차세대 AI 레드팀 평가 플랫폼
-  </h2>
-</section>
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#ff4854]">
+          AI Red Teaming Evaluation Next-gen AI
+        </p>
+        <h2 className="mt-5 text-balance text-3xl font-semibold tracking-[-0.04em] text-[#171717] sm:text-5xl">
+          차세대 AI 레드팀 평가 플랫폼
+        </h2>
+      </section>
       <Suspense fallback={<div aria-hidden="true" style={{ minHeight: 880 }} />}>
         <Features />
       </Suspense>

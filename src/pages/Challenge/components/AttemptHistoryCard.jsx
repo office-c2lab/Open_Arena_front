@@ -91,7 +91,9 @@ const AttemptHistoryCard = ({
       }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 (Flex Row) */}
-      <div className={`flex items-center flex-shrink-0 h-[32px] ${showAttemptNumber ? 'justify-between' : 'justify-end'}`}>
+      <div
+        className={`flex items-center flex-shrink-0 h-[32px] ${showAttemptNumber ? 'justify-between' : 'justify-end'}`}
+      >
         {showAttemptNumber ? (
           <div
             className="flex justify-center items-center w-[32px] h-[32px] rounded-[10px] box-border bg-white/45 backdrop-blur-md transition-all duration-200 group-hover:bg-white/65"

@@ -148,7 +148,6 @@ export default function Login() {
           </button>
 
           <div className="mt-7 text-center body-large font-500 text-[#6B6B6B]">
-            
             <span>계정이 없으신가요? </span>
             <button
               type="button"
@@ -158,8 +157,6 @@ export default function Login() {
               회원가입
             </button>
           </div>
-
-          
         </footer>
       </div>
     </div>

@@ -71,9 +71,7 @@ const avatarColors = [
   'bg-[#F1EDFF]',
 ];
 
-const rankingTabs = ['예선', '본선'];
-
-function Avatar({ name, rank, large = false }) {
+function Avatar({ rank, large = false }) {
   const showPhoto = rank === 1;
   const color = avatarColors[rank % avatarColors.length];
 
@@ -160,8 +158,6 @@ function RatingBadge({ rank, rating }) {
 
 export default function Leaderboard() {
   const [keyword, setKeyword] = useState('');
-  const [activeCategory, setActiveCategory] = useState('시즌2');
-  const [activeScope, setActiveScope] = useState('개인');
 
   const filteredRows = useMemo(() => {
     const query = keyword.trim().toLowerCase();
@@ -175,101 +171,8 @@ export default function Leaderboard() {
   const topRows = LEADERBOARD_ROWS.slice(0, 3);
 
   return (
-    <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-10 bg-white px-4 py-8 sm:px-6 lg:grid-cols-[160px_minmax(0,1fr)] lg:px-0">
-      <aside className="hidden lg:block">
-        <nav className="sticky top-24 space-y-8">
-          <button
-            type="button"
-            onClick={() => setActiveCategory('시즌1')}
-            className={`block cursor-pointer text-left text-[21px] font-800 transition-colors ${
-              activeCategory === '시즌1' ? 'text-[#FF4854]' : 'text-[#6A7482] hover:text-[#FF4854]'
-            }`}
-          >
-            시즌1
-          </button>
-          <div>
-            <button
-              type="button"
-              onClick={() => setActiveCategory('시즌2')}
-              className={`block cursor-pointer text-left text-[21px] font-800 transition-colors ${
-                activeCategory === '시즌2'
-                  ? 'text-[#FF4854]'
-                  : 'text-[#6A7482] hover:text-[#FF4854]'
-              }`}
-            >
-              시즌2
-            </button>
-            <div className="mt-5 space-y-5 pl-4">
-              {rankingTabs.map(tab => (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => {
-                    setActiveCategory('시즌2');
-                    setActiveScope(tab);
-                  }}
-                  className={`block cursor-pointer text-left text-[17px] font-800 transition-colors ${
-                    activeCategory === '시즌2' && activeScope === tab
-                      ? 'text-[#111827]'
-                      : 'text-[#A0A8B3] hover:text-[#FF4854]'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setActiveCategory('시즌3')}
-            className={`block cursor-pointer text-left text-[21px] font-800 transition-colors ${
-              activeCategory === '시즌3' ? 'text-[#FF4854]' : 'text-[#6A7482] hover:text-[#FF4854]'
-            }`}
-          >
-            시즌3
-          </button>
-        </nav>
-      </aside>
-
+    <div className="mx-auto w-full max-w-[1280px] bg-white px-4 py-8 sm:px-6 lg:px-0">
       <main className="min-w-0">
-        <div className="mb-7 flex flex-wrap gap-2 lg:hidden">
-          {['챌린지', '시즌2', '시즌3'].map(category => (
-            <button
-              key={category}
-              type="button"
-              onClick={() => setActiveCategory(category)}
-              className={`h-9 cursor-pointer rounded-full px-4 text-[14px] font-700 transition-colors ${
-                activeCategory === category
-                  ? 'bg-[#FFF0F2] text-[#FF4854]'
-                  : 'text-[#7B8491] hover:bg-[#F6F8FB]'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-          {rankingTabs.map(tab => (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => {
-                setActiveCategory('시즌2');
-                setActiveScope(tab);
-              }}
-              className={`h-9 cursor-pointer rounded-full px-4 text-[14px] font-700 transition-colors ${
-                activeCategory === '시즌2' && activeScope === tab
-                  ? 'bg-[#FFF0F2] text-[#FF4854]'
-                  : 'text-[#7B8491] hover:bg-[#F6F8FB]'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        
-
-       
-
         <div className="grid gap-7 md:grid-cols-3">
           {topRows.map(row => (
             <TopRankCard key={row.rank} row={row} />

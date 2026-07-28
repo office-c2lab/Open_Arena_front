@@ -229,8 +229,8 @@ function EducationListItem({ article, onOpen }) {
             <span>{article.category}</span>
             <span aria-hidden="true">·</span>
             <span className="flex items-center gap-1.5">
-          <CalendarDays className="h-3.5 w-3.5" />
-          {article.date}
+              <CalendarDays className="h-3.5 w-3.5" />
+              {article.date}
             </span>
             <span aria-hidden="true">·</span>
             <span>{article.readTime} 읽기</span>
@@ -238,7 +238,9 @@ function EducationListItem({ article, onOpen }) {
           <h2 className="mt-2 text-[19px] font-900 leading-[26px] text-[#151A21] transition group-hover:text-[#FF4854] sm:text-[21px]">
             {article.title}
           </h2>
-          <p className="mt-2 text-[14px] font-500 leading-[23px] text-[#66717E]">{article.summary}</p>
+          <p className="mt-2 text-[14px] font-500 leading-[23px] text-[#66717E]">
+            {article.summary}
+          </p>
         </div>
         <ArrowRight className="mt-1 h-5 w-5 shrink-0 text-[#A4ADB8] transition group-hover:translate-x-1 group-hover:text-[#FF4854]" />
       </button>
@@ -288,9 +290,7 @@ function EducationList() {
       </section>
 
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-[18px] font-700 text-black]">
-          학습 자료
-        </h2>
+        <h2 className="text-[18px] font-700 text-black]">학습 자료</h2>
         <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,440px)]">
           <label className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
@@ -446,7 +446,10 @@ function EducationDetail({ article }) {
             className="group flex cursor-pointer items-center gap-3 text-[20px] font-900 text-[#151A21] transition hover:text-[#FF4854]"
           >
             튜토리얼 풀기
-            <ArrowRight className="h-6 w-6 transition group-hover:translate-x-1" strokeWidth={2.5} />
+            <ArrowRight
+              className="h-6 w-6 transition group-hover:translate-x-1"
+              strokeWidth={2.5}
+            />
           </button>
         </div>
       </div>

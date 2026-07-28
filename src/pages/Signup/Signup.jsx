@@ -195,7 +195,8 @@ export default function Signup() {
 
           <p className="mt-8 text-[17px] font-800 leading-7 text-[#3D4754]">
             관리자 승인 후 <span className="text-[#FF4854]">유료 회원</span>으로 전환됩니다.
-            <br />승인 완료 시 서비스를 이용할 수 있습니다.
+            <br />
+            승인 완료 시 서비스를 이용할 수 있습니다.
           </p>
 
           <button

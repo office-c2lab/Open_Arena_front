@@ -192,13 +192,7 @@ export const PATHS = [
 
 const SEASONS = ['시즌1', '시즌2'];
 
-const CATEGORIES = [
-  'System Hacking',
-  'Reverse Engineering',
-  'Cryptography',
-  'Cloud',
-  'Blockchain',
-];
+const CATEGORIES = ['System Hacking', 'Reverse Engineering', 'Cryptography', 'Cloud', 'Blockchain'];
 
 const FILTER_GROUPS = [
   { key: 'category', title: '카테고리', items: CATEGORIES },
@@ -255,7 +249,9 @@ function PathCard({ path, onClick }) {
       <PathPreview path={path} />
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-[21px] font-900 text-[#151A21]">{path.title}</h2>
-        <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">{path.category} 실전 보안 챌린지</p>
+        <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
+          {path.category} 실전 보안 챌린지
+        </p>
         <div className="mt-5 grid grid-cols-[0.85fr_1.35fr_1.35fr_0.8fr] divide-x divide-[#D8DDE4] text-[12px] text-[#2E3338]">
           <span className="flex items-center justify-center whitespace-nowrap pr-1 font-700">
             성공 <em className="ml-1 not-italic text-[#FF4854]">{path.reviews}</em>명
@@ -264,7 +260,8 @@ function PathCard({ path, onClick }) {
             평균 <em className="mx-1 not-italic text-[#FF4854]">1,240</em> 토큰
           </span>
           <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
-            최대 <em className="mx-1 not-italic text-[#FF4854]">{path.maximumPoints ?? 100}</em> 포인트
+            최대 <em className="mx-1 not-italic text-[#FF4854]">{path.maximumPoints ?? 100}</em>{' '}
+            포인트
           </span>
           <span className="flex items-center justify-center pl-1">
             <span className={`rounded-[4px] px-2 py-1 text-[12px] font-700 ${levelClass}`}>
@@ -284,7 +281,10 @@ function PathCard({ path, onClick }) {
 }
 
 function FilterColumn({ title, value, options, onChange }) {
-  const allOptions = [{ label: `${title} 전체`, value: '' }, ...options.map(option => ({ label: option, value: option }))];
+  const allOptions = [
+    { label: `${title} 전체`, value: '' },
+    ...options.map(option => ({ label: option, value: option })),
+  ];
 
   return (
     <div className="min-w-0">
@@ -323,7 +323,10 @@ function FilterColumn({ title, value, options, onChange }) {
 }
 
 function SeasonColumn({ value, options, onChange }) {
-  const allOptions = [{ label: '전체 시즌', value: '' }, ...options.map(option => ({ label: option, value: option }))];
+  const allOptions = [
+    { label: '전체 시즌', value: '' },
+    ...options.map(option => ({ label: option, value: option })),
+  ];
 
   return (
     <div className="min-w-0">
@@ -382,16 +385,17 @@ const ChallengeSection = () => {
   const filteredPaths = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
 
-    return PATHS.filter(path =>
-      (!activeSeason || path.season === activeSeason) &&
-      (!filters.category || path.category === filters.category) &&
-      (!filters.tier || path.tier === filters.tier) &&
-      (!filters.difficulty || path.difficulty === filters.difficulty) &&
-      (!normalizedKeyword ||
-        [path.title, path.category, path.difficulty, path.tier, ...path.tags]
-          .join(' ')
-          .toLowerCase()
-          .includes(normalizedKeyword))
+    return PATHS.filter(
+      path =>
+        (!activeSeason || path.season === activeSeason) &&
+        (!filters.category || path.category === filters.category) &&
+        (!filters.tier || path.tier === filters.tier) &&
+        (!filters.difficulty || path.difficulty === filters.difficulty) &&
+        (!normalizedKeyword ||
+          [path.title, path.category, path.difficulty, path.tier, ...path.tags]
+            .join(' ')
+            .toLowerCase()
+            .includes(normalizedKeyword))
     );
   }, [activeSeason, filters, keyword]);
 
@@ -405,10 +409,13 @@ const ChallengeSection = () => {
     setFilters(DEFAULT_FILTERS);
   }, []);
 
-  const handleSearch = useCallback(event => {
-    event.preventDefault();
-    setKeyword(searchInput);
-  }, [searchInput]);
+  const handleSearch = useCallback(
+    event => {
+      event.preventDefault();
+      setKeyword(searchInput);
+    },
+    [searchInput]
+  );
 
   const handleSolveProblem = useCallback(
     problemId => {
@@ -420,7 +427,11 @@ const ChallengeSection = () => {
   return (
     <div className="w-full bg-white pb-14">
       <section className="relative mb-8 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
-        <img src={ChallengeBannerImage} alt="" className="h-full w-full object-cover object-center" />
+        <img
+          src={ChallengeBannerImage}
+          alt=""
+          className="h-full w-full object-cover object-center"
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
         <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
           <h1 className="max-w-full whitespace-nowrap text-[18px] font-900 leading-tight tracking-normal text-white sm:text-[26px] md:text-[34px] lg:text-[42px]">
@@ -461,7 +472,10 @@ const ChallengeSection = () => {
               }`}
             >
               {isFilterOpen ? '필터 접기' : '필터 펼치기'}
-              <ChevronDown className={`h-4 w-4 transition ${isFilterOpen ? 'rotate-180' : ''}`} strokeWidth={2.4} />
+              <ChevronDown
+                className={`h-4 w-4 transition ${isFilterOpen ? 'rotate-180' : ''}`}
+                strokeWidth={2.4}
+              />
             </button>
           </div>
         </div>
@@ -517,17 +531,14 @@ const ChallengeSection = () => {
         <section className="min-w-0">
           <div className="mb-5 flex items-center justify-between">
             <h1 className="text-[16px] font-700 text-[#2E3338]">
-              {activeSeason || '전체 시즌'} <span className="text-[#FF4854]">{visiblePaths.length}</span>
+              {activeSeason || '전체 시즌'}{' '}
+              <span className="text-[#FF4854]">{visiblePaths.length}</span>
             </h1>
           </div>
 
           <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
             {visiblePaths.map(path => (
-              <PathCard
-                key={path.id}
-                path={path}
-                onClick={() => handleSolveProblem(path.id)}
-              />
+              <PathCard key={path.id} path={path} onClick={() => handleSolveProblem(path.id)} />
             ))}
           </div>
         </section>

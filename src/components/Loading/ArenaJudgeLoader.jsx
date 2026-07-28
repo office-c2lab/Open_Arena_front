@@ -36,11 +36,11 @@ export default function ArenaJudgeLoader({
 
   return (
     <div
-        className={[
-          'relative flex flex-col items-center justify-center overflow-hidden rounded-[24px] bg-white text-white shadow-2xl',
-          fullscreen ? 'h-[100svh] w-full rounded-none bg-white' : 'h-[600px] w-[950px]',
-          className,
-        ]
+      className={[
+        'relative flex flex-col items-center justify-center overflow-hidden rounded-[24px] bg-white text-white shadow-2xl',
+        fullscreen ? 'h-[100svh] w-full rounded-none bg-white' : 'h-[600px] w-[950px]',
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
     >

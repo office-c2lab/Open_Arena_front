@@ -40,12 +40,12 @@ export default function NavbarSection({ className = '' }) {
 
         <div className="flex items-center gap-2">
           <a
-  href="/login"
-  className="group inline-flex items-center gap-2 rounded-xl border border-[#ece7e1] bg-white px-4 py-2 text-sm font-medium text-[#171717] shadow-[0_8px_20px_rgba(34,24,18,0.05)] transition duration-300 hover:-translate-y-0.5 hover:border-[#FF4854] hover:bg-[#FF4854] hover:text-white hover:shadow-[0_12px_28px_rgba(239,68,68,0.18)] focus:outline-none focus-visible:-translate-y-0.5 focus-visible:border-[#FF4854] focus-visible:bg-[#FF4854] focus-visible:text-white focus-visible:ring-2 focus-visible:ring-[#FF4854] focus-visible:ring-offset-2"
->
-  ARENA 시작하기
-  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-focus-visible:translate-x-1" />
-</a>
+            href="/login"
+            className="group inline-flex items-center gap-2 rounded-xl border border-[#ece7e1] bg-white px-4 py-2 text-sm font-medium text-[#171717] shadow-[0_8px_20px_rgba(34,24,18,0.05)] transition duration-300 hover:-translate-y-0.5 hover:border-[#FF4854] hover:bg-[#FF4854] hover:text-white hover:shadow-[0_12px_28px_rgba(239,68,68,0.18)] focus:outline-none focus-visible:-translate-y-0.5 focus-visible:border-[#FF4854] focus-visible:bg-[#FF4854] focus-visible:text-white focus-visible:ring-2 focus-visible:ring-[#FF4854] focus-visible:ring-offset-2"
+          >
+            ARENA 시작하기
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-focus-visible:translate-x-1" />
+          </a>
         </div>
       </Container>
     </div>

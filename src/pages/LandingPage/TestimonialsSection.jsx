@@ -17,7 +17,12 @@ import challenge2025Ci07 from '@/assets/2025 LLM CHALLENGE/ci07.jpeg';
 import challenge2025Ci08 from '@/assets/2025 LLM CHALLENGE/ci08.jpeg';
 import arenaComingSoon from '@/assets/2026 LLM CHALLENGE/comingsoon.png';
 
-import { Container, GradientCard, SectionTitle, SECTION_TITLE_REVEAL } from './LandingPage.primitives';
+import {
+  Container,
+  GradientCard,
+  SectionTitle,
+  SECTION_TITLE_REVEAL,
+} from './LandingPage.primitives';
 
 export default function TestimonialsSection() {
   const MASONRY_ROW_HEIGHT = 8;
@@ -80,7 +85,8 @@ export default function TestimonialsSection() {
     selectedArchiveItem && previewIndex !== null ? selectedArchiveItem.photos[previewIndex] : null;
 
   const movePreview = direction => {
-    if (!selectedArchiveItem || previewIndex === null || selectedArchiveItem.photos.length <= 1) return;
+    if (!selectedArchiveItem || previewIndex === null || selectedArchiveItem.photos.length <= 1)
+      return;
 
     const totalPhotos = selectedArchiveItem.photos.length;
     setPreviewIndex(currentIndex => (currentIndex + direction + totalPhotos) % totalPhotos);
@@ -95,7 +101,9 @@ export default function TestimonialsSection() {
     const imageHeight = image.getBoundingClientRect().height;
     const span = Math.ceil((imageHeight + MASONRY_GAP) / (MASONRY_ROW_HEIGHT + MASONRY_GAP));
 
-    setPhotoSpans(currentSpans => (currentSpans[photoKey] === span ? currentSpans : { ...currentSpans, [photoKey]: span }));
+    setPhotoSpans(currentSpans =>
+      currentSpans[photoKey] === span ? currentSpans : { ...currentSpans, [photoKey]: span }
+    );
   };
 
   const updateAllPhotoSpans = () => {
@@ -255,7 +263,7 @@ export default function TestimonialsSection() {
               className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3"
               style={{ gridAutoRows: `${MASONRY_ROW_HEIGHT}px` }}
             >
-              {selectedArchiveItem.photos.map((photo, index) => (
+              {selectedArchiveItem.photos.map((photo, index) =>
                 (() => {
                   const photoKey = `${selectedArchiveItem.key}-${index}-${photo}`;
 
@@ -279,7 +287,7 @@ export default function TestimonialsSection() {
                     </button>
                   );
                 })()
-              ))}
+              )}
             </div>
           </div>
         </div>

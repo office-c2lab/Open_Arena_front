@@ -51,10 +51,7 @@ const AdminProblemToggleList = ({ activeOnly = false, onActiveOnlyToggle }) => {
 
       <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-[#0B021C]/70 p-4 sm:flex-row sm:items-center">
         <label className="relative flex-1">
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             value={searchInput}
             onChange={event => setSearchInput(event.target.value)}
