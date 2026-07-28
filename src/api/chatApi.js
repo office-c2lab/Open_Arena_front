@@ -6,8 +6,6 @@ export const createSession = async ({ title } = {}) => ({
 });
 
 export const getSessionMessages = async () => emptyList;
-export const sendMessage = async ({ content } = {}) => ({
-  id: crypto.randomUUID?.() || String(Date.now()),
-  role: 'user',
-  content: content || '',
+export const sendMessage = async () => ({
+  assistant_content: '답변 목업입니다.',
 });

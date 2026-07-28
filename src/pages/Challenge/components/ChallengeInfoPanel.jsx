@@ -4,34 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import ApiInfoPanel from './ApiInfoPanel';
 import Skeleton from '../../../components/Skeleton/Skeleton';
-import leftGreenBg from '@/assets/images/leftgreen.png';
-import leftYellowBg from '@/assets/images/leftyellow.png';
-import leftPinkBg from '@/assets/images/leftpink.png';
-import leftPurpleBg from '@/assets/images/leftpurple.png';
-
-const CATEGORY_BACKGROUND_MAP = {
-  챌린지: leftPinkBg,
-  군사: leftGreenBg,
-  법률: leftYellowBg,
-  사회: leftPinkBg,
-  튜토리얼: leftPinkBg,
-  일반: leftPurpleBg,
-};
-
-const LEFT_PANEL_BACKGROUNDS = [leftGreenBg, leftYellowBg, leftPinkBg, leftPurpleBg];
-
-if (typeof document !== 'undefined') {
-  LEFT_PANEL_BACKGROUNDS.forEach(src => {
-    const isAlreadyPreloaded = document.head.querySelector(`link[rel="preload"][href="${src}"]`);
-    if (isAlreadyPreloaded) return;
-
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'image';
-    link.href = src;
-    document.head.appendChild(link);
-  });
-}
 
 const CATEGORY_TITLE_COLOR_MAP = {
   챌린지: 'text-[#0F172A]',
@@ -110,7 +82,6 @@ export default function ChallengeInfoPanel({
   const lineHeight = 1.75;
   const category = CHALLENGE_HEADER_INFO?.category || '일반';
   const headerTitleColor = CATEGORY_TITLE_COLOR_MAP[category] || 'text-[#E6007E]';
-  const panelBackground = CATEGORY_BACKGROUND_MAP[category] || leftPurpleBg;
 
   if (isLoading) {
     return (
@@ -123,8 +94,7 @@ export default function ChallengeInfoPanel({
   return (
     <div ref={panelRef} className="relative flex h-full min-h-0 w-[340px] flex-col flex-shrink-0">
       <div
-        className="relative shadow-[0_8px_22px_rgba(15,23,42,0.08)] rounded-[30px] overflow-hidden flex min-h-0 flex-col h-full border border-white/60 bg-cover bg-center backdrop-blur-xl"
-        style={{ backgroundImage: `url(${panelBackground})` }}
+        className="relative shadow-[0_8px_22px_rgba(15,23,42,0.08)] rounded-[30px] overflow-hidden flex min-h-0 flex-col h-full border border-white/60 bg-white/42 backdrop-blur-xl"
       >
         <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
         {/* 문제 헤더 */}

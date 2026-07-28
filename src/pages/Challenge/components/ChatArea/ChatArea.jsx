@@ -15,6 +15,7 @@ export default function ChatArea({
   SendIcon,
   ResetIcon,
   inputDisabled,
+  disabledPlaceholder,
   problemId,
   teamId,
   sessions = [],
@@ -112,6 +113,7 @@ export default function ChatArea({
             handleSend={handleSend}
             SendIcon={SendIcon}
             isDisabled={isChatAreaDisabled}
+            disabledPlaceholder={disabledPlaceholder}
             sessionStatus={sessionStatus}
           />
 

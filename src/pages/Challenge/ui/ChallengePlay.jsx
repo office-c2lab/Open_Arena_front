@@ -9,6 +9,7 @@ import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
 import ResetIcon from '@/assets/icons/reset.svg';
 import PurpleDownIcon from '@/assets/icons/purple-downbtn.svg';
+import ChallengePlayBg from '@/assets/images/chalbg.png';
 import ChallengeInfoPanel from '../components/ChallengeInfoPanel';
 import { normalizeProblemCategory } from '@/utils/problemCategory';
 import ChatArea from '../components/ChatArea/ChatArea';
@@ -61,14 +62,21 @@ export default function ChallengePlay() {
     }
   }, [isProblemError, problemError, navigate]);
 
-  const apiInfo = problemBundleData?.problem_api || {};
+  const problem = problemBundleData?.problem;
+  const apiInfo = problemBundleData?.problem_api || problemBundleData?.api_info || {};
+  const chatDisabledPlaceholder = isProblemBundleLoading
+    ? '문제 정보를 불러오는 중입니다...'
+    : undefined;
 
   const { CHALLENGE_HEADER_INFO, activeTabContent, SESSIONS_LIST } = useMemo(() => {
-    if (!problemBundleData) {
+    if (!problemBundleData?.problem) {
       return {
         CHALLENGE_HEADER_INFO: {
-          title: '문제 로딩 중',
-          subtitle: '정보를 불러오는 중입니다.',
+          title: isProblemBundleLoading ? '문제 로딩 중' : '문제 정보 없음',
+          subtitle: isProblemBundleLoading
+            ? '정보를 불러오는 중입니다.'
+            : '문제 데이터를 찾을 수 없습니다.',
+          category: '일반',
           score: 0,
         },
         activeTabContent: null,
@@ -76,7 +84,6 @@ export default function ChallengePlay() {
       };
     }
 
-    const problem = problemBundleData.problem;
     const sessions = problemBundleData.sessions || [];
 
     const headerInfo = {
@@ -101,7 +108,7 @@ export default function ChallengePlay() {
       activeTabContent: { ...design, ...tabContent },
       SESSIONS_LIST: sessions,
     };
-  }, [problemBundleData, activeTab]);
+  }, [problemBundleData, activeTab, isProblemBundleLoading]);
 
   const hasSuccessSession = useMemo(() => {
     return SESSIONS_LIST?.some(s => s.status?.toLowerCase() === 'success');
@@ -119,7 +126,13 @@ export default function ChallengePlay() {
   }, [setResetChatAction]);
 
   return (
-    <div className="flex h-full min-w-[1120px] w-full gap-6 bg-white p-6">
+    <div
+      className="flex h-full min-w-[1120px] w-full gap-6 bg-[#F8F3F6] bg-center bg-no-repeat p-6"
+      style={{
+        backgroundImage: `url(${ChallengePlayBg})`,
+        backgroundSize: '100% 100%',
+      }}
+    >
       <ChallengeInfoPanel
         TABS={TABS}
         activeTab={activeTab}
@@ -139,6 +152,7 @@ export default function ChallengePlay() {
         SendIcon={SendIcon}
         ResetIcon={ResetIcon}
         inputDisabled={isProblemBundleLoading}
+        disabledPlaceholder={chatDisabledPlaceholder}
         problemId={currentProblemId}
         teamId={currentTeamId}
         sessions={SESSIONS_LIST}

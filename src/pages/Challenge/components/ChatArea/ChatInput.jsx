@@ -6,6 +6,7 @@ export default function ChatInput({
   handleSend,
   SendIcon,
   isDisabled,
+  disabledPlaceholder,
   sessionStatus,
 }) {
   // 상태 정규화
@@ -52,7 +53,9 @@ export default function ChatInput({
       <textarea
         className="w-full h-full resize-none bg-transparent focus:outline-none body-large text-[#0F172A] placeholder:text-[#8A93A5] pr-12 overflow-y-auto"
         placeholder={
-          isDisabled ? '전송 중입니다...' : '프롬프트를 입력하세요 (Shift + Enter로 줄바꿈)'
+          isDisabled
+            ? disabledPlaceholder || '전송 중입니다...'
+            : '프롬프트를 입력하세요 (Shift + Enter로 줄바꿈)'
         }
         value={inputValue}
         onChange={e => setInputValue(e.target.value)}
