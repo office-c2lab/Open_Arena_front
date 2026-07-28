@@ -842,8 +842,11 @@ function ChallengeActivityHeatmap() {
           </div>
         </div>
 
-        <SuccessRateCard />
+        <div className="flex w-full flex-col gap-5 lg:w-[300px]">
+          <SuccessRateCard />
+        </div>
       </div>
+      <TokenEfficiencyCard />
       <RecentAttemptProblemsCard />
       <ProblemSolveStatusCard />
     </section>
@@ -1067,6 +1070,50 @@ function ProblemSolveStatusCard() {
             </article>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+function TokenEfficiencyCard() {
+  const points = 188;
+  const tokens = 184;
+  const efficiency = points / tokens;
+  const efficiencyPercent = 82;
+
+  return (
+    <section className="mt-5 w-full rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-5 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+      <div className="grid gap-5 lg:grid-cols-[240px_minmax(0,1fr)_260px] lg:items-center">
+        <div>
+          <h2 className="text-[18px] font-900 leading-none text-[#202832]">토큰 효율</h2>
+          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">적게 쓸수록 높은 점수</p>
+        </div>
+
+        <div>
+          <div className="mb-2 flex items-center justify-between text-[13px] font-800 text-[#7B8491]">
+            <span>효율 점수</span>
+            <span>{efficiencyPercent}%</span>
+          </div>
+          <div className="h-4 overflow-hidden rounded-full bg-[#F1F3F6]">
+            <div className="h-full rounded-full bg-[#FF4854]" style={{ width: `${efficiencyPercent}%` }} />
+          </div>
+          <p className="mt-2 text-[12px] font-700 text-[#9AA3AF]">188점 / 184토큰 기준</p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="rounded-[8px] bg-[#FAFBFC] px-3 py-3">
+            <p className="text-[12px] font-800 text-[#7B8491]">효율</p>
+            <strong className="mt-1 block text-[20px] font-900 text-[#202832]">{efficiency.toFixed(2)}</strong>
+          </div>
+          <div className="rounded-[8px] bg-[#FAFBFC] px-3 py-3">
+            <p className="text-[12px] font-800 text-[#7B8491]">포인트</p>
+            <strong className="mt-1 block text-[20px] font-900 text-[#202832]">{points}</strong>
+          </div>
+          <div className="rounded-[8px] bg-[#FFF0F2] px-3 py-3">
+            <p className="text-[12px] font-800 text-[#FF4854]">등급</p>
+            <strong className="mt-1 block text-[20px] font-900 text-[#FF4854]">상위 {100 - efficiencyPercent}%</strong>
+          </div>
+        </div>
       </div>
     </section>
   );
