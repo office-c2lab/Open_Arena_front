@@ -250,6 +250,7 @@ function LeaderboardRow({ row }) {
 }
 
 export default function Leaderboard() {
+  const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
 
   const filteredRows = useMemo(() => {
@@ -261,9 +262,20 @@ export default function Leaderboard() {
     );
   }, [keyword]);
 
+  const handleSearch = event => {
+    event.preventDefault();
+    setKeyword(searchInput);
+  };
+
   return (
     <div className="mx-auto w-full max-w-[1200px] bg-white px-5 pb-10 pt-9 sm:px-8 lg:px-0">
-      <section className="mt-9 rounded-[10px] border border-[#DDE1E7] bg-white px-6 py-7 shadow-[0_10px_28px_rgba(15,23,42,0.06)] sm:px-10">
+      <section className="mt-16 grid items-end gap-5 md:grid-cols-3 md:px-14">
+        {topRanks.map(row => (
+          <TopRankCard key={row.rank} row={row} />
+        ))}
+      </section>
+
+      <section className="mt-12 rounded-[10px] border border-[#DDE1E7] bg-white px-6 py-7 shadow-[0_10px_28px_rgba(15,23,42,0.06)] sm:px-10">
         <div className="grid gap-7 lg:grid-cols-[1fr_2fr_1.35fr] lg:divide-x lg:divide-[#E2E5EA]">
           <div>
             <span className="text-[15px] font-800 text-[#F52F45]">내 순위</span>
@@ -337,12 +349,6 @@ export default function Leaderboard() {
         </button>
       </aside>
 
-      <section className="mt-20 grid items-end gap-5 md:grid-cols-3 md:px-14">
-        {topRanks.map(row => (
-          <TopRankCard key={row.rank} row={row} />
-        ))}
-      </section>
-
       <section className="mt-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-end gap-8">
@@ -355,16 +361,24 @@ export default function Leaderboard() {
           </div>
         </div>
 
-        <label className="relative mt-7 block w-full max-w-[360px]">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#AAB4C2]" />
-          <input
-            type="search"
-            value={keyword}
-            onChange={event => setKeyword(event.target.value)}
-            placeholder="유저 닉네임을 검색해 보세요."
-            className="h-10 w-full rounded-[3px] border border-[#D8E0EA] bg-white pl-11 pr-4 text-[13px] font-500 text-[#344050] outline-none transition placeholder:text-[#8A96A8] focus:border-[#FF4854]"
-          />
-        </label>
+        <form onSubmit={handleSearch} className="mt-7 flex w-full gap-3 sm:w-[min(100%,480px)]">
+          <label className="relative min-w-0 flex-1">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
+            <input
+              type="search"
+              value={searchInput}
+              onChange={event => setSearchInput(event.target.value)}
+              placeholder="유저 닉네임을 검색해 보세요."
+              className="h-10 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] font-500 text-[#344050] outline-none transition placeholder:text-[#8A96A8] focus:border-[#FF4854]"
+            />
+          </label>
+          <button
+            type="submit"
+            className="flex h-10 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
+          >
+            검색
+          </button>
+        </form>
 
         <div className="mt-10 overflow-x-auto">
           <table className="w-full min-w-[920px] border-separate border-spacing-y-[14px] text-left">

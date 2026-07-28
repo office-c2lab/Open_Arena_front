@@ -3,7 +3,6 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import AppHeader from '@/components/AppHeader/AppHeader';
-import FooterSection from '@/pages/LandingPage/FooterSection';
 
 export default function ChallengeLayout() {
   const { pathname } = useLocation();
@@ -23,7 +22,6 @@ export default function ChallengeLayout() {
           <Outlet />
         </div>
       </main>
-      {!isPlayView && <FooterSection />}
     </div>
   );
 }

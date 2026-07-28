@@ -7,6 +7,7 @@ import FooterSection from '@/pages/LandingPage/FooterSection';
 export default function DefaultLayout() {
   const { pathname } = useLocation();
   const isDashboard = pathname === '/dashboard';
+  const shouldShowFooter = isDashboard;
 
   return (
     <div className="min-h-screen w-full bg-white overflow-x-hidden pt-16">
@@ -16,7 +17,7 @@ export default function DefaultLayout() {
           <Outlet />
         </div>
       </main>
-      <FooterSection />
+      {shouldShowFooter && <FooterSection />}
     </div>
   );
 }

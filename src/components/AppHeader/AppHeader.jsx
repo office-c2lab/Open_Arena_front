@@ -178,17 +178,18 @@ export default function AppHeader() {
 
                         <div className="mt-3 grid grid-cols-2 gap-2">
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                            총 성공 갯수{' '}
-                            <span className="font-700 text-[#A8AAFF]">
-                              {profileStats.totalSuccesses || 0} 개
-                            </span>
-                          </div>
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
                             랭킹{' '}
                             <span className="font-700 text-[#FFB155]">
                               {profileStats.rank || '-'} 위
                             </span>
                           </div>
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
+                            총 포인트{' '}
+                            <span className="font-700 text-[#A8AAFF]">
+                              {profileStats.totalPoints ?? 188}점
+                            </span>
+                          </div>
+                          
                         </div>
                       </>
                     ) : (

@@ -6,7 +6,7 @@ export const MOCK_MEMBERSHIP = Object.freeze({
     type: 'paid',
     label: '유료 회원',
     nickname: '유동석',
-    profileStats: { solvedChallenges: 7, totalSuccesses: 18, rank: 24 },
+    profileStats: { solvedChallenges: 7, totalSuccesses: 18, totalPoints: 188, rank: 24 },
   },
 });
 

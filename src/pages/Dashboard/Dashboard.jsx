@@ -131,6 +131,8 @@ const dashboardSummaryStats = [
   { label: '최소 사용 토큰', value: '184', subText: '단일 성공 기록' },
 ];
 
+const recentAttemptProblemIds = [3, 2, 1];
+
 function getActivityCount(date, dayIndex, startHour) {
   const daySeed = date.getDate() + (date.getMonth() + 1) * 7 + dayIndex * 5 + startHour * 3;
 
@@ -787,6 +789,7 @@ function ChallengeActivityHeatmap() {
 
   return (
     <section className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-0">
+      <DashboardNoticeCard />
       <DashboardProfileSummaryCard />
       <div className="flex flex-col gap-5 lg:flex-row lg:items-stretch">
         <div className="w-fit max-w-full rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
@@ -841,7 +844,41 @@ function ChallengeActivityHeatmap() {
 
         <SuccessRateCard />
       </div>
+      <RecentAttemptProblemsCard />
       <ProblemSolveStatusCard />
+    </section>
+  );
+}
+
+function DashboardNoticeCard() {
+  return (
+    <section className="mb-5 w-full max-w-[900px] rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 className="text-[18px] font-900 leading-none text-[#202832]">공지사항</h2>
+          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">ARENA 업데이트와 안내를 확인하세요</p>
+        </div>
+        <button type="button" className="flex cursor-pointer items-center gap-1 text-[13px] font-900 text-[#FF4854]">
+          전체 보기 <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      <div className="mt-5 divide-y divide-[#EEF1F5]">
+        {notices.map(([category, title, date]) => (
+          <article key={title} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 py-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="rounded-full border border-[#FFB8BE] bg-[#FFF0F2] px-2.5 py-1 text-[11px] font-900 text-[#FF4854]">
+                  new
+                </span>
+                <span className="text-[12px] font-800 text-[#7B8491]">{category}</span>
+              </div>
+              <h3 className="mt-2 truncate text-[15px] font-900 text-[#202832]">{title}</h3>
+            </div>
+            <time className="text-[12px] font-800 text-[#9AA3AF]">{date}</time>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }
@@ -888,6 +925,67 @@ function DashboardProfileSummaryCard() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function RecentAttemptProblemsCard() {
+  const recentProblems = recentAttemptProblemIds
+    .map(problemId => {
+      const problem = challengePaths.find(path => path.id === problemId);
+      const status = problemStatusById[problemId];
+
+      return problem && status
+        ? {
+            ...problem,
+            ...status,
+          }
+        : null;
+    })
+    .filter(Boolean);
+
+  return (
+    <section className="mt-5 w-full max-w-[900px] rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 className="text-[18px] font-900 leading-none text-[#202832]">최근 시도한 문제</h2>
+          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">마지막으로 도전한 문제를 이어서 확인하세요</p>
+        </div>
+        <button type="button" className="flex cursor-pointer items-center gap-1 text-[13px] font-900 text-[#FF4854]">
+          전체 보기 <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      <div className="mt-5 grid gap-3 lg:grid-cols-3">
+        {recentProblems.map((problem, index) => {
+          const meta = problemStatusMeta[problem.status];
+          const StatusIcon = meta.icon;
+
+          return (
+            <article key={problem.id} className="rounded-[8px] border border-[#EEF1F5] bg-[#FAFBFC] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-[12px] font-900 text-[#9AA3AF]">최근 {index + 1}</span>
+                <span className={`rounded-full px-3 py-1 text-[12px] font-900 ${meta.chipClass}`}>{meta.label}</span>
+              </div>
+
+              <div className="mt-4 flex items-start gap-3">
+                <StatusIcon className={`mt-0.5 h-5 w-5 shrink-0 ${meta.iconClass}`} strokeWidth={2.2} />
+                <div className="min-w-0">
+                  <h3 className="line-clamp-2 text-[15px] font-900 leading-[21px] text-[#202832]">{problem.title}</h3>
+                  <p className="mt-2 truncate text-[12px] font-700 text-[#7B8491]">
+                    {problem.category} · {problem.tier} · {problem.difficulty}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between border-t border-[#EEF1F5] pt-3 text-[12px] font-800 text-[#7B8491]">
+                <span>시도 {problem.attempts}회</span>
+                <strong className="text-[#202832]">{problem.bestScore}점</strong>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
