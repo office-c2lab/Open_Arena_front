@@ -9,9 +9,17 @@ export function useChatMessages(sessionId, teamId, problemId, clearSession, setI
     queryKey: ['chatMessages', sessionId, teamId, problemId],
     queryFn: async () => {
       if (!sessionId) return [];
+      const queryKey = ['chatMessages', sessionId, teamId, problemId];
+      const cachedMessages = queryClient.getQueryData(queryKey);
       try {
         const res = await getSessionMessages({ sessionId, teamId, problemId });
-        return Array.isArray(res?.messages) ? res.messages : [];
+        const fetchedMessages = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.messages)
+            ? res.messages
+            : [];
+
+        return fetchedMessages.length > 0 ? fetchedMessages : cachedMessages || [];
       } catch (error) {
         if (error.response?.status === 404) {
           clearSession();
@@ -25,11 +33,22 @@ export function useChatMessages(sessionId, teamId, problemId, clearSession, setI
 
   // ✅ 2. 메시지 전송
   const sendMessageMutation = useMutation({
-    mutationFn: content => sendMessage({ sessionId, teamId, problemId, content }),
-    onMutate: async content => {
+    mutationFn: messagePayload => {
+      const content =
+        typeof messagePayload === 'string' ? messagePayload : messagePayload?.content || '';
+      const targetSessionId =
+        typeof messagePayload === 'string' ? sessionId : messagePayload?.sessionId || sessionId;
+
+      return sendMessage({ sessionId: targetSessionId, teamId, problemId, content });
+    },
+    onMutate: async messagePayload => {
+      const content =
+        typeof messagePayload === 'string' ? messagePayload : messagePayload?.content || '';
+      const targetSessionId =
+        typeof messagePayload === 'string' ? sessionId : messagePayload?.sessionId || sessionId;
       const trimmed = content.trim();
       if (!trimmed) return;
-      const queryKey = ['chatMessages', sessionId, teamId, problemId];
+      const queryKey = ['chatMessages', targetSessionId, teamId, problemId];
 
       await queryClient.cancelQueries({ queryKey });
       const previousMessages = queryClient.getQueryData(queryKey);
@@ -52,11 +71,11 @@ export function useChatMessages(sessionId, teamId, problemId, clearSession, setI
 
       queryClient.setQueryData(queryKey, old => [...(old || []), userMessage, aiLoadingMessage]);
 
-      return { previousMessages, aiLoadingMessageId: aiLoadingMessage.id };
+      return { previousMessages, aiLoadingMessageId: aiLoadingMessage.id, queryKey };
     },
     onSuccess: (res, variables, context) => {
       const aiContent = res.assistant_content || 'AI 응답 없음';
-      queryClient.setQueryData(['chatMessages', sessionId, teamId, problemId], old =>
+      queryClient.setQueryData(context.queryKey, old =>
         (old || []).map(msg =>
           msg.id === context.aiLoadingMessageId
             ? { ...msg, content: aiContent, isTyping: false }

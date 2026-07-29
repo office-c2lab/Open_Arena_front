@@ -60,7 +60,7 @@ export default function ChatArea({
         queryClient.invalidateQueries(['problemBundle', problemId, teamId]);
 
         // 첫 메시지 전송
-        await sendMessageMutation.mutateAsync(trimmed);
+        await sendMessageMutation.mutateAsync({ content: trimmed, sessionId: newSessionId });
 
         // 🔥 토큰 사용량 즉시 갱신
         queryClient.invalidateQueries(['tokenUsage']);

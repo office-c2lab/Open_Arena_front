@@ -209,7 +209,22 @@ export default function AppHeader() {
                       </>
                     )}
 
-                    <div className="mt-4 flex flex-col gap-1">
+                    <nav className="mt-4 border-t border-[#ece7e1] pt-3" aria-label="프로필 정책 링크">
+                      <Link
+                        to="/terms"
+                        className="flex rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                      >
+                        이용약관
+                      </Link>
+                      <Link
+                        to="/privacy"
+                        className="flex rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                      >
+                        개인정보처리방침
+                      </Link>
+                    </nav>
+
+                    <div className="mt-2 flex flex-col gap-1">
                       <button
                         type="button"
                         onClick={handleLogout}

@@ -5,15 +5,6 @@ import { ChevronLeft } from 'lucide-react';
 import ApiInfoPanel from './ApiInfoPanel';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 
-const CATEGORY_TITLE_COLOR_MAP = {
-  챌린지: 'text-[#0F172A]',
-  군사: 'text-[#079C4C]',
-  법률: 'text-[#E6AA02]',
-  사회: 'text-[#E6007E]',
-  튜토리얼: 'text-[#E6007E]',
-  일반: 'text-[#837BBD]',
-};
-
 const TAB_ACCENT_COLOR_MAP = {
   description: '#837BBD',
   goal: '#E6AA02',
@@ -80,8 +71,6 @@ export default function ChallengeInfoPanel({
   const gap = 1.15;
   const padding = 1.2;
   const lineHeight = 1.75;
-  const category = CHALLENGE_HEADER_INFO?.category || '일반';
-  const headerTitleColor = CATEGORY_TITLE_COLOR_MAP[category] || 'text-[#E6007E]';
 
   if (isLoading) {
     return (
@@ -111,7 +100,7 @@ export default function ChallengeInfoPanel({
                 strokeWidth={2}
               />
             </button>
-            <span className={`min-w-0 line-clamp-2 heading-2 font-700 ${headerTitleColor}`}>
+            <span className="min-w-0 line-clamp-2 heading-2 font-700 text-[#2E3338]">
               {CHALLENGE_HEADER_INFO?.title}
             </span>
           </div>

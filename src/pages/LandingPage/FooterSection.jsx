@@ -1,5 +1,4 @@
 import c2LabLogo from '@/assets/images/C2Lab_logo.svg';
-import { Link } from 'react-router-dom';
 
 export default function FooterSection() {
   const containerClassName = 'mx-auto w-full max-w-[1200px] px-[10px]';
@@ -30,20 +29,6 @@ export default function FooterSection() {
             </p>
           </div>
 
-          <nav
-            aria-label="정책 링크"
-            className="flex items-center gap-3 text-[14px] font-500 text-[#57534E]"
-          >
-            <Link to="/terms" className="transition hover:text-[#FF4854]">
-              이용약관
-            </Link>
-            <span aria-hidden="true" className="text-[#B6BBC3]">
-              |
-            </span>
-            <Link to="/privacy" className="transition hover:text-[#FF4854]">
-              개인정보처리방침
-            </Link>
-          </nav>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span>대표이사 정미심</span>
             <span>|</span>
