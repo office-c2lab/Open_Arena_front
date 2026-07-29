@@ -1,5 +1,6 @@
 // src/features/Challenge/components/AttemptHistoryPanel.jsx
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { ChevronDown } from 'lucide-react';
 import AttemptHistoryCard, { AttemptHistoryCardSkeleton } from './AttemptHistoryCard';
 import PointInfoCard from './PointInfoCard';
 import useModalStore from '@/stores/useModalStore';
@@ -16,7 +17,6 @@ const FILTER_OPTIONS = [
 ];
 
 export default function AttemptHistoryPanel({
-  PurpleDownIcon,
   isLoading,
   sessions = [],
   problemId,
@@ -119,7 +119,7 @@ export default function AttemptHistoryPanel({
       {/* 시도 기록 */}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
         <div className="w-full h-[70px] p-3 md:p-4 flex items-center justify-between border-b border-white/50 bg-white/35">
-          <span className="heading-2 font-500 text-[#837BBD]">최근 시도 ({sessions.length})</span>
+          <span className="heading-2 font-500 text-[#475569]">최근 시도 ({sessions.length})</span>
         </div>
 
         <div className="p-3 md:p-4 flex justify-end relative" ref={dropdownRef}>
@@ -127,26 +127,28 @@ export default function AttemptHistoryPanel({
             className="flex items-center justify-between w-[126px] h-[39px] px-4 py-[10px] rounded-[12px] border border-white/65 bg-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_12px_rgba(15,23,42,0.06)] backdrop-blur-md cursor-pointer"
             onClick={toggleDropdown}
           >
-            <span className="body-large font-700 text-[#837BBD]">{selectedFilter.label}</span>
-            <img
-              src={PurpleDownIcon}
-              alt="Dropdown"
-              className={`w-3 h-2 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+            <span className="body-large font-700 text-[#475569]">{selectedFilter.label}</span>
+            <ChevronDown
+              className={`h-4 w-4 text-[#475569] transition-transform ${
+                isDropdownOpen ? 'rotate-180' : ''
+              }`}
+              strokeWidth={2.4}
             />
           </div>
 
           {isDropdownOpen && (
-            <div className="absolute top-[60px] right-[16px] w-[126px] rounded-[12px] border border-white/65 bg-white/80 shadow-[0_8px_22px_rgba(15,23,42,0.12)] backdrop-blur-md z-10">
+            <div className="absolute top-[60px] right-[16px] z-10 w-[132px] overflow-hidden rounded-[14px] border border-white/65 bg-white/92 p-1.5 shadow-[0_8px_22px_rgba(15,23,42,0.12)] backdrop-blur-md">
               {FILTER_OPTIONS.map(option => (
-                <div
+                <button
+                  type="button"
                   key={option.key}
-                  className={`px-4 py-[10px] body-large font-700 text-[#837BBD] cursor-pointer hover:bg-[#F5F4FF] ${
-                    option.key === selectedFilter.key ? 'bg-[#EBE8FE] font-bold' : ''
+                  className={`flex w-full cursor-pointer items-center justify-between rounded-[10px] px-3.5 py-2.5 text-left body-large font-700 text-[#475569] transition-colors hover:bg-[#F8FAFC] ${
+                    option.key === selectedFilter.key ? 'bg-[#F1F5F9]' : ''
                   }`}
                   onClick={() => handleFilterSelect(option)}
                 >
-                  {option.label}
-                </div>
+                  <span>{option.label}</span>
+                </button>
               ))}
             </div>
           )}
@@ -164,6 +166,7 @@ export default function AttemptHistoryPanel({
                 isSuccess={attempt.isSuccess}
                 promptSummary={attempt.promptSummary}
                 isActive={attempt.isActive}
+                attemptNumberVariant="text"
                 onClick={() => handleCardClick(attempt.id, attempt.status)}
               />
             ))

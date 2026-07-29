@@ -4,8 +4,8 @@ import React from 'react';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 
 // === 색상 정의 ===
-const COLOR_PURPLE = '#475569';
-const COLOR_PURPLE_LIGHT = '#7D70DA';
+const COLOR_CHALLENGE = '#475569';
+const COLOR_CHALLENGE_LIGHT = '#64748B';
 const COLOR_RED = '#FF4854';
 const COLOR_GREEN = '#84CC16';
 const COLOR_WHITE = '#FFFFFF';
@@ -60,6 +60,7 @@ const AttemptHistoryCard = ({
   onClick,
   isActive,
   showAttemptNumber = true,
+  attemptNumberVariant = 'badge',
 }) => {
   let resultText, resultBgColor, summaryBgColor;
 
@@ -81,31 +82,35 @@ const AttemptHistoryCard = ({
     <div
       className={`group w-full h-[110px] flex flex-col justify-between p-[10px] flex-shrink-0 cursor-pointer 
             bg-white/50 rounded-[18px] border border-white/70 backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:border-white/90 hover:bg-white/64 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_22px_rgba(15,23,42,0.11)] ${
-              isActive ? 'ring-2 ring-offset-2 ring-purple-500' : ''
+              isActive ? 'ring-2 ring-offset-2 ring-[#475569]' : ''
             }`}
       onClick={onClick}
       style={{
-        borderColor: isActive ? COLOR_PURPLE_LIGHT : 'rgba(255,255,255,0.65)',
+        borderColor: isActive ? COLOR_CHALLENGE : 'rgba(255,255,255,0.65)',
         boxShadow:
-          'inset 0 1px 0 rgba(255,255,255,0.82), inset 0 0 18px rgba(131,123,189,0.12), 0 8px 22px rgba(15,23,42,0.08)',
+          'inset 0 1px 0 rgba(255,255,255,0.82), inset 0 0 18px rgba(71,85,105,0.12), 0 8px 22px rgba(15,23,42,0.08)',
       }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 (Flex Row) */}
       <div
         className={`flex items-center flex-shrink-0 h-[32px] ${showAttemptNumber ? 'justify-between' : 'justify-end'}`}
       >
-        {showAttemptNumber ? (
+        {showAttemptNumber && attemptNumberVariant === 'text' ? (
+          <span className="body-medium font-700 text-[#64748B]">{attemptNumber}번째 시도</span>
+        ) : null}
+        {showAttemptNumber && attemptNumberVariant === 'badge' ? (
           <div
             className="flex justify-center items-center w-[32px] h-[32px] rounded-[10px] box-border bg-white/45 backdrop-blur-md transition-all duration-200 group-hover:bg-white/65"
             style={{
-              border: `1.5px solid ${COLOR_PURPLE_LIGHT}`,
-              backgroundColor: isActive ? COLOR_PURPLE_LIGHT : 'transparent',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(131,123,189,0.18)',
+              border: `1.5px solid ${COLOR_CHALLENGE_LIGHT}`,
+              backgroundColor: isActive ? COLOR_CHALLENGE : 'transparent',
+              boxShadow:
+                'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(71,85,105,0.18)',
             }}
           >
             <span
               className="heading-3 font-700"
-              style={{ color: isActive ? COLOR_WHITE : COLOR_PURPLE_LIGHT }}
+              style={{ color: isActive ? COLOR_WHITE : COLOR_CHALLENGE_LIGHT }}
             >
               {attemptNumber}
             </span>
