@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Check } from 'lucide-react';
 import TutorialImage from '@/assets/images/tutorial.png';
+import TutorialElementImage from '@/assets/images/t1.png';
 import ChallengePlayBg from '@/assets/images/chalbg.png';
 import AttemptHistoryCard from '@/pages/Challenge/components/AttemptHistoryCard';
 import {
@@ -52,9 +53,11 @@ const learningSections = [
 ];
 
 function PathPreview({ tutorial }) {
+  const previewImage = tutorial.id === 7 ? TutorialElementImage : TutorialImage;
+
   return (
     <div className="h-[210px] overflow-hidden rounded-[4px] bg-[#12070A]">
-      <img src={TutorialImage} alt={tutorial.title} className="h-full w-full object-cover" />
+      <img src={previewImage} alt={tutorial.title} className="h-full w-full object-cover" />
     </div>
   );
 }
@@ -102,9 +105,9 @@ function SectionDescription({ intro, items, steps = [], cautions = [] }) {
         ))}
       </ul>
       {steps.length ? (
-        <div className="space-y-3">
+        <div className="mt-7 space-y-4">
           <p className="text-[18px] font-900 text-[#202832]">따라 해보기</p>
-          <ol className="space-y-2 text-[16px] font-700 leading-[29px] text-[#344050]">
+          <ol className="space-y-3 text-[16px] font-700 leading-[30px] text-[#344050]">
             {steps.map((step, index) => (
               <li key={step} className="flex gap-3">
                 <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FF4854] text-[12px] font-900 text-white">
@@ -117,9 +120,9 @@ function SectionDescription({ intro, items, steps = [], cautions = [] }) {
         </div>
       ) : null}
       {cautions.length ? (
-        <div className="space-y-3">
-          <p className="text-[18px] font-900 text-[#D83A45]">헷갈리기 쉬운 점</p>
-          <ul className="space-y-2 text-[16px] font-700 leading-[29px] text-[#5A4650]">
+        <div className="mt-7 space-y-4">
+          <p className="text-[18px] font-900 text-[#D83A45]">주의 포인트</p>
+          <ul className="space-y-3 text-[16px] font-700 leading-[30px] text-[#5A4650]">
             {cautions.map(caution => (
               <li key={caution} className="flex gap-2">
                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#FF4854]" />
@@ -325,8 +328,8 @@ function ChallengeElementGuide() {
               '아래 개별 패널 설명으로 내려가 각 영역을 따로 살펴봅니다.',
             ]}
             cautions={[
-              '전체 화면 프리뷰는 학습용으로 축소된 화면입니다. 실제 챌린지에서는 화면 크기에 따라 보이는 크기와 스크롤 위치가 달라질 수 있습니다.',
-              '튜토리얼 프리뷰는 실제 문제 서버 데이터에 연결하지 않은 고정 데이터입니다. 구성요소를 익히는 용도로 보면 됩니다.',
+              '가운데 채팅창부터 바로 입력하기보다, 왼쪽 패널의 목표와 성공조건을 먼저 확인해야 풀이 방향이 흔들리지 않습니다.',
+              '제출하기 전에 가운데 응답만 보지 말고, 오른쪽 패널의 토큰 사용량과 최근 시도 상태까지 함께 확인하는 습관을 들이는 것이 좋습니다.',
             ]}
           />
         </div>

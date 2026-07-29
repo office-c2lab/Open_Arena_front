@@ -3,6 +3,7 @@ import { ArrowRight, Clock3, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import TutorialCardImage from '@/assets/images/tutorial.png';
+import TutorialElementCardImage from '@/assets/images/t1.png';
 
 export const TUTORIALS = [
   {
@@ -129,6 +130,8 @@ function TutorialPreview({ tutorial }) {
 
 function TutorialCard({ tutorial, onClick }) {
   if (tutorial.id >= 7) {
+    const cardImage = tutorial.id === 7 ? TutorialElementCardImage : TutorialCardImage;
+
     return (
       <article
         className="group flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.13)] transition hover:-translate-y-1 hover:shadow-[0_18px_30px_rgba(15,23,42,0.18)]"
@@ -136,7 +139,7 @@ function TutorialCard({ tutorial, onClick }) {
       >
         <div className="relative h-[180px] overflow-hidden">
           <img
-            src={TutorialCardImage}
+            src={cardImage}
             alt={tutorial.title}
             className="h-full w-full object-cover"
           />
