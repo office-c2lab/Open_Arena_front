@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -460,6 +460,12 @@ function EducationDetail({ article }) {
 export default function Education() {
   const { articleId } = useParams();
   const article = articles.find(item => item.id === articleId);
+
+  useEffect(() => {
+    if (articleId) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+  }, [articleId]);
 
   if (articleId && article) {
     return <EducationDetail article={article} />;

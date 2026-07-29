@@ -133,6 +133,8 @@ function TutorialPreview({ tutorial }) {
 
 function TutorialCard({ tutorial, onClick }) {
   if (tutorial.id >= 7) {
+    const isPracticeTutorial = tutorial.id === 11;
+    const tutorialStep = TUTORIALS.findIndex(item => item.id === tutorial.id) + 1;
     const cardImage =
       tutorial.id === 7
         ? TutorialElementCardImage
@@ -169,17 +171,31 @@ function TutorialCard({ tutorial, onClick }) {
           </p>
           <div className="mt-5 grid grid-cols-[1fr_1.65fr_0.65fr_0.9fr] divide-x divide-[#D8DDE4] text-[12px] text-[#2E3338]">
             <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
-              성공 <em className="ml-1 not-italic text-[#FF4854]">{tutorial.successfulUsers}</em> 명
+              {isPracticeTutorial ? (
+                <>
+                  성공{' '}
+                  <em className="ml-1 not-italic text-[#FF4854]">{tutorial.successfulUsers}</em> 명
+                </>
+              ) : (
+                <em className="not-italic text-[#FF4854]">Step {tutorialStep}</em>
+              )}
             </span>
             <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
-              평균 <em className="mx-1 not-italic text-[#FF4854]">{tutorial.averageTokens}</em> 토큰
+              {isPracticeTutorial ? (
+                <>
+                  평균 <em className="mx-1 not-italic text-[#FF4854]">{tutorial.averageTokens}</em>{' '}
+                  토큰
+                </>
+              ) : (
+                <em className="not-italic text-[#2E3338]">{tutorial.title}</em>
+              )}
             </span>
             <span className="flex items-center justify-center whitespace-nowrap px-1 font-500">
               {tutorial.price}
             </span>
             <span className="flex items-center justify-center px-1">
               <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-[12px] font-700 text-white">
-                {tutorial.level}
+                Tutorial
               </span>
             </span>
           </div>
@@ -187,7 +203,7 @@ function TutorialCard({ tutorial, onClick }) {
             type="button"
             className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center rounded-[6px] bg-[#FF6470] text-[14px] font-900 text-white transition hover:bg-[#E94D59]"
           >
-            문제풀기
+            {isPracticeTutorial ? '문제풀기' : '튜토리얼 진행하기'}
           </button>
         </div>
       </article>
