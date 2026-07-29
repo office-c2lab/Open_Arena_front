@@ -10,6 +10,8 @@ import ChatInput from '@/pages/Challenge/components/ChatArea/ChatInput';
 import ChatControls from '@/pages/Challenge/components/ChatArea/ChatControls';
 import AttemptHistoryPanel from '@/pages/Challenge/components/AttemptHistoryPanel';
 import FailedModal from '@/pages/Challenge/ChallengeModal/FailedModal';
+import SuccessModal from '@/pages/Challenge/ChallengeModal/SuccesModal';
+import ArenaJudgeLoader from '@/components/Loading/ArenaJudgeLoader';
 import { failedPanelsData } from '@/pages/Challenge/data/challengeModalData';
 import { TABS } from '@/pages/Challenge/data/challengeData';
 
@@ -56,6 +58,11 @@ function createTutorialFailureReply(prompt) {
   return `요청하신 "${shortPrompt}"에 대해 안전한 범위의 일반적인 답변만 제공할 수 있습니다. 문제의 성공 조건에 필요한 핵심 요구는 아직 충족하지 못했습니다.`;
 }
 
+function createTutorialSuccessReply(prompt) {
+  const shortPrompt = prompt.length > 36 ? `${prompt.slice(0, 36)}...` : prompt;
+  return `좋습니다. "${shortPrompt}" 요청을 기준으로 문제의 성공 조건에 필요한 핵심 내용을 포함해 응답을 정리했습니다. 이제 제출하면 성공 흐름을 확인할 수 있습니다.`;
+}
+
 const TUTORIAL_FAILED_RESULTS = failedPanelsData.map(data => ({
   status: 'failed',
   data: {
@@ -63,6 +70,20 @@ const TUTORIAL_FAILED_RESULTS = failedPanelsData.map(data => ({
     title: data.animalName,
   },
 }));
+
+function TutorialJudgeLoadingOverlay() {
+  return (
+    <div className="absolute inset-0 z-[18] flex items-center justify-center bg-black/60">
+      <ArenaJudgeLoader
+        compact
+        className="h-[520px] w-[520px] rounded-[24px] shadow-[0_18px_40px_rgba(15,23,42,0.18)]"
+        frameClassName="rounded-[24px]"
+        durationMs={3000}
+        targetProgress={1}
+      />
+    </div>
+  );
+}
 
 export function TutorialPreviewLeftPanel({ initialActiveTab = TABS[0].id, lockActiveTab = false }) {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
@@ -198,7 +219,7 @@ export function TutorialChatTokenInteractivePreview() {
         )
       );
       responseTimerRef.current = null;
-    }, 1000);
+    }, 3200);
   };
 
   const handleReset = () => {
@@ -278,8 +299,10 @@ export function TutorialFailedModalPreview() {
 export function TutorialJudgeFailureInteractivePreview() {
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState([]);
+  const [isJudgeLoading, setIsJudgeLoading] = useState(false);
   const [isFailedModalOpen, setIsFailedModalOpen] = useState(false);
   const responseTimerRef = useRef(null);
+  const judgeTimerRef = useRef(null);
   const isGenerating = messages.some(message => message.isTyping);
 
   const handleSend = () => {
@@ -321,7 +344,7 @@ export function TutorialJudgeFailureInteractivePreview() {
         )
       );
       responseTimerRef.current = null;
-    }, 1000);
+    }, 3200);
   };
 
   const handleReset = () => {
@@ -329,15 +352,36 @@ export function TutorialJudgeFailureInteractivePreview() {
       clearTimeout(responseTimerRef.current);
       responseTimerRef.current = null;
     }
+    if (judgeTimerRef.current) {
+      clearTimeout(judgeTimerRef.current);
+      judgeTimerRef.current = null;
+    }
     setMessages([]);
     setInputValue('');
+    setIsJudgeLoading(false);
     setIsFailedModalOpen(false);
+  };
+
+  const handleSubmit = () => {
+    setIsJudgeLoading(true);
+    setIsFailedModalOpen(false);
+    if (judgeTimerRef.current) {
+      clearTimeout(judgeTimerRef.current);
+    }
+    judgeTimerRef.current = setTimeout(() => {
+      setIsJudgeLoading(false);
+      setIsFailedModalOpen(true);
+      judgeTimerRef.current = null;
+    }, 1000);
   };
 
   useEffect(
     () => () => {
       if (responseTimerRef.current) {
         clearTimeout(responseTimerRef.current);
+      }
+      if (judgeTimerRef.current) {
+        clearTimeout(judgeTimerRef.current);
       }
     },
     []
@@ -369,8 +413,8 @@ export function TutorialJudgeFailureInteractivePreview() {
               <ChatControls
                 ResetIcon={ResetIcon}
                 openResetModal={handleReset}
-                openSubmitModal={() => setIsFailedModalOpen(true)}
-                isDisabled={isGenerating}
+                openSubmitModal={handleSubmit}
+                isDisabled={isGenerating || isJudgeLoading}
                 sessionId={messages.some(message => message.role === 'assistant' && !message.isTyping)
                   ? 'tutorial-failure-session'
                   : null}
@@ -380,11 +424,171 @@ export function TutorialJudgeFailureInteractivePreview() {
         </div>
       </div>
 
+      {isJudgeLoading ? <TutorialJudgeLoadingOverlay /> : null}
+
       <FailedModal
         isOpen={isFailedModalOpen}
         onClose={() => setIsFailedModalOpen(false)}
         previewMode
         previewResults={TUTORIAL_FAILED_RESULTS}
+        embeddedPreview
+        embeddedFill
+        previewScaleClassName="origin-center scale-[0.86]"
+      />
+    </div>
+  );
+}
+
+export function TutorialSuccessModalPreview() {
+  return (
+    <div className="relative flex h-full min-w-[900px] items-center justify-center overflow-hidden">
+      <SuccessModal
+        isOpen
+        onClose={() => {}}
+        previewMode
+        embeddedPreview
+        previewScaleClassName="origin-center scale-[0.86]"
+      />
+    </div>
+  );
+}
+
+export function TutorialJudgeSuccessInteractivePreview() {
+  const [inputValue, setInputValue] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [isJudgeLoading, setIsJudgeLoading] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const responseTimerRef = useRef(null);
+  const judgeTimerRef = useRef(null);
+  const isGenerating = messages.some(message => message.isTyping);
+
+  const handleSend = () => {
+    const trimmedInput = inputValue.trim();
+    if (!trimmedInput || isGenerating) return;
+    const timestamp = Date.now();
+    const assistantMessageId = `tutorial-success-assistant-${timestamp}`;
+
+    setMessages(prevMessages => [
+      ...prevMessages,
+      {
+        id: `tutorial-success-user-${timestamp}`,
+        role: 'user',
+        content: trimmedInput,
+      },
+      {
+        id: assistantMessageId,
+        role: 'assistant',
+        content: '',
+        isTyping: true,
+      },
+    ]);
+    setInputValue('');
+
+    if (responseTimerRef.current) {
+      clearTimeout(responseTimerRef.current);
+    }
+
+    responseTimerRef.current = setTimeout(() => {
+      setMessages(prevMessages =>
+        prevMessages.map(message =>
+          message.id === assistantMessageId
+            ? {
+                ...message,
+                content: createTutorialSuccessReply(trimmedInput),
+                isTyping: false,
+              }
+            : message
+        )
+      );
+      responseTimerRef.current = null;
+    }, 1000);
+  };
+
+  const handleReset = () => {
+    if (responseTimerRef.current) {
+      clearTimeout(responseTimerRef.current);
+      responseTimerRef.current = null;
+    }
+    if (judgeTimerRef.current) {
+      clearTimeout(judgeTimerRef.current);
+      judgeTimerRef.current = null;
+    }
+    setMessages([]);
+    setInputValue('');
+    setIsJudgeLoading(false);
+    setIsSuccessModalOpen(false);
+  };
+
+  const handleSubmit = () => {
+    setIsJudgeLoading(true);
+    setIsSuccessModalOpen(false);
+    if (judgeTimerRef.current) {
+      clearTimeout(judgeTimerRef.current);
+    }
+    judgeTimerRef.current = setTimeout(() => {
+      setIsJudgeLoading(false);
+      setIsSuccessModalOpen(true);
+      judgeTimerRef.current = null;
+    }, 1000);
+  };
+
+  useEffect(
+    () => () => {
+      if (responseTimerRef.current) {
+        clearTimeout(responseTimerRef.current);
+      }
+      if (judgeTimerRef.current) {
+        clearTimeout(judgeTimerRef.current);
+      }
+    },
+    []
+  );
+
+  return (
+    <div className="relative flex h-full min-w-[640px]">
+      <div className="flex h-full min-h-0 min-w-0 flex-grow flex-col">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
+          <ChatMessages
+            messages={messages}
+            isLoading={false}
+            isInitialState={messages.length === 0}
+            ArenaIcon={ArenaIcon}
+            chatEndRef={null}
+          />
+
+          <div className="h-[210px] flex-shrink-0 border-t border-white/55 bg-white/28 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] md:h-[237px] md:p-6">
+            <div className="flex h-full flex-col justify-end gap-3">
+              <ChatInput
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                handleSend={handleSend}
+                SendIcon={SendIcon}
+                isDisabled={isGenerating}
+                disabledPlaceholder="AI 응답을 생성 중입니다..."
+                sessionStatus="active"
+              />
+              <ChatControls
+                ResetIcon={ResetIcon}
+                openResetModal={handleReset}
+                openSubmitModal={handleSubmit}
+                isDisabled={isGenerating || isJudgeLoading}
+                sessionId={
+                  messages.some(message => message.role === 'assistant' && !message.isTyping)
+                    ? 'tutorial-success-session'
+                    : null
+                }
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {isJudgeLoading ? <TutorialJudgeLoadingOverlay /> : null}
+
+      <SuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+        previewMode
         embeddedPreview
         embeddedFill
         previewScaleClassName="origin-center scale-[0.86]"

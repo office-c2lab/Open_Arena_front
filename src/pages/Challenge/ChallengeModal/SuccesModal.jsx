@@ -10,7 +10,14 @@ import confetti from 'canvas-confetti';
 
 const SUCCESS_COLOR_PRIMARY = '#04B07B';
 
-export default function SuccessModal() {
+export default function SuccessModal({
+  isOpen,
+  onClose,
+  previewMode = false,
+  embeddedPreview = false,
+  embeddedFill = false,
+  previewScaleClassName = '',
+}) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const clearSession = useSessionStore(state => state.clearSession);
@@ -18,8 +25,10 @@ export default function SuccessModal() {
   const { closeSuccessModal, resetChatAction } = useModalStore();
 
   // 🎉 모달 열릴 때 confetti 실행 (모달 위 canvas 생성)
+  const shouldOpen = previewMode ? isOpen : isSuccessModalOpen;
+
   useEffect(() => {
-    if (!isSuccessModalOpen) return;
+    if (!shouldOpen || previewMode) return;
 
     // 1) 모달 위에서 confetti 터지게 canvas 생성
     const canvas = document.createElement('canvas');
@@ -71,7 +80,7 @@ export default function SuccessModal() {
     return () => {
       canvas.remove();
     };
-  }, [isSuccessModalOpen]);
+  }, [shouldOpen, previewMode]);
 
   const handleRestart = useCallback(() => {
     closeSuccessModal();
@@ -87,11 +96,25 @@ export default function SuccessModal() {
     navigate('/kategorie');
   }, [closeSuccessModal, clearSession, queryClient, navigate]);
 
-  if (!isSuccessModalOpen) return null;
+  const handlePreviewClose = useCallback(() => {
+    if (onClose) onClose();
+  }, [onClose]);
+
+  if (!shouldOpen) return null;
+
+  const wrapperClassName = embeddedPreview
+    ? embeddedFill
+      ? 'absolute inset-0 bg-black/60 flex justify-center items-center z-[20]'
+      : 'relative flex justify-center items-center'
+    : 'fixed inset-0 bg-black/60 flex justify-center items-center z-[1000]';
+  const restartHandler = previewMode ? handlePreviewClose : handleRestart;
+  const continueHandler = previewMode ? handlePreviewClose : handleContinue;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-[1000]">
-      <div className="w-[990px] bg-white rounded-[30px] border border-[#EEF0F4] flex flex-col items-center shadow-[0_18px_40px_rgba(15,23,42,0.16)] py-10">
+    <div className={wrapperClassName}>
+      <div
+        className={`w-[990px] bg-white rounded-[30px] border border-[#EEF0F4] flex flex-col items-center shadow-[0_18px_40px_rgba(15,23,42,0.16)] py-10 ${previewScaleClassName}`}
+      >
         {/* === 최종 성공 박스 === */}
         <div
           className="w-full max-w-[877px] bg-white rounded-[20px] flex flex-col items-center 
@@ -115,7 +138,7 @@ export default function SuccessModal() {
         <div className="w-full max-w-[862px] flex justify-between mt-12">
           <button
             type="button"
-            onClick={handleRestart}
+            onClick={restartHandler}
             className="w-[48%] h-[61px] bg-[#D9DADB] rounded-[18px] 
                        hover:-translate-y-[1px] hover:bg-[#BFC0C4] transition-all duration-200 flex items-center justify-center cursor-pointer"
           >
@@ -124,7 +147,7 @@ export default function SuccessModal() {
 
           <button
             type="button"
-            onClick={handleContinue}
+            onClick={continueHandler}
             className="w-[48%] h-[61px] rounded-[18px] flex items-center justify-center 
                        text-white shadow-[0_3px_8px_rgba(4,176,123,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:opacity-90 hover:shadow-[0_5px_12px_rgba(4,176,123,0.18)] cursor-pointer"
             style={{ backgroundColor: SUCCESS_COLOR_PRIMARY }}

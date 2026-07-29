@@ -6,6 +6,8 @@ export default function ArenaJudgeLoader({
   frameClassName = '',
   fullscreen = false,
   compact = false,
+  durationMs = 5700,
+  targetProgress = 0.95,
 }) {
   const circleRadius = compact ? 178 : 258;
   const circumference = 2 * Math.PI * circleRadius;
@@ -23,16 +25,16 @@ export default function ArenaJudgeLoader({
 
   useEffect(() => {
     smoothProgress.set(0);
-    let progress = 0;
-    const target = 0.95;
+    const startedAt = Date.now();
     const interval = window.setInterval(() => {
-      progress += 0.005;
-      smoothProgress.set(Math.min(progress, target));
-      if (progress >= target) window.clearInterval(interval);
+      const elapsed = Date.now() - startedAt;
+      const progress = Math.min(elapsed / durationMs, 1) * targetProgress;
+      smoothProgress.set(progress);
+      if (progress >= targetProgress) window.clearInterval(interval);
     }, 30);
 
     return () => window.clearInterval(interval);
-  }, [smoothProgress]);
+  }, [durationMs, smoothProgress, targetProgress]);
 
   return (
     <div
