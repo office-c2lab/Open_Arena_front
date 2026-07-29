@@ -951,6 +951,8 @@ export default function Tutorial() {
   const navigate = useNavigate();
   const { tutorialId } = useParams();
   const tutorial = TUTORIALS.find(item => item.id === Number(tutorialId)) ?? TUTORIALS[0];
+  const isPracticeTutorial = tutorial.id === 11;
+  const tutorialStep = TUTORIALS.findIndex(item => item.id === tutorial.id) + 1;
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -976,15 +978,29 @@ export default function Tutorial() {
           </p>
           <div className="mt-6 flex w-fit items-center divide-x divide-[#D8DDE4] text-[13px] text-[#2E3338]">
             <span className="whitespace-nowrap pr-4 font-700">
-              성공 <em className="ml-1 not-italic text-[#FF4854]">{tutorial.successfulUsers}</em>명
+              {isPracticeTutorial ? (
+                <>
+                  성공{' '}
+                  <em className="ml-1 not-italic text-[#FF4854]">{tutorial.successfulUsers}</em>명
+                </>
+              ) : (
+                <em className="not-italic text-[#FF4854]">Step {tutorialStep}</em>
+              )}
             </span>
             <span className="whitespace-nowrap px-4 font-700">
-              평균 <em className="mx-1 not-italic text-[#FF4854]">{tutorial.averageTokens}</em> 토큰
+              {isPracticeTutorial ? (
+                <>
+                  평균 <em className="mx-1 not-italic text-[#FF4854]">{tutorial.averageTokens}</em>{' '}
+                  토큰
+                </>
+              ) : (
+                <em className="not-italic text-[#2E3338]">{tutorial.title}</em>
+              )}
             </span>
             <span className="whitespace-nowrap px-4 font-500">{tutorial.price}</span>
             <span className="whitespace-nowrap pl-4">
               <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-[12px] font-700 text-white">
-                {tutorial.level}
+                Tutorial
               </span>
             </span>
           </div>
