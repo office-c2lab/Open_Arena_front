@@ -5,6 +5,7 @@ import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import TutorialCardImage from '@/assets/images/tutorial.png';
 import TutorialElementCardImage from '@/assets/images/t1.png';
 import TutorialChatTokenCardImage from '@/assets/images/t2.png';
+import TutorialJudgeFailureCardImage from '@/assets/images/t3.png';
 
 export const TUTORIALS = [
   {
@@ -136,6 +137,8 @@ function TutorialCard({ tutorial, onClick }) {
         ? TutorialElementCardImage
         : tutorial.id === 8
           ? TutorialChatTokenCardImage
+          : tutorial.id === 9
+            ? TutorialJudgeFailureCardImage
           : TutorialCardImage;
 
     return (

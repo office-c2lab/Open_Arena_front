@@ -5,7 +5,15 @@ import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
 import { SuccessSummaryPanel, FailedSummaryPanel } from './SummaryPanels';
 
-export default function FailedModal() {
+export default function FailedModal({
+  isOpen,
+  onClose,
+  previewMode = false,
+  previewResults,
+  embeddedPreview = false,
+  embeddedFill = false,
+  previewScaleClassName = '',
+}) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isFailedModalOpen = useModalStore(state => state.isFailedModalOpen);
@@ -29,16 +37,32 @@ export default function FailedModal() {
     navigate('/kategorie');
   }, [closeFailedModal, clearSession, queryClient, navigate]);
 
-  if (!isFailedModalOpen) return null;
+  const shouldOpen = previewMode ? isOpen : isFailedModalOpen;
 
+  const handlePreviewClose = useCallback(() => {
+    if (onClose) onClose();
+  }, [onClose]);
+
+  if (!shouldOpen) return null;
+
+  const modalResults = previewMode ? (previewResults ?? []) : challengeResults;
   const sortedPanels = [
-    ...challengeResults.filter(result => result.status !== 'success'),
-    ...challengeResults.filter(result => result.status === 'success'),
+    ...modalResults.filter(result => result.status !== 'success'),
+    ...modalResults.filter(result => result.status === 'success'),
   ];
+  const wrapperClassName = embeddedPreview
+    ? embeddedFill
+      ? 'absolute inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[20]'
+      : 'relative flex justify-center items-center'
+    : 'fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]';
+  const restartHandler = previewMode ? handlePreviewClose : handleRestart;
+  const continueHandler = previewMode ? handlePreviewClose : handleContinue;
 
   return (
-    <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]">
-      <div className="w-[990px] h-[680px] bg-white rounded-[30px] border border-[#EEF0F4] flex flex-col items-center shadow-[0_18px_40px_rgba(15,23,42,0.16)]">
+    <div className={wrapperClassName}>
+      <div
+        className={`w-[990px] h-[680px] bg-white rounded-[30px] border border-[#EEF0F4] flex flex-col items-center shadow-[0_18px_40px_rgba(15,23,42,0.16)] ${previewScaleClassName}`}
+      >
         <div className="h-[30px]" />
 
         {/* === 결과 패널 === */}
@@ -71,14 +95,14 @@ export default function FailedModal() {
         <div className="flex justify-between w-[862px] mt-10">
           <button
             type="button"
-            onClick={handleRestart}
+            onClick={restartHandler}
             className="w-[400px] h-[61px] bg-[#D9DADB] rounded-[18px] hover:bg-[#BFC0C4] transition-all duration-200 hover:-translate-y-[1px] cursor-pointer"
           >
             <span className="heading-2 font-700 text-[#515151]">문제 다시 풀기</span>
           </button>
           <button
             type="button"
-            onClick={handleContinue}
+            onClick={continueHandler}
             className="w-[400px] h-[61px] bg-[#FF4854] rounded-[18px] shadow-[0_3px_8px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] transition-all duration-200 cursor-pointer"
           >
             <span className="heading-2 font-700 text-white">다른 문제 풀기</span>

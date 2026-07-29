@@ -4,10 +4,13 @@ import { ArrowLeft, Check } from 'lucide-react';
 import TutorialImage from '@/assets/images/tutorial.png';
 import TutorialElementImage from '@/assets/images/t1.png';
 import TutorialChatTokenImage from '@/assets/images/t2.png';
+import TutorialJudgeFailureImage from '@/assets/images/t3.png';
 import ChallengePlayBg from '@/assets/images/chalbg.png';
 import AttemptHistoryCard from '@/pages/Challenge/components/AttemptHistoryCard';
 import {
+  TutorialFailedModalPreview,
   TutorialChatTokenInteractivePreview,
+  TutorialJudgeFailureInteractivePreview,
   TutorialPreviewCenterPanel,
   TutorialPreviewLeftPanel,
   TutorialPreviewRightPanel,
@@ -56,7 +59,13 @@ const learningSections = [
 
 function PathPreview({ tutorial }) {
   const previewImage =
-    tutorial.id === 7 ? TutorialElementImage : tutorial.id === 8 ? TutorialChatTokenImage : TutorialImage;
+    tutorial.id === 7
+      ? TutorialElementImage
+      : tutorial.id === 8
+        ? TutorialChatTokenImage
+        : tutorial.id === 9
+          ? TutorialJudgeFailureImage
+          : TutorialImage;
 
   return (
     <div className="h-[210px] overflow-hidden rounded-[4px] bg-[#12070A]">
@@ -475,6 +484,86 @@ function ChatTokenGuide() {
   );
 }
 
+function JudgeFailureGuide() {
+  return (
+    <>
+      <section className="border-b border-[#DDE3EA] pb-10">
+        <h2 className="text-[26px] font-900 leading-tight text-[#202832]">학습 목표</h2>
+        <p className="mt-4 text-[16px] font-700 leading-[29px] text-[#344050]">
+          이번 튜토리얼에서는 제출 결과가 실패로 판정될 때 어떤 화면이 나타나는지 익힙니다.
+          실패는 단순히 끝났다는 뜻이 아니라, Judge AI가 어떤 기준에서 부족하다고 판단했는지
+          알려주는 피드백입니다.
+        </p>
+        <ul className="mt-4 space-y-3">
+          {[
+            '제출하기를 누른 뒤 실패 모달이 어떤 구조로 표시되는지 확인합니다.',
+            '3개의 Judge 모델이 남긴 실패 사유를 읽고 공통으로 지적하는 부족한 조건을 찾습니다.',
+            '실패 기록이 다음 프롬프트를 고치는 데 쓰이는 피드백이라는 점을 이해합니다.',
+            '마지막 실습에서 채팅 응답을 받은 뒤 제출하면 실패 모달이 뜨는 흐름을 직접 확인합니다.',
+          ].map(item => (
+            <li key={item} className="flex gap-3 text-[15px] font-600 leading-[27px] text-[#4A5565]">
+              <Check className="mt-1.5 h-4.5 w-4.5 shrink-0 text-[#FF4854]" strokeWidth={2.4} />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <PanelPreviewSection
+        title="실패 모달"
+        intro="실패 모달은 제출한 대화가 성공 조건을 만족하지 못했을 때 나타나는 결과 화면입니다. 3개의 Judge 모델이 각각 판단한 내용을 보여주며, 어떤 부분이 부족했는지 설명합니다."
+        items={[
+          '각 결과 패널의 왼쪽에는 실패 상태가 표시됩니다. 빨간색 실패 표시는 해당 Judge 모델이 제출 내용을 통과시키지 않았다는 뜻입니다.',
+          '오른쪽 설명에는 왜 실패했는지가 문장으로 정리됩니다. 단순히 실패 여부만 보는 것이 아니라, 어떤 조건을 충족하지 못했는지 읽어야 합니다.',
+          '3개의 Judge 모델이 비슷한 이유를 말한다면 그 부분이 다음 시도에서 가장 먼저 고쳐야 할 핵심입니다.',
+          '실패 모달 아래에는 문제를 다시 풀거나 다른 문제로 이동하는 버튼이 있습니다. 튜토리얼에서는 화면 구조를 익히는 용도로 보면 됩니다.',
+        ]}
+        steps={[
+          '실패 상태가 어느 위치에 표시되는지 확인합니다.',
+          '3개의 Judge 모델 설명을 읽고 공통으로 반복되는 실패 이유를 찾습니다.',
+          '성공조건과 비교했을 때 어떤 내용이 부족했는지 생각합니다.',
+          '다음 시도에서는 부족했던 조건을 프롬프트에 더 명확하게 반영합니다.',
+        ]}
+        cautions={[
+          '실패 모달은 벌점 화면이 아니라 피드백 화면입니다. 실패 이유를 읽어야 다음 시도를 개선할 수 있습니다.',
+          '한 모델의 설명만 보고 판단하기보다 3개의 Judge 설명에서 반복되는 내용을 우선 확인하는 것이 좋습니다.',
+          '실패 사유가 길어도 핵심은 보통 성공조건을 충족하지 못한 부분, 요구한 형식이 빠진 부분, 목표와 다른 방향으로 응답한 부분입니다.',
+        ]}
+        nextAction="실패 모달 구조를 이해했다면, 마지막 실습에서 직접 채팅하고 제출해 실패 모달이 뜨는 흐름을 확인합니다."
+        width="min-w-[900px]"
+      >
+        <TutorialFailedModalPreview />
+      </PanelPreviewSection>
+
+      <PanelPreviewSection
+        title="직접 제출해보기"
+        intro="아래 프리뷰에서는 채팅 영역에 프롬프트를 입력하고 AI 응답을 받은 뒤 제출하기를 눌러볼 수 있습니다. 이 튜토리얼에서는 제출 결과가 항상 실패로 처리되어 실패 모달이 뜨도록 구성했습니다."
+        items={[
+          '입력창에 프롬프트를 작성하고 전송하면 1초 동안 응답 생성중 상태가 표시됩니다.',
+          'AI 예시 응답이 나타난 뒤 제출하기 버튼이 활성화됩니다.',
+          '제출하기를 누르면 실제 실패 모달 컴포넌트가 프리뷰 안에 표시됩니다.',
+          '실패 모달의 설명을 읽고 다음 프롬프트에서 무엇을 보완해야 할지 생각해보는 것이 핵심입니다.',
+        ]}
+        steps={[
+          '입력창에 아무 프롬프트나 작성한 뒤 전송합니다.',
+          'AI 응답이 생성될 때까지 기다립니다.',
+          '응답이 나온 뒤 제출하기 버튼을 누릅니다.',
+          '실패 모달에서 실패 사유가 어떻게 표시되는지 확인합니다.',
+        ]}
+        cautions={[
+          '이 실습은 실패 흐름을 익히기 위한 튜토리얼이므로 어떤 프롬프트를 입력해도 실패 모달이 뜹니다.',
+          '실제 챌린지에서는 실패 사유가 현재 대화 내용과 문제의 성공조건을 기준으로 달라집니다.',
+          '실패 후 바로 다시 제출하기보다, 실패 사유를 읽고 프롬프트를 수정하는 습관을 들이는 것이 좋습니다.',
+        ]}
+        nextAction="실패 모달까지 확인했다면, 다음 튜토리얼에서 성공 조건을 만족했을 때 어떤 화면이 나오는지 살펴봅니다."
+        width="min-w-[640px]"
+      >
+        <TutorialJudgeFailureInteractivePreview />
+      </PanelPreviewSection>
+    </>
+  );
+}
+
 function ChallengeElementGuide() {
   return (
     <>
@@ -609,6 +698,8 @@ export default function Tutorial() {
             <ChallengeElementGuide />
           ) : tutorial.id === 8 ? (
             <ChatTokenGuide />
+          ) : tutorial.id === 9 ? (
+            <JudgeFailureGuide />
           ) : (
             <DefaultLearningGuide />
           )}

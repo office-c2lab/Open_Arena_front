@@ -9,6 +9,8 @@ import ChatMessages from '@/pages/Challenge/components/ChatArea/ChatMessages';
 import ChatInput from '@/pages/Challenge/components/ChatArea/ChatInput';
 import ChatControls from '@/pages/Challenge/components/ChatArea/ChatControls';
 import AttemptHistoryPanel from '@/pages/Challenge/components/AttemptHistoryPanel';
+import FailedModal from '@/pages/Challenge/ChallengeModal/FailedModal';
+import { failedPanelsData } from '@/pages/Challenge/data/challengeModalData';
 import { TABS } from '@/pages/Challenge/data/challengeData';
 
 const PREVIEW_HEADER_INFO = {
@@ -48,6 +50,19 @@ function createTutorialAssistantReply(prompt) {
   const shortPrompt = prompt.length > 38 ? `${prompt.slice(0, 38)}...` : prompt;
   return `입력한 프롬프트 "${shortPrompt}"를 기준으로 응답을 생성했습니다. 이제 오른쪽 패널에서 토큰 사용량이 늘어난 것을 확인해보세요.`;
 }
+
+function createTutorialFailureReply(prompt) {
+  const shortPrompt = prompt.length > 36 ? `${prompt.slice(0, 36)}...` : prompt;
+  return `요청하신 "${shortPrompt}"에 대해 안전한 범위의 일반적인 답변만 제공할 수 있습니다. 문제의 성공 조건에 필요한 핵심 요구는 아직 충족하지 못했습니다.`;
+}
+
+const TUTORIAL_FAILED_RESULTS = failedPanelsData.map(data => ({
+  status: 'failed',
+  data: {
+    ...data,
+    title: data.animalName,
+  },
+}));
 
 export function TutorialPreviewLeftPanel({ initialActiveTab = TABS[0].id, lockActiveTab = false }) {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
@@ -241,6 +256,139 @@ export function TutorialChatTokenInteractivePreview() {
         </div>
       </div>
       <TutorialPreviewRightPanel sessions={sessions} tokenUsed={tokenUsed} />
+    </div>
+  );
+}
+
+export function TutorialFailedModalPreview() {
+  return (
+    <div className="relative flex h-full min-w-[900px] items-center justify-center overflow-hidden">
+      <FailedModal
+        isOpen
+        onClose={() => {}}
+        previewMode
+        previewResults={TUTORIAL_FAILED_RESULTS}
+        embeddedPreview
+        previewScaleClassName="origin-center scale-[0.86]"
+      />
+    </div>
+  );
+}
+
+export function TutorialJudgeFailureInteractivePreview() {
+  const [inputValue, setInputValue] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [isFailedModalOpen, setIsFailedModalOpen] = useState(false);
+  const responseTimerRef = useRef(null);
+  const isGenerating = messages.some(message => message.isTyping);
+
+  const handleSend = () => {
+    const trimmedInput = inputValue.trim();
+    if (!trimmedInput || isGenerating) return;
+    const timestamp = Date.now();
+    const assistantMessageId = `tutorial-failure-assistant-${timestamp}`;
+
+    setMessages(prevMessages => [
+      ...prevMessages,
+      {
+        id: `tutorial-failure-user-${timestamp}`,
+        role: 'user',
+        content: trimmedInput,
+      },
+      {
+        id: assistantMessageId,
+        role: 'assistant',
+        content: '',
+        isTyping: true,
+      },
+    ]);
+    setInputValue('');
+
+    if (responseTimerRef.current) {
+      clearTimeout(responseTimerRef.current);
+    }
+
+    responseTimerRef.current = setTimeout(() => {
+      setMessages(prevMessages =>
+        prevMessages.map(message =>
+          message.id === assistantMessageId
+            ? {
+                ...message,
+                content: createTutorialFailureReply(trimmedInput),
+                isTyping: false,
+              }
+            : message
+        )
+      );
+      responseTimerRef.current = null;
+    }, 1000);
+  };
+
+  const handleReset = () => {
+    if (responseTimerRef.current) {
+      clearTimeout(responseTimerRef.current);
+      responseTimerRef.current = null;
+    }
+    setMessages([]);
+    setInputValue('');
+    setIsFailedModalOpen(false);
+  };
+
+  useEffect(
+    () => () => {
+      if (responseTimerRef.current) {
+        clearTimeout(responseTimerRef.current);
+      }
+    },
+    []
+  );
+
+  return (
+    <div className="relative flex h-full min-w-[640px]">
+      <div className="flex h-full min-h-0 min-w-0 flex-grow flex-col">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
+          <ChatMessages
+            messages={messages}
+            isLoading={false}
+            isInitialState={messages.length === 0}
+            ArenaIcon={ArenaIcon}
+            chatEndRef={null}
+          />
+
+          <div className="h-[210px] flex-shrink-0 border-t border-white/55 bg-white/28 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] md:h-[237px] md:p-6">
+            <div className="flex h-full flex-col justify-end gap-3">
+              <ChatInput
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                handleSend={handleSend}
+                SendIcon={SendIcon}
+                isDisabled={isGenerating}
+                disabledPlaceholder="AI 응답을 생성 중입니다..."
+                sessionStatus="active"
+              />
+              <ChatControls
+                ResetIcon={ResetIcon}
+                openResetModal={handleReset}
+                openSubmitModal={() => setIsFailedModalOpen(true)}
+                isDisabled={isGenerating}
+                sessionId={messages.some(message => message.role === 'assistant' && !message.isTyping)
+                  ? 'tutorial-failure-session'
+                  : null}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <FailedModal
+        isOpen={isFailedModalOpen}
+        onClose={() => setIsFailedModalOpen(false)}
+        previewMode
+        previewResults={TUTORIAL_FAILED_RESULTS}
+        embeddedPreview
+        embeddedFill
+        previewScaleClassName="origin-center scale-[0.86]"
+      />
     </div>
   );
 }
