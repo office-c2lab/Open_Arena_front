@@ -5,7 +5,6 @@ import useModalStore from '@/stores/useModalStore';
 import { useChatSession } from '@/hooks/useChatSession';
 import { useChatMessages } from '@/hooks/useChatMessages';
 import { useSessionStore } from '@/stores/useSessionStore';
-import SessionList from './SessionList';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 import ChatControls from './ChatControls';
@@ -25,10 +24,7 @@ export default function ChatArea({
   const queryClient = useQueryClient();
 
   // 세션 훅
-  const { sessionId, clearSession, createSessionMutation, handleSessionClick } = useChatSession(
-    teamId,
-    problemId
-  );
+  const { sessionId, clearSession, createSessionMutation } = useChatSession(teamId, problemId);
 
   const [inputValue, setInputValue] = useState('');
 
@@ -94,10 +90,8 @@ export default function ChatArea({
     !sessionId && displayMessages.length === 0 && !createSessionMutation.isPending;
 
   return (
-    <div className="flex h-full min-w-0 flex-grow flex-col">
-      <SessionList sessions={sessions} sessionId={sessionId} onSessionClick={handleSessionClick} />
-
-      <div className="flex-1 rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md flex flex-col overflow-hidden h-full">
+    <div className="flex h-full min-h-0 min-w-0 flex-grow flex-col">
+      <div className="flex min-h-0 flex-1 rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md flex-col overflow-hidden">
         <ChatMessages
           messages={displayMessages}
           isLoading={isMessagesLoading}

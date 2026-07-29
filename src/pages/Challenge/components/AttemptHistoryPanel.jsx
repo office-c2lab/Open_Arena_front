@@ -84,14 +84,14 @@ export default function AttemptHistoryPanel({
 
   const handleCardClick = useCallback(
     (clickedSessionId, clickedStatus) => {
-      if (!problemId || !teamId) return;
+      if (!problemId) return;
 
       if (clickedSessionId !== currentActiveSessionId) {
         setSessionId(clickedSessionId);
-        setSessionStatus(clickedStatus);
+        setSessionStatus(clickedStatus === 'failed' ? 'fail' : clickedStatus);
       }
     },
-    [currentActiveSessionId, setSessionId, setSessionStatus, problemId, teamId]
+    [currentActiveSessionId, setSessionId, setSessionStatus, problemId]
   );
 
   useEffect(() => {

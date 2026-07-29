@@ -4,9 +4,9 @@ export const TABS = [
   {
     id: 'description',
     title: '설명',
-    bgColor: 'bg-[#837BBD]/20',
-    borderColor: 'border-[#837BBD]',
-    titleColor: 'text-[#837BBD]',
+    bgColor: 'bg-[#475569]/20',
+    borderColor: 'border-[#475569]',
+    titleColor: 'text-[#475569]',
   },
   {
     id: 'goal',

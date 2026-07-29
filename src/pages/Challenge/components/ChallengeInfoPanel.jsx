@@ -6,14 +6,14 @@ import ApiInfoPanel from './ApiInfoPanel';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 
 const TAB_ACCENT_COLOR_MAP = {
-  description: '#837BBD',
+  description: '#475569',
   goal: '#E6AA02',
   success: '#079C4C',
   failure: '#FF4854',
 };
 
 const TAB_TITLE_COLOR_CLASS_MAP = {
-  description: 'text-[#837BBD]',
+  description: 'text-[#475569]',
   goal: 'text-[#E6AA02]',
   success: 'text-[#079C4C]',
   failure: 'text-[#FF4854]',

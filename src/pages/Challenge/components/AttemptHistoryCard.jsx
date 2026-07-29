@@ -4,7 +4,7 @@ import React from 'react';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 
 // === 색상 정의 ===
-const COLOR_PURPLE = '#837BBD';
+const COLOR_PURPLE = '#475569';
 const COLOR_PURPLE_LIGHT = '#7D70DA';
 const COLOR_RED = '#FF4854';
 const COLOR_GREEN = '#84CC16';

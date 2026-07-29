@@ -10,11 +10,11 @@ export default function ChatMessages({
 }) {
   if (isInitialState) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-4">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center text-center p-4">
         <img
           src={ArenaIcon}
           alt="ARENA Logo"
-          className="max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain mb-4"
+          className="mb-4 h-[min(32vh,300px)] max-h-[300px] max-w-[220px] w-[32vw] object-contain"
         />
         <p className="heading-3 font-500 text-[#0F172A] mt-4 mb-6">
           AI와 대화를 시작하세요. <br /> 아래 입력창에 메시지를 입력해보세요.
@@ -24,7 +24,7 @@ export default function ChatMessages({
   }
 
   return (
-    <div className="flex-1 p-6 relative overflow-hidden">
+    <div className="relative min-h-0 flex-1 overflow-hidden p-6">
       <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
         <img
           src={ArenaIcon}
@@ -32,7 +32,7 @@ export default function ChatMessages({
           className="max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain opacity-20"
         />
       </div>
-      <div className="relative z-10 pt-4 h-full overflow-y-auto">
+      <div className="relative z-10 h-full overflow-y-auto pt-4">
         {isLoading ? (
           <div className="text-center p-4 text-gray-500">메시지를 불러오는 중...</div>
         ) : (

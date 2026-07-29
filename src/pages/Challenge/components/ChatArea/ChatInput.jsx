@@ -19,7 +19,7 @@ export default function ChatInput({
     const isSuccess = normalizedStatus === 'success';
 
     return (
-      <div className="w-full h-[130px] md:h-[153px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md flex flex-col items-center justify-center px-4 text-center">
+      <div className="w-full h-[120px] md:h-[133px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md flex flex-col items-center justify-center px-4 text-center">
         <p className="text-gray-600 text-sm md:text-base leading-relaxed">
           {isSuccess ? (
             <>
@@ -49,7 +49,7 @@ export default function ChatInput({
 
   // 기본 입력창
   return (
-    <div className="w-full h-[130px] md:h-[153px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md p-3 md:p-4 flex items-start relative">
+    <div className="w-full h-[120px] md:h-[133px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md p-3 md:p-4 flex items-start relative">
       <textarea
         className="w-full h-full resize-none bg-transparent focus:outline-none body-large text-[#0F172A] placeholder:text-[#8A93A5] pr-12 overflow-y-auto"
         placeholder={
