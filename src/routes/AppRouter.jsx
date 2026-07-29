@@ -21,6 +21,7 @@ import MyPage from '../pages/MyPage/ProfilePage';
 import Education from '../pages/Education/Education';
 import Tutorial from '../pages/Tutorial/Tutorial';
 import TutorialList from '../pages/Tutorial/TutorialList';
+import TutorialChallengePlayPreview from '../pages/Tutorial/TutorialChallengePlayPreview';
 import Kategorie from '../pages/Kategorie/Kategorie';
 import Challenge from '../pages/Challenge/ui/Challenge';
 import ChallengePlay from '../pages/Challenge/ui/ChallengePlay';
@@ -51,6 +52,14 @@ export default function AppRouter() {
 
       {/* 테스트 페이지(보호 X) */}
       <Route path="/test" element={<ChatTestPage />} />
+      <Route
+        path="/tutorial-preview/challenge-play"
+        element={
+          <div className="h-screen w-screen overflow-hidden">
+            <TutorialChallengePlayPreview />
+          </div>
+        }
+      />
 
       {/* 관리자 로그인 */}
       <Route path="/admin/login" element={<AdminLogin />} />

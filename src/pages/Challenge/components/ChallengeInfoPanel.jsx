@@ -64,6 +64,7 @@ export default function ChallengeInfoPanel({
   problemApiHeaderName,
   problemApiKey,
   problemCode,
+  onBackClick,
 }) {
   const navigate = useNavigate();
   const [hoveredTab, setHoveredTab] = useState(null);
@@ -91,7 +92,7 @@ export default function ChallengeInfoPanel({
           <div className="relative flex w-full items-center gap-3 rounded-[18px] border border-white/65 bg-white/65 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
             <button
               type="button"
-              onClick={() => navigate(-1)}
+              onClick={onBackClick ?? (() => navigate(-1))}
               className="group flex h-9 w-7 flex-shrink-0 cursor-pointer items-center justify-center"
               aria-label="뒤로가기"
             >
