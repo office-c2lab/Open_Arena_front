@@ -1,25 +1,22 @@
 import React, { useMemo, useState } from 'react';
 import {
-  ArrowUp,
-  BarChart3,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  CircleDollarSign,
-  Flag,
-  Info,
   Search,
   ShieldCheck,
-  Star,
-  Target,
 } from 'lucide-react';
+import medalBronze from '@/assets/icons/medal_bronze.svg';
+import medalGold from '@/assets/icons/medal_gold.svg';
+import medalSilver from '@/assets/icons/medal_silver.svg';
 import UserIcon from '@/assets/icons/user.svg';
 import DragonImage from '@/assets/images/dragon.png';
 import GreenDragonImage from '@/assets/images/green_dragon.png';
 import GreenPhoenixImage from '@/assets/images/green_phoenix.png';
 import GreenTigerImage from '@/assets/images/green_tiger.png';
+import MyRankImage from '@/assets/images/myrank.png';
 import PhoenixImage from '@/assets/images/phoenix.png';
 import TigerImage from '@/assets/images/tiger.png';
 
@@ -101,10 +98,13 @@ const topRanks = [
   { ...leaderboardRows[2], tone: 'bronze' },
 ];
 
+const MEDAL_ICON_MAP = { 1: medalGold, 2: medalSilver, 3: medalBronze };
+
 const summaryItems = [
-  { label: '시즌 점수', value: '2,480점', icon: Star },
-  { label: '성공 챌린지', value: '18개', icon: Flag },
-  { label: '사용 토큰', value: '14,200', icon: CircleDollarSign },
+  { label: '시즌 점수', value: '2,480점' },
+  { label: '성공 챌린지', value: '18개' },
+  { label: '최소 토큰', value: '14,200' },
+  { label: '다음 순위까지', value: '120포인트' },
 ];
 
 const legacyAvatarColors = [
@@ -135,7 +135,7 @@ function Avatar({ image, rank, size = 'md', className = '' }) {
 
   return (
     <div
-      className={`${sizeClass} flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white bg-[#F4F6F8] shadow-[0_2px_10px_rgba(15,23,42,0.12)] ${className}`}
+      className={`${sizeClass} flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/70 bg-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_8px_20px_rgba(15,23,42,0.10)] backdrop-blur-md ${className}`}
     >
       <img
         src={image || UserIcon}
@@ -146,64 +146,101 @@ function Avatar({ image, rank, size = 'md', className = '' }) {
   );
 }
 
-function RankMedal({ rank, tone }) {
-  const toneClass = {
-    gold: 'border-[#FFB51F] bg-[#FFC72B] text-white shadow-[0_4px_12px_rgba(255,193,7,0.35)]',
-    silver: 'border-[#9FA8B2] bg-[#AEB7C0] text-white',
-    bronze: 'border-[#AD6728] bg-[#B66628] text-white',
-  }[tone];
-
+function RankMedal({ rank }) {
   return (
-    <div
-      className={`absolute left-6 top-5 flex h-11 w-11 items-center justify-center rounded-full border-2 text-[21px] font-900 ${toneClass}`}
-    >
-      {rank}
+    <img
+      src={MEDAL_ICON_MAP[rank]}
+      alt={`${rank}위`}
+      className="absolute left-6 top-5 z-10 h-[52px] w-[52px] drop-shadow-[0_8px_16px_rgba(15,23,42,0.14)]"
+    />
+  );
+}
+
+function StatPair({ value, label }) {
+  return (
+    <div className="min-w-0 text-center">
+      <span className="block truncate text-[15px] font-700 text-[#525B66]">{label}</span>
+      <strong className="mt-2 block truncate text-[24px] font-900 leading-7 text-[#111827]">
+        {value}
+      </strong>
     </div>
   );
 }
 
-function StatPair({ icon, value, label }) {
+function MyRankCard() {
   return (
-    <div className="flex min-w-0 items-center gap-3">
-      {icon}
-      <div className="min-w-0">
-        <strong className="block text-[17px] font-900 leading-5 text-[#111827]">{value}</strong>
-        <span className="block truncate text-[13px] font-600 text-[#525B66]">{label}</span>
+    <section className="mt-12 overflow-hidden rounded-[24px] border border-[#FFD0D4] bg-[radial-gradient(circle_at_11%_58%,rgba(255,72,84,0.12)_0%,rgba(255,72,84,0.055)_18%,transparent_33%),linear-gradient(105deg,#FFFFFF_0%,#FFFEFE_58%,#FFF7F8_100%)] px-8 py-5 shadow-[0_12px_24px_rgba(15,23,42,0.07)] sm:px-10">
+      <div className="grid items-center gap-7 lg:grid-cols-[0.9fr_1.75fr]">
+        <div className="min-w-0">
+          <div className="flex items-center gap-5">
+            <img
+              src={MyRankImage}
+              alt=""
+              className="h-[88px] w-[88px] shrink-0 object-contain drop-shadow-[0_8px_18px_rgba(255,72,84,0.16)]"
+            />
+            <div className="min-w-0">
+              <span className="block text-[15px] font-900 text-[#FF4854]">내 순위</span>
+              <div className="flex items-end gap-3 whitespace-nowrap">
+                <strong className="text-[64px] font-900 leading-[0.86] text-[#111827]">12</strong>
+                <span className="pb-1 text-[24px] font-800 text-[#111827]">위</span>
+              </div>
+              <div className="mt-2 flex items-center gap-4 whitespace-nowrap text-[14px] font-800 text-[#96A0AE]">
+                <span>/ 12,856명</span>
+                <span className="h-4 w-px bg-[#CBD1DA]" />
+                <span className="text-[#FF4854]">상위 0.1%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid min-h-[96px] items-center sm:grid-cols-4">
+          {summaryItems.map(item => (
+            <div
+              key={item.label}
+              className="min-w-0 py-2 sm:border-l sm:border-[#E7EAF0] sm:px-7 sm:first:border-l-0 sm:first:pl-0 sm:last:pr-0"
+            >
+              <div className="whitespace-nowrap text-[14px] font-800 text-[#8B95A3]">
+                {item.label}
+              </div>
+              <strong
+                className={`mt-4 block whitespace-nowrap font-900 leading-none text-[#111827] ${
+                  item.label === '다음 순위까지' ? 'text-[26px] text-[#FF4854]' : 'text-[30px]'
+                }`}
+              >
+                {item.value}
+              </strong>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function TopRankCard({ row }) {
   const isFirst = row.rank === 1;
-  const borderClass = isFirst
-    ? 'border-[#FF4854] bg-[radial-gradient(circle_at_50%_0%,#FFF1F2_0%,#FFFFFF_58%)]'
+  const toneClass = isFirst
+    ? 'border-[#FFB51F]/55 bg-[radial-gradient(circle_at_50%_0%,rgba(255,199,43,0.36)_0%,rgba(255,237,176,0.30)_42%,rgba(255,255,255,0.68)_82%)] shadow-[0_18px_38px_rgba(255,181,31,0.18)]'
     : row.rank === 2
-      ? 'border-[#C9CED6]'
-      : 'border-[#E1B895] bg-[linear-gradient(135deg,#FFFFFF_0%,#FFF8F3_100%)]';
+      ? 'border-[#C9CED6]/70 bg-[radial-gradient(circle_at_50%_0%,rgba(174,183,192,0.28)_0%,rgba(255,255,255,0.62)_72%)] shadow-[0_14px_30px_rgba(100,116,139,0.12)]'
+      : 'border-[#D08A52]/50 bg-[radial-gradient(circle_at_50%_0%,rgba(208,138,82,0.24)_0%,rgba(255,248,243,0.72)_62%,rgba(255,255,255,0.62)_100%)] shadow-[0_14px_30px_rgba(173,103,40,0.12)]';
 
   return (
     <article
-      className={`relative flex min-h-[330px] flex-col items-center rounded-[12px] border px-8 pb-7 pt-12 shadow-[0_14px_28px_rgba(15,23,42,0.06)] ${borderClass} ${isFirst ? 'md:-mt-10 md:min-h-[420px]' : 'md:mt-0'}`}
+      className={`relative flex min-h-[330px] flex-col items-center overflow-hidden rounded-[30px] border px-8 pb-7 pt-12 backdrop-blur-xl ${toneClass} ${isFirst ? 'md:-mt-10 md:min-h-[420px]' : 'md:mt-0'}`}
     >
-      <RankMedal rank={row.rank} tone={row.tone} />
+      <RankMedal rank={row.rank} />
       <Avatar image={row.image} rank={row.rank} size="lg" className={isFirst ? 'mt-4' : 'mt-2'} />
-      <h2 className="mt-6 text-center text-[20px] font-900 text-[#111827]">{row.name}</h2>
+      <h2 className="mt-6 max-w-full truncate text-center text-[20px] font-900 text-[#111827]">
+        {row.name}
+      </h2>
       <p className={`mt-1 text-[30px] font-900 ${isFirst ? 'text-[#F52F45]' : 'text-[#111827]'}`}>
         {formatNumber(row.score)}점
       </p>
-      <div className="mt-5 h-px w-full bg-[#E8EAEE]" />
-      <div className="mt-5 grid w-full grid-cols-2 gap-4">
-        <StatPair
-          icon={<Flag className="h-5 w-5 shrink-0 text-[#111827]" strokeWidth={2.2} />}
-          value={`${row.challenges}개`}
-          label="성공 챌린지"
-        />
-        <StatPair
-          icon={<CircleDollarSign className="h-5 w-5 shrink-0 text-[#111827]" strokeWidth={2.2} />}
-          value={formatNumber(row.tokens)}
-          label="사용 토큰"
-        />
+      <div className="mt-5 h-px w-full bg-white/70" />
+      <div className="mt-5 grid w-full grid-cols-2 divide-x divide-[#D7DDE6]">
+        <StatPair value={`${row.challenges}개`} label="성공 챌린지" />
+        <StatPair value={formatNumber(row.tokens)} label="최소 토큰" />
       </div>
     </article>
   );
@@ -275,79 +312,7 @@ export default function Leaderboard() {
         ))}
       </section>
 
-      <section className="mt-12 rounded-[10px] border border-[#DDE1E7] bg-white px-6 py-7 shadow-[0_10px_28px_rgba(15,23,42,0.06)] sm:px-10">
-        <div className="grid gap-7 lg:grid-cols-[1fr_2fr_1.35fr] lg:divide-x lg:divide-[#E2E5EA]">
-          <div>
-            <span className="text-[15px] font-800 text-[#F52F45]">내 순위</span>
-            <div className="mt-2 flex items-end gap-2">
-              <strong className="text-[52px] font-900 leading-none text-[#111827]">12</strong>
-              <span className="pb-1 text-[25px] font-900 text-[#111827]">위</span>
-            </div>
-            <p className="mt-2 text-[16px] font-500 text-[#6B7280]">/ 12,856명</p>
-          </div>
-
-          <div className="grid gap-5 sm:grid-cols-3 lg:px-9">
-            {summaryItems.map(item => (
-              <div
-                key={item.label}
-                className="border-[#E2E5EA] sm:border-l sm:first:border-l-0 sm:pl-8 sm:first:pl-0"
-              >
-                <div className="flex items-center gap-2 text-[15px] font-600 text-[#4D5662]">
-                  <item.icon className="h-5 w-5 text-[#111827]" />
-                  {item.label}
-                </div>
-                <strong className="mt-4 block text-[34px] font-900 leading-none text-[#111827]">
-                  {item.value}
-                </strong>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid gap-6 lg:pl-9">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <ArrowUp className="h-5 w-5 text-[#F52F45]" strokeWidth={3} />
-                <strong className="text-[17px] font-900 text-[#111827]">3단계 상승</strong>
-              </div>
-              <span className="text-[14px] font-500 text-[#6B7280]">(지난주 대비)</span>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <Target className="h-5 w-5 text-[#111827]" />
-                <span className="text-[16px] font-800 text-[#111827]">다음 순위까지</span>
-              </div>
-              <strong className="text-[17px] font-900 text-[#111827]">120점</strong>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <BarChart3 className="h-5 w-5 text-[#111827]" />
-                <span className="text-[16px] font-800 text-[#111827]">상위</span>
-              </div>
-              <strong className="text-[17px] font-900 text-[#111827]">8%</strong>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <aside className="mt-7 flex flex-col gap-4 rounded-[10px] bg-[#F7F7F8] px-6 py-4 text-[15px] text-[#4B5563] sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-3">
-          <Info className="mt-0.5 h-5 w-5 shrink-0 text-[#697281]" />
-          <p className="font-600">
-            랭킹은 챌린지 성공으로 획득한 시즌 점수를 기준으로 산정됩니다.
-            <span className="hidden md:inline">
-              {' '}
-              동점일 경우 먼저 점수를 달성한 사용자가 높은 순위를 차지합니다.
-            </span>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="inline-flex shrink-0 items-center gap-2 font-800 text-[#111827]"
-        >
-          자세히 보기
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </aside>
+      <MyRankCard />
 
       <section className="mt-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
