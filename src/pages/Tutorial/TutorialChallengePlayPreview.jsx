@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ChallengePlayBg from '@/assets/images/chalbg.png';
 import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
@@ -38,6 +38,17 @@ const PREVIEW_CONTENT = {
   },
 };
 
+function estimateTutorialTokenUsage(messages, draft = '') {
+  const textLength =
+    messages.reduce((total, message) => total + (message.content?.length ?? 0), 0) + draft.length;
+  return Math.ceil(textLength / 2.4) + messages.length * 8;
+}
+
+function createTutorialAssistantReply(prompt) {
+  const shortPrompt = prompt.length > 38 ? `${prompt.slice(0, 38)}...` : prompt;
+  return `입력한 프롬프트 "${shortPrompt}"를 기준으로 응답을 생성했습니다. 이제 오른쪽 패널에서 토큰 사용량이 늘어난 것을 확인해보세요.`;
+}
+
 export function TutorialPreviewLeftPanel({ initialActiveTab = TABS[0].id, lockActiveTab = false }) {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
 
@@ -65,16 +76,17 @@ export function TutorialPreviewLeftPanel({ initialActiveTab = TABS[0].id, lockAc
   );
 }
 
-export function TutorialPreviewCenterPanel() {
-  const [inputValue, setInputValue] = useState('');
+export function TutorialPreviewCenterPanel({ messages = [], initialInput = '' }) {
+  const [inputValue, setInputValue] = useState(initialInput);
+  const isInitialState = messages.length === 0;
 
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-grow flex-col">
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
         <ChatMessages
-          messages={[]}
+          messages={messages}
           isLoading={false}
-          isInitialState={true}
+          isInitialState={isInitialState}
           ArenaIcon={ArenaIcon}
           chatEndRef={null}
         />
@@ -103,7 +115,7 @@ export function TutorialPreviewCenterPanel() {
   );
 }
 
-export function TutorialPreviewRightPanel({ sessions = [] }) {
+export function TutorialPreviewRightPanel({ sessions = [], tokenUsed }) {
   return (
     <AttemptHistoryPanel
       PurpleDownIcon={PurpleDownIcon}
@@ -111,7 +123,125 @@ export function TutorialPreviewRightPanel({ sessions = [] }) {
       sessions={sessions}
       problemId={undefined}
       teamId={undefined}
+      tokenUsed={tokenUsed}
     />
+  );
+}
+
+export function TutorialChatTokenInteractivePreview() {
+  const [inputValue, setInputValue] = useState('');
+  const [messages, setMessages] = useState([]);
+  const responseTimerRef = useRef(null);
+  const isGenerating = messages.some(message => message.isTyping);
+  const tokenUsed = estimateTutorialTokenUsage(messages, inputValue);
+  const sessions = messages.length
+    ? [
+        {
+          id: 'tutorial-chat-token-session',
+          status: 'unsubmitted',
+          title: `채팅 ${Math.ceil(messages.length / 2)}회 진행 중`,
+        },
+      ]
+    : [];
+
+  const handleSend = () => {
+    const trimmedInput = inputValue.trim();
+    if (!trimmedInput || isGenerating) return;
+    const timestamp = Date.now();
+    const assistantMessageId = `tutorial-assistant-${timestamp}`;
+
+    setMessages(prevMessages => [
+      ...prevMessages,
+      {
+        id: `tutorial-user-${timestamp}`,
+        role: 'user',
+        content: trimmedInput,
+      },
+      {
+        id: assistantMessageId,
+        role: 'assistant',
+        content: '',
+        isTyping: true,
+      },
+    ]);
+    setInputValue('');
+
+    if (responseTimerRef.current) {
+      clearTimeout(responseTimerRef.current);
+    }
+
+    responseTimerRef.current = setTimeout(() => {
+      setMessages(prevMessages =>
+        prevMessages.map(message =>
+          message.id === assistantMessageId
+            ? {
+                ...message,
+                content: createTutorialAssistantReply(trimmedInput),
+                isTyping: false,
+              }
+            : message
+        )
+      );
+      responseTimerRef.current = null;
+    }, 1000);
+  };
+
+  const handleReset = () => {
+    if (responseTimerRef.current) {
+      clearTimeout(responseTimerRef.current);
+      responseTimerRef.current = null;
+    }
+    setMessages([]);
+    setInputValue('');
+  };
+
+  useEffect(
+    () => () => {
+      if (responseTimerRef.current) {
+        clearTimeout(responseTimerRef.current);
+      }
+    },
+    []
+  );
+
+  return (
+    <div className="flex h-full min-w-[980px] gap-6">
+      <div className="flex min-w-0 flex-1">
+        <div className="flex h-full min-h-0 min-w-0 flex-grow flex-col">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
+            <ChatMessages
+              messages={messages}
+              isLoading={false}
+              isInitialState={messages.length === 0}
+              ArenaIcon={ArenaIcon}
+              chatEndRef={null}
+            />
+
+            <div className="h-[210px] flex-shrink-0 border-t border-white/55 bg-white/28 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] md:h-[237px] md:p-6">
+              <div className="flex h-full flex-col justify-end gap-3">
+                <ChatInput
+                  inputValue={inputValue}
+                  setInputValue={setInputValue}
+                  handleSend={handleSend}
+                  SendIcon={SendIcon}
+                  isDisabled={isGenerating}
+                  disabledPlaceholder="AI 응답을 생성 중입니다..."
+                  sessionStatus="active"
+                />
+                <ChatControls
+                  ResetIcon={ResetIcon}
+                  openResetModal={handleReset}
+                  openSubmitModal={() => {}}
+                  isDisabled={isGenerating}
+                  sessionId={messages.length ? 'tutorial-chat-token-session' : null}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <TutorialPreviewRightPanel sessions={sessions} tokenUsed={tokenUsed} />
+    </div>
   );
 }
 

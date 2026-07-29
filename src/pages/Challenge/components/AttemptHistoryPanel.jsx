@@ -21,6 +21,7 @@ export default function AttemptHistoryPanel({
   sessions = [],
   problemId,
   teamId,
+  tokenUsed,
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(FILTER_OPTIONS[0]);
@@ -113,7 +114,7 @@ export default function AttemptHistoryPanel({
 
       {/* ⭐ 토큰 카드 */}
       <div className="flex-shrink-0 w-full mb-3">
-        <TokenInfoCard problemId={problemId} teamId={teamId} />
+        <TokenInfoCard problemId={problemId} teamId={teamId} tokenUsed={tokenUsed} />
       </div>
 
       {/* 시도 기록 */}

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import TutorialCardImage from '@/assets/images/tutorial.png';
 import TutorialElementCardImage from '@/assets/images/t1.png';
+import TutorialChatTokenCardImage from '@/assets/images/t2.png';
 
 export const TUTORIALS = [
   {
@@ -130,7 +131,12 @@ function TutorialPreview({ tutorial }) {
 
 function TutorialCard({ tutorial, onClick }) {
   if (tutorial.id >= 7) {
-    const cardImage = tutorial.id === 7 ? TutorialElementCardImage : TutorialCardImage;
+    const cardImage =
+      tutorial.id === 7
+        ? TutorialElementCardImage
+        : tutorial.id === 8
+          ? TutorialChatTokenCardImage
+          : TutorialCardImage;
 
     return (
       <article

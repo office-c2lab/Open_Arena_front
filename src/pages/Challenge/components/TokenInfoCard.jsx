@@ -5,18 +5,20 @@ import TokenSvg from '../../../assets/icons/Token.svg';
 import { useSessionStore } from '@/stores/useSessionStore';
 import { useTokenUsage } from '@/hooks/useTokenUsage';
 
-const TokenInfoCard = ({ problemId, teamId }) => {
+const TokenInfoCard = ({ problemId, teamId, tokenUsed }) => {
   const { sessionId } = useSessionStore();
 
-  const isReady = !!teamId && !!problemId && !!sessionId;
+  const hasPreviewToken = typeof tokenUsed === 'number';
+  const shouldFetchToken = !!teamId && !!problemId && !!sessionId;
+  const isReady = hasPreviewToken || shouldFetchToken;
 
   // Hook은 항상 호출
   const { data, isLoading } = useTokenUsage(teamId, problemId, sessionId, {
-    enabled: isReady,
+    enabled: shouldFetchToken,
   });
 
   // 숫자만 로딩 처리
-  const usedToken = isReady ? (data?.token_used ?? 0) : null;
+  const usedToken = hasPreviewToken ? tokenUsed : isReady ? (data?.token_used ?? 0) : null;
 
   return (
     <div
