@@ -16,6 +16,7 @@ import DragonImage from '@/assets/images/dragon.png';
 import GreenDragonImage from '@/assets/images/green_dragon.png';
 import GreenPhoenixImage from '@/assets/images/green_phoenix.png';
 import GreenTigerImage from '@/assets/images/green_tiger.png';
+import ChallengePlayBg from '@/assets/images/chalbg.png';
 import MyRankImage from '@/assets/images/myrank.png';
 import PhoenixImage from '@/assets/images/phoenix.png';
 import TigerImage from '@/assets/images/tiger.png';
@@ -306,11 +307,22 @@ export default function Leaderboard() {
 
   return (
     <div className="mx-auto w-full max-w-[1200px] bg-white px-5 pb-10 pt-9 sm:px-8 lg:px-0">
-      <section className="mt-16 grid items-end gap-5 md:grid-cols-3 md:px-14">
-        {topRanks.map(row => (
-          <TopRankCard key={row.rank} row={row} />
-        ))}
-      </section>
+      <div
+        className="relative left-1/2 -mt-9 w-screen -translate-x-1/2 overflow-hidden bg-[#FFF7F8] bg-center bg-no-repeat pb-24 pt-20 sm:px-8 md:pb-28 md:pt-24"
+        style={{
+          backgroundImage: `url(${ChallengePlayBg})`,
+          backgroundSize: 'cover',
+        }}
+      >
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-b from-white/0 to-white" />
+        <div className="relative z-[1] mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-0">
+          <section className="grid items-end gap-5 md:grid-cols-3 md:px-14">
+            {topRanks.map(row => (
+              <TopRankCard key={row.rank} row={row} />
+            ))}
+          </section>
+        </div>
+      </div>
 
       <MyRankCard />
 
