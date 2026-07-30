@@ -791,8 +791,8 @@ function ChallengeActivityHeatmap() {
     <section className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-0">
       <DashboardNoticeCard />
       <DashboardProfileSummaryCard />
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-stretch">
-        <div className="surface w-fit max-w-full px-5 py-4 sm:px-6">
+      <div className="grid gap-5 lg:grid-cols-[max-content_minmax(0,1fr)] lg:items-stretch">
+        <div className="surface max-w-full px-5 py-4 sm:px-6">
           <div>
             <h2 className="text-[18px] font-900 leading-none text-[#202832]">도전 활동 히트맵</h2>
             <p className="mt-2 text-[14px] font-700 text-[#6F7885]">일별 도전 참여 현황</p>
@@ -842,7 +842,7 @@ function ChallengeActivityHeatmap() {
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-5 lg:w-[300px]">
+        <div className="flex min-w-0 w-full flex-col gap-5">
           <SuccessRateCard />
         </div>
       </div>
@@ -855,7 +855,7 @@ function ChallengeActivityHeatmap() {
 
 function DashboardNoticeCard() {
   return (
-    <section className="surface mb-5 w-full max-w-[900px] px-5 py-4 sm:px-6">
+    <section className="surface mb-5 w-full px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">공지사항</h2>
@@ -949,7 +949,7 @@ function RecentAttemptProblemsCard() {
     .filter(Boolean);
 
   return (
-    <section className="surface mt-5 w-full max-w-[900px] px-5 py-4 sm:px-6">
+    <section className="surface mt-5 w-full px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">최근 시도한 문제</h2>
@@ -1011,7 +1011,7 @@ function ProblemSolveStatusCard() {
   const solvedCount = problems.filter(problem => problem.status === 'solved').length;
 
   return (
-    <section className="surface mt-5 w-full max-w-[900px] px-5 py-4 sm:px-6">
+    <section className="surface mt-5 w-full px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">문제 풀이 현황</h2>
@@ -1127,7 +1127,7 @@ function SuccessRateCard() {
   ];
 
   return (
-    <section className="surface w-full px-5 py-4 lg:w-[300px]">
+    <section className="surface w-full px-5 py-4">
       <div>
         <h2 className="text-[18px] font-900 leading-none text-[#202832]">성공률</h2>
         <p className="mt-2 text-[14px] font-700 text-[#6F7885]">이번 주 도전 결과</p>
