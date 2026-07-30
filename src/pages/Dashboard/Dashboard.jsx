@@ -128,7 +128,7 @@ const dashboardSummaryStats = [
   { label: '현재 순위', value: '24위', subText: '전체 참가자 기준' },
   { label: '푼 문제', value: '2문제', subText: '전체 6문제 중' },
   { label: '총 획득 포인트', value: '188점', subText: '이번 주 기준' },
-  { label: '최소 사용 토큰', value: '184', subText: '단일 성공 기록' },
+  { label: '다음 순위까지', value: '12점', subText: '23위 추월까지' },
 ];
 
 const recentAttemptProblemIds = [3, 2, 1];
@@ -791,6 +791,7 @@ function ChallengeActivityHeatmap() {
     <section className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-0">
       <DashboardNoticeCard />
       <DashboardProfileSummaryCard />
+      <TokenEfficiencyCard />
       <div className="grid gap-5 lg:grid-cols-[max-content_minmax(0,1fr)] lg:items-stretch">
         <div className="surface max-w-full px-5 py-4 sm:px-6">
           <div>
@@ -846,7 +847,6 @@ function ChallengeActivityHeatmap() {
           <SuccessRateCard />
         </div>
       </div>
-      <TokenEfficiencyCard />
       <RecentAttemptProblemsCard />
       <ProblemSolveStatusCard />
     </section>
@@ -1077,41 +1077,59 @@ function ProblemSolveStatusCard() {
 
 function TokenEfficiencyCard() {
   const points = 188;
-  const tokens = 184;
-  const efficiency = points / tokens;
+  const minTokens = 184;
+  const maxTokens = 6120;
+  const efficiency = points / minTokens;
   const efficiencyPercent = 82;
 
   return (
     <section className="surface mt-5 w-full px-5 py-5 sm:px-6">
-      <div className="grid gap-5 lg:grid-cols-[240px_minmax(0,1fr)_260px] lg:items-center">
-        <div>
-          <h2 className="text-[18px] font-900 leading-none text-[#202832]">토큰 효율</h2>
-          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">적게 쓸수록 높은 점수</p>
+      <div className="grid gap-5 lg:grid-cols-2 lg:items-stretch">
+        <div className="flex min-w-0 flex-col justify-between">
+          <div>
+            <h2 className="text-[18px] font-900 leading-none text-[#202832]">토큰 효율</h2>
+            <p className="mt-2 text-[14px] font-700 text-[#6F7885]">적게 쓸수록 높은 점수</p>
+          </div>
+
+          <div className="mt-5">
+            <div className="mb-2 flex items-center justify-between text-[13px] font-800 text-[#7B8491]">
+              <span>효율 점수</span>
+              <span>{efficiencyPercent}%</span>
+            </div>
+            <div className="h-4 overflow-hidden rounded-full bg-[#F1F3F6]">
+              <div className="h-full rounded-full bg-[#FF4854]" style={{ width: `${efficiencyPercent}%` }} />
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-center">
+              <div className="surface-muted px-3 py-3">
+                <p className="text-[12px] font-800 text-[#7B8491]">효율</p>
+                <strong className="mt-1 block text-[20px] font-900 text-[#202832]">
+                  {efficiency.toFixed(2)}
+                </strong>
+              </div>
+              <div className="surface-muted px-3 py-3">
+                <p className="text-[12px] font-800 text-[#7B8491]">포인트</p>
+                <strong className="mt-1 block text-[20px] font-900 text-[#202832]">
+                  {points}
+                </strong>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <div className="mb-2 flex items-center justify-between text-[13px] font-800 text-[#7B8491]">
-            <span>효율 점수</span>
-            <span>{efficiencyPercent}%</span>
+        <div className="grid min-w-0 grid-cols-2 gap-3">
+          <div className="surface-muted flex flex-col justify-between px-5 py-4">
+            <p className="text-[13px] font-800 text-[#7B8491]">최소 소모 토큰</p>
+            <strong className="mt-4 block text-[28px] font-900 leading-none text-[#FF4854]">
+              {minTokens.toLocaleString()}
+            </strong>
+            <p className="mt-2 text-[12px] font-700 text-[#9AA3AF]">단일 성공 기록</p>
           </div>
-          <div className="h-4 overflow-hidden rounded-full bg-[#F1F3F6]">
-            <div className="h-full rounded-full bg-[#FF4854]" style={{ width: `${efficiencyPercent}%` }} />
-          </div>
-          <p className="mt-2 text-[12px] font-700 text-[#9AA3AF]">188점 / 184토큰 기준</p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="surface-muted px-3 py-3">
-            <p className="text-[12px] font-800 text-[#7B8491]">효율</p>
-            <strong className="mt-1 block text-[20px] font-900 text-[#202832]">{efficiency.toFixed(2)}</strong>
-          </div>
-          <div className="surface-muted px-3 py-3">
-            <p className="text-[12px] font-800 text-[#7B8491]">포인트</p>
-            <strong className="mt-1 block text-[20px] font-900 text-[#202832]">{points}</strong>
-          </div>
-          <div className="rounded-[8px] bg-[#FFF0F2] px-3 py-3">
-            <p className="text-[12px] font-800 text-[#FF4854]">등급</p>
-            <strong className="mt-1 block text-[20px] font-900 text-[#FF4854]">상위 {100 - efficiencyPercent}%</strong>
+          <div className="surface-muted flex flex-col justify-between px-5 py-4">
+            <p className="text-[13px] font-800 text-[#7B8491]">최대 소모 토큰</p>
+            <strong className="mt-4 block text-[28px] font-900 leading-none text-[#202832]">
+              {maxTokens.toLocaleString()}
+            </strong>
+            <p className="mt-2 text-[12px] font-700 text-[#9AA3AF]">전체 도전 기준</p>
           </div>
         </div>
       </div>
