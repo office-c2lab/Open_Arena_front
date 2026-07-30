@@ -221,26 +221,37 @@ function MyRankCard() {
 
 function TopRankCard({ row }) {
   const isFirst = row.rank === 1;
+  const isThird = row.rank === 3;
   const toneClass = isFirst
     ? 'border-[#FFB51F]/55 bg-[radial-gradient(circle_at_50%_0%,rgba(255,199,43,0.36)_0%,rgba(255,237,176,0.30)_42%,rgba(255,255,255,0.68)_82%)] shadow-[0_18px_38px_rgba(255,181,31,0.18)]'
     : row.rank === 2
       ? 'border-[#C9CED6]/70 bg-[radial-gradient(circle_at_50%_0%,rgba(174,183,192,0.28)_0%,rgba(255,255,255,0.62)_72%)] shadow-[0_14px_30px_rgba(100,116,139,0.12)]'
       : 'border-[#D08A52]/50 bg-[radial-gradient(circle_at_50%_0%,rgba(208,138,82,0.24)_0%,rgba(255,248,243,0.72)_62%,rgba(255,255,255,0.62)_100%)] shadow-[0_14px_30px_rgba(173,103,40,0.12)]';
+  const heightClass = isFirst
+    ? 'md:-mt-10 md:h-[440px]'
+    : isThird
+      ? 'md:h-[350px]'
+      : 'md:h-[380px]';
+  const paddingClass = isThird ? 'px-8 pb-5 pt-10' : 'px-8 pb-7 pt-12';
+  const avatarClass = isFirst ? 'mt-4' : isThird ? 'mt-1 md:h-[104px] md:w-[104px]' : 'mt-2';
+  const titleSpacingClass = isThird ? 'mt-5' : 'mt-6';
 
   return (
     <article
-      className={`relative flex min-h-[330px] flex-col items-center overflow-hidden rounded-[30px] border px-8 pb-7 pt-12 backdrop-blur-xl ${toneClass} ${isFirst ? 'md:-mt-10 md:min-h-[420px]' : 'md:mt-0'}`}
+      className={`relative flex min-h-[320px] flex-col items-center overflow-hidden rounded-[30px] border backdrop-blur-xl ${paddingClass} ${toneClass} ${heightClass}`}
     >
       <RankMedal rank={row.rank} />
-      <Avatar image={row.image} rank={row.rank} size="lg" className={isFirst ? 'mt-4' : 'mt-2'} />
-      <h2 className="mt-6 max-w-full truncate text-center text-[20px] font-900 text-[#111827]">
+      <Avatar image={row.image} rank={row.rank} size="lg" className={avatarClass} />
+      <h2
+        className={`${titleSpacingClass} max-w-full  text-center text-[20px] font-900 text-[#111827]`}
+      >
         {row.name}
       </h2>
       <p className={`mt-1 text-[30px] font-900 ${isFirst ? 'text-[#F52F45]' : 'text-[#111827]'}`}>
         {formatNumber(row.score)}점
       </p>
-      <div className="mt-5 h-px w-full bg-white/70" />
-      <div className="mt-5 grid w-full grid-cols-2 divide-x divide-[#D7DDE6]">
+      <div className={`${isFirst ? 'mt-4' : 'mt-2'}  h-px w-full bg-white/70`} />
+      <div className={`mt-2 grid w-full grid-cols-2 divide-x divide-[#D7DDE6]`}>
         <StatPair value={`${row.challenges}개`} label="성공 챌린지" />
         <StatPair value={formatNumber(row.tokens)} label="최소 토큰" />
       </div>
@@ -331,7 +342,7 @@ export default function Leaderboard() {
       }}
     >
       <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-0">
-        <header className="mb-9 text-center">
+        <header className="mb-20 text-center">
           <h1 className="text-[42px] font-900 leading-tight text-[#111827]">2026 시즌 1 랭킹</h1>
           <p className="mt-4 text-[16px]  font-600 text-[#4B5563]">
             이번 시즌 최고의 도전자들을 확인해 보세요.
