@@ -368,20 +368,23 @@ export default function Leaderboard() {
               </button>
             </div>
 
-            <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,480px)]">
+            <form
+              onSubmit={handleSearch}
+              className="flex h-12 w-full overflow-hidden rounded-full border border-[#F3C6CB] bg-white/78 shadow-[0_6px_18px_rgba(245,47,69,0.08)] backdrop-blur-sm sm:w-[min(100%,500px)]"
+            >
               <label className="relative min-w-0 flex-1">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
+                <Search className="pointer-events-none absolute left-5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-[#FF6B74]" />
                 <input
                   type="search"
                   value={searchInput}
                   onChange={event => setSearchInput(event.target.value)}
                   placeholder="유저 닉네임을 검색해 보세요."
-                  className="h-10 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] font-500 text-[#344050] outline-none transition placeholder:text-[#8A96A8] focus:border-[#FF4854]"
+                  className="h-full w-full border-0 bg-transparent pl-12 pr-4 text-[14px] font-700 text-[#344050] outline-none placeholder:text-[#A0A9B6]"
                 />
               </label>
               <button
                 type="submit"
-                className="flex h-10 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
+                className="flex h-full shrink-0 cursor-pointer items-center justify-center bg-[#FF4854] px-8 text-[14px] font-900 text-white transition hover:bg-[#E73541]"
               >
                 검색
               </button>
@@ -395,7 +398,7 @@ export default function Leaderboard() {
                   <th className="w-[88px] ">순위</th>
                   <th>유저 정보</th>
                   <th className="w-[190px]">
-                    <span className="inline-flex items-center gap-2">RATING</span>
+                    <span className="inline-flex items-center gap-2">점수</span>
                   </th>
                   <th className="w-[190px] text-center">참여 챌린지 수</th>
                   <th className="w-[170px] text-center">최소 토큰</th>

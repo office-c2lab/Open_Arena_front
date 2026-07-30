@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function PageDescriptionCard({ eyebrow, title, description, items }) {
   return (
-    <section className="mb-8 overflow-hidden rounded-[6px] border border-[#F0C8CD] bg-[#FFF7F8]">
+    <section className="surface-accent mb-8 overflow-hidden">
       <div className="flex flex-col gap-5 px-6 py-6 md:flex-row md:items-end md:justify-between md:px-8">
         <div className="min-w-0">
           <p className="text-[13px] font-900 uppercase tracking-normal text-[#FF4854]">{eyebrow}</p>
@@ -15,7 +15,7 @@ export default function PageDescriptionCard({ eyebrow, title, description, items
         </div>
 
         {items?.length ? (
-          <div className="grid shrink-0 grid-cols-3 divide-x divide-[#F0C8CD] rounded-[4px] border border-[#F0C8CD] bg-white">
+          <div className="grid shrink-0 grid-cols-3 divide-x divide-[#F0C8CD] rounded-[8px] border border-[#F0C8CD] bg-white">
             {items.map(item => (
               <div key={item.label} className="min-w-[96px] px-4 py-3 text-center">
                 <p className="text-[18px] font-900 text-[#FF4854]">{item.value}</p>

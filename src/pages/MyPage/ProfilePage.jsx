@@ -25,7 +25,7 @@ export default function ProfilePage() {
 
   return (
     <main className="mx-auto w-full max-w-[1200px] bg-white px-5 py-10 sm:px-8">
-      <section className="relative min-h-[202px] overflow-hidden rounded-[10px] border border-[#E3E6EB] bg-white shadow-[0_8px_22px_rgba(15,23,42,0.06)]">
+      <section className="surface relative min-h-[202px] overflow-hidden">
         <img
           src={ProfileBannerImage}
           alt=""

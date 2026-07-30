@@ -267,7 +267,7 @@ export default function Signup() {
                 <button
                   type="button"
                   onClick={handleEmailVerification}
-                  className="h-[42px] shrink-0 cursor-pointer rounded-[12px] bg-[#FF4854] px-5 body-medium font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]"
+                  className="btn btn-primary btn-lg shrink-0"
                 >
                   이메일 인증
                 </button>
@@ -291,7 +291,7 @@ export default function Signup() {
                     <button
                       type="button"
                       onClick={handleVerificationCodeConfirm}
-                      className="h-[42px] shrink-0 cursor-pointer rounded-[12px] bg-[#FF4854] px-5 body-medium font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]"
+                      className="btn btn-primary btn-lg shrink-0"
                     >
                       인증번호 확인
                     </button>
@@ -418,7 +418,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={handleSubmit}
-            className="w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white heading-3 font-700 shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer"
+            className="btn btn-primary btn-cta btn-block"
           >
             회원가입
           </button>

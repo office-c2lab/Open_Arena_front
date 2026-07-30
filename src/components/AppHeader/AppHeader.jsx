@@ -162,7 +162,7 @@ export default function AppHeader() {
 
                     <Link
                       to="/settings"
-                      className="mt-4 flex h-10 w-full items-center justify-center rounded-[4px] bg-[#FF4854] text-sm font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
+                      className="btn btn-primary btn-md btn-block mt-4"
                     >
                       계정 설정
                     </Link>
@@ -242,7 +242,7 @@ export default function AppHeader() {
             <button
               type="button"
               onClick={handleAuthClick}
-              className="group inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-[16px] bg-[#FF4854] px-5 text-sm font-700 text-white shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] focus:outline-none focus-visible:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#FF4854] focus-visible:ring-offset-2"
+              className="btn btn-primary btn-md"
             >
               로그인
             </button>

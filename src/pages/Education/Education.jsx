@@ -304,7 +304,7 @@ function EducationList() {
           </label>
           <button
             type="submit"
-            className="flex h-11 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
+            className="btn btn-primary btn-lg"
           >
             검색
           </button>
@@ -400,7 +400,7 @@ function EducationDetail({ article }) {
       <button
         type="button"
         onClick={() => navigate('/education')}
-        className="mb-8 flex cursor-pointer items-center gap-2 rounded-[4px] px-2 py-2 text-[14px] font-800 text-[#66717E] transition hover:bg-[#F3F5F7] hover:text-[#FF4854]"
+        className="btn btn-ghost btn-sm mb-8"
       >
         <ArrowLeft className="h-4 w-4" />
         교육 목록으로

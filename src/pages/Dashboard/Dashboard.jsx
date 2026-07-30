@@ -346,7 +346,7 @@ function ProfileCard() {
   const hasProfileImage = Boolean(teamInfo?.profileImage);
 
   return (
-    <section className="overflow-hidden rounded-[3px] border border-[#DDE3EA] bg-white">
+    <section className="surface overflow-hidden">
       <div className="px-5 py-5">
         <div className="flex items-center gap-3">
           <div
@@ -418,7 +418,7 @@ function MissionCard({ onShowDetails }) {
           자세히 보기 <ArrowRight className="h-3 w-3" />
         </button>
       </div>
-      <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-4">
+      <div className="surface p-4">
         <div className="flex items-start gap-3">
           <div className="relative flex h-16 w-20 shrink-0 items-center overflow-hidden bg-[#0B0D18] px-2">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
@@ -460,7 +460,7 @@ function LearningProgressCard({ onShowDetails }) {
           자세히 보기 <ArrowRight className="h-3 w-3" />
         </button>
       </div>
-      <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-4">
+      <div className="surface p-4">
         <div className="flex items-start gap-3">
           <div className="relative flex h-16 w-20 shrink-0 items-center overflow-hidden bg-[#0B0D18] px-2">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
@@ -682,7 +682,7 @@ function TutorialProgressCard({ onShowDetails }) {
           자세히 보기 <ArrowRight className="h-3 w-3" />
         </button>
       </div>
-      <div className="rounded-[3px] border border-[#DDE3EA] bg-white p-4">
+      <div className="surface p-4">
         <div className="rounded-[3px] bg-[#FFF0F2] p-3">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] bg-[#FFDCE0]">
@@ -792,7 +792,7 @@ function ChallengeActivityHeatmap() {
       <DashboardNoticeCard />
       <DashboardProfileSummaryCard />
       <div className="flex flex-col gap-5 lg:flex-row lg:items-stretch">
-        <div className="w-fit max-w-full rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+        <div className="surface w-fit max-w-full px-5 py-4 sm:px-6">
           <div>
             <h2 className="text-[18px] font-900 leading-none text-[#202832]">도전 활동 히트맵</h2>
             <p className="mt-2 text-[14px] font-700 text-[#6F7885]">일별 도전 참여 현황</p>
@@ -855,7 +855,7 @@ function ChallengeActivityHeatmap() {
 
 function DashboardNoticeCard() {
   return (
-    <section className="mb-5 w-full max-w-[900px] rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+    <section className="surface mb-5 w-full max-w-[900px] px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">공지사항</h2>
@@ -894,7 +894,7 @@ function DashboardProfileSummaryCard() {
   const hasProfileImage = Boolean(teamInfo?.profileImage);
 
   return (
-    <section className="mb-5 w-full rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-5 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+    <section className="surface mb-5 w-full px-5 py-5 sm:px-6">
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-center">
         <div className="flex items-center gap-4">
           <div
@@ -918,7 +918,7 @@ function DashboardProfileSummaryCard() {
           {dashboardSummaryStats.map(stat => (
             <div
               key={stat.label}
-              className="rounded-[8px] border border-[#EEF1F5] bg-[#FAFBFC] px-4 py-3"
+              className="surface-muted px-4 py-3"
             >
               <p className="text-[12px] font-800 text-[#7B8491]">{stat.label}</p>
               <strong className="mt-2 block text-[22px] font-900 leading-none text-[#202832]">
@@ -949,7 +949,7 @@ function RecentAttemptProblemsCard() {
     .filter(Boolean);
 
   return (
-    <section className="mt-5 w-full max-w-[900px] rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+    <section className="surface mt-5 w-full max-w-[900px] px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">최근 시도한 문제</h2>
@@ -966,7 +966,7 @@ function RecentAttemptProblemsCard() {
           const StatusIcon = meta.icon;
 
           return (
-            <article key={problem.id} className="rounded-[8px] border border-[#EEF1F5] bg-[#FAFBFC] p-4">
+            <article key={problem.id} className="surface-muted p-4">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-[12px] font-900 text-[#9AA3AF]">최근 {index + 1}</span>
                 <span className={`rounded-full px-3 py-1 text-[12px] font-900 ${meta.chipClass}`}>{meta.label}</span>
@@ -1011,7 +1011,7 @@ function ProblemSolveStatusCard() {
   const solvedCount = problems.filter(problem => problem.status === 'solved').length;
 
   return (
-    <section className="mt-5 w-full max-w-[900px] rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+    <section className="surface mt-5 w-full max-w-[900px] px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">문제 풀이 현황</h2>
@@ -1032,7 +1032,7 @@ function ProblemSolveStatusCard() {
           return (
             <article
               key={problem.id}
-              className="rounded-[8px] border border-[#EEF1F5] bg-[#FAFBFC] p-4"
+              className="surface-muted p-4"
             >
               <div className="flex items-start justify-between gap-3">
                 <StatusIcon
@@ -1082,7 +1082,7 @@ function TokenEfficiencyCard() {
   const efficiencyPercent = 82;
 
   return (
-    <section className="mt-5 w-full rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-5 shadow-[0_4px_18px_rgba(18,24,40,0.08)] sm:px-6">
+    <section className="surface mt-5 w-full px-5 py-5 sm:px-6">
       <div className="grid gap-5 lg:grid-cols-[240px_minmax(0,1fr)_260px] lg:items-center">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">토큰 효율</h2>
@@ -1101,11 +1101,11 @@ function TokenEfficiencyCard() {
         </div>
 
         <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="rounded-[8px] bg-[#FAFBFC] px-3 py-3">
+          <div className="surface-muted px-3 py-3">
             <p className="text-[12px] font-800 text-[#7B8491]">효율</p>
             <strong className="mt-1 block text-[20px] font-900 text-[#202832]">{efficiency.toFixed(2)}</strong>
           </div>
-          <div className="rounded-[8px] bg-[#FAFBFC] px-3 py-3">
+          <div className="surface-muted px-3 py-3">
             <p className="text-[12px] font-800 text-[#7B8491]">포인트</p>
             <strong className="mt-1 block text-[20px] font-900 text-[#202832]">{points}</strong>
           </div>
@@ -1127,7 +1127,7 @@ function SuccessRateCard() {
   ];
 
   return (
-    <section className="w-full rounded-[10px] border border-[#E9ECF1] bg-white px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.08)] lg:w-[300px]">
+    <section className="surface w-full px-5 py-4 lg:w-[300px]">
       <div>
         <h2 className="text-[18px] font-900 leading-none text-[#202832]">성공률</h2>
         <p className="mt-2 text-[14px] font-700 text-[#6F7885]">이번 주 도전 결과</p>

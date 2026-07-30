@@ -10,27 +10,12 @@ import React from 'react';
  * @returns {JSX.Element} CTA 버튼 엘리먼트
  */
 const SolveProblemButton = ({ children = '문제풀기', onClick, className = '' }) => {
-  // Figma 디자인에 기반한 기본 Tailwind 클래스
-  const baseClasses = `
-    flex items-center justify-center 
-    w-full                 // 부모 컴포넌트의 가로 전체 너비를 사용 (align-self: stretch와 유사)
-    h-[35px]               // 높이 35px 고정
-    bg-[#FF4854]/80        // 배경색: #FF4854 (빨강)에 80% 투명도 적용
-    rounded-md             // border-radius: 5px
-    px-[60px] py-[6px]     // 패딩: 좌우 60px, 상하 6px
-    text-white 
-    body-medium font-500
-    transition duration-150 ease-in-out // 자연스러운 호버 효과 추가
-    hover:bg-[#FF4854]     // 호버 시 투명도 제거 (더 진하게)
-    active:scale-[0.98]    // 클릭 시 약간 축소
-    cursor-pointer
-  `;
+  const baseClasses = 'btn btn-primary btn-md btn-block';
 
   return (
     <button
       type="button"
       onClick={onClick}
-      // 기본 클래스와 외부에서 전달된 추가 클래스를 결합
       className={`${baseClasses} ${className}`.trim()}
     >
       {children}

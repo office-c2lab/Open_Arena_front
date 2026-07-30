@@ -243,7 +243,7 @@ function PathCard({ path, onClick }) {
 
   return (
     <article
-      className="group flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.13)] transition hover:-translate-y-1 hover:shadow-[0_18px_30px_rgba(15,23,42,0.18)]"
+      className="surface surface-interactive group flex min-w-0 cursor-pointer flex-col overflow-hidden"
       onClick={onClick}
     >
       <PathPreview path={path} />
@@ -271,7 +271,7 @@ function PathCard({ path, onClick }) {
         </div>
         <button
           type="button"
-          className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center rounded-[6px] bg-[#FF6470] text-[14px] font-900 text-white transition hover:bg-[#E94D59]"
+          className="btn btn-primary btn-lg btn-block mt-5"
         >
           문제풀기
         </button>
@@ -465,10 +465,10 @@ const ChallengeSection = () => {
             <button
               type="button"
               onClick={() => setIsFilterOpen(current => !current)}
-              className={`flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-[3px] border px-3 text-[12px] font-900 transition ${
+              className={`btn btn-sm shrink-0 ${
                 isFilterOpen
-                  ? 'border-[#FFB8BE] text-[#FF4854]'
-                  : 'border-[#D8DDE4] text-[#596575] hover:border-[#FFB8BE] hover:text-[#FF4854]'
+                  ? 'btn-secondary border-[#FFB8BE] text-[#FF4854]'
+                  : 'btn-secondary'
               }`}
             >
               {isFilterOpen ? '필터 접기' : '필터 펼치기'}
@@ -499,7 +499,7 @@ const ChallengeSection = () => {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="flex h-9 min-w-[92px] cursor-pointer items-center justify-center rounded-[3px] border border-[#D8DDE4] bg-white px-3 text-[12px] font-800 text-[#98A1AD] transition hover:border-[#FF4854] hover:text-[#FF4854]"
+                className="btn btn-secondary btn-sm min-w-[92px] text-[#98A1AD]"
               >
                 초기화
               </button>
@@ -521,7 +521,7 @@ const ChallengeSection = () => {
         </label>
         <button
           type="submit"
-          className="flex h-10 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
+          className="btn btn-primary btn-md"
         >
           검색
         </button>

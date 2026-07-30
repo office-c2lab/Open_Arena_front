@@ -148,7 +148,7 @@ function TutorialCard({ tutorial, onClick }) {
 
     return (
       <article
-        className="group flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.13)] transition hover:-translate-y-1 hover:shadow-[0_18px_30px_rgba(15,23,42,0.18)]"
+        className="surface surface-interactive group flex min-w-0 cursor-pointer flex-col overflow-hidden"
         onClick={onClick}
       >
         <div className="relative h-[180px] overflow-hidden">
@@ -201,7 +201,7 @@ function TutorialCard({ tutorial, onClick }) {
           </div>
           <button
             type="button"
-            className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center rounded-[6px] bg-[#FF6470] text-[14px] font-900 text-white transition hover:bg-[#E94D59]"
+            className="btn btn-primary btn-lg btn-block mt-5"
           >
             {isPracticeTutorial ? '문제풀기' : '튜토리얼 진행하기'}
           </button>
@@ -219,7 +219,7 @@ function TutorialCard({ tutorial, onClick }) {
 
   return (
     <article
-      className="group flex min-h-[392px] min-w-0 cursor-pointer flex-col overflow-hidden rounded-[6px] border border-[#E1E6EE] bg-white transition hover:-translate-y-1 hover:border-[#FFB8BE] hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]"
+      className="surface surface-interactive group flex min-h-[392px] min-w-0 cursor-pointer flex-col overflow-hidden"
       onClick={onClick}
     >
       <TutorialPreview tutorial={tutorial} />
@@ -267,7 +267,7 @@ function TutorialCard({ tutorial, onClick }) {
         </div>
         <button
           type="button"
-          className="mt-auto flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-[4px] bg-[#FF4854] text-[14px] font-900 text-white transition hover:bg-[#E73541]"
+          className="btn btn-primary btn-md btn-block mt-auto"
         >
           튜토리얼 보기
           <ArrowRight className="h-4 w-4" />
@@ -359,7 +359,7 @@ export default function TutorialList() {
           </label>
           <button
             type="submit"
-            className="flex h-10 cursor-pointer items-center justify-center rounded-[3px] bg-[#FF4854] px-6 text-[13px] font-900 text-white transition hover:bg-[#E73541]"
+            className="btn btn-primary btn-md"
           >
             검색
           </button>

@@ -777,8 +777,8 @@ function PracticeChallengeSidePanel() {
 
   return (
     <aside className="space-y-4">
-      <div className="relative aspect-[1619/842] overflow-hidden rounded-[12px] border border-[#DDE3EA] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
-        <div className="absolute inset-0 overflow-hidden rounded-[12px]">
+      <div className="surface relative aspect-[1619/842] overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
           <img
             src={StartCardBg}
             alt=""
@@ -793,7 +793,7 @@ function PracticeChallengeSidePanel() {
           <button
             type="button"
             onClick={() => navigate('/tutorial-preview/challenge-play')}
-            className="absolute bottom-[7%] left-[7%] right-[7%] z-10 flex h-11 cursor-pointer items-center justify-center gap-2 rounded-[5px] bg-[#FF4854] text-[15px] font-900 text-white shadow-[0_6px_14px_rgba(255,72,84,0.24)] transition hover:bg-[#E73541]"
+            className="btn btn-primary btn-lg absolute bottom-[7%] left-[7%] right-[7%] z-10"
           >
             실전 연습 시작하기
             <ChevronRight className="h-4 w-4" />
@@ -824,13 +824,7 @@ function PracticeChallengeSidePanel() {
             </span>
           </div>
 
-          <dl className="divide-y divide-[#E5E9EF] rounded-b-[14px] border-x border-b border-[#DDE3EA] bg-white px-6 text-[15px]">
-            <div className="flex items-center justify-between py-5">
-              <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
-                <Flag className="h-5 w-5 text-[#77808C]" /> 도전 횟수
-              </dt>
-              <dd className="font-900 text-[#2E3338]">{practiceRecord.attempts} 회</dd>
-            </div>
+          <dl className="surface divide-y divide-[#E5E9EF] overflow-hidden px-6 text-[15px]">
             <div className="flex items-center justify-between py-5">
               <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
                 <Coins className="h-5 w-5 text-[#77808C]" /> 사용 토큰
@@ -888,7 +882,7 @@ function PracticeChallengeDetail() {
           {activeTab === 'history' ? (
             <section>
               <h2 className="text-[26px] font-900 text-black">도전 기록</h2>
-              <div className="mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center rounded-[6px] border border-[#DDE3EA] bg-[#FAFBFC] px-6 text-center">
+              <div className="surface-muted mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center px-6 text-center">
                 <div>
                   <p className="text-[16px] font-800 text-[#3D4754]">
                     아직 도전 기록이 없습니다.
@@ -904,7 +898,7 @@ function PracticeChallengeDetail() {
           {activeTab === 'solvers' ? (
             <section>
               <h2 className="text-[26px] font-900 text-black">순위 현황</h2>
-              <div className="mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center rounded-[6px] border border-[#DDE3EA] bg-[#FAFBFC] px-6 text-center">
+              <div className="surface-muted mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center px-6 text-center">
                 <div>
                   <p className="text-[16px] font-800 text-[#3D4754]">
                     아직 성공한 사용자가 없습니다.
@@ -963,7 +957,7 @@ export default function Tutorial() {
       <button
         type="button"
         onClick={() => navigate('/tutorial')}
-        className="mb-8 flex cursor-pointer items-center gap-2 rounded-[4px] px-2 py-2 text-[14px] font-800 text-[#66717E] transition hover:bg-[#F3F5F7] hover:text-[#FF4854]"
+        className="btn btn-ghost btn-sm mb-8"
       >
         <ArrowLeft className="h-4 w-4" />
         튜토리얼 목록으로

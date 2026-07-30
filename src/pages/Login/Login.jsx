@@ -137,12 +137,7 @@ export default function Login() {
             type="button"
             onClick={handleSubmit}
             disabled={isPending}
-            className={`w-full h-[58px] rounded-[16px] text-white heading-3 font-700 transition-all duration-200 cursor-pointer
-              ${
-                isPending
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-[#FF4854] shadow-[0_3px_8px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]'
-              }`}
+            className="btn btn-primary btn-cta btn-block"
           >
             {isPending ? '로그인 중...' : '로그인'}
           </button>

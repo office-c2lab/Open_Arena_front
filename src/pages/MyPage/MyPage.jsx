@@ -17,7 +17,7 @@ function InfoSection({ title, children }) {
   return (
     <section className="mt-8">
       <h2 className="mb-4 text-[17px] font-900 text-[#151A21]">{title}</h2>
-      <div className="overflow-hidden rounded-[4px] border border-[#DDE3EA] bg-white">
+      <div className="surface overflow-hidden">
         {children}
       </div>
     </section>
@@ -236,14 +236,14 @@ export default function MyPage({ embedded = false }) {
           <button
             type="button"
             onClick={handleCancel}
-            className="h-9 cursor-pointer rounded-[3px] border border-[#DDE3EA] px-5 text-[13px] font-800 text-[#596575]"
+            className="btn btn-secondary btn-sm"
           >
             취소
           </button>
           <button
             type="button"
             onClick={handleSave}
-            className="h-9 cursor-pointer rounded-[3px] bg-[#FF4854] px-5 text-[13px] font-800 text-white"
+            className="btn btn-primary btn-sm"
           >
             저장하기
           </button>

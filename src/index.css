@@ -1,47 +1,67 @@
-@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+@import 'tailwindcss';
 
 @theme {
-  /* 폰트체 */
-  --font-noto-sans-kr: 'Noto Sans KR', sans-serif;
+  --font-sans:
+    'Noto Sans KR', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  --font-noto-sans-kr:
+    'Noto Sans KR', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
 }
 
 @layer utilities {
-  /* 폰트 굵기 */
   .font-300 {
     font-weight: 300;
+  }
+  .font-400 {
+    font-weight: 400;
   }
   .font-500 {
     font-weight: 500;
   }
+  .font-600 {
+    font-weight: 600;
+  }
   .font-700 {
+    font-weight: 600;
+  }
+  .font-800 {
+    font-weight: 600;
+  }
+  .font-900 {
     font-weight: 700;
   }
 
-  /* 데스크탑 폰트 크기 및 줄 간격 */
   .heading-1 {
-    font-size: 36px;
-    line-height: 56px;
+    font-size: 32px;
+    line-height: 42px;
+    letter-spacing: 0;
   }
   .heading-2 {
     font-size: 24px;
-    line-height: 35px;
+    line-height: 34px;
+    letter-spacing: 0;
   }
   .heading-3 {
     font-size: 20px;
-    line-height: 26px;
+    line-height: 30px;
+    letter-spacing: 0;
   }
   .body-large {
     font-size: 16px;
-    line-height: 20px;
+    line-height: 26px;
+    letter-spacing: 0;
   }
   .body-medium {
     font-size: 14px;
-    line-height: 16px;
+    line-height: 22px;
+    letter-spacing: 0;
   }
   .body-small {
     font-size: 12px;
-    line-height: 8px;
+    line-height: 18px;
+    letter-spacing: 0;
   }
 
   .shimmer-effect {
@@ -61,9 +81,138 @@
   }
 }
 
+@layer components {
+  .btn {
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 600;
+    gap: 8px;
+    justify-content: center;
+    letter-spacing: 0;
+    line-height: 20px;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+    white-space: nowrap;
+  }
+
+  .btn:disabled,
+  .btn[aria-disabled='true'] {
+    background: #c9ced6;
+    border-color: #c9ced6;
+    box-shadow: none;
+    color: #fff;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-primary {
+    background: #ff4854;
+    border: 1px solid #ff4854;
+    box-shadow: 0 3px 8px rgba(255, 72, 84, 0.16);
+    color: #fff;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: #e73541;
+    border-color: #e73541;
+    box-shadow: 0 5px 12px rgba(255, 72, 84, 0.18);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: #fff;
+    border: 1px solid #dde3ea;
+    color: #3d4754;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    border-color: #ffb8be;
+    color: #ff4854;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #66717e;
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    background: #f3f5f7;
+    color: #ff4854;
+  }
+
+  .btn-sm {
+    height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .btn-md {
+    height: 40px;
+    padding: 0 16px;
+  }
+
+  .btn-lg {
+    height: 44px;
+    padding: 0 20px;
+  }
+
+  .btn-cta {
+    border-radius: 16px;
+    font-size: 20px;
+    height: 58px;
+    line-height: 30px;
+    padding: 0 24px;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .surface {
+    background: #fff;
+    border: 1px solid #e3e8ef;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px rgba(18, 24, 40, 0.06);
+  }
+
+  .surface-muted {
+    background: #fafbfc;
+    border: 1px solid #eef1f5;
+    border-radius: 8px;
+  }
+
+  .surface-accent {
+    background: #fff7f8;
+    border: 1px solid #f0c8cd;
+    border-radius: 10px;
+  }
+
+  .surface-interactive {
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
+  }
+
+  .surface-interactive:hover {
+    border-color: #ffb8be;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
+    transform: translateY(-2px);
+  }
+}
+
 * {
   box-sizing: border-box;
-  font-family: var(--font-noto-sans-kr);
+  font-family: var(--font-sans);
 }
 
 html,
@@ -79,7 +228,15 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
   width: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html {
