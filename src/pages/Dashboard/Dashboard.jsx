@@ -16,6 +16,7 @@ import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
+import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { articles as educationArticles } from '@/pages/Education/Education';
 import { PATHS as challengePaths, PathCard } from '@/pages/Kategorie/Kategorie';
 import { TUTORIALS } from '@/pages/Tutorial/TutorialList';
@@ -105,30 +106,42 @@ const problemStatusById = {
 
 const problemStatusMeta = {
   solved: {
-    label: '풀었음',
+    label: '성공',
     icon: CheckCircle2,
     chipClass: 'bg-[#ECFDF3] text-[#079C4C]',
     iconClass: 'text-[#079C4C]',
+    barClass: 'bg-[#079C4C]',
+    textClass: 'text-[#079C4C]',
+    glassClass: 'from-[#ECFDF3]/82 via-white/50 to-white/38',
+    glowClass: 'rgba(7,156,76,0.12)',
   },
   failed: {
-    label: '못 풀었음',
+    label: '실패',
     icon: XCircle,
     chipClass: 'bg-[#FFF0F2] text-[#FF4854]',
     iconClass: 'text-[#FF4854]',
+    barClass: 'bg-[#FF4854]',
+    textClass: 'text-[#FF4854]',
+    glassClass: 'from-[#FFF0F2]/86 via-white/50 to-white/38',
+    glowClass: 'rgba(255,72,84,0.13)',
   },
   untried: {
-    label: '미도전',
+    label: '미제출',
     icon: CircleDashed,
     chipClass: 'bg-[#F5F6F8] text-[#7B8491]',
     iconClass: 'text-[#7B8491]',
+    barClass: 'bg-[#CBD2DC]',
+    textClass: 'text-[#7B8491]',
+    glassClass: 'from-[#F5F7FA]/88 via-white/50 to-white/38',
+    glowClass: 'rgba(100,116,139,0.1)',
   },
 };
 
 const dashboardSummaryStats = [
-  { label: '현재 순위', value: '24위', subText: '전체 참가자 기준' },
-  { label: '푼 문제', value: '2문제', subText: '전체 6문제 중' },
-  { label: '총 획득 포인트', value: '188점', subText: '이번 주 기준' },
-  { label: '다음 순위까지', value: '12점', subText: '23위 추월까지' },
+  { label: '현재 순위', value: '24위', subText: '전체 참가자 기준', tone: 'rank' },
+  { label: '해결한 문제', value: '2문제', subText: '전체 6문제 중', tone: 'solved' },
+  { label: '보유 포인트', value: '188점', subText: '이번 주 기준', tone: 'points' },
+  { label: '다음 순위까지', value: '12점', subText: '23위 추월까지', tone: 'rank-gap' },
 ];
 
 const recentAttemptProblemIds = [3, 2, 1];
@@ -772,9 +785,7 @@ function Timeline() {
             className="grid grid-cols-[96px_58px_minmax(0,1fr)_110px] items-center gap-4 text-[14px]"
           >
             <span className="font-700 text-[#6B7280]">{category}</span>
-            <span className="w-fit rounded-[3px] border border-[#FFB8BE] bg-[#FFF0F2] px-3 py-1 text-[12px] font-800 text-[#FF4854]">
-              new
-            </span>
+            
             <strong className="truncate font-900 text-black">{title}</strong>
             <span className="text-right font-700 text-[#9AA3AF]">{date}</span>
           </div>
@@ -784,64 +795,78 @@ function Timeline() {
   );
 }
 
+function DashboardSectionHeader({ title, description, action }) {
+  return (
+    <div className="flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <h2 className="text-[18px] font-900 leading-none text-[#202832]">{title}</h2>
+        {description ? (
+          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">{description}</p>
+        ) : null}
+      </div>
+      {action}
+    </div>
+  );
+}
+
 function ChallengeActivityHeatmap() {
   const { days, totalCount } = useMemo(() => buildActivityHeatmap(), []);
 
   return (
     <section className="mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 lg:px-0">
-      <DashboardNoticeCard />
-      <DashboardProfileSummaryCard />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
+        <DashboardProfileSummaryCard />
+        <DashboardNoticeCard />
+      </div>
       <TokenEfficiencyCard />
       <div className="grid gap-5 lg:grid-cols-[max-content_minmax(0,1fr)] lg:items-stretch">
-        <div className="surface max-w-full px-5 py-4 sm:px-6">
-          <div>
-            <h2 className="text-[18px] font-900 leading-none text-[#202832]">도전 활동 히트맵</h2>
-            <p className="mt-2 text-[14px] font-700 text-[#6F7885]">일별 도전 참여 현황</p>
-          </div>
+        <section className="surface max-w-full px-5 py-4 sm:px-6">
+          <DashboardSectionHeader title="도전 활동 히트맵" description="일별 도전 참여 현황" />
+          <div className="mt-5 max-w-full">
+            <div className="overflow-x-auto pb-1">
+              <div className="w-max">
+                <div className="grid grid-cols-[32px_repeat(24,22px)] gap-x-[6px] gap-y-[6px]">
+                  {days.map((day, dayIndex) => {
+                    const cells = day.blocks.flatMap(block => block.cells);
 
-          <div className="mt-5 overflow-x-auto pb-1">
-            <div className="w-max">
-              <div className="grid grid-cols-[32px_repeat(24,22px)] gap-x-[6px] gap-y-[6px]">
-                {days.map((day, dayIndex) => {
-                  const cells = day.blocks.flatMap(block => block.cells);
-
-                  return (
-                    <React.Fragment key={dayLabels[dayIndex]}>
-                      <span className="flex h-[22px] items-center text-[14px] font-900 text-[#596575]">
-                        {dayLabels[dayIndex]}
-                      </span>
-                      {cells.map(cell => (
-                        <div
-                          key={`${dayLabels[dayIndex]}-${cell.hour}`}
-                          title={`${day.date.toLocaleDateString('ko-KR')} ${String(cell.hour).padStart(2, '0')}:00 도전 ${cell.count}회`}
-                          className={`h-[22px] w-[22px] rounded-[5px] ${activityLevels[cell.level]}`}
-                        />
-                      ))}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-
-              <div className="mt-5 flex items-center justify-between gap-4 text-[14px] font-800 text-[#596575]">
-                <div className="flex items-center gap-2">
-                  <span>낮음</span>
-                  <div className="flex gap-[4px]">
-                    {activityLevels.map(levelClass => (
-                      <span key={levelClass} className={`h-3 w-3 rounded-[2px] ${levelClass}`} />
-                    ))}
-                  </div>
-                  <span>높음</span>
+                    return (
+                      <React.Fragment key={dayLabels[dayIndex]}>
+                        <span className="flex h-[22px] items-center text-[14px] font-900 text-[#596575]">
+                          {dayLabels[dayIndex]}
+                        </span>
+                        {cells.map(cell => (
+                          <div
+                            key={`${dayLabels[dayIndex]}-${cell.hour}`}
+                            title={`${day.date.toLocaleDateString('ko-KR')} ${String(cell.hour).padStart(2, '0')}:00 도전 ${cell.count}회`}
+                            className={`h-[22px] w-[22px] rounded-[5px] ${activityLevels[cell.level]}`}
+                          />
+                        ))}
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
-                <p>
-                  총 도전{' '}
-                  <strong className="font-900 text-[#202832]">
-                    {totalCount.toLocaleString()}회
-                  </strong>
-                </p>
+
+                <div className="mt-5 flex items-center justify-between gap-4 text-[14px] font-800 text-[#596575]">
+                  <div className="flex items-center gap-2">
+                    <span>낮음</span>
+                    <div className="flex gap-[4px]">
+                      {activityLevels.map(levelClass => (
+                        <span key={levelClass} className={`h-3 w-3 rounded-[2px] ${levelClass}`} />
+                      ))}
+                    </div>
+                    <span>높음</span>
+                  </div>
+                  <p>
+                    총 도전{' '}
+                    <strong className="font-900 text-[#202832]">
+                      {totalCount.toLocaleString()}회
+                    </strong>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         <div className="flex min-w-0 w-full flex-col gap-5">
           <SuccessRateCard />
@@ -855,30 +880,31 @@ function ChallengeActivityHeatmap() {
 
 function DashboardNoticeCard() {
   return (
-    <section className="w-full">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 className="text-[18px] font-900 leading-none text-[#202832]">공지사항</h2>
-          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">ARENA 업데이트와 안내를 확인하세요</p>
-        </div>
-        <button type="button" className="flex cursor-pointer items-center gap-1 text-[13px] font-900 text-[#FF4854]">
-          전체 보기 <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
+    <section className="surface flex h-full w-full flex-col px-5 py-5">
+      <DashboardSectionHeader
+        title="공지사항"
+        action={
+          <button
+            type="button"
+            className="flex cursor-pointer items-center gap-1 text-[13px] font-900 text-[#9AA3AF] hover:text-[#FF4854]"
+          >
+            더보기 <ArrowRight className="h-4 w-4" />
+          </button>
+        }
+      />
 
-      <div className="mt-5 divide-y divide-[#EEF1F5]">
-        {notices.map(([category, title, date]) => (
-          <article key={title} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 py-3">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="rounded-full border border-[#FFB8BE] bg-[#FFF0F2] px-2.5 py-1 text-[11px] font-900 text-[#FF4854]">
-                  new
-                </span>
-                <span className="text-[12px] font-800 text-[#7B8491]">{category}</span>
-              </div>
-              <h3 className="mt-2 truncate text-[15px] font-900 text-[#202832]">{title}</h3>
+      <div className="mt-6 flex flex-1 flex-col gap-4">
+        {notices.map(([, title, date]) => (
+          <article
+            key={title}
+            className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 rounded-[8px] border border-[#EEF1F5] bg-white px-4 shadow-[0_8px_20px_rgba(15,23,42,0.035)]"
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-[#FF4854]" />
+              <h3 className="truncate text-[15px] font-900 text-[#202832]">{title}</h3>
             </div>
-            <time className="text-[12px] font-800 text-[#9AA3AF]">{date}</time>
+            <time className="shrink-0 text-[13px] font-800 text-[#9AA3AF]">{date}</time>
+            <ArrowRight className="h-4 w-4 shrink-0 text-[#C5CCD6]" strokeWidth={2.5} />
           </article>
         ))}
       </div>
@@ -894,42 +920,58 @@ function DashboardProfileSummaryCard() {
   const hasProfileImage = Boolean(teamInfo?.profileImage);
 
   return (
-    <section className="surface w-full px-5 py-5 sm:px-6">
-      <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-center">
-        <div className="flex items-center gap-4">
-          <div
-            className={`flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-full ${hasProfileImage ? 'bg-[#F2F4F6]' : 'border border-[#E6EAF0] bg-[#F2F4F6]'}`}
-          >
+    <section
+      className="relative flex min-h-[330px] w-full flex-col justify-between overflow-hidden rounded-[10px] border border-[#E3E8EF] bg-[#FFF8F9] px-6 py-5 shadow-[0_4px_18px_rgba(18,24,40,0.06)] sm:px-7"
+      style={{
+        backgroundImage: `url(${HomeMyBgImage})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+      }}
+    >
+      <div className="relative z-10 max-w-[430px]">
+       
+
+        <div className="mt-7 flex items-start gap-3">
+          {hasProfileImage ? (
             <img
               src={profileImage}
               alt=""
-              className={
-                hasProfileImage ? 'h-full w-full object-cover' : 'h-10 w-10 opacity-35 grayscale'
-              }
+              className="h-14 w-14 shrink-0 rounded-full object-cover"
             />
-          </div>
+          ) : null}
           <div className="min-w-0">
-            <h2 className="truncate text-[20px] font-900 text-[#202832]">{displayName}</h2>
-            <p className="mt-1 truncate text-[13px] font-700 text-[#7B8491]">{displayEmail}</p>
+            <h2 className="truncate text-[30px] font-900 leading-none text-[#202832]">
+              {displayName}
+            </h2>
+            <p className="mt-3 truncate text-[16px] font-800 text-[#7B8491]">{displayEmail}</p>
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {dashboardSummaryStats.map(stat => (
-            <div
-              key={stat.label}
-              className="surface-muted px-4 py-3"
-            >
-              <p className="text-[12px] font-800 text-[#7B8491]">{stat.label}</p>
-              <strong className="mt-2 block text-[22px] font-900 leading-none text-[#202832]">
-                {stat.value}
-              </strong>
-              <p className="mt-2 truncate text-[11px] font-700 text-[#9AA3AF]">{stat.subText}</p>
-            </div>
-          ))}
-        </div>
+        <p className="mt-8 text-[17px] font-900 leading-[28px] text-[#7B8491]">
+          꾸준함이 경험이 됩니다.
+          <br />
+          지금의 흐름을 유지해보세요!
+        </p>
+      </div>
+
+      <div className="relative z-10 mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {dashboardSummaryStats.map(stat => (
+          <DashboardProfileStatCard key={stat.label} stat={stat} />
+        ))}
       </div>
     </section>
+  );
+}
+
+function DashboardProfileStatCard({ stat }) {
+  return (
+    <div className="min-h-[126px] rounded-[8px] border border-white/70 bg-white/72 px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.76),0_12px_26px_rgba(15,23,42,0.06)] backdrop-blur-md">
+      <p className="text-[14px] font-900 text-[#7B8491]">{stat.label}</p>
+      <strong className="mt-5 block text-[28px] font-900 leading-none text-[#202832]">
+        {stat.value}
+      </strong>
+      <p className="mt-3 truncate text-[12px] font-800 text-[#9AA3AF]">{stat.subText}</p>
+    </div>
   );
 }
 
@@ -948,21 +990,11 @@ function RecentAttemptProblemsCard() {
   };
 
   return (
-    <section className="w-full">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 className="text-[18px] font-900 leading-none text-[#202832]">최근 시도한 문제</h2>
-          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">
-            마지막으로 도전한 문제를 이어서 확인하세요
-          </p>
-        </div>
-        <button
-          type="button"
-          className="flex cursor-pointer items-center gap-1 text-[13px] font-900 text-[#FF4854]"
-        >
-          전체 보기 <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
+    <section className="surface w-full px-5 py-4 sm:px-6">
+      <DashboardSectionHeader
+        title="최근 시도한 문제"
+        description="마지막으로 도전한 문제를 이어서 확인하세요"
+      />
 
       <div className="mt-5 grid gap-5 lg:grid-cols-3">
         {recentProblems.map(problem => (
@@ -994,18 +1026,11 @@ function ProblemSolveStatusCard() {
   const solvedCount = problems.filter(problem => problem.status === 'solved').length;
 
   return (
-    <section className="w-full">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 className="text-[18px] font-900 leading-none text-[#202832]">문제 풀이 현황</h2>
-          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">
-            어떤 문제를 풀었는지 한눈에 확인하세요
-          </p>
-        </div>
-        <div className="rounded-full bg-[#FFF0F2] px-4 py-2 text-[13px] font-900 text-[#FF4854]">
-          {solvedCount} / {problems.length} 완료
-        </div>
-      </div>
+    <section className="surface w-full px-5 py-4 sm:px-6">
+      <DashboardSectionHeader
+        title="문제 풀이 현황"
+        description="어떤 문제를 풀었는지 한눈에 확인하세요"
+      />
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {problems.map(problem => {
@@ -1014,16 +1039,19 @@ function ProblemSolveStatusCard() {
           return (
             <article
               key={problem.id}
-              className="surface-muted flex min-h-[104px] flex-col justify-between p-4"
+              className={`relative flex min-h-[104px] flex-col justify-between overflow-hidden rounded-[22px] border border-white/65 bg-gradient-to-br ${meta.glassClass} p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md transition hover:-translate-y-[1px]`}
             >
-              <h3 className="line-clamp-2 text-[16px] font-900 leading-[22px] text-[#202832]">
+              <span
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(255,255,255,0.92),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.34),rgba(255,255,255,0.08)_52%,transparent)]"
+                style={{ boxShadow: `inset 0 -42px 70px ${meta.glowClass}` }}
+              />
+              <h3 className="relative z-10 line-clamp-2 text-[16px] font-900 leading-[22px] text-[#202832]">
                 {problem.title}
               </h3>
 
-              <div className="mt-4 flex items-center justify-between gap-3">
-                <span
-                  className={`shrink-0 rounded-full px-3 py-1 text-[12px] font-900 ${meta.chipClass}`}
-                >
+              <div className="relative z-10 mt-4 flex items-center justify-between gap-3">
+                <span className={`flex shrink-0 items-center gap-2 text-[13px] font-900 ${meta.textClass}`}>
+                  <span className={`h-2 w-2 rounded-full ${meta.barClass}`} />
                   {meta.label}
                 </span>
                 <strong className="text-[16px] font-900 text-[#202832]">
@@ -1047,14 +1075,14 @@ function TokenEfficiencyCard() {
 
   return (
     <section className="surface w-full px-5 py-5 sm:px-6">
-      <div className="grid gap-5 lg:grid-cols-2 lg:items-stretch">
+      <DashboardSectionHeader
+        title="토큰 효율"
+        description="적게 쓸수록 높은 점수"
+      />
+
+      <div className="mt-5 grid gap-5 lg:grid-cols-2 lg:items-stretch">
         <div className="flex min-w-0 flex-col justify-between">
           <div>
-            <h2 className="text-[18px] font-900 leading-none text-[#202832]">토큰 효율</h2>
-            <p className="mt-2 text-[14px] font-700 text-[#6F7885]">적게 쓸수록 높은 점수</p>
-          </div>
-
-          <div className="mt-5">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[13px] font-800 text-[#7B8491]">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <span>효율 점수</span>
@@ -1139,10 +1167,10 @@ function SuccessRateCard() {
 
   return (
     <section className="surface w-full px-5 py-4">
-      <div>
-        <h2 className="text-[18px] font-900 leading-none text-[#202832]">성공률</h2>
-        <p className="mt-2 text-[14px] font-700 text-[#6F7885]">이번 주 도전 결과</p>
-      </div>
+      <DashboardSectionHeader
+        title="성공률"
+        description="이번 주 도전 결과"
+      />
 
       <div className="mt-5 flex flex-col items-center">
         <div className="relative h-[210px] w-[210px]">

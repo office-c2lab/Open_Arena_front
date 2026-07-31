@@ -24,7 +24,7 @@ export const PATHS = [
   },
   {
     id: 2,
-    title: 'Kubernetes Security Audit of DreamBank',
+    title: 'Kubernetes Security Audit',
     tier: 'Tier 4',
     difficulty: 'Medium',
     category: 'Cloud',

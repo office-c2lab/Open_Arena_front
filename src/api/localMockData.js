@@ -56,7 +56,7 @@ const localProblemData = {
     score: 100,
   },
   2: {
-    title: 'Kubernetes Security Audit of DreamBank',
+    title: 'Kubernetes Security Audit',
     category: 'Cloud',
     score: 100,
   },

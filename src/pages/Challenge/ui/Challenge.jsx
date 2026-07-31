@@ -498,8 +498,9 @@ function SidePanel({ challenge, record }) {
     record.status === '성공'
       ? {
           icon: CheckCircle2,
-          text: 'text-[#168F98]',
+          text: 'text-[#079C4C]',
           iconStyle: 'bg-white/85 text-[#20A7B2]',
+          chipClass: 'bg-[#ECFDF3] text-[#079C4C]',
           description: '목표를 달성했습니다.',
           backgroundImage: SuccessCardBg,
         }
@@ -508,6 +509,7 @@ function SidePanel({ challenge, record }) {
             icon: XCircle,
             text: 'text-[#FF4854]',
             iconStyle: 'bg-white text-[#FF4854]',
+            chipClass: 'bg-[#FFF0F2] text-[#FF4854]',
             description: '이번 도전은 실패했습니다.',
             backgroundImage: FailCardBg,
           }
@@ -515,6 +517,7 @@ function SidePanel({ challenge, record }) {
             icon: Activity,
             text: 'text-[#2E3338]',
             iconStyle: 'bg-white text-[#9AA3AF]',
+            chipClass: 'bg-[#F1F5F9] text-[#64748B]',
             description: '아직 도전 기록이 없습니다.',
             backgroundImage: NoTryCardBg,
           };
@@ -522,70 +525,67 @@ function SidePanel({ challenge, record }) {
 
   return (
     <aside className="space-y-4">
-      <div className="surface relative aspect-[1619/842] overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <img
-            src={StartCardBg}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
-          <div className="absolute left-[40%] right-[5%] top-[18%] z-10">
-            <h3 className="text-[22px] font-900 leading-[28px] text-[#202832]">챌린지 도전</h3>
-            <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
-              AI와 대화하며 성공 조건을 달성해보세요.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate(`/challenge/${problemId}/play`)}
-            className="btn btn-primary btn-lg absolute bottom-[7%] left-[7%] right-[7%] z-10"
-          >
-            챌린지 도전하기
-            <ChevronRight className="h-4 w-4" />
-          </button>
+      <section className="relative aspect-[1619/842] overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
+        <img
+          src={StartCardBg}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <div className="absolute left-[40%] right-[5%] top-[18%] z-10">
+          <h3 className="text-[22px] font-900 leading-[28px] text-[#202832]">챌린지 도전</h3>
+          <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
+            AI와 대화하며 성공 조건을 달성해보세요.
+          </p>
         </div>
-      </div>
 
-      <section>
-        <div className="overflow-hidden rounded-[14px]">
-          <div
-            className="relative flex min-h-[200px] items-center justify-between bg-center bg-no-repeat px-7 py-7"
-            style={{
-              backgroundImage: `url(${statusMeta.backgroundImage})`,
-              backgroundSize: '100% 100%',
-            }}
-          >
-            <div className="relative z-10">
-              <p className="text-[14px] font-800 text-[#6E7B88]">챌린지 성공 여부</p>
-              <strong className={`mt-3 block text-[38px] font-900 leading-none ${statusMeta.text}`}>
-                {record.status}
-              </strong>
-              <p className="mt-4 text-[14px] font-600 text-[#6F7985]">{statusMeta.description}</p>
-            </div>
-            <span
-              className={`relative z-10 flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-full shadow-[0_10px_24px_rgba(15,23,42,0.1)] ${statusMeta.iconStyle}`}
-            >
-              <StatusIcon className="h-10 w-10" strokeWidth={2.1} />
-            </span>
+        <button
+          type="button"
+          onClick={() => navigate(`/challenge/${problemId}/play`)}
+          className="btn btn-primary btn-lg absolute bottom-[7%] left-[7%] right-[7%] z-10"
+        >
+          챌린지 도전하기
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </section>
+
+      <section className="relative overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
+        <img
+          src={statusMeta.backgroundImage}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+
+        <div className="relative z-10 flex min-h-[200px] items-center justify-between px-7 py-7">
+          <div>
+            <p className="text-[14px] font-800 text-[#6E7B88]">챌린지 성공 여부</p>
+            <strong className={`mt-3 block text-[38px] font-900 leading-none ${statusMeta.text}`}>
+              {record.status}
+            </strong>
+            <p className="mt-4 text-[14px] font-600 text-[#6F7985]">{statusMeta.description}</p>
           </div>
-
-          <dl className="surface divide-y divide-[#E5E9EF] overflow-hidden px-6 text-[15px]">
-            <div className="flex items-center justify-between py-5">
-              <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
-                <Coins className="h-5 w-5 text-[#77808C]" /> 사용 토큰
-              </dt>
-              <dd className="font-900 text-[#2E3338]">{record.tokens.toLocaleString()} 토큰</dd>
-            </div>
-            <div className="flex items-center justify-between py-5">
-              <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
-                <Trophy className="h-5 w-5 text-[#77808C]" /> 최대 포인트
-              </dt>
-              <dd className="font-900 text-[#FF4854]">
-                {challenge.maximumPoints ?? record.score} 포인트
-              </dd>
-            </div>
-          </dl>
+          <span
+            className={`flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-full shadow-[0_10px_24px_rgba(15,23,42,0.1)] ${statusMeta.iconStyle}`}
+          >
+            <StatusIcon className="h-10 w-10" strokeWidth={2.1} />
+          </span>
         </div>
+
+        <dl className="relative z-10 divide-y divide-[#E5E9EF] bg-white/88 px-6 text-[15px]">
+          <div className="flex items-center justify-between py-5">
+            <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
+              사용 토큰
+            </dt>
+            <dd className="font-900 text-[#2E3338]">{record.tokens.toLocaleString()} 토큰</dd>
+          </div>
+          <div className="flex items-center justify-between py-5">
+            <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
+              최대 포인트
+            </dt>
+            <dd className="font-900 text-[#FF4854]">
+              {challenge.maximumPoints ?? record.score} 포인트
+            </dd>
+          </div>
+        </dl>
       </section>
     </aside>
   );
