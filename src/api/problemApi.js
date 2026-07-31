@@ -1,3 +1,3 @@
-import { emptyProblemBundle } from './localMockData';
+import { getLocalProblemBundle } from './localMockData';
 
-export const fetchProblemBundle = async () => emptyProblemBundle;
+export const fetchProblemBundle = async ({ problem_id }) => getLocalProblemBundle(problem_id);

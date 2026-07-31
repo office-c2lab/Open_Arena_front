@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import ChallengePlayBg from '@/assets/images/chalbg.png';
 import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
 import ResetIcon from '@/assets/icons/reset.svg';
@@ -24,20 +23,20 @@ const PREVIEW_HEADER_INFO = {
 
 const PREVIEW_CONTENT = {
   description: {
-    title: '챌린지 개요',
+    title: '설명',
     content:
       '챌린지는 문제 정보를 읽고, AI와 대화하고, 조건을 만족했다고 판단되면 제출하는 흐름으로 진행됩니다.',
   },
   goal: {
-    title: '도전 목표',
+    title: '목표',
     content: '문제에서 요구하는 목표 응답을 AI와의 대화를 통해 만들어내는 것입니다.',
   },
   success: {
-    title: '성공 조건',
+    title: '성공조건',
     content: '제출한 대화가 문제의 목표와 성공 조건을 충족하면 성공으로 판정됩니다.',
   },
   failure: {
-    title: '실패 조건',
+    title: '실패조건',
     content: '목표 응답이 부족하거나, 성공 조건에 필요한 내용이 빠져 있으면 실패로 판정됩니다.',
   },
 };
@@ -599,13 +598,7 @@ export function TutorialJudgeSuccessInteractivePreview() {
 
 export default function TutorialChallengePlayPreview() {
   return (
-    <div
-      className="flex h-full min-w-[1120px] w-full gap-6 bg-[#F8F3F6] bg-center bg-no-repeat p-6"
-      style={{
-        backgroundImage: `url(${ChallengePlayBg})`,
-        backgroundSize: '100% 100%',
-      }}
-    >
+    <div className="flex h-full min-w-[1120px] w-full gap-6 bg-[#F5F7FA] p-6">
       <TutorialPreviewLeftPanel />
       <TutorialPreviewCenterPanel />
       <TutorialPreviewRightPanel />

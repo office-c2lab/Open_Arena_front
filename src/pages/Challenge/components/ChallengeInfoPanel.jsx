@@ -57,8 +57,6 @@ export default function ChallengeInfoPanel({
   handleTabClick,
   CHALLENGE_HEADER_INFO,
   isLoading,
-
-  // ⭐ 추가된 props (problem_api 정보)
   problemApiUrl,
   problemApiMethod,
   problemApiHeaderName,

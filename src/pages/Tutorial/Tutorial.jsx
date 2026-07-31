@@ -9,7 +9,6 @@ import TutorialJudgeSuccessImage from '@/assets/images/t4.png';
 import ChallengeImage from '@/assets/images/challenge.png';
 import StartCardBg from '@/assets/images/start_cardbg.png';
 import NoTryCardBg from '@/assets/images/notry.png';
-import ChallengePlayBg from '@/assets/images/chalbg.png';
 import AttemptHistoryCard from '@/pages/Challenge/components/AttemptHistoryCard';
 import {
   TutorialFailedModalPreview,
@@ -177,13 +176,7 @@ function PanelPreviewSection({
           cautions={cautions}
         />
       </div>
-      <div
-        className="overflow-x-auto rounded-[10px] bg-[#F8F3F6] bg-center bg-no-repeat p-6"
-        style={{
-          backgroundImage: `url(${ChallengePlayBg})`,
-          backgroundSize: '100% 100%',
-        }}
-      >
+      <div className="no-scrollbar overflow-x-auto rounded-[10px] bg-[#F5F7FA] p-6">
         <div className={`h-[660px] ${width}`}>{children}</div>
       </div>
       {nextAction ? (

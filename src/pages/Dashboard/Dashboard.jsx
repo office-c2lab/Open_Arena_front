@@ -8,7 +8,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Cell, Pie, PieChart } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import UserIcon from '@/assets/icons/user.svg';
 import { useAuthStore } from '@/stores/authStore';
 import ArenaBannerImage from '@/assets/images/banner.svg';
@@ -1137,12 +1137,42 @@ function TokenEfficiencyCard() {
   );
 }
 
+function ChartTooltipDot({ color }) {
+  return <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />;
+}
+
+function SuccessRateTooltip({ active, payload }) {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const segment = payload[0].payload;
+
+  return (
+    <div className="rounded-xl border border-[#E9ECF1] bg-white px-3 py-2 text-[12px] font-800 shadow-[0_14px_30px_rgba(15,23,42,0.12)]">
+      <div className="flex items-center gap-2 text-[#202832]">
+        <ChartTooltipDot color={segment.color} />
+        <span>{segment.label}</span>
+      </div>
+      <div className="mt-1 text-[#7B8491]">
+        {segment.value}% · {segment.count}
+      </div>
+    </div>
+  );
+}
+
 function SuccessRateCard() {
+  const [selectedSegmentLabel, setSelectedSegmentLabel] = useState(null);
   const successRate = 68;
   const chartData = [
-    { name: '성공', value: successRate, color: '#FF4854' },
-    { name: '실패', value: 100 - successRate, color: '#F1F3F6' },
+    { label: '성공', value: successRate, count: '17회', color: '#FF4854' },
+    { label: '실패', value: 100 - successRate, count: '8회', color: '#F1F3F6' },
   ];
+  const selectedSegment = chartData.find(segment => segment.label === selectedSegmentLabel);
+
+  const handleSelectSegment = segment => {
+    setSelectedSegmentLabel(current => (current === segment.label ? null : segment.label));
+  };
 
   return (
     <section className="surface w-full px-5 py-4">
@@ -1152,31 +1182,49 @@ function SuccessRateCard() {
       </div>
 
       <div className="mt-5 flex flex-col items-center">
-        <div className="relative h-[168px] w-[168px]">
-          <PieChart width={168} height={168}>
-            <Pie
-              data={chartData}
-              dataKey="value"
-              cx="50%"
-              cy="50%"
-              innerRadius={56}
-              outerRadius={78}
-              startAngle={90}
-              endAngle={-270}
-              paddingAngle={3}
-              cornerRadius={8}
-              stroke="none"
-            >
-              {chartData.map(entry => (
-                <Cell key={entry.name} fill={entry.color} />
-              ))}
-            </Pie>
-          </PieChart>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <strong className="text-[32px] font-900 leading-none text-[#202832]">
-              {successRate}%
+        <div className="relative h-[210px] w-[210px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Tooltip content={<SuccessRateTooltip />} wrapperStyle={{ zIndex: 20 }} />
+              <Pie
+                data={chartData}
+                dataKey="value"
+                nameKey="label"
+                cx="50%"
+                cy="50%"
+                innerRadius={62}
+                outerRadius={92}
+                startAngle={90}
+                endAngle={-270}
+                paddingAngle={3}
+                cornerRadius={8}
+                stroke="none"
+                onClick={handleSelectSegment}
+                isAnimationActive={false}
+              >
+                {chartData.map(segment => (
+                  <Cell
+                    key={segment.label}
+                    fill={segment.color}
+                    opacity={selectedSegment && selectedSegment.label !== segment.label ? 0.42 : 1}
+                    style={{ cursor: 'pointer' }}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-[12px] font-800 text-[#8A93A5]">
+              {selectedSegment ? selectedSegment.label : '성공률'}
+            </span>
+            <strong className="mt-1 text-[32px] font-900 leading-none text-[#202832]">
+              {selectedSegment ? selectedSegment.count : `${successRate}%`}
             </strong>
-            <span className="mt-1 text-[12px] font-800 text-[#8A93A5]">성공률</span>
+            {selectedSegment ? (
+              <span className="mt-1 text-[12px] font-800 text-[#7B8491]">
+                {selectedSegment.value}%
+              </span>
+            ) : null}
           </div>
         </div>
 

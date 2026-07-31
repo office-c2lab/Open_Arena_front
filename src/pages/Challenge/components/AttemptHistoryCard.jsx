@@ -10,6 +10,10 @@ const COLOR_RED = '#FF4854';
 const COLOR_GREEN = '#84CC16';
 const COLOR_WHITE = '#FFFFFF';
 const COLOR_NOT_SUBMITTED = '#D9DADB';
+const CARD_SHADOW =
+  'inset 0 1px 0 rgba(255,255,255,0.7), 0 6px 18px rgba(15,23,42,0.07)';
+const CARD_ACTIVE_SHADOW =
+  'inset 0 1px 0 rgba(255,255,255,0.72), 0 8px 20px rgba(71,85,105,0.13)';
 
 // ------------------------------------------------------------------
 // 💡 AttemptHistoryCard Skeleton 정의
@@ -17,11 +21,9 @@ const COLOR_NOT_SUBMITTED = '#D9DADB';
 export const AttemptHistoryCardSkeleton = () => {
   return (
     <div
-      className="w-full h-[110px] flex flex-col justify-between p-[10px] flex-shrink-0 
-            bg-white/55 rounded-[18px] border border-white/65 animate-pulse backdrop-blur-md"
-      style={{
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(15,23,42,0.06)',
-      }}
+      className="w-full h-[110px] flex flex-col justify-between p-3 flex-shrink-0 
+            bg-white/48 rounded-[20px] border border-white/65 animate-pulse backdrop-blur-md"
+      style={{ boxShadow: CARD_SHADOW }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 스켈레톤 */}
       <div className="flex justify-between items-center flex-shrink-0 h-[32px]">
@@ -31,7 +33,7 @@ export const AttemptHistoryCardSkeleton = () => {
         <Skeleton className="w-[72px] h-[28px] rounded-full" />
       </div>
       {/* 2. 하단 영역: 프롬프트 요약 스켈레톤 */}
-      <div className="w-full h-[48px] rounded-[14px] flex items-center flex-shrink-0 bg-white/35">
+      <div className="w-full h-[48px] rounded-[14px] flex items-center flex-shrink-0 bg-white/30">
         {/* 텍스트 줄 스켈레톤 */}
         <div className="w-full mx-[8px] space-y-2">
           <Skeleton className="h-3 w-11/12 rounded" />
@@ -80,15 +82,12 @@ const AttemptHistoryCard = ({
 
   return (
     <div
-      className={`group w-full h-[110px] flex flex-col justify-between p-[10px] flex-shrink-0 cursor-pointer 
-            bg-white/50 rounded-[18px] border border-white/70 backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:border-white/90 hover:bg-white/64 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_22px_rgba(15,23,42,0.11)] ${
-              isActive ? 'ring-2 ring-offset-2 ring-[#475569]' : ''
-            }`}
+      className="group w-full h-[110px] flex flex-col justify-between p-3 flex-shrink-0 cursor-pointer 
+            bg-white/48 rounded-[20px] border border-white/65 backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:border-white/80 hover:bg-white/60"
       onClick={onClick}
       style={{
-        borderColor: isActive ? COLOR_CHALLENGE : 'rgba(255,255,255,0.65)',
-        boxShadow:
-          'inset 0 1px 0 rgba(255,255,255,0.82), inset 0 0 18px rgba(71,85,105,0.12), 0 8px 22px rgba(15,23,42,0.08)',
+        borderColor: isActive ? 'rgba(71,85,105,0.45)' : 'rgba(255,255,255,0.65)',
+        boxShadow: isActive ? CARD_ACTIVE_SHADOW : CARD_SHADOW,
       }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 (Flex Row) */}
@@ -102,10 +101,10 @@ const AttemptHistoryCard = ({
           <div
             className="flex justify-center items-center w-[32px] h-[32px] rounded-[10px] box-border bg-white/45 backdrop-blur-md transition-all duration-200 group-hover:bg-white/65"
             style={{
-              border: `1.5px solid ${COLOR_CHALLENGE_LIGHT}`,
+              border: `1px solid ${isActive ? COLOR_CHALLENGE : 'rgba(255,255,255,0.7)'}`,
               backgroundColor: isActive ? COLOR_CHALLENGE : 'transparent',
               boxShadow:
-                'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(71,85,105,0.18)',
+                'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(15,23,42,0.06)',
             }}
           >
             <span
@@ -118,11 +117,11 @@ const AttemptHistoryCard = ({
         ) : null}
         {/* 성공/실패/미제출 태그 */}
         <div
-          className="flex justify-center items-center min-w-[72px] h-[28px] rounded-full px-4 transition-transform duration-200 group-hover:scale-[1.03]"
+          className="flex justify-center items-center min-w-[72px] h-[28px] rounded-[10px] px-4 transition-colors duration-200"
           style={{
             background: resultBgColor,
             boxShadow: isSubmitted
-              ? `0 8px 18px ${isSuccess ? 'rgba(132,204,22,0.25)' : 'rgba(255,72,84,0.28)'}, inset 0 1px 0 rgba(255,255,255,0.35)`
+              ? `0 4px 12px ${isSuccess ? 'rgba(132,204,22,0.18)' : 'rgba(255,72,84,0.2)'}, inset 0 1px 0 rgba(255,255,255,0.35)`
               : 'inset 0 1px 0 rgba(255,255,255,0.35)',
           }}
         >

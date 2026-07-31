@@ -9,7 +9,6 @@ import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
 import ResetIcon from '@/assets/icons/reset.svg';
 import PurpleDownIcon from '@/assets/icons/purple-downbtn.svg';
-import ChallengePlayBg from '@/assets/images/chalbg.png';
 import ChallengeInfoPanel from '../components/ChallengeInfoPanel';
 import { normalizeProblemCategory } from '@/utils/problemCategory';
 import ChatArea from '../components/ChatArea/ChatArea';
@@ -94,10 +93,10 @@ export default function ChallengePlay() {
     };
 
     const tabContents = {
-      description: { title: '챌린지 개요', content: problem.description },
-      goal: { title: '도전 목표', content: problem.goal },
-      success: { title: '성공 조건', content: problem.success_criteria },
-      failure: { title: '실패 조건', content: problem.failure_criteria },
+      description: { title: '설명', content: problem.description },
+      goal: { title: '목표', content: problem.goal },
+      success: { title: '성공조건', content: problem.success_criteria },
+      failure: { title: '실패조건', content: problem.failure_criteria },
     };
 
     const design = TABS.find(tab => tab.id === activeTab);
@@ -126,13 +125,7 @@ export default function ChallengePlay() {
   }, [setResetChatAction]);
 
   return (
-    <div
-      className="flex h-full min-w-[1120px] w-full gap-6 bg-[#F8F3F6] bg-center bg-no-repeat p-6"
-      style={{
-        backgroundImage: `url(${ChallengePlayBg})`,
-        backgroundSize: '100% 100%',
-      }}
-    >
+    <div className="flex h-full min-w-[1120px] w-full gap-6 bg-[#F5F7FA] p-6">
       <ChallengeInfoPanel
         TABS={TABS}
         activeTab={activeTab}

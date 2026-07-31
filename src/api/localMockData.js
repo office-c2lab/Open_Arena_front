@@ -49,6 +49,92 @@ export const emptyProblemBundle = {
   messages: [],
 };
 
+const localProblemData = {
+  1: {
+    title: 'System Hacking',
+    category: 'System Hacking',
+    score: 100,
+  },
+  2: {
+    title: 'Kubernetes Security Audit of DreamBank',
+    category: 'Cloud',
+    score: 100,
+  },
+  3: {
+    title: 'AWS Security',
+    category: 'Cloud',
+    score: 100,
+  },
+  4: {
+    title: 'GCP Security',
+    category: 'Cloud',
+    score: 100,
+  },
+  5: {
+    title: 'Azure Security',
+    category: 'Cloud',
+    score: 100,
+  },
+  6: {
+    title: 'System Hacking - Linux Advanced',
+    category: 'System Hacking',
+    score: 100,
+  },
+  7: {
+    title: 'How to Use Ghidra',
+    category: 'Reverse Engineering',
+    score: 100,
+  },
+  8: {
+    title: 'Hardware Hacking',
+    category: 'Hardware',
+    score: 100,
+  },
+  9: {
+    title: 'Cryptography',
+    category: 'Cryptography',
+    score: 100,
+  },
+  10: {
+    title: 'Smart Contract Security',
+    category: 'Blockchain',
+    score: 100,
+  },
+  11: {
+    title: 'Linux Kernel Hacking',
+    category: 'System Hacking',
+    score: 100,
+  },
+  12: {
+    title: 'Linux 101',
+    category: 'System Hacking',
+    score: 100,
+  },
+};
+
+export function getLocalProblemBundle(problemId) {
+  const id = Number(problemId) || 1;
+  const problemData = localProblemData[id] ?? localProblemData[1];
+  const title = problemData.title;
+
+  return {
+    ...emptyProblemBundle,
+    problem: {
+      ...emptyProblemBundle.problem,
+      id,
+      problem_code: `LOCAL-CHALLENGE-${String(id).padStart(3, '0')}`,
+      title,
+      sub_title: `${title} 챌린지의 문제 조건을 확인하고 AI와 대화해 목표를 달성하세요.`,
+      category: problemData.category,
+      score: problemData.score,
+      description: `${title} 문제의 상세 설명입니다. 문제에서 제공하는 상황과 제한 조건을 읽고, AI와의 대화를 통해 목표에 가까운 응답을 만들어야 합니다.`,
+      goal: `${title} 문제의 목표를 만족하는 응답을 AI에게서 얻어내는 것입니다.`,
+      success_criteria: `${title} 문제에서 요구하는 핵심 조건이 대화와 최종 응답에 명확히 포함되면 성공으로 판정됩니다.`,
+      failure_criteria: `${title} 문제의 목표 조건을 충족하지 못하거나 필요한 핵심 정보가 응답에 빠져 있으면 실패로 판정됩니다.`,
+    },
+  };
+}
+
 export const localJudgeResult = {
   status: 'failed',
   results: [

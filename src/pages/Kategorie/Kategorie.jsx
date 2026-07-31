@@ -7,7 +7,7 @@ import ChallengeCardImage from '@/assets/images/challenge.png';
 export const PATHS = [
   {
     id: 1,
-    title: 'System Hacking Basics',
+    title: 'System Hacking ',
     tier: 'Tier 2',
     difficulty: 'Easy',
     category: 'System Hacking',
@@ -160,7 +160,7 @@ export const PATHS = [
   },
   {
     id: 11,
-    title: 'Linux Kernel Hacking Basics',
+    title: 'Linux Kernel Hacking ',
     tier: 'Tier 3',
     difficulty: 'Hard',
     category: 'System Hacking',
