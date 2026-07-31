@@ -881,10 +881,10 @@ function ChallengeActivityHeatmap() {
         <DashboardNoticeCard />
       </div>
       
-      <div className="grid gap-5 lg:grid-cols-[max-content_minmax(0,1fr)] lg:items-stretch">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
         <section className="surface max-w-full px-5 py-4 sm:px-6">
           <DashboardSectionHeader title="도전 활동 히트맵" description="일별 도전 참여 현황" />
-          <div className="mt-5 max-w-full">
+          <div className="mt-5 flex max-w-full justify-center">
             <div className="overflow-x-auto pb-1">
               <div className="w-max">
                 <div className="grid grid-cols-[32px_repeat(24,22px)] gap-x-[6px] gap-y-[6px]">
@@ -949,14 +949,6 @@ function DashboardNoticeCard() {
     <section className="surface flex h-full w-full flex-col px-5 py-5">
       <DashboardSectionHeader
         title="공지사항"
-        action={
-          <button
-            type="button"
-            className="flex cursor-pointer items-center gap-1 text-[13px] font-900 text-[#9AA3AF] hover:text-[#FF4854]"
-          >
-            더보기 <ArrowRight className="h-4 w-4" />
-          </button>
-        }
       />
 
       <div className="mt-6 flex flex-1 flex-col gap-4">
