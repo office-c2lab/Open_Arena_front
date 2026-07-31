@@ -10,25 +10,29 @@ import { useProblemBestScore } from '@/hooks/useProblemBestScore'; // ⭐ 추가
 
 const COLOR_BLACK = '#000000';
 
-const PointInfoCardSkeleton = () => (
+const PointInfoCardSkeleton = ({ compact = false }) => (
   <div
-    className="w-full h-[80px] flex justify-start items-center p-4 flex-shrink-0 
-               rounded-[20px] border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md animate-pulse"
+    className={`w-full ${compact ? 'h-[58px] p-2.5' : 'h-[80px] p-4'} flex justify-start items-center flex-shrink-0 
+               rounded-[20px] border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md animate-pulse`}
   >
     <div
-      className="w-[49px] h-[49px] flex justify-center items-center rounded-[10px] flex-shrink-0"
+      className={`${compact ? 'h-[36px] w-[36px]' : 'w-[49px] h-[49px]'} flex justify-center items-center rounded-[10px] flex-shrink-0`}
       style={{ background: COLOR_BLACK }}
     >
-      <img src={PointSvg} alt="Point Icon" className="w-[28px] h-[28px]" />
+      <img
+        src={PointSvg}
+        alt="Point Icon"
+        className={compact ? 'h-[22px] w-[22px]' : 'w-[28px] h-[28px]'}
+      />
     </div>
     <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-      <span className="heading-3 font-500 text-black">점수</span>
+      <span className={`${compact ? 'body-large' : 'heading-3'} font-500 text-black`}>점수</span>
       <Skeleton className="h-8 w-20 rounded" />
     </div>
   </div>
 );
 
-export default function PointInfoCard() {
+export default function PointInfoCard({ compact = false }) {
   const { problemId } = useParams();
   const currentProblemId = parseInt(problemId, 10);
   const teamId = useAuthStore(state => state.teamInfo?.id) || undefined;
@@ -48,32 +52,40 @@ export default function PointInfoCard() {
   const score = problemData?.problem?.score ?? 0;
   const bestScore = bestScoreData?.best_score ?? 0; // ⭐ 0 또는 실제 점수
 
-  if (isProblemLoading || isBestLoading) return <PointInfoCardSkeleton />;
+  if (isProblemLoading || isBestLoading) return <PointInfoCardSkeleton compact={compact} />;
 
   return (
     <div
-      className="w-full h-[80px] flex justify-start items-center p-4 flex-shrink-0 
-                 rounded-[20px] border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md"
+      className={`w-full ${compact ? 'h-[58px] p-2.5' : 'h-[80px] p-4'} flex justify-start items-center flex-shrink-0 
+                 rounded-[20px] border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md`}
     >
       <div
-        className="w-[49px] h-[49px] flex justify-center items-center rounded-[10px] flex-shrink-0"
+        className={`${compact ? 'h-[36px] w-[36px]' : 'w-[49px] h-[49px]'} flex justify-center items-center rounded-[10px] flex-shrink-0`}
         style={{ background: COLOR_BLACK }}
       >
-        <img src={PointSvg} alt="Point Icon" className="w-[28px] h-[28px]" />
+        <img
+          src={PointSvg}
+          alt="Point Icon"
+          className={compact ? 'h-[22px] w-[22px]' : 'w-[28px] h-[28px]'}
+        />
       </div>
 
       <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-        <span className="heading-3 font-500 text-black">점수</span>
+        <span className={`${compact ? 'body-large' : 'heading-3'} font-500 text-black`}>점수</span>
 
         <div className="flex items-baseline">
           {/* 최고 점수 */}
-          <span className="heading-2 font-700 text-gray-600">{bestScore}</span>
+          <span className={`${compact ? 'heading-3' : 'heading-2'} font-700 text-gray-600`}>
+            {bestScore}
+          </span>
 
           {/* / 구분 */}
-          <span className="heading-2 font-500 text-black mx-2">/</span>
+          <span className={`${compact ? 'heading-3' : 'heading-2'} font-500 text-black mx-2`}>
+            /
+          </span>
 
           {/* 문제 점수 */}
-          <span className="heading-2 font-700 text-black">{score}</span>
+          <span className={`${compact ? 'heading-3' : 'heading-2'} font-700 text-black`}>{score}</span>
         </div>
       </div>
     </div>

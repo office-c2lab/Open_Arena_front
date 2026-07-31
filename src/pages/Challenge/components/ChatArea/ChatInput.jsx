@@ -36,11 +36,11 @@ export default function ChatInput({
 
         {isSuccess ? (
           <p className="text-gray-600 text-xs md:text-sm mt-2">
-            하단의 <b>‘문제 다시 풀기’</b> 버튼을 클릭하여 새로 시도할 수 있습니다.
+            하단의 <b>‘새로운 대화 시작’</b> 버튼을 클릭하여 새로 시도할 수 있습니다.
           </p>
         ) : (
           <p className="text-gray-600 text-xs md:text-sm mt-2">
-            하단의 <b>‘문제 다시 풀기’</b> 버튼을 클릭하여 새로 시도할 수 있습니다.
+            하단의 <b>‘새로운 대화 시작’</b> 버튼을 클릭하여 새로 시도할 수 있습니다.
           </p>
         )}
       </div>

@@ -8,11 +8,9 @@ import { TABS } from '../data/challengeData';
 import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
 import ResetIcon from '@/assets/icons/reset.svg';
-import PurpleDownIcon from '@/assets/icons/purple-downbtn.svg';
 import ChallengeInfoPanel from '../components/ChallengeInfoPanel';
 import { normalizeProblemCategory } from '@/utils/problemCategory';
 import ChatArea from '../components/ChatArea/ChatArea';
-import AttemptHistoryPanel from '../components/AttemptHistoryPanel';
 import LoadingModal from '../../../components/Loading/LoadingModal';
 import DebugModal from '../ChallengeModal/DebugModal';
 import ResetModal from '../ChallengeModal/ResetModal';
@@ -138,6 +136,8 @@ export default function ChallengePlay() {
         problemApiMethod={apiInfo?.method}
         problemApiHeaderName={apiInfo?.header_name}
         problemApiKey={apiInfo?.api_key}
+        problemId={currentProblemId}
+        teamId={currentTeamId}
       />
 
       <ChatArea
@@ -152,13 +152,7 @@ export default function ChallengePlay() {
         hasSuccessSession={hasSuccessSession}
       />
 
-      <AttemptHistoryPanel
-        PurpleDownIcon={PurpleDownIcon}
-        isLoading={isProblemBundleLoading}
-        sessions={SESSIONS_LIST}
-        problemId={currentProblemId}
-        teamId={currentTeamId}
-      />
+      
 
       {isDebugModalOpen && <DebugModal />}
       {isResetModalOpen && <ResetModal />}

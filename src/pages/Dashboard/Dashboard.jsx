@@ -17,7 +17,7 @@ import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
 import { articles as educationArticles } from '@/pages/Education/Education';
-import { PATHS as challengePaths } from '@/pages/Kategorie/Kategorie';
+import { PATHS as challengePaths, PathCard } from '@/pages/Kategorie/Kategorie';
 import { TUTORIALS } from '@/pages/Tutorial/TutorialList';
 
 const notices = [
@@ -855,7 +855,7 @@ function ChallengeActivityHeatmap() {
 
 function DashboardNoticeCard() {
   return (
-    <section className="surface w-full px-5 py-4 sm:px-6">
+    <section className="w-full">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">공지사항</h2>
@@ -934,61 +934,44 @@ function DashboardProfileSummaryCard() {
 }
 
 function RecentAttemptProblemsCard() {
+  const navigate = useNavigate();
   const recentProblems = recentAttemptProblemIds
     .map(problemId => {
       const problem = challengePaths.find(path => path.id === problemId);
-      const status = problemStatusById[problemId];
 
-      return problem && status
-        ? {
-            ...problem,
-            ...status,
-          }
-        : null;
+      return problem || null;
     })
     .filter(Boolean);
 
+  const handleSolveProblem = problemId => {
+    navigate(`/challenge/${problemId}`);
+  };
+
   return (
-    <section className="surface w-full px-5 py-4 sm:px-6">
+    <section className="w-full">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">최근 시도한 문제</h2>
-          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">마지막으로 도전한 문제를 이어서 확인하세요</p>
+          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">
+            마지막으로 도전한 문제를 이어서 확인하세요
+          </p>
         </div>
-        <button type="button" className="flex cursor-pointer items-center gap-1 text-[13px] font-900 text-[#FF4854]">
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-1 text-[13px] font-900 text-[#FF4854]"
+        >
           전체 보기 <ArrowRight className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="mt-5 grid gap-3 lg:grid-cols-3">
-        {recentProblems.map((problem, index) => {
-          const meta = problemStatusMeta[problem.status];
-          const StatusIcon = meta.icon;
-
-          return (
-            <article key={problem.id} className="surface-muted p-4">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-[12px] font-900 text-[#9AA3AF]">최근 {index + 1}</span>
-                <span className={`rounded-full px-3 py-1 text-[12px] font-900 ${meta.chipClass}`}>{meta.label}</span>
-              </div>
-
-              <div className="mt-4 flex items-start gap-3">
-                <StatusIcon className={`mt-0.5 h-5 w-5 shrink-0 ${meta.iconClass}`} strokeWidth={2.2} />
-                <div className="min-w-0">
-                  <h3 className="line-clamp-2 text-[15px] font-900 leading-[21px] text-[#202832]">{problem.title}</h3>
-                  <p className="mt-2 truncate text-[12px] font-700 text-[#7B8491]">
-                    {problem.category} · {problem.tier} · {problem.difficulty}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between border-t border-[#EEF1F5] pt-3 text-[12px] font-800 text-[#7B8491]">
-                <span>시도 {problem.attempts}회</span>
-                <strong className="text-[#202832]">{problem.bestScore}점</strong>
-              </div>
-            </article>
-          );
-        })}
+      <div className="mt-5 grid gap-5 lg:grid-cols-3">
+        {recentProblems.map(problem => (
+          <PathCard
+            key={problem.id}
+            path={problem}
+            onClick={() => handleSolveProblem(problem.id)}
+          />
+        ))}
       </div>
     </section>
   );
@@ -1011,7 +994,7 @@ function ProblemSolveStatusCard() {
   const solvedCount = problems.filter(problem => problem.status === 'solved').length;
 
   return (
-    <section className="surface w-full px-5 py-4 sm:px-6">
+    <section className="w-full">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">문제 풀이 현황</h2>
@@ -1027,45 +1010,25 @@ function ProblemSolveStatusCard() {
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {problems.map(problem => {
           const meta = problemStatusMeta[problem.status];
-          const StatusIcon = meta.icon;
 
           return (
             <article
               key={problem.id}
-              className="surface-muted p-4"
+              className="surface-muted flex min-h-[104px] flex-col justify-between p-4"
             >
-              <div className="flex items-start justify-between gap-3">
-                <StatusIcon
-                  className={`mt-0.5 h-5 w-5 shrink-0 ${meta.iconClass}`}
-                  strokeWidth={2.2}
-                />
+              <h3 className="line-clamp-2 text-[16px] font-900 leading-[22px] text-[#202832]">
+                {problem.title}
+              </h3>
+
+              <div className="mt-4 flex items-center justify-between gap-3">
                 <span
                   className={`shrink-0 rounded-full px-3 py-1 text-[12px] font-900 ${meta.chipClass}`}
                 >
                   {meta.label}
                 </span>
-              </div>
-
-              <h3 className="mt-3 line-clamp-2 min-h-[42px] text-[15px] font-900 leading-[21px] text-[#202832]">
-                {problem.title}
-              </h3>
-              <p className="mt-2 truncate text-[12px] font-700 text-[#7B8491]">
-                {problem.category} · {problem.tier}
-              </p>
-
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <div className="rounded-[6px] bg-white px-3 py-2">
-                  <p className="text-[11px] font-800 text-[#9AA3AF]">시도</p>
-                  <strong className="mt-1 block text-[15px] font-900 text-[#202832]">
-                    {problem.attempts}회
-                  </strong>
-                </div>
-                <div className="rounded-[6px] bg-white px-3 py-2">
-                  <p className="text-[11px] font-800 text-[#9AA3AF]">점수</p>
-                  <strong className="mt-1 block text-[15px] font-900 text-[#202832]">
-                    {problem.bestScore}점
-                  </strong>
-                </div>
+                <strong className="text-[16px] font-900 text-[#202832]">
+                  {problem.bestScore}점
+                </strong>
               </div>
             </article>
           );
@@ -1228,15 +1191,28 @@ function SuccessRateCard() {
           </div>
         </div>
 
-        <div className="mt-5 grid w-full grid-cols-2 gap-3 text-center">
-          <div className="rounded-[6px] bg-[#FFF0F2] px-3 py-2">
-            <p className="text-[12px] font-800 text-[#FF4854]">성공</p>
-            <strong className="mt-1 block text-[18px] font-900 text-[#202832]">17회</strong>
-          </div>
-          <div className="rounded-[6px] bg-[#F5F6F8] px-3 py-2">
-            <p className="text-[12px] font-800 text-[#6F7885]">실패</p>
-            <strong className="mt-1 block text-[18px] font-900 text-[#202832]">8회</strong>
-          </div>
+        <div className="mt-5 flex w-full items-center justify-center gap-5">
+          {chartData.map(segment => {
+            const isSelected = selectedSegmentLabel === segment.label;
+            const isDimmed = selectedSegment && !isSelected;
+
+            return (
+              <button
+                key={segment.label}
+                type="button"
+                onClick={() => handleSelectSegment(segment)}
+                className={`flex cursor-pointer items-center gap-2 text-left transition ${
+                  isDimmed ? 'opacity-50' : 'opacity-100'
+                }`}
+              >
+                <ChartTooltipDot color={segment.color} />
+                <span className="text-[12px] font-900 text-[#202832]">{segment.label}</span>
+                <span className="text-[12px] font-800 text-[#7B8491]">
+                  {segment.value}% · {segment.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>

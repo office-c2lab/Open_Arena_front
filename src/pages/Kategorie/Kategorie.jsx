@@ -233,7 +233,7 @@ function PathPreview({ path }) {
   );
 }
 
-function PathCard({ path, onClick }) {
+export function PathCard({ path, onClick }) {
   const levelClass =
     path.level === 'Try for Free'
       ? 'bg-[#D8F9E4] text-[#1BAE5B]'

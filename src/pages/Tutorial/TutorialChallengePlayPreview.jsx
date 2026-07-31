@@ -446,6 +446,7 @@ export function TutorialSuccessModalPreview() {
         onClose={() => {}}
         previewMode
         embeddedPreview
+        previewRewardPoints={0}
         previewScaleClassName="origin-center scale-[0.86]"
       />
     </div>
@@ -590,6 +591,7 @@ export function TutorialJudgeSuccessInteractivePreview() {
         previewMode
         embeddedPreview
         embeddedFill
+        previewRewardPoints={0}
         previewScaleClassName="origin-center scale-[0.86]"
       />
     </div>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import ApiInfoPanel from './ApiInfoPanel';
 import Skeleton from '../../../components/Skeleton/Skeleton';
+import TokenInfoCard from './TokenInfoCard';
 
 const TAB_ACCENT_COLOR_MAP = {
   description: '#475569',
@@ -62,6 +63,9 @@ export default function ChallengeInfoPanel({
   problemApiHeaderName,
   problemApiKey,
   problemCode,
+  problemId,
+  teamId,
+  tokenUsed,
   onBackClick,
 }) {
   const navigate = useNavigate();
@@ -86,7 +90,7 @@ export default function ChallengeInfoPanel({
       >
         <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
         {/* 문제 헤더 */}
-        <div className="relative flex min-h-[108px] flex-col justify-center overflow-hidden flex-shrink-0 px-4 pt-4 pb-3">
+        <div className="relative flex flex-col justify-center overflow-hidden flex-shrink-0 px-4 pt-4 pb-3">
           <div className="relative flex w-full items-center gap-3 rounded-[18px] border border-white/65 bg-white/65 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
             <button
               type="button"
@@ -106,7 +110,7 @@ export default function ChallengeInfoPanel({
         </div>
 
         {/* 탭 영역 */}
-        <div className="relative w-full flex flex-col flex-grow min-h-0 px-4 pb-4">
+        <div className="relative w-full flex flex-col flex-grow min-h-0 px-4 pb-3">
           <div
             className="flex justify-between flex-shrink-0 rounded-[18px] border border-white/65 bg-white/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md"
             style={{
@@ -146,43 +150,51 @@ export default function ChallengeInfoPanel({
                 transition: 'all 0.2s ease',
               }}
             >
-              <div className="no-scrollbar flex h-full min-h-0 flex-col overflow-y-auto pr-1">
-                <div className="rounded-[24px] border border-white/65 bg-white/65 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_3px_8px_rgba(15,23,42,0.05)] backdrop-blur-md">
+              <div className="flex h-full min-h-0 flex-col pr-1">
+                <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/65 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_3px_8px_rgba(15,23,42,0.05)] backdrop-blur-md">
                   <span className={`heading-3 font-700 ${activeTabContent.titleColor} block mb-6`}>
                     {activeTabContent.title}
                   </span>
 
-                  {activeTab === 'description' && CHALLENGE_HEADER_INFO?.subtitle ? (
-                    <p className="mb-6 body-large font-700 leading-7 text-[#0F172A]">
-                      {CHALLENGE_HEADER_INFO.subtitle}
+                  <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto">
+                    {activeTab === 'description' && CHALLENGE_HEADER_INFO?.subtitle ? (
+                      <p className="mb-6 body-large font-700 leading-7 text-[#0F172A]">
+                        {CHALLENGE_HEADER_INFO.subtitle}
+                      </p>
+                    ) : null}
+
+                    <p
+                      className="body-large font-500 text-[#0F172A] whitespace-pre-wrap"
+                      style={{ lineHeight }}
+                    >
+                      {activeTabContent.content}
                     </p>
-                  ) : null}
 
-                  <p
-                    className="body-large font-500 text-[#0F172A] whitespace-pre-wrap"
-                    style={{ lineHeight }}
-                  >
-                    {activeTabContent.content}
-                  </p>
-                </div>
-
-                {/* ⭐ API 패널 — 문제 설명 탭에서 표시 */}
-                {activeTab === 'description' && problemApiUrl && (
-                  <div className="mt-4">
-                    <ApiInfoPanel
-                      isLoading={false}
-                      apiUrl={problemApiUrl}
-                      method={problemApiMethod}
-                      headerName={problemApiHeaderName}
-                      apiKey={problemApiKey}
-                      problemCode={problemCode}
-                    />
+                    {/* ⭐ API 패널 — 문제 설명 탭에서 표시 */}
+                    {activeTab === 'description' && problemApiUrl && (
+                      <div className="mt-4">
+                        <ApiInfoPanel
+                          isLoading={false}
+                          apiUrl={problemApiUrl}
+                          method={problemApiMethod}
+                          headerName={problemApiHeaderName}
+                          apiKey={problemApiKey}
+                          problemCode={problemCode}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           )}
         </div>
+
+        {problemId ? (
+          <div className="relative flex-shrink-0 px-4 pb-4">
+            <TokenInfoCard problemId={problemId} teamId={teamId} tokenUsed={tokenUsed} compact />
+          </div>
+        ) : null}
       </div>
     </div>
   );

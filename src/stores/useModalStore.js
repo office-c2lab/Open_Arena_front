@@ -18,6 +18,7 @@ const useModalStore = create((set, get) => ({
 
   // 제출 결과 데이터
   challengeResults: [],
+  challengeRewardPoints: null,
 
   // 등록된 콜백 (Reset / Submit)
   resetChatAction: () => {
@@ -37,6 +38,7 @@ const useModalStore = create((set, get) => ({
 
   // 챌린지 결과 저장
   setChallengeResults: results => set({ challengeResults: results }),
+  setChallengeRewardPoints: points => set({ challengeRewardPoints: points }),
 
   // --------------------------------------------------------
   // 3️⃣ 모달 제어 액션

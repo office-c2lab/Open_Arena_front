@@ -27,6 +27,7 @@ const SubmitModal = ({ setProgress }) => {
     openSuccessModal,
     openFailedModal,
     setChallengeResults,
+    setChallengeRewardPoints,
   } = useModalStore();
   const { sessionId } = useSessionStore();
 
@@ -99,7 +100,11 @@ const SubmitModal = ({ setProgress }) => {
         };
       });
 
+      const rewardPoints =
+        resultData.earned_points ?? resultData.points ?? resultData.score ?? resultData.point ?? null;
+
       setChallengeResults(results);
+      setChallengeRewardPoints(rewardPoints);
 
       if (resultData.status === 'success') openSuccessModal();
       else openFailedModal();
@@ -149,6 +154,7 @@ const SubmitModal = ({ setProgress }) => {
     openSuccessModal,
     openFailedModal,
     setChallengeResults,
+    setChallengeRewardPoints,
     setProgress,
   ]);
 

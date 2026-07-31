@@ -16,12 +16,14 @@ export default function SuccessModal({
   previewMode = false,
   embeddedPreview = false,
   embeddedFill = false,
+  previewRewardPoints,
   previewScaleClassName = '',
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const clearSession = useSessionStore(state => state.clearSession);
   const isSuccessModalOpen = useModalStore(state => state.isSuccessModalOpen);
+  const challengeRewardPoints = useModalStore(state => state.challengeRewardPoints);
   const { closeSuccessModal, resetChatAction } = useModalStore();
 
   // 🎉 모달 열릴 때 confetti 실행 (모달 위 canvas 생성)
@@ -109,6 +111,10 @@ export default function SuccessModal({
     : 'fixed inset-0 bg-black/60 flex justify-center items-center z-[1000]';
   const restartHandler = previewMode ? handlePreviewClose : handleRestart;
   const continueHandler = previewMode ? handlePreviewClose : handleContinue;
+  const rewardPoints =
+    previewMode && typeof previewRewardPoints === 'number'
+      ? previewRewardPoints
+      : challengeRewardPoints;
 
   return (
     <div className={wrapperClassName}>
@@ -132,6 +138,15 @@ export default function SuccessModal({
             <br />
             다음 문제에도 도전해보세요!
           </p>
+
+          {typeof rewardPoints === 'number' ? (
+            <div className="flex items-baseline gap-2 rounded-[14px]  px-5 py-3">
+              <span className="heading-2 font-700 text-[#047857]">획득 포인트</span>
+              <span className="heading-2 font-700 text-[#04B07B]">
+                {rewardPoints.toLocaleString()} P
+              </span>
+            </div>
+          ) : null}
         </div>
 
         {/* === 버튼 그룹 === */}

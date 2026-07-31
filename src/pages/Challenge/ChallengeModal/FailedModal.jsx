@@ -21,7 +21,7 @@ export default function FailedModal({
   const { closeFailedModal, resetChatAction } = useModalStore();
   const clearSession = useSessionStore(state => state.clearSession);
 
-  // 💡 문제 다시 풀기
+  // 💡 새로운 대화 시작
   const handleRestart = useCallback(() => {
     closeFailedModal();
     resetChatAction();
@@ -98,7 +98,7 @@ export default function FailedModal({
             onClick={restartHandler}
             className="w-[400px] h-[61px] bg-[#D9DADB] rounded-[18px] hover:bg-[#BFC0C4] transition-all duration-200 hover:-translate-y-[1px] cursor-pointer"
           >
-            <span className="heading-2 font-700 text-[#515151]">문제 다시 풀기</span>
+            <span className="heading-2 font-700 text-[#515151]">새로운 대화 시작</span>
           </button>
           <button
             type="button"
