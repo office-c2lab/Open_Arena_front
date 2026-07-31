@@ -1,22 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-// 💡 로딩 애니메이션 (3개의 점이 bounce)
-const TypingIndicator = () => (
-  <div className="flex space-x-1 ml-2">
-    <div
-      className="w-2 h-2 bg-white rounded-full animate-bounce"
-      style={{ animationDelay: '0s' }}
-    ></div>
-    <div
-      className="w-2 h-2 bg-white rounded-full animate-bounce"
-      style={{ animationDelay: '0.2s' }}
-    ></div>
-    <div
-      className="w-2 h-2 bg-white rounded-full animate-bounce"
-      style={{ animationDelay: '0.4s' }}
-    ></div>
-  </div>
-);
+import { ThinkingOrb } from 'thinking-orbs';
 
 export default function ChatBubble({ role, content, isTyping = false }) {
   const [displayedText, setDisplayedText] = useState(content);
@@ -39,6 +22,22 @@ export default function ChatBubble({ role, content, isTyping = false }) {
     }
   }, [content, role, isTyping]);
 
+  if (isTyping && role === 'assistant') {
+    return (
+      <div className="mb-4 flex justify-start">
+        <div className="flex min-h-[80px] items-center gap-3 overflow-visible px-3 py-2">
+          <ThinkingOrb
+            state="composing"
+            size={64}
+            theme="light"
+            aria-label="AI가 응답을 생성 중입니다"
+          />
+          <span className="thinking-text body-large font-500">AI가 답변을 생성 중입니다...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
       <div
@@ -48,14 +47,7 @@ export default function ChatBubble({ role, content, isTyping = false }) {
             : 'border border-[#323746] bg-[#222632] text-white rounded-r-2xl rounded-tl-2xl shadow-[0_3px_8px_rgba(15,23,42,0.10)]'
         }`}
       >
-        {isTyping && role === 'assistant' ? (
-          <div className="flex items-center">
-            <span className="body-large font-500">AI가 응답을 생성 중입니다</span>
-            <TypingIndicator />
-          </div>
-        ) : (
-          <p className="body-large font-500 whitespace-pre-wrap leading-7">{displayedText}</p>
-        )}
+        <p className="body-large font-500 whitespace-pre-wrap leading-7">{displayedText}</p>
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export default function SessionList({ sessions = [], sessionId, onSessionClick }
   if (!Array.isArray(sessions) || sessions.length === 0) return null;
 
   return (
-    <div className="p-4 flex flex-col max-h-[200px] overflow-y-auto">
+    <div className="no-scrollbar p-4 flex flex-col max-h-[200px] overflow-y-auto">
       {sessions.map(s => (
         <SessionCard
           key={s.id}

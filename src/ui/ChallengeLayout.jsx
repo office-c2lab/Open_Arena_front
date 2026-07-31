@@ -14,8 +14,8 @@ export default function ChallengeLayout() {
       <main
         className={
           isPlayView
-            ? 'h-[calc(100vh-64px)] overflow-auto p-0'
-            : 'h-[calc(100vh-64px)] overflow-auto px-[10px] py-6'
+            ? 'no-scrollbar h-[calc(100vh-64px)] overflow-auto p-0'
+            : 'no-scrollbar h-[calc(100vh-64px)] overflow-auto px-[10px] py-6'
         }
       >
         <div className={isPlayView ? 'h-full w-full' : 'mx-auto w-full max-w-[1200px]'}>

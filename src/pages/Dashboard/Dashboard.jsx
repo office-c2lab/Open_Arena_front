@@ -788,7 +788,7 @@ function ChallengeActivityHeatmap() {
   const { days, totalCount } = useMemo(() => buildActivityHeatmap(), []);
 
   return (
-    <section className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-0">
+    <section className="mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 lg:px-0">
       <DashboardNoticeCard />
       <DashboardProfileSummaryCard />
       <TokenEfficiencyCard />
@@ -855,7 +855,7 @@ function ChallengeActivityHeatmap() {
 
 function DashboardNoticeCard() {
   return (
-    <section className="surface mb-5 w-full px-5 py-4 sm:px-6">
+    <section className="surface w-full px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">공지사항</h2>
@@ -894,7 +894,7 @@ function DashboardProfileSummaryCard() {
   const hasProfileImage = Boolean(teamInfo?.profileImage);
 
   return (
-    <section className="surface mb-5 w-full px-5 py-5 sm:px-6">
+    <section className="surface w-full px-5 py-5 sm:px-6">
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-center">
         <div className="flex items-center gap-4">
           <div
@@ -949,7 +949,7 @@ function RecentAttemptProblemsCard() {
     .filter(Boolean);
 
   return (
-    <section className="surface mt-5 w-full px-5 py-4 sm:px-6">
+    <section className="surface w-full px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">최근 시도한 문제</h2>
@@ -1011,7 +1011,7 @@ function ProblemSolveStatusCard() {
   const solvedCount = problems.filter(problem => problem.status === 'solved').length;
 
   return (
-    <section className="surface mt-5 w-full px-5 py-4 sm:px-6">
+    <section className="surface w-full px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-[18px] font-900 leading-none text-[#202832]">문제 풀이 현황</h2>
@@ -1083,7 +1083,7 @@ function TokenEfficiencyCard() {
   const efficiencyPercent = 82;
 
   return (
-    <section className="surface mt-5 w-full px-5 py-5 sm:px-6">
+    <section className="surface w-full px-5 py-5 sm:px-6">
       <div className="grid gap-5 lg:grid-cols-2 lg:items-stretch">
         <div className="flex min-w-0 flex-col justify-between">
           <div>
@@ -1092,26 +1092,26 @@ function TokenEfficiencyCard() {
           </div>
 
           <div className="mt-5">
-            <div className="mb-2 flex items-center justify-between text-[13px] font-800 text-[#7B8491]">
-              <span>효율 점수</span>
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[13px] font-800 text-[#7B8491]">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span>효율 점수</span>
+                <span className="inline-flex items-center gap-1.5">
+                  효율
+                  <strong className="text-[16px] font-900 leading-none text-[#202832]">
+                    {efficiency.toFixed(2)}
+                  </strong>
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  포인트
+                  <strong className="text-[16px] font-900 leading-none text-[#202832]">
+                    {points}
+                  </strong>
+                </span>
+              </div>
               <span>{efficiencyPercent}%</span>
             </div>
-            <div className="h-4 overflow-hidden rounded-full bg-[#F1F3F6]">
+            <div className="h-2.5 overflow-hidden rounded-full bg-[#F1F3F6]">
               <div className="h-full rounded-full bg-[#FF4854]" style={{ width: `${efficiencyPercent}%` }} />
-            </div>
-            <div className="mt-3 grid grid-cols-2 gap-3 text-center">
-              <div className="surface-muted px-3 py-3">
-                <p className="text-[12px] font-800 text-[#7B8491]">효율</p>
-                <strong className="mt-1 block text-[20px] font-900 text-[#202832]">
-                  {efficiency.toFixed(2)}
-                </strong>
-              </div>
-              <div className="surface-muted px-3 py-3">
-                <p className="text-[12px] font-800 text-[#7B8491]">포인트</p>
-                <strong className="mt-1 block text-[20px] font-900 text-[#202832]">
-                  {points}
-                </strong>
-              </div>
             </div>
           </div>
         </div>

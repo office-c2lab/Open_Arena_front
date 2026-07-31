@@ -82,6 +82,15 @@
 }
 
 @layer components {
+  .thinking-text {
+    animation: thinking-text-shimmer 1.8s ease-in-out infinite;
+    background: linear-gradient(90deg, #222632 0%, #6f7785 38%, #111827 52%, #6f7785 66%, #222632 100%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   .btn {
     align-items: center;
     border-radius: 8px;
@@ -241,6 +250,16 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+@keyframes thinking-text-shimmer {
+  0% {
+    background-position: 120% 50%;
+  }
+
+  100% {
+    background-position: -120% 50%;
+  }
 }
 
 html.landing-scroll-hidden,

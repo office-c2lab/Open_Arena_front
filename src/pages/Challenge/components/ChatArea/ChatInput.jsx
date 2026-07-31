@@ -51,7 +51,7 @@ export default function ChatInput({
   return (
     <div className="w-full h-[120px] md:h-[133px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md p-3 md:p-4 flex items-start relative">
       <textarea
-        className="w-full h-full resize-none bg-transparent focus:outline-none body-large text-[#0F172A] placeholder:text-[#8A93A5] pr-12 overflow-y-auto"
+        className="no-scrollbar w-full h-full resize-none bg-transparent focus:outline-none body-large text-[#0F172A] placeholder:text-[#8A93A5] pr-12 overflow-y-auto"
         placeholder={
           isDisabled
             ? disabledPlaceholder || '전송 중입니다...'

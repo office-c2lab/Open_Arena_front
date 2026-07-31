@@ -148,7 +148,7 @@ export default function ChallengeInfoPanel({
                 transition: 'all 0.2s ease',
               }}
             >
-              <div className="flex h-full min-h-0 flex-col overflow-y-auto pr-1">
+              <div className="no-scrollbar flex h-full min-h-0 flex-col overflow-y-auto pr-1">
                 <div className="rounded-[24px] border border-white/65 bg-white/65 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_3px_8px_rgba(15,23,42,0.05)] backdrop-blur-md">
                   <span className={`heading-3 font-700 ${activeTabContent.titleColor} block mb-6`}>
                     {activeTabContent.title}

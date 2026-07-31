@@ -104,7 +104,7 @@ const DebugModal = () => {
         {/* Debug Information Box */}
         <div
           className="absolute w-[600px] h-[220px] left-[42px] top-[219px] 
-            bg-[#F1F1EF] rounded-[16px] p-[14px] pl-[28px] pr-7 overflow-auto"
+            bg-[#F1F1EF] rounded-[16px] p-[14px] pl-[28px] pr-7 overflow-auto no-scrollbar"
         >
           <pre className="body-large font-300 text-black whitespace-pre-wrap m-0">{DEBUG_INFO}</pre>
         </div>

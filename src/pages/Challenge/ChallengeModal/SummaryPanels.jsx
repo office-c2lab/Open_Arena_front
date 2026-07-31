@@ -64,7 +64,7 @@ export const SuccessSummaryPanel = ({ imageSrc, animalName, title, description, 
           {title} {/* 💡 Success에서는 title이 모델명입니다. */}
         </p>
         {/* 6. 설명 텍스트 - 중앙 배치 */}
-        <p className="body-large font-500 text-center text-[#0F172A] w-[680px] h-[90px] overflow-auto mt-[36px] px-4 leading-7">
+        <p className="no-scrollbar body-large font-500 text-center text-[#0F172A] w-[680px] h-[90px] overflow-auto mt-[36px] px-4 leading-7">
           {description}
         </p>
       </div>
@@ -142,7 +142,7 @@ export const FailedSummaryPanel = ({
           {title} {/* 💡 [수정] 모델명 사용 */}
         </p>
         {/* 6. 설명 텍스트 */}
-        <p className="body-large font-500 text-center text-[#0F172A] w-[680px] h-[90px] overflow-auto mt-[10px] px-4 leading-7">
+        <p className="no-scrollbar body-large font-500 text-center text-[#0F172A] w-[680px] h-[90px] overflow-auto mt-[10px] px-4 leading-7">
           {description}
         </p>
       </div>

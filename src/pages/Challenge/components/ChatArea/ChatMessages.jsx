@@ -32,7 +32,7 @@ export default function ChatMessages({
           className="max-w-[246px] max-h-[361px] w-[40vw] h-[40vh] object-contain opacity-20"
         />
       </div>
-      <div className="relative z-10 h-full overflow-y-auto pt-4">
+      <div className="no-scrollbar relative z-10 h-full overflow-y-auto pt-4">
         {isLoading ? (
           <div className="text-center p-4 text-gray-500">메시지를 불러오는 중...</div>
         ) : (

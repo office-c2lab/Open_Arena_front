@@ -54,7 +54,7 @@ export default function ApiInfoPanel({
 
         <p className="font-600 font-bold">Request Body (예시)</p>
 
-        <pre className="mt-1 rounded-[12px] border border-white/65 bg-white/45 p-3 text-sm overflow-x-auto font-bold">
+        <pre className="no-scrollbar mt-1 rounded-[12px] border border-white/65 bg-white/45 p-3 text-sm overflow-x-auto font-bold">
           {requestBodyExample}
         </pre>
       </div>
