@@ -17,6 +17,7 @@ import ResetModal from '../ChallengeModal/ResetModal';
 import SubmitModal from '../ChallengeModal/SubmitMoadl';
 import FailedModal from '../ChallengeModal/FailedModal';
 import SuccessModal from '../ChallengeModal/SuccesModal';
+import ChallengeBg from '@/assets/images/chalbg.png';
 
 export default function ChallengePlay() {
   const navigate = useNavigate();
@@ -123,7 +124,11 @@ export default function ChallengePlay() {
   }, [setResetChatAction]);
 
   return (
-    <div className="flex h-full min-w-[1120px] w-full gap-6 bg-[#E5EAF0] p-6">
+    <div className="relative flex h-full min-w-[1120px] w-full gap-6 overflow-hidden bg-[#E5EAF0] p-6">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.55]"
+        style={{ backgroundImage: `url(${ChallengeBg})` }}
+      />
       <ChallengeInfoPanel
         TABS={TABS}
         activeTab={activeTab}
