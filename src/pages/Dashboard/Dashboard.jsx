@@ -809,16 +809,78 @@ function DashboardSectionHeader({ title, description, action }) {
   );
 }
 
+function ActivityHeatmapTooltip({ tooltip }) {
+  if (!tooltip) return null;
+
+  return (
+    <div
+      className="pointer-events-none fixed z-[9999] w-max max-w-[180px] rounded-[8px] border border-[#E9ECF1] bg-white px-3 py-2 text-left shadow-[0_14px_30px_rgba(15,23,42,0.12)]"
+      style={{
+        left: tooltip.x,
+        top: tooltip.y,
+        transform: 'translate(-50%, -100%)',
+      }}
+    >
+      <span className="block text-[12px] font-900 text-[#202832]">{tooltip.dateText}</span>
+      <span className="mt-1 block text-[11px] font-800 text-[#7B8491]">{tooltip.hourText}</span>
+      <span className="mt-1 block text-[12px] font-900 text-[#FF4854]">
+        도전 {tooltip.count}회
+      </span>
+    </div>
+  );
+}
+
+function ActivityHeatmapCell({ day, cell, onTooltipShow, onTooltipHide }) {
+  const dateText = day.date.toLocaleDateString('ko-KR', {
+    month: 'long',
+    day: 'numeric',
+    weekday: 'short',
+  });
+  const hourText = `${String(cell.hour).padStart(2, '0')}:00 - ${String(cell.hour + 1).padStart(2, '0')}:00`;
+  const showTooltip = event => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const tooltipWidth = 180;
+    const viewportPadding = 12;
+    const x = Math.min(
+      Math.max(rect.left + rect.width / 2, viewportPadding + tooltipWidth / 2),
+      window.innerWidth - viewportPadding - tooltipWidth / 2
+    );
+
+    onTooltipShow({
+      x,
+      y: rect.top - 8,
+      dateText,
+      hourText,
+      count: cell.count,
+    });
+  };
+
+  return (
+    <button
+      type="button"
+      aria-label={`${dateText} ${hourText} 도전 ${cell.count}회`}
+      onMouseEnter={showTooltip}
+      onMouseMove={showTooltip}
+      onMouseLeave={onTooltipHide}
+      onFocus={showTooltip}
+      onBlur={onTooltipHide}
+      className={`relative h-[22px] w-[22px] rounded-[5px] outline-none transition hover:scale-110 focus-visible:scale-110 focus-visible:ring-2 focus-visible:ring-[#FF4854]/35 ${activityLevels[cell.level]}`}
+    />
+  );
+}
+
 function ChallengeActivityHeatmap() {
   const { days, totalCount } = useMemo(() => buildActivityHeatmap(), []);
+  const [activeTooltip, setActiveTooltip] = useState(null);
 
   return (
     <section className="mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 lg:px-0">
+      <ActivityHeatmapTooltip tooltip={activeTooltip} />
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
         <DashboardProfileSummaryCard />
         <DashboardNoticeCard />
       </div>
-      <TokenEfficiencyCard />
+      
       <div className="grid gap-5 lg:grid-cols-[max-content_minmax(0,1fr)] lg:items-stretch">
         <section className="surface max-w-full px-5 py-4 sm:px-6">
           <DashboardSectionHeader title="도전 활동 히트맵" description="일별 도전 참여 현황" />
@@ -835,10 +897,12 @@ function ChallengeActivityHeatmap() {
                           {dayLabels[dayIndex]}
                         </span>
                         {cells.map(cell => (
-                          <div
+                          <ActivityHeatmapCell
                             key={`${dayLabels[dayIndex]}-${cell.hour}`}
-                            title={`${day.date.toLocaleDateString('ko-KR')} ${String(cell.hour).padStart(2, '0')}:00 도전 ${cell.count}회`}
-                            className={`h-[22px] w-[22px] rounded-[5px] ${activityLevels[cell.level]}`}
+                            day={day}
+                            cell={cell}
+                            onTooltipShow={setActiveTooltip}
+                            onTooltipHide={() => setActiveTooltip(null)}
                           />
                         ))}
                       </React.Fragment>
@@ -871,7 +935,9 @@ function ChallengeActivityHeatmap() {
         <div className="flex min-w-0 w-full flex-col gap-5">
           <SuccessRateCard />
         </div>
+        
       </div>
+      <TokenEfficiencyCard />
       <RecentAttemptProblemsCard />
       <ProblemSolveStatusCard />
     </section>
