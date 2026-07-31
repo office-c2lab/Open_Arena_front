@@ -1130,55 +1130,87 @@ function TokenEfficiencyCard() {
   const maxTokens = 6120;
   const efficiency = points / minTokens;
   const efficiencyPercent = 82;
+  const gaugePercent = 56;
 
   return (
     <section className="surface w-full px-5 py-5 sm:px-6">
-      <DashboardSectionHeader
-        title="토큰 효율"
-        description="적게 쓸수록 높은 점수"
-      />
-
-      <div className="mt-5 grid gap-5 lg:grid-cols-2 lg:items-stretch">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(420px,0.9fr)] xl:items-stretch">
         <div className="flex min-w-0 flex-col justify-between">
           <div>
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[13px] font-800 text-[#7B8491]">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <span>효율 점수</span>
-                <span className="inline-flex items-center gap-1.5">
-                  효율
-                  <strong className="text-[16px] font-900 leading-none text-[#202832]">
-                    {efficiency.toFixed(2)}
-                  </strong>
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  포인트
-                  <strong className="text-[16px] font-900 leading-none text-[#202832]">
-                    {points}
-                  </strong>
+            <DashboardSectionHeader title="토큰 효율" description="적게 쓸수록 높은 점수" />
+
+            <div className="mt-8 flex flex-wrap items-end gap-x-6 gap-y-4">
+              <strong className="text-[76px] font-900 leading-none text-[#FF4854]">
+                {efficiency.toFixed(2)}
+              </strong>
+              <div className="pb-3">
+                <p className="text-[20px] font-900 text-[#202832]">효율 점수</p>
+                <p className="mt-2 text-[14px] font-800 text-[#7B8491]">
+                  토큰을 적게 사용할수록 더 높은 효율을 얻어요.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-9">
+              <div className="mb-2 grid grid-cols-5 text-[12px] font-800 text-[#9AA3AF]">
+                <span>낮은 효율</span>
+                <span className="text-center">0.50</span>
+                <span className="text-center">1.00</span>
+                <span className="text-center">1.50</span>
+                <span className="text-right">높은 효율</span>
+              </div>
+              <div className="relative h-3 rounded-full bg-[#F1F3F6]">
+                <div
+                  className="h-full rounded-full bg-[#FF4854]"
+                  style={{ width: `${gaugePercent}%` }}
+                />
+                <span
+                  className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-[4px] border-white bg-[#FF4854] shadow-[0_6px_14px_rgba(255,72,84,0.28)]"
+                  style={{ left: `calc(${gaugePercent}% - 10px)` }}
+                />
+                <span
+                  className="absolute bottom-[calc(100%+8px)] rounded-[7px] bg-[#FF4854] px-3 py-1 text-[13px] font-900 leading-none text-white"
+                  style={{ left: `calc(${gaugePercent}% - 24px)` }}
+                >
+                  {efficiency.toFixed(2)}
                 </span>
               </div>
-              <span>{efficiencyPercent}%</span>
             </div>
-            <div className="h-2.5 overflow-hidden rounded-full bg-[#F1F3F6]">
-              <div className="h-full rounded-full bg-[#FF4854]" style={{ width: `${efficiencyPercent}%` }} />
+
+            <div className="mt-8 flex w-fit flex-wrap items-center gap-5 rounded-[8px] border border-[#EEF1F5] bg-white px-5 py-3 text-[15px] font-900 text-[#6F7885]">
+              <span>
+                포인트 <strong className="ml-1 text-[#202832]">{points}</strong>
+              </span>
+              <span className="h-5 w-px bg-[#E2E7EE]" />
+              <span>
+                현재 효율 백분위{' '}
+                <strong className="ml-1 text-[#FF4854]">{efficiencyPercent}%</strong>
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="grid min-w-0 grid-cols-2 gap-3">
-          <div className="surface-muted flex flex-col justify-between px-5 py-4">
-            <p className="text-[13px] font-800 text-[#7B8491]">최소 소모 토큰</p>
-            <strong className="mt-4 block text-[28px] font-900 leading-none text-[#FF4854]">
+        <div className="grid min-w-0 gap-4 sm:grid-cols-3 xl:grid-cols-3">
+          <div className="surface-muted flex min-h-[190px] flex-col justify-end px-6 py-5">
+            <p className="text-[18px] font-900 text-[#596575]">획득 포인트</p>
+            <strong className="mt-6 block text-[46px] font-900 leading-none text-[#202832]">
+              {points}
+            </strong>
+            <p className="mt-4 text-[14px] font-800 text-[#8A93A5]">현재 누적</p>
+          </div>
+          <div className="flex min-h-[190px] flex-col justify-end rounded-[8px] border border-[#FFB8BE] bg-[#FFF7F8] px-6 py-5 shadow-[0_12px_26px_rgba(255,72,84,0.08)]">
+            <p className="text-[18px] font-900 text-[#FF4854]">최저 사용량</p>
+            <strong className="mt-6 block text-[46px] font-900 leading-none text-[#FF4854]">
               {minTokens.toLocaleString()}
             </strong>
-            <p className="mt-2 text-[12px] font-700 text-[#9AA3AF]">단일 성공 기록</p>
+            <p className="mt-4 text-[14px] font-800 text-[#8A93A5]">성공한 도전 기준</p>
           </div>
-          <div className="surface-muted flex flex-col justify-between px-5 py-4">
-            <p className="text-[13px] font-800 text-[#7B8491]">최대 소모 토큰</p>
-            <strong className="mt-4 block text-[28px] font-900 leading-none text-[#202832]">
+          <div className="surface-muted flex min-h-[190px] flex-col justify-end px-6 py-5">
+            <p className="text-[18px] font-900 text-[#596575]">최고 사용량</p>
+            <strong className="mt-6 block text-[46px] font-900 leading-none text-[#202832]">
               {maxTokens.toLocaleString()}
             </strong>
-            <p className="mt-2 text-[12px] font-700 text-[#9AA3AF]">전체 도전 기준</p>
+            <p className="mt-4 text-[14px] font-800 text-[#8A93A5]">전체 도전 기준</p>
           </div>
         </div>
       </div>
