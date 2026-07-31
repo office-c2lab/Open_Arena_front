@@ -125,7 +125,7 @@ export default function ChallengePlay() {
   }, [setResetChatAction]);
 
   return (
-    <div className="flex h-full min-w-[1120px] w-full gap-6 bg-[#F5F7FA] p-6">
+    <div className="flex h-full min-w-[1120px] w-full gap-6 bg-[#E5EAF0] p-6">
       <ChallengeInfoPanel
         TABS={TABS}
         activeTab={activeTab}

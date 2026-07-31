@@ -176,7 +176,7 @@ function PanelPreviewSection({
           cautions={cautions}
         />
       </div>
-      <div className="no-scrollbar overflow-x-auto rounded-[10px] bg-[#F5F7FA] p-6">
+      <div className="no-scrollbar overflow-x-auto rounded-[10px] bg-[#E5EAF0] p-6">
         <div className={`h-[660px] ${width}`}>{children}</div>
       </div>
       {nextAction ? (
