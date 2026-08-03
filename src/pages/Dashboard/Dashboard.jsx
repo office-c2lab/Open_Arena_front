@@ -2,11 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
   BookOpen,
-  CheckCircle2,
+  Bookmark,
+  ChevronLeft,
   ChevronDown,
-  CircleDashed,
-  XCircle,
+  ChevronRight,
+  Flame,
 } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import UserIcon from '@/assets/icons/user.svg';
@@ -18,14 +20,8 @@ import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
 import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { articles as educationArticles } from '@/pages/Education/Education';
-import { PATHS as challengePaths, PathCard } from '@/pages/Kategorie/Kategorie';
+import { PATHS as challengePaths } from '@/pages/Kategorie/Kategorie';
 import { TUTORIALS } from '@/pages/Tutorial/TutorialList';
-
-const notices = [
-  ['공지사항', '2026년 6월의 아레나 노트', '2026.07.01.'],
-  ['공지사항', '새로워진 학습 메뉴, 이렇게 달라졌어요', '2026.06.08.'],
-  ['공지사항', '2026년 5월의 아레나 노트', '2026.06.05.'],
-];
 
 const dashboardBanners = [
   {
@@ -95,48 +91,6 @@ const timeBlocks = Array.from({ length: 8 }, (_, index) => {
   };
 });
 
-const problemStatusById = {
-  1: { status: 'solved', attempts: 4, bestScore: 100 },
-  2: { status: 'failed', attempts: 3, bestScore: 0 },
-  3: { status: 'solved', attempts: 5, bestScore: 88 },
-  4: { status: 'untried', attempts: 0, bestScore: 0 },
-  5: { status: 'failed', attempts: 2, bestScore: 0 },
-  6: { status: 'untried', attempts: 0, bestScore: 0 },
-};
-
-const problemStatusMeta = {
-  solved: {
-    label: '성공',
-    icon: CheckCircle2,
-    chipClass: 'bg-[#ECFDF3] text-[#079C4C]',
-    iconClass: 'text-[#079C4C]',
-    barClass: 'bg-[#079C4C]',
-    textClass: 'text-[#079C4C]',
-    glassClass: 'from-[#ECFDF3]/82 via-white/50 to-white/38',
-    glowClass: 'rgba(7,156,76,0.12)',
-  },
-  failed: {
-    label: '실패',
-    icon: XCircle,
-    chipClass: 'bg-[#FFF0F2] text-[#FF4854]',
-    iconClass: 'text-[#FF4854]',
-    barClass: 'bg-[#FF4854]',
-    textClass: 'text-[#FF4854]',
-    glassClass: 'from-[#FFF0F2]/86 via-white/50 to-white/38',
-    glowClass: 'rgba(255,72,84,0.13)',
-  },
-  untried: {
-    label: '미제출',
-    icon: CircleDashed,
-    chipClass: 'bg-[#F5F6F8] text-[#7B8491]',
-    iconClass: 'text-[#7B8491]',
-    barClass: 'bg-[#CBD2DC]',
-    textClass: 'text-[#7B8491]',
-    glassClass: 'from-[#F5F7FA]/88 via-white/50 to-white/38',
-    glowClass: 'rgba(100,116,139,0.1)',
-  },
-};
-
 const dashboardSummaryStats = [
   { label: '현재 순위', value: '24위', subText: '전체 참가자 기준', tone: 'rank' },
   { label: '해결한 문제', value: '2문제', subText: '전체 6문제 중', tone: 'solved' },
@@ -145,6 +99,37 @@ const dashboardSummaryStats = [
 ];
 
 const recentAttemptProblemIds = [3, 2, 1];
+
+const getChallengeById = (id, extra = {}) => {
+  const challenge = challengePaths.find(path => path.id === id);
+
+  if (!challenge) return null;
+
+  return {
+    ...challenge,
+    solvedCount: challenge.reviews ?? 7,
+    averageTokens: 1240,
+    maximumPoints: challenge.maximumPoints ?? 100,
+    ...extra,
+  };
+};
+
+const todayRecommendedChallenges = [
+  getChallengeById(2, {
+    description: 'Kubernetes 환경의 설정 및 리스크를 분석하고 취약점을 찾아보세요.',
+  }),
+  getChallengeById(1),
+  getChallengeById(4),
+  getChallengeById(5),
+].filter(Boolean);
+
+const challengeBrowseItems = [6, 7, 8, 9, 10, 11]
+  .map((id, index) =>
+    getChallengeById(id, {
+      attempts: ['1,245명', '893명', '732명', '1,102명', '654명', '528명'][index],
+    })
+  )
+  .filter(Boolean);
 
 function getActivityCount(date, dayIndex, startHour) {
   const daySeed = date.getDate() + (date.getMonth() + 1) * 7 + dayIndex * 5 + startHour * 3;
@@ -771,30 +756,6 @@ function TutorialProgressCard({ onShowDetails }) {
   );
 }
 
-function Timeline() {
-  return (
-    <section className="lg:min-h-[308px]">
-      <div className="mb-6 border-b border-[#DDE3EA] pb-3">
-        <h2 className="text-[18px] font-900 text-[#2E3338]">공지사항</h2>
-      </div>
-
-      <div className="space-y-5">
-        {notices.map(([category, title, date]) => (
-          <div
-            key={title}
-            className="grid grid-cols-[96px_58px_minmax(0,1fr)_110px] items-center gap-4 text-[14px]"
-          >
-            <span className="font-700 text-[#6B7280]">{category}</span>
-            
-            <strong className="truncate font-900 text-black">{title}</strong>
-            <span className="text-right font-700 text-[#9AA3AF]">{date}</span>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function DashboardSectionHeader({ title, description, action }) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
@@ -876,9 +837,9 @@ function ChallengeActivityHeatmap() {
   return (
     <section className="mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 lg:px-0">
       <ActivityHeatmapTooltip tooltip={activeTooltip} />
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.65fr)_minmax(360px,0.95fr)] lg:items-stretch">
         <DashboardProfileSummaryCard />
-        <DashboardNoticeCard />
+        <RecentAttemptProblemsCard />
       </div>
       
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
@@ -937,35 +898,7 @@ function ChallengeActivityHeatmap() {
         </div>
         
       </div>
-      <TokenEfficiencyCard />
-      <RecentAttemptProblemsCard />
-      <ProblemSolveStatusCard />
-    </section>
-  );
-}
-
-function DashboardNoticeCard() {
-  return (
-    <section className="surface flex h-full w-full flex-col px-5 py-5">
-      <DashboardSectionHeader
-        title="공지사항"
-      />
-
-      <div className="mt-6 flex flex-1 flex-col gap-4">
-        {notices.map(([, title, date]) => (
-          <article
-            key={title}
-            className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 rounded-[8px] border border-[#EEF1F5] bg-white px-4 shadow-[0_8px_20px_rgba(15,23,42,0.035)]"
-          >
-            <div className="flex min-w-0 items-center gap-3">
-              <span className="h-2 w-2 shrink-0 rounded-full bg-[#FF4854]" />
-              <h3 className="truncate text-[15px] font-900 text-[#202832]">{title}</h3>
-            </div>
-            <time className="shrink-0 text-[13px] font-800 text-[#9AA3AF]">{date}</time>
-            <ArrowRight className="h-4 w-4 shrink-0 text-[#C5CCD6]" strokeWidth={2.5} />
-          </article>
-        ))}
-      </div>
+      <RecommendedChallengeSection />
     </section>
   );
 }
@@ -1035,92 +968,314 @@ function DashboardProfileStatCard({ stat }) {
 
 function RecentAttemptProblemsCard() {
   const navigate = useNavigate();
-  const recentProblems = recentAttemptProblemIds
-    .map(problemId => {
-      const problem = challengePaths.find(path => path.id === problemId);
+  const recentProblem = challengePaths.find(path => path.id === recentAttemptProblemIds[0]);
+  const progress = 60;
 
-      return problem || null;
-    })
-    .filter(Boolean);
+  if (!recentProblem) return null;
 
-  const handleSolveProblem = problemId => {
-    navigate(`/challenge/${problemId}`);
+  const handleContinue = () => {
+    navigate(`/challenge/${recentProblem.id}/play`);
   };
 
   return (
-    <section className="surface w-full px-5 py-4 sm:px-6">
+    <section className="surface h-full w-full px-5 py-4 sm:px-6">
       <DashboardSectionHeader
-        title="최근 시도한 문제"
-        description="마지막으로 도전한 문제를 이어서 확인하세요"
+        title="이어서 도전하기"
+        description="마지막으로 도전한 문제를 이어서 풀어보세요"
       />
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-3">
-        {recentProblems.map(problem => (
-          <PathCard
-            key={problem.id}
-            path={problem}
-            onClick={() => handleSolveProblem(problem.id)}
+      <article className="mt-6 grid overflow-hidden rounded-[10px] border border-[#EEF1F5] bg-white shadow-[0_10px_26px_rgba(15,23,42,0.06)] sm:grid-cols-[minmax(170px,0.9fr)_minmax(0,1.2fr)]">
+        <div className="relative min-h-[170px] overflow-hidden bg-[#0B0D18]">
+          <img
+            src={recentProblem.image}
+            alt={`${recentProblem.title} 챌린지`}
+            className="h-full w-full object-cover"
           />
-        ))}
-      </div>
+          <span className="absolute right-4 top-4 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-[12px] font-900 text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
+            진행 중
+          </span>
+        </div>
+
+        <div className="flex min-w-0 flex-col justify-center px-6 py-5">
+          <h3 className="truncate text-[28px] font-900 leading-tight text-[#151A21]">
+            {recentProblem.title}
+          </h3>
+          <p className="mt-2 text-[15px] font-700 text-[#9AA3AF]">
+            {recentProblem.category} 환경 보안 챌린지
+          </p>
+
+          <div className="mt-8 flex items-center gap-5">
+            <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-[#EDF0F4]">
+              <div className="h-full rounded-full bg-[#FF4854]" style={{ width: `${progress}%` }} />
+            </div>
+            <span className="shrink-0 text-[17px] font-900 text-[#202832]">{progress}%</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleContinue}
+            className="btn btn-primary btn-lg mt-7 w-full"
+          >
+            이어서 도전하기 <ArrowRight className="h-4 w-4" strokeWidth={2.8} />
+          </button>
+        </div>
+      </article>
     </section>
   );
 }
 
-function ProblemSolveStatusCard() {
-  const problems = challengePaths.slice(0, 6).map(problem => {
-    const status = problemStatusById[problem.id] || {
-      status: 'untried',
-      attempts: 0,
-      bestScore: 0,
-    };
-
-    return {
-      ...problem,
-      ...status,
-    };
-  });
-
-  const solvedCount = problems.filter(problem => problem.status === 'solved').length;
+function FeaturedChallengeStats({ challenge }) {
+  const stats = [
+    {
+      label: '성공',
+      value: challenge.solvedCount ?? 7,
+      suffix: '명',
+    },
+    {
+      label: '평균',
+      value: (challenge.averageTokens ?? 1240).toLocaleString(),
+      suffix: '토큰',
+    },
+    {
+      label: '최대',
+      value: challenge.maximumPoints ?? 100,
+      suffix: '포인트',
+    },
+  ];
 
   return (
-    <section className="surface w-full px-5 py-4 sm:px-6">
-      <DashboardSectionHeader
-        title="문제 풀이 현황"
-        description="어떤 문제를 풀었는지 한눈에 확인하세요"
+    <div className="mt-4 grid max-w-[520px] grid-cols-2 gap-2 text-[12px] font-900 sm:grid-cols-4">
+      {stats.map(stat => (
+        <span
+          key={stat.label}
+          className="flex min-h-8 items-center justify-center whitespace-nowrap rounded-[5px] bg-white/12 px-2 py-1 text-white/84"
+        >
+          {stat.label}
+          <em className="mx-1 not-italic text-[#FF5A65]">{stat.value}</em>
+          {stat.suffix}
+        </span>
+      ))}
+      <span className="flex min-h-8 items-center justify-center whitespace-nowrap rounded-[5px] bg-[#353B44] px-2 py-1 text-white">
+        {challenge.level ?? 'Premium'}
+      </span>
+    </div>
+  );
+}
+
+function TodayFeaturedChallengeCard({ challenge }) {
+  const navigate = useNavigate();
+
+  return (
+    <motion.article
+      key={challenge.id}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
+      className="relative flex min-h-[264px] overflow-hidden rounded-[8px] bg-[#12090B] text-white shadow-[0_16px_32px_rgba(15,23,42,0.16)]"
+    >
+      <img
+        src={challenge.image}
+        alt={`${challenge.title} 챌린지`}
+        className="absolute inset-0 h-full w-full object-cover opacity-74"
       />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,9,12,0.94)_0%,rgba(18,9,11,0.82)_48%,rgba(18,9,11,0.26)_100%)]" />
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {problems.map(problem => {
-          const meta = problemStatusMeta[problem.status];
+      <div className="relative z-10 flex w-full flex-col justify-between p-5 sm:p-6">
+        <div>
+          <h3 className="max-w-[390px] text-[23px] font-900 leading-tight">
+            {challenge.title}
+          </h3>
+          <FeaturedChallengeStats challenge={challenge} />
+          <p className="mt-4 max-w-[430px] text-[13px] font-800 leading-[22px] text-white/82">
+            {challenge.description ??
+              `${challenge.category} 분야의 핵심 보안 과제를 풀며 실전 감각을 점검해보세요.`}
+          </p>
+        </div>
 
-          return (
-            <article
-              key={problem.id}
-              className={`relative flex min-h-[104px] flex-col justify-between overflow-hidden rounded-[22px] border border-white/65 bg-gradient-to-br ${meta.glassClass} p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md transition hover:-translate-y-[1px]`}
-            >
-              <span
-                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(255,255,255,0.92),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.34),rgba(255,255,255,0.08)_52%,transparent)]"
-                style={{ boxShadow: `inset 0 -42px 70px ${meta.glowClass}` }}
-              />
-              <h3 className="relative z-10 line-clamp-2 text-[16px] font-900 leading-[22px] text-[#202832]">
-                {problem.title}
-              </h3>
-
-              <div className="relative z-10 mt-4 flex items-center justify-between gap-3">
-                <span className={`flex shrink-0 items-center gap-2 text-[13px] font-900 ${meta.textClass}`}>
-                  <span className={`h-2 w-2 rounded-full ${meta.barClass}`} />
-                  {meta.label}
-                </span>
-                <strong className="text-[16px] font-900 text-[#202832]">
-                  {problem.bestScore}점
-                </strong>
-              </div>
-            </article>
-          );
-        })}
+        <div className="mt-6 w-full">
+          <button
+            type="button"
+            onClick={() => navigate(`/challenge/${challenge.id}`)}
+            className="btn btn-primary btn-lg btn-block"
+          >
+            문제풀기
+          </button>
+        </div>
       </div>
-    </section>
+    </motion.article>
+  );
+}
+
+function TodayMiniChallengeCard({ challenge, onSelect }) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className="surface surface-interactive surface-no-hover-border flex min-w-[188px] cursor-pointer flex-col overflow-hidden text-left"
+    >
+      <div className="relative h-[106px] overflow-hidden bg-[#0B0D18]">
+        <img
+          src={challenge.image}
+          alt={`${challenge.title} 챌린지`}
+          className="h-full w-full object-cover"
+        />
+      </div>
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="line-clamp-2 min-h-[44px] text-[17px] font-900 leading-[22px] text-[#202832]">
+          {challenge.title}
+        </h3>
+        <span className="btn btn-secondary btn-md mt-auto w-full">열어보기</span>
+      </div>
+    </button>
+  );
+}
+
+function BrowseChallengeCard({ challenge }) {
+  return (
+    <article className="surface surface-interactive surface-no-hover-border min-w-[220px] overflow-hidden">
+      <div className="relative h-[96px] overflow-hidden bg-[#0B0D18]">
+        <img
+          src={challenge.image}
+          alt={`${challenge.title} 챌린지`}
+          className="h-full w-full object-cover"
+        />
+        <button
+          type="button"
+          aria-label={`${challenge.title} 저장`}
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#111722]/72 text-white"
+        >
+          
+        </button>
+      </div>
+      <div className="p-4">
+        <h3 className="line-clamp-2 min-h-[44px] text-[17px] font-900 leading-[22px] text-[#202832]">
+          {challenge.title}
+        </h3>
+      </div>
+    </article>
+  );
+}
+
+function RecommendedChallengeSection() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('추천');
+  const [selectedQueueIndex, setSelectedQueueIndex] = useState(0);
+  const featuredChallenge = todayRecommendedChallenges[selectedQueueIndex];
+  const miniChallenges = todayRecommendedChallenges.filter(
+    (_, index) => index !== selectedQueueIndex
+  );
+  const tabs = ['추천', '인기', '신규', '튜토리얼'];
+  const queueCount = todayRecommendedChallenges.length;
+  const selectQueueIndex = nextIndex => {
+    setSelectedQueueIndex(nextIndex);
+  };
+  const showPreviousChallenge = () => {
+    setSelectedQueueIndex(current => (current - 1 + queueCount) % queueCount);
+  };
+  const showNextChallenge = () => {
+    setSelectedQueueIndex(current => (current + 1) % queueCount);
+  };
+
+  return (
+    <div className="flex flex-col gap-5">
+      <section className="surface relative px-5 py-5 sm:px-6">
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-[20px] font-900 leading-none text-[#202832]">오늘의 도전 큐</h2>
+            <p className="mt-2 text-[13px] font-800 text-[#8A93A5]">
+              회원님의 기록을 바탕으로 추천한 챌린지예요.
+            </p>
+          </div>
+         
+        </div>
+
+        <button
+          type="button"
+          aria-label="이전 추천"
+          onClick={showPreviousChallenge}
+          className="absolute left-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)]"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          aria-label="다음 추천"
+          onClick={showNextChallenge}
+          className="absolute right-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)]"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+
+        <div className="grid gap-4 overflow-hidden px-9 lg:grid-cols-[minmax(0,2fr)_repeat(3,minmax(160px,0.72fr))]">
+          <AnimatePresence mode="wait">
+            <TodayFeaturedChallengeCard key={featuredChallenge.id} challenge={featuredChallenge} />
+          </AnimatePresence>
+          {miniChallenges.map(challenge => (
+            <TodayMiniChallengeCard
+              key={challenge.id}
+              challenge={challenge}
+              onSelect={() =>
+                selectQueueIndex(
+                  todayRecommendedChallenges.findIndex(item => item.id === challenge.id)
+                )
+              }
+            />
+          ))}
+        </div>
+
+        <div className="mt-5 flex justify-center gap-2">
+          {todayRecommendedChallenges.map((challenge, index) => (
+            <button
+              key={challenge.id}
+              type="button"
+              aria-label={`${challenge.title} 추천 보기`}
+              onClick={() => selectQueueIndex(index)}
+              className={`h-2 w-2 rounded-full ${
+                index === selectedQueueIndex ? 'bg-[#FF4854]' : 'bg-[#D1D7E0]'
+              }`}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="surface px-5 py-5 sm:px-6">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-6">
+            <h2 className="text-[20px] font-900 text-[#202832]">챌린지 둘러보기</h2>
+            <div className="flex items-center gap-5 text-[13px] font-900">
+              {tabs.map(tab => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  className={`border-b-2 pb-2 transition ${
+                    activeTab === tab
+                      ? 'border-[#FF4854] text-[#FF4854]'
+                      : 'border-transparent text-[#9AA3AF] hover:text-[#596575]'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/kategorie')}
+            className="flex items-center gap-1 text-[13px] font-900 text-[#202832]"
+          >
+            전체 챌린지 보기 <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+          {challengeBrowseItems.map(challenge => (
+            <BrowseChallengeCard key={challenge.id} challenge={challenge} />
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -1177,26 +1332,14 @@ function TokenEfficiencyCard() {
               </div>
             </div>
 
-            <div className="mt-8 flex w-fit flex-wrap items-center gap-5 rounded-[8px] border border-[#EEF1F5] bg-white px-5 py-3 text-[15px] font-900 text-[#6F7885]">
-              <span>
-                포인트 <strong className="ml-1 text-[#202832]">{points}</strong>
-              </span>
-              <span className="h-5 w-px bg-[#E2E7EE]" />
-              <span>
-                현재 효율 백분위{' '}
-                <strong className="ml-1 text-[#FF4854]">{efficiencyPercent}%</strong>
-              </span>
-            </div>
+            
           </div>
         </div>
 
         <div className="grid min-w-0 gap-4 sm:grid-cols-3 xl:grid-cols-3">
           <div className="surface-muted flex min-h-[190px] flex-col justify-end px-6 py-5">
-            <p className="text-[18px] font-900 text-[#596575]">획득 포인트</p>
-            <strong className="mt-6 block text-[46px] font-900 leading-none text-[#202832]">
-              {points}
-            </strong>
-            <p className="mt-4 text-[14px] font-800 text-[#8A93A5]">현재 누적</p>
+            
+            
           </div>
           <div className="flex min-h-[190px] flex-col justify-end rounded-[8px] border border-[#FFB8BE] bg-[#FFF7F8] px-6 py-5 shadow-[0_12px_26px_rgba(255,72,84,0.08)]">
             <p className="text-[18px] font-900 text-[#FF4854]">최저 사용량</p>

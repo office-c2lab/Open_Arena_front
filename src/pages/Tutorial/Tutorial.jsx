@@ -6,7 +6,6 @@ import TutorialElementImage from '@/assets/images/t1.png';
 import TutorialChatTokenImage from '@/assets/images/t2.png';
 import TutorialJudgeFailureImage from '@/assets/images/t3.png';
 import TutorialJudgeSuccessImage from '@/assets/images/t4.png';
-import ChallengeImage from '@/assets/images/challenge.png';
 import StartCardBg from '@/assets/images/start_cardbg.png';
 import NoTryCardBg from '@/assets/images/notry.png';
 import ChallengeBg from '@/assets/images/chalbg.png';

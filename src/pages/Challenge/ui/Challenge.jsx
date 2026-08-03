@@ -11,7 +11,6 @@ import {
   Trophy,
   XCircle,
 } from 'lucide-react';
-import ChallengeImage from '@/assets/images/challenge.png';
 import UserIcon from '@/assets/icons/user.svg';
 import TigerImage from '@/assets/images/tiger.png';
 import GreenTigerImage from '@/assets/images/green_tiger.png';
@@ -295,7 +294,7 @@ function ChallengeSolverList() {
 function ChallengePreview({ challenge }) {
   return (
     <div className="h-[210px] overflow-hidden rounded-[4px] bg-[#12070A]">
-      <img src={ChallengeImage} alt={challenge.title} className="h-full w-full object-cover" />
+      <img src={challenge.image} alt={challenge.title} className="h-full w-full object-cover" />
     </div>
   );
 }

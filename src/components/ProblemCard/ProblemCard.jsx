@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import tutorialImage from '../../assets/images/tutorial.png';
-import challengeImage from '../../assets/images/challenge.png';
+import challengeImage from '../../assets/images/problemimages/p1.png';
 
 import SolveProblemButton from '../Button/SolveProblemButton';
 import CategoryTag from '../Tag/CategoryTag';
