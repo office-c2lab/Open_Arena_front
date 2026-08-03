@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ThinkingOrb } from 'thinking-orbs';
 
-export default function ChatBubble({ role, content, isTyping = false }) {
+export default function ChatBubble({ role, content, isTyping = false, compact = false }) {
   const [displayedText, setDisplayedText] = useState(content);
   const prevContentRef = useRef(content);
 
@@ -47,7 +47,13 @@ export default function ChatBubble({ role, content, isTyping = false }) {
             : 'border border-[#323746] bg-[#222632] text-white rounded-r-2xl rounded-tl-2xl shadow-[0_3px_8px_rgba(15,23,42,0.10)]'
         }`}
       >
-        <p className="body-large font-500 whitespace-pre-wrap leading-7">{displayedText}</p>
+        <p
+          className={`font-500 whitespace-pre-wrap ${
+            compact ? 'text-sm leading-6' : 'body-large leading-7'
+          }`}
+        >
+          {displayedText}
+        </p>
       </div>
     </div>
   );

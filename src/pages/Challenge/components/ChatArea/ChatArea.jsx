@@ -5,6 +5,7 @@ import useModalStore from '@/stores/useModalStore';
 import { useChatSession } from '@/hooks/useChatSession';
 import { useChatMessages } from '@/hooks/useChatMessages';
 import { useSessionStore } from '@/stores/useSessionStore';
+import { successPanelsData, failedPanelsData } from '../../data/challengeModalData';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 import ChatControls from './ChatControls';
@@ -19,7 +20,14 @@ export default function ChatArea({
   teamId,
   sessions = [],
 }) {
-  const { openResetModal, openSubmitModal } = useModalStore();
+  const {
+    openResetModal,
+    openSubmitModal,
+    openSuccessModal,
+    openFailedModal,
+    setChallengeResults,
+    setChallengeRewardPoints,
+  } = useModalStore();
   const { sessionStatus } = useSessionStore();
   const queryClient = useQueryClient();
 
@@ -76,6 +84,40 @@ export default function ChatArea({
 
   const displayMessages = Array.isArray(messages) ? messages : [];
   const isAiTyping = displayMessages.some(msg => msg.isTyping);
+  const normalizedSessionStatus = sessionStatus?.toLowerCase();
+  const hasJudgeResult =
+    normalizedSessionStatus === 'success' ||
+    normalizedSessionStatus === 'fail' ||
+    normalizedSessionStatus === 'failed';
+  const activeSession = sessions.find(session => session.id === sessionId);
+
+  const handleViewJudgeResult = () => {
+    if (!hasJudgeResult) {
+      openSubmitModal();
+      return;
+    }
+
+    const isSuccess = normalizedSessionStatus === 'success';
+    const basePanels = isSuccess ? successPanelsData : failedPanelsData;
+    const judgeReason = activeSession?.judge_reason;
+
+    setChallengeResults(
+      basePanels.map((panel, index) => ({
+        status: isSuccess ? 'success' : 'failed',
+        data: {
+          ...panel,
+          title: panel.animalName,
+          description: index === 0 && judgeReason ? judgeReason : panel.description,
+        },
+      }))
+    );
+    setChallengeRewardPoints(
+      activeSession?.earned_points ?? activeSession?.points ?? activeSession?.score ?? null
+    );
+
+    if (isSuccess) openSuccessModal();
+    else openFailedModal();
+  };
 
   // 입력 disabled 조건
   const isChatAreaDisabled =
@@ -115,9 +157,11 @@ export default function ChatArea({
             ResetIcon={ResetIcon}
             openResetModal={openResetModal}
             openSubmitModal={openSubmitModal}
+            openJudgeResult={handleViewJudgeResult}
             clearSession={clearSession}
             isDisabled={isChatAreaDisabled}
             sessionId={sessionId}
+            sessionStatus={sessionStatus}
           />
         </div>
       </div>

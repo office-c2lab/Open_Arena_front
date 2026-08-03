@@ -15,14 +15,16 @@ import challenge2025Ci05 from '@/assets/2025 LLM CHALLENGE/ci05.jpeg';
 import challenge2025Ci06 from '@/assets/2025 LLM CHALLENGE/ci06.jpeg';
 import challenge2025Ci07 from '@/assets/2025 LLM CHALLENGE/ci07.jpeg';
 import challenge2025Ci08 from '@/assets/2025 LLM CHALLENGE/ci08.jpeg';
+import apc01 from '@/assets/APC/apc1.png';
+import apc02 from '@/assets/APC/apc2.png';
+import apc03 from '@/assets/APC/apc3.png';
+import apc04 from '@/assets/APC/apc4.png';
+import apc05 from '@/assets/APC/apc5.png';
+import apc06 from '@/assets/APC/apc6.png';
+import apc07 from '@/assets/APC/apc7.png';
 import arenaComingSoon from '@/assets/2026 LLM CHALLENGE/comingsoon.png';
 
-import {
-  Container,
-  GradientCard,
-  SectionTitle,
-  SECTION_TITLE_REVEAL,
-} from './LandingPage.primitives';
+import { Container, GradientCard, SectionTitle, SECTION_TITLE_REVEAL } from './LandingPage.primitives';
 
 export default function TestimonialsSection() {
   const MASONRY_ROW_HEIGHT = 8;
@@ -67,6 +69,20 @@ export default function TestimonialsSection() {
       ctaLabel: '지난 대회 보기',
     },
     {
+      key: 'apc',
+      title: '2026 AI Prompt Challenge',
+      description: (
+        <>
+          2026 AI 보안연구회 워크샵에서 진행된 AI Prompt Challenge 현장을 확인해보세요.
+          <br />
+          대회에 함께해주신 모든 참가자분들께 감사드립니다.
+        </>
+      ),
+      image: apc01,
+      photos: [apc01, apc02, apc03, apc04, apc05, apc06, apc07],
+      ctaLabel: 'AI Prompt Challenge 보기',
+    },
+    {
       key: '2026',
       title: '2026 대회 준비 중',
       description: '앞으로 열릴 2026 대회에도 많은 관심과 기대 부탁드립니다.',
@@ -85,8 +101,7 @@ export default function TestimonialsSection() {
     selectedArchiveItem && previewIndex !== null ? selectedArchiveItem.photos[previewIndex] : null;
 
   const movePreview = direction => {
-    if (!selectedArchiveItem || previewIndex === null || selectedArchiveItem.photos.length <= 1)
-      return;
+    if (!selectedArchiveItem || previewIndex === null || selectedArchiveItem.photos.length <= 1) return;
 
     const totalPhotos = selectedArchiveItem.photos.length;
     setPreviewIndex(currentIndex => (currentIndex + direction + totalPhotos) % totalPhotos);
@@ -101,9 +116,7 @@ export default function TestimonialsSection() {
     const imageHeight = image.getBoundingClientRect().height;
     const span = Math.ceil((imageHeight + MASONRY_GAP) / (MASONRY_ROW_HEIGHT + MASONRY_GAP));
 
-    setPhotoSpans(currentSpans =>
-      currentSpans[photoKey] === span ? currentSpans : { ...currentSpans, [photoKey]: span }
-    );
+    setPhotoSpans(currentSpans => (currentSpans[photoKey] === span ? currentSpans : { ...currentSpans, [photoKey]: span }));
   };
 
   const updateAllPhotoSpans = () => {
@@ -263,7 +276,7 @@ export default function TestimonialsSection() {
               className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3"
               style={{ gridAutoRows: `${MASONRY_ROW_HEIGHT}px` }}
             >
-              {selectedArchiveItem.photos.map((photo, index) =>
+              {selectedArchiveItem.photos.map((photo, index) => (
                 (() => {
                   const photoKey = `${selectedArchiveItem.key}-${index}-${photo}`;
 
@@ -287,7 +300,7 @@ export default function TestimonialsSection() {
                     </button>
                   );
                 })()
-              )}
+              ))}
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@ export default function FaqCompositeSection() {
     <section id="faq" className="relative py-16 sm:py-20">
       <Container>
         <motion.div className="flex flex-col gap-24 sm:gap-28" {...SECTION_COPY_REVEAL}>
-          {/* <AgentArenaPromoSection /> */}
+           {/* <AgentArenaPromoSection /> */}
           <FaqSection />
         </motion.div>
       </Container>

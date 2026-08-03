@@ -8,6 +8,7 @@ export default function ChatInput({
   isDisabled,
   disabledPlaceholder,
   sessionStatus,
+  compact = false,
 }) {
   // 상태 정규화
   const normalizedStatus = sessionStatus?.toLowerCase();
@@ -19,7 +20,11 @@ export default function ChatInput({
     const isSuccess = normalizedStatus === 'success';
 
     return (
-      <div className="w-full h-[120px] md:h-[133px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md flex flex-col items-center justify-center px-4 text-center">
+      <div
+        className={`flex w-full flex-col items-center justify-center rounded-[20px] border border-white/65 bg-white/52 px-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md ${
+          compact ? 'h-[82px]' : 'h-[120px] md:h-[133px]'
+        }`}
+      >
         <p className="text-gray-600 text-sm md:text-base leading-relaxed">
           {isSuccess ? (
             <>
@@ -49,9 +54,15 @@ export default function ChatInput({
 
   // 기본 입력창
   return (
-    <div className="w-full h-[120px] md:h-[133px] rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md p-3 md:p-4 flex items-start relative">
-      <textarea
-        className="no-scrollbar w-full h-full resize-none bg-transparent focus:outline-none body-large text-[#0F172A] placeholder:text-[#8A93A5] pr-12 overflow-y-auto"
+    <div
+      className={`relative flex w-full items-start rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md ${
+        compact ? 'h-[76px] p-3' : 'h-[120px] p-3 md:h-[133px] md:p-4'
+      }`}
+      >
+        <textarea
+        className={`no-scrollbar h-full w-full resize-none overflow-y-auto bg-transparent text-[#0F172A] placeholder:text-[#8A93A5] focus:outline-none ${
+          compact ? 'pr-10 text-sm leading-5' : 'body-large pr-12'
+        }`}
         placeholder={
           isDisabled
             ? disabledPlaceholder || '전송 중입니다...'
@@ -69,17 +80,19 @@ export default function ChatInput({
       />
 
       <button
-        className={`flex-shrink-0 w-10 h-10 ${
+        className={`flex-shrink-0 ${
+          compact ? 'h-8 w-8' : 'h-10 w-10'
+        } ${
           inputValue.trim()
             ? 'bg-[#FF4854] hover:bg-[#FF4854]/90 cursor-pointer shadow-[0_3px_8px_rgba(255,72,84,0.16)]'
             : 'bg-[#D9DADB]'
-        } rounded-full flex justify-center items-center absolute right-4 bottom-4 transition-all duration-200 ${
+          } rounded-full flex justify-center items-center absolute ${compact ? 'bottom-3 right-3' : 'bottom-4 right-4'} transition-all duration-200 ${
           isDisabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         disabled={!inputValue.trim() || isDisabled}
         onClick={handleSend}
       >
-        <img src={SendIcon} alt="Send" className="w-5 h-5" />
+        <img src={SendIcon} alt="Send" className={compact ? 'h-4 w-4' : 'h-5 w-5'} />
       </button>
     </div>
   );

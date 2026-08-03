@@ -1,13 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
-import {
-  cn,
-  Container,
-  GradientCard,
-  SectionTitle,
-  SECTION_TITLE_REVEAL,
-} from './LandingPage.primitives';
+import { cn, Container, GradientCard, SectionTitle, SECTION_TITLE_REVEAL } from './LandingPage.primitives';
 
 export default function HowItWorksSection() {
   const timelineItems = useMemo(
@@ -119,7 +113,10 @@ export default function HowItWorksSection() {
     <section id="how" className="relative py-16 sm:py-20">
       <Container>
         <div className="flex flex-col gap-10">
-          <motion.div className="max-w-3xl space-y-4" {...SECTION_TITLE_REVEAL}>
+          <motion.div
+            className="max-w-3xl space-y-4"
+            {...SECTION_TITLE_REVEAL}
+          >
             <SectionTitle
               eyebrow="Season Schedule"
               title="어떻게 진행되나요?"

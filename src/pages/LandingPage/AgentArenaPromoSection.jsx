@@ -72,9 +72,7 @@ export default function AgentArenaPromoSection() {
               </div>
 
               <div className="absolute left-[42%] top-[70%] h-[34px] w-[62px] rounded-[14px] border border-[#8acbff]/24 bg-[linear-gradient(180deg,rgba(76,133,255,0.52),rgba(36,70,154,0.24))] shadow-[0_10px_18px_rgba(47,106,255,0.18)]">
-                <div className="flex h-full items-center justify-center text-[12px] text-white/75">
-                  ◔
-                </div>
+                <div className="flex h-full items-center justify-center text-[12px] text-white/75">◔</div>
               </div>
 
               <div className="pointer-events-none absolute left-[22%] top-[35%] h-[2px] w-[152px] rotate-[11deg] bg-gradient-to-r from-transparent via-[#c26cff]/58 to-transparent" />

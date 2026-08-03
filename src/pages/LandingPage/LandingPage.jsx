@@ -1,7 +1,8 @@
 import React, { Suspense, lazy, useEffect, useRef } from 'react';
 import { useInView } from 'framer-motion';
 
-import { JUDGE_SHOTS } from './LandingPage.constants';
+import { JUDGE_SHOTS, SPONSOR_LOGOS } from './LandingPage.constants';
+import { LogoMarquee } from './LandingPage.primitives';
 import Hero from './HeroSection';
 
 const Features = lazy(() => import('./FeaturesSection'));
@@ -9,6 +10,7 @@ const JudgeStackOnlySection = lazy(() => import('./JudgeStackOnlySection'));
 const Showcase = lazy(() => import('./ShowcaseSection'));
 const Testimonials = lazy(() => import('./TestimonialsSection'));
 const FAQ = lazy(() => import('./FaqCompositeSection'));
+const LandingFooter = lazy(() => import('./LandingFooterSection'));
 
 function LazySectionMount({ children, minHeight = 600, margin = '-10% 0px' }) {
   const ref = useRef(null);
@@ -54,13 +56,13 @@ export default function LandingPage() {
         />
       </div> */}
       <section className="bg-white px-5 py-14 text-center sm:py-20">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#ff4854]">
-          AI Red Teaming Evaluation Next-gen AI
-        </p>
-        <h2 className="mt-5 text-balance text-3xl font-semibold tracking-[-0.04em] text-[#171717] sm:text-5xl">
-          차세대 AI 레드팀 평가 플랫폼
-        </h2>
-      </section>
+  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#ff4854]">
+    AI Red Teaming Evaluation Next-gen AI
+  </p>
+  <h2 className="mt-5 text-balance text-3xl font-semibold tracking-[-0.04em] text-[#171717] sm:text-5xl">
+    차세대 AI 레드팀 평가 플랫폼
+  </h2>
+</section>
       <Suspense fallback={<div aria-hidden="true" style={{ minHeight: 880 }} />}>
         <Features />
       </Suspense>
@@ -79,6 +81,9 @@ export default function LandingPage() {
       </LazySectionMount>
       <Suspense fallback={<div aria-hidden="true" style={{ minHeight: 920 }} />}>
         <FAQ />
+      </Suspense>
+      <Suspense fallback={<div aria-hidden="true" style={{ minHeight: 280 }} />}>
+        <LandingFooter />
       </Suspense>
     </div>
   );

@@ -22,17 +22,17 @@ export const SuccessSummaryPanel = ({ imageSrc, animalName, title, description, 
   const animalNameColor = SUCCESS_COLOR_PRIMARY;
 
   return (
-    <div className="w-[877px] h-[160px] flex rounded-[20px] border border-[#EEF0F4] bg-white shadow-[0_8px_22px_rgba(15,23,42,0.08)] overflow-hidden">
+    <div className="flex min-h-[150px] w-full max-w-[877px] overflow-hidden rounded-[20px] border border-[#EEF0F4] bg-white shadow-[0_8px_22px_rgba(15,23,42,0.08)] sm:min-h-[160px]">
       {/* 1. 좌측 초록색 영역 (160px x 160px) - Flex Item 1 */}
       <div
-        className="w-[160px] h-full flex flex-col justify-between items-center py-[16px] z-0 border-r border-[#EEF0F4]"
+        className="z-0 flex w-[118px] shrink-0 flex-col items-center justify-between border-r border-[#EEF0F4] py-[14px] sm:w-[160px] sm:py-[16px]"
         style={{
           backgroundColor: SUCCESS_COLOR_BACKGROUND, // 초록 배경
         }}
       >
         {/* 3. 동물 이미지 그룹 */}
         <div
-          className={`w-[80px] h-[90px] flex justify-center items-center rounded-full border border-white shadow-[0_6px_14px_rgba(15,23,42,0.07)] overflow-hidden bg-white`}
+          className="flex h-[74px] w-[68px] items-center justify-center overflow-hidden rounded-full border border-white bg-white shadow-[0_6px_14px_rgba(15,23,42,0.07)] sm:h-[90px] sm:w-[80px]"
         >
           <img
             src={imageSrc}
@@ -55,16 +55,16 @@ export const SuccessSummaryPanel = ({ imageSrc, animalName, title, description, 
         </p>
       </div>
       {/* 2. 우측 흰색 내용 박스 (717px x 160px) - Flex Item 2 */}
-      <div className="w-[717px] h-full bg-white flex flex-col items-center z-0">
+      <div className="z-0 flex min-w-0 flex-1 flex-col items-center bg-white">
         {/* 5. 동물 이름 (모델명) */}
         <p
-          className="heading-3 font-700 text-center w-full mt-[14px]"
+          className="heading-3 font-700 mt-[14px] w-full px-3 text-center"
           style={{ color: animalNameColor }}
         >
           {title} {/* 💡 Success에서는 title이 모델명입니다. */}
         </p>
         {/* 6. 설명 텍스트 - 중앙 배치 */}
-        <p className="no-scrollbar body-large font-500 text-center text-[#0F172A] w-[680px] h-[90px] overflow-auto mt-[36px] px-4 leading-7">
+        <p className="no-scrollbar body-large font-500 mt-5 max-h-[82px] w-full overflow-auto px-4 text-center leading-7 text-[#0F172A] sm:mt-[36px] sm:max-h-[90px] sm:px-6">
           {description}
         </p>
       </div>
@@ -100,17 +100,17 @@ export const FailedSummaryPanel = ({
   const animalNameColor = panelTheme.primaryColor;
 
   return (
-    <div className="w-[877px] h-[160px] flex rounded-[20px] border border-[#EEF0F4] bg-white shadow-[0_8px_22px_rgba(15,23,42,0.08)] overflow-hidden">
+    <div className="flex min-h-[150px] w-full max-w-[877px] overflow-hidden rounded-[20px] border border-[#EEF0F4] bg-white shadow-[0_8px_22px_rgba(15,23,42,0.08)] sm:min-h-[160px]">
       {/* 1. 좌측 색상 영역 */}
       <div
-        className="w-[160px] h-full flex flex-col justify-between items-center py-[16px] z-0 border-r border-[#EEF0F4]"
+        className="z-0 flex w-[118px] shrink-0 flex-col items-center justify-between border-r border-[#EEF0F4] py-[14px] sm:w-[160px] sm:py-[16px]"
         style={{
           backgroundColor: panelTheme.backgroundColor, // 동적 배경색
         }}
       >
         {/* 3. 동물 이미지 그룹 */}
         <div
-          className={`w-[80px] h-[90px] flex justify-center items-center rounded-full border border-white shadow-[0_6px_14px_rgba(15,23,42,0.07)] overflow-hidden bg-white`}
+          className="flex h-[74px] w-[68px] items-center justify-center overflow-hidden rounded-full border border-white bg-white shadow-[0_6px_14px_rgba(15,23,42,0.07)] sm:h-[90px] sm:w-[80px]"
         >
           <img
             src={imageSrc}
@@ -133,16 +133,16 @@ export const FailedSummaryPanel = ({
         </p>
       </div>
       {/* 2. 우측 흰색 내용 박스 */}
-      <div className="w-[717px] h-full bg-white flex flex-col items-center z-0">
+      <div className="z-0 flex min-w-0 flex-1 flex-col items-center bg-white">
         {/* 5. 모델 이름 (title) */}
         <p
-          className="heading-3 font-700 text-center w-full mt-[14px]"
+          className="heading-3 font-700 mt-[14px] w-full px-3 text-center"
           style={{ color: animalNameColor }}
         >
           {title} {/* 💡 [수정] 모델명 사용 */}
         </p>
         {/* 6. 설명 텍스트 */}
-        <p className="no-scrollbar body-large font-500 text-center text-[#0F172A] w-[680px] h-[90px] overflow-auto mt-[10px] px-4 leading-7">
+        <p className="no-scrollbar body-large font-500 mt-[10px] max-h-[96px] w-full overflow-auto px-4 text-center leading-7 text-[#0F172A] sm:max-h-[100px] sm:px-6">
           {description}
         </p>
       </div>

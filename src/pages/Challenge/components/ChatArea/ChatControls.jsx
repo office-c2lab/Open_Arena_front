@@ -4,9 +4,18 @@ export default function ChatControls({
   ResetIcon,
   openResetModal,
   openSubmitModal,
+  openJudgeResult,
   isDisabled,
   sessionId,
+  sessionStatus,
 }) {
+  const normalizedSessionStatus = sessionStatus?.toLowerCase();
+  const hasJudgeResult =
+    normalizedSessionStatus === 'success' ||
+    normalizedSessionStatus === 'fail' ||
+    normalizedSessionStatus === 'failed';
+  const isSubmitDisabled = !hasJudgeResult && (isDisabled || !sessionId);
+
   return (
     <div className="flex justify-between flex-shrink-0 gap-4 md:gap-16">
       {/* 새로운 대화 시작 버튼 — 항상 활성화! */}
@@ -30,12 +39,12 @@ export default function ChatControls({
       {/* 제출하기 버튼 */}
       <button
         className={`flex-1 h-[44px] bg-[#FF4854] rounded-[12px] flex justify-center items-center shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 ${
-          isDisabled || !sessionId
+          isSubmitDisabled
             ? 'opacity-50 cursor-not-allowed'
             : 'hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer'
         }`}
-        onClick={openSubmitModal}
-        disabled={isDisabled || !sessionId}
+        onClick={hasJudgeResult ? openJudgeResult : openSubmitModal}
+        disabled={isSubmitDisabled}
       >
         <span
           className="
@@ -43,7 +52,7 @@ export default function ChatControls({
             text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px]
           "
         >
-          제출하기
+          {hasJudgeResult ? '저지 결과 보기' : '제출하기'}
         </span>
       </button>
     </div>

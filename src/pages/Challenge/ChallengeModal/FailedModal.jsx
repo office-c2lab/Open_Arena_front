@@ -61,12 +61,10 @@ export default function FailedModal({
   return (
     <div className={wrapperClassName}>
       <div
-        className={`w-[990px] h-[680px] bg-white rounded-[30px] border border-[#EEF0F4] flex flex-col items-center shadow-[0_18px_40px_rgba(15,23,42,0.16)] ${previewScaleClassName}`}
+        className={`flex max-h-[calc(100vh-32px)] w-[min(990px,calc(100vw-32px))] flex-col items-center overflow-hidden rounded-[30px] border border-[#EEF0F4] bg-white py-6 shadow-[0_18px_40px_rgba(15,23,42,0.16)] sm:py-8 ${previewScaleClassName}`}
       >
-        <div className="h-[30px]" />
-
         {/* === 결과 패널 === */}
-        <div className="flex flex-col gap-4 w-[877px]">
+        <div className="no-scrollbar flex w-full max-w-[877px] flex-1 flex-col gap-4 overflow-y-auto px-4 sm:px-0">
           {sortedPanels.map((result, index) => {
             const data = result.data;
             const verdict = (result.status || '').toUpperCase(); // ✅ 대문자 통일
@@ -92,18 +90,18 @@ export default function FailedModal({
         </div>
 
         {/* === 버튼 그룹 === */}
-        <div className="flex justify-between w-[862px] mt-10">
+        <div className="mt-6 flex w-full max-w-[862px] flex-col gap-3 px-4 sm:mt-8 sm:flex-row sm:justify-between sm:px-0">
           <button
             type="button"
             onClick={restartHandler}
-            className="w-[400px] h-[61px] bg-[#D9DADB] rounded-[18px] hover:bg-[#BFC0C4] transition-all duration-200 hover:-translate-y-[1px] cursor-pointer"
+            className="flex h-[56px] w-full cursor-pointer items-center justify-center rounded-[18px] bg-[#D9DADB] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#BFC0C4] sm:h-[61px] sm:w-[400px]"
           >
             <span className="heading-2 font-700 text-[#515151]">새로운 대화 시작</span>
           </button>
           <button
             type="button"
             onClick={continueHandler}
-            className="w-[400px] h-[61px] bg-[#FF4854] rounded-[18px] shadow-[0_3px_8px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] transition-all duration-200 cursor-pointer"
+            className="flex h-[56px] w-full cursor-pointer items-center justify-center rounded-[18px] bg-[#FF4854] shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] sm:h-[61px] sm:w-[400px]"
           >
             <span className="heading-2 font-700 text-white">다른 문제 풀기</span>
           </button>

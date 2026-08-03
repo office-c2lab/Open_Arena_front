@@ -61,6 +61,14 @@ export default function ShowcaseSection() {
         endDate: '2026-07-31',
         side: 'right',
       },
+      {
+        title: '2026. 7. 14. ~ 16.',
+        label: '2026 AI Prompt Challenge',
+        desc: 'AI Prompt Challenge 진행',
+        startDate: '2026-07-14',
+        endDate: '2026-07-16',
+        side: 'left',
+      },
     ],
     []
   );
@@ -116,7 +124,8 @@ export default function ShowcaseSection() {
         'h-8 w-8 border-[#ffb9bf] bg-[#ff4854] shadow-[0_0_0_6px_rgba(255,212,216,0.45),0_0_0_12px_rgba(255,232,235,0.5),0_0_26px_rgba(255,72,84,0.16)] sm:h-10 sm:w-10',
     },
     upcoming: {
-      dotClassName: 'h-4 w-4 border-[#ffb9bf] bg-white shadow-[0_0_0_4px_rgba(255,232,235,0.65)]',
+      dotClassName:
+        'h-4 w-4 border-[#ffb9bf] bg-white shadow-[0_0_0_4px_rgba(255,232,235,0.65)]',
     },
   };
 
@@ -132,8 +141,8 @@ export default function ShowcaseSection() {
               title="어떻게 운영되고 진행되나요?"
               desc={
                 <>
-                  ARENA는 시즌과 대회 두 가지 방식으로 운영되며, <br />
-                  시즌 공지부터 접수, 예선, 본선까지 이어지는 흐름 안에서 참가자 경험이 설계됩니다.
+                  ARENA는 시즌과 대회 두 가지 방식으로 운영되며, <br />시즌 공지부터 접수, 예선, 본선까지
+                  이어지는 흐름 안에서 참가자 경험이 설계됩니다.
                 </>
               }
             />
@@ -143,9 +152,9 @@ export default function ShowcaseSection() {
             className="max-w-3xl text-sm leading-7 text-[#57534e] sm:text-base"
             {...SECTION_COPY_REVEAL}
           >
-            시즌은 일정 주기로 새롭게 운영되며 새로운 문제가 출제되고, <br />
-            대회는 참가자들이 LLM Safety 공격 성과를 겨루는 방식으로 진행됩니다. <br />
-            아래 타임라인에서 전체 운영 흐름을 한눈에 볼 수 있습니다.
+            시즌은 일정 주기로 새롭게 운영되며 새로운 문제가 출제되고, <br />대회는 참가자들이 LLM Safety
+            공격 성과를 겨루는 방식으로 진행됩니다. <br />아래 타임라인에서 전체 운영 흐름을 한눈에 볼 수
+            있습니다.
           </motion.div>
 
           <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[linear-gradient(180deg,#090b11_0%,#050608_100%)] p-6 sm:p-8 lg:p-10">
