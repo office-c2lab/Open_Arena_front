@@ -6,7 +6,6 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useNavigate } from 'react-router-dom';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
@@ -854,7 +853,7 @@ function ActivityHeatmapCell({ day, cell, onTooltipShow, onTooltipHide }) {
       onMouseLeave={onTooltipHide}
       onFocus={showTooltip}
       onBlur={onTooltipHide}
-      className={`relative h-[22px] w-[22px] rounded-[5px] outline-none transition hover:scale-110 focus-visible:scale-110 focus-visible:ring-2 focus-visible:ring-[#FF4854]/35 ${activityLevels[cell.level]}`}
+      className={`relative h-[22px] w-[22px] cursor-pointer rounded-[5px] outline-none transition hover:scale-110 focus-visible:scale-110 focus-visible:ring-2 focus-visible:ring-[#FF4854]/35 ${activityLevels[cell.level]}`}
     />
   );
 }
@@ -866,7 +865,7 @@ function ChallengeActivityHeatmap() {
   return (
     <section className="mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 lg:px-0">
       <ActivityHeatmapTooltip tooltip={activeTooltip} />
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(430px,430px)] lg:items-stretch">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-stretch">
         <DashboardProfileSummaryCard />
         <RecentAttemptProblemsCard />
       </div>
@@ -1027,90 +1026,6 @@ function RecentAttemptProblemsCard() {
   );
 }
 
-function FeaturedChallengeStats({ challenge }) {
-  const stats = [
-    {
-      label: '성공',
-      value: challenge.solvedCount ?? 7,
-      suffix: '명',
-    },
-    {
-      label: '평균',
-      value: (challenge.averageTokens ?? 1240).toLocaleString(),
-      suffix: '토큰',
-    },
-    {
-      label: '최대',
-      value: challenge.maximumPoints ?? 100,
-      suffix: '포인트',
-    },
-  ];
-
-  return (
-    <div className="mt-4 grid max-w-[520px] grid-cols-2 gap-2 text-[12px] font-900 sm:grid-cols-4">
-      {stats.map(stat => (
-        <span
-          key={stat.label}
-          className="flex min-h-8 items-center justify-center whitespace-nowrap rounded-[5px] bg-white/12 px-2 py-1 text-white/84"
-        >
-          {stat.label}
-          <em className="mx-1 not-italic text-[#FF5A65]">{stat.value}</em>
-          {stat.suffix}
-        </span>
-      ))}
-      <span className="flex min-h-8 items-center justify-center whitespace-nowrap rounded-[5px] bg-[#353B44] px-2 py-1 text-white">
-        {challenge.level ?? 'Premium'}
-      </span>
-    </div>
-  );
-}
-
-function TodayFeaturedChallengeCard({ challenge }) {
-  const navigate = useNavigate();
-
-  return (
-    <motion.article
-      key={challenge.id}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.18, ease: 'easeOut' }}
-      className="relative flex min-h-[264px] overflow-hidden rounded-[8px] bg-[#12090B] text-white shadow-[0_16px_32px_rgba(15,23,42,0.16)]"
-    >
-      <img
-        src={challenge.image}
-        alt={`${challenge.title} 챌린지`}
-        className="absolute inset-0 h-full w-full object-cover opacity-74"
-      />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,9,12,0.94)_0%,rgba(18,9,11,0.82)_48%,rgba(18,9,11,0.26)_100%)]" />
-      <ChallengeProgressBadge status={challenge.status} />
-
-      <div className="relative z-10 flex w-full flex-col justify-between p-5 sm:p-6">
-        <div>
-          <h3 className="max-w-[390px] text-[23px] font-900 leading-tight">
-            {challenge.title}
-          </h3>
-          <FeaturedChallengeStats challenge={challenge} />
-          <p className="mt-4 max-w-[430px] text-[13px] font-800 leading-[22px] text-white/82">
-            {challenge.description ??
-              `${challenge.category} 분야의 핵심 보안 과제를 풀며 실전 감각을 점검해보세요.`}
-          </p>
-        </div>
-
-        <div className="mt-6 w-full">
-          <button
-            type="button"
-            onClick={() => navigate(`/challenge/${challenge.id}`)}
-            className="btn btn-primary btn-lg btn-block"
-          >
-            문제풀기
-          </button>
-        </div>
-      </div>
-    </motion.article>
-  );
-}
-
 function BrowseChallengeCard({ challenge, onClick }) {
   const Component = onClick ? 'button' : 'article';
 
@@ -1118,7 +1033,7 @@ function BrowseChallengeCard({ challenge, onClick }) {
     <Component
       type={onClick ? 'button' : undefined}
       onClick={onClick}
-      className="surface surface-interactive surface-no-hover-border min-w-[220px] overflow-hidden text-left"
+      className={`surface surface-interactive surface-no-hover-border min-w-[220px] overflow-hidden text-left ${onClick ? 'cursor-pointer' : ''}`}
     >
       <div className="relative h-[96px] overflow-hidden bg-[#0B0D18]">
         <img
@@ -1223,7 +1138,7 @@ function RecommendedChallengeSection() {
           type="button"
           aria-label="이전 추천"
           onClick={showPreviousChallenge}
-          className="absolute left-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)]"
+          className="absolute left-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)] transition hover:-translate-y-[calc(50%+2px)] hover:border-[#FFB8BE] hover:bg-[#FFF3F4] hover:text-[#FF4854] hover:shadow-[0_12px_24px_rgba(255,72,84,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
@@ -1231,43 +1146,27 @@ function RecommendedChallengeSection() {
           type="button"
           aria-label="다음 추천"
           onClick={showNextChallenge}
-          className="absolute right-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)]"
+          className="absolute right-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)] transition hover:-translate-y-[calc(50%+2px)] hover:border-[#FFB8BE] hover:bg-[#FFF3F4] hover:text-[#FF4854] hover:shadow-[0_12px_24px_rgba(255,72,84,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
 
-        <div className="overflow-hidden px-9" ref={emblaRef}>
-          <div className="-ml-4 flex min-h-[280px] items-center">
+        <div className="mx-auto max-w-[1000px] overflow-hidden px-10" ref={emblaRef}>
+          <div className="-ml-16 flex items-stretch">
             {todayRecommendedChallenges.map((challenge, index) => {
               const isSelected = index === selectedQueueIndex;
 
               return (
                 <div
                   key={challenge.id}
-                  className="min-w-0 shrink-0 grow-0 basis-[82%] pl-4 sm:basis-[68%] lg:basis-[58%] xl:basis-[54%]"
+                  className="min-w-0 shrink-0 grow-0 basis-[444px] pl-16"
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {isSelected ? (
-                      <TodayFeaturedChallengeCard
-                        key={`featured-${challenge.id}`}
-                        challenge={challenge}
-                      />
-                    ) : (
-                      <motion.div
-                        key={`compact-${challenge.id}`}
-                        initial={{ opacity: 0.55, scale: 0.94 }}
-                        animate={{ opacity: 0.72, scale: 0.96 }}
-                        exit={{ opacity: 0.55, scale: 0.94 }}
-                        transition={{ duration: 0.18, ease: 'easeOut' }}
-                        className="mx-auto max-w-[240px]"
-                      >
-                        <BrowseChallengeCard
-                          challenge={challenge}
-                          onClick={() => selectQueueIndex(index)}
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <PathCard
+                    path={challenge}
+                    status={challenge.status}
+                    
+                    onClick={() => navigate(`/challenge/${challenge.id}`)}
+                  />
                 </div>
               );
             })}
@@ -1281,7 +1180,7 @@ function RecommendedChallengeSection() {
               type="button"
               aria-label={`${challenge.title} 추천 보기`}
               onClick={() => selectQueueIndex(index)}
-              className={`h-2 w-2 rounded-full ${
+              className={`h-2 w-2 cursor-pointer rounded-full ${
                 index === selectedQueueIndex ? 'bg-[#FF4854]' : 'bg-[#D1D7E0]'
               }`}
             />
@@ -1298,7 +1197,7 @@ function RecommendedChallengeSection() {
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveStatusTab(tab.key)}
-                className={`border-b-2 pb-2 transition ${
+                className={`cursor-pointer border-b-2 pb-2 transition ${
                   activeStatusTab === tab.key
                     ? 'border-[#FF4854] text-[#FF4854]'
                     : 'border-transparent text-[#9AA3AF] hover:text-[#596575]'
@@ -1312,7 +1211,11 @@ function RecommendedChallengeSection() {
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {visibleChallengeBrowseItems.map(challenge => (
-            <BrowseChallengeCard key={challenge.id} challenge={challenge} />
+            <BrowseChallengeCard
+              key={challenge.id}
+              challenge={challenge}
+              onClick={() => navigate(`/challenge/${challenge.id}`)}
+            />
           ))}
         </div>
       </section>
