@@ -22,6 +22,7 @@ import { PATHS } from '@/pages/Kategorie/Kategorie';
 import { useProblemBundle } from '@/hooks/useProblemBundle';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionStore } from '@/stores/useSessionStore';
+import ChallengeEnterTransition from '../components/ChallengeEnterTransition';
 
 const challengeOverview = {
   title: '시스템 보안 목표 달성하기',
@@ -231,7 +232,6 @@ function ChallengeSolverList() {
   const solvers = mockChallengeSolvers.map(solver =>
     solver.isMe && myDisplayName ? { ...solver, name: myDisplayName } : solver
   );
-  const myRank = solvers.findIndex(solver => solver.isMe) + 1;
 
   const handleFindMyRank = () => {
     setIsMyRankFocused(true);
@@ -490,9 +490,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
   );
 }
 
-function SidePanel({ challenge, record }) {
-  const navigate = useNavigate();
-  const { problemId } = useParams();
+function SidePanel({ challenge, record, onStartChallenge, isStarting }) {
   const statusMeta =
     record.status === '성공'
       ? {
@@ -539,10 +537,11 @@ function SidePanel({ challenge, record }) {
 
         <button
           type="button"
-          onClick={() => navigate(`/challenge/${problemId}/play`)}
+          onClick={onStartChallenge}
+          disabled={isStarting}
           className="btn btn-primary btn-lg absolute bottom-[7%] left-[7%] right-[7%] z-10"
         >
-          챌린지 도전하기
+          {isStarting ? '챌린지 진입 중' : '챌린지 도전하기'}
           <ChevronRight className="h-4 w-4" />
         </button>
       </section>
@@ -596,6 +595,7 @@ export default function Challenge() {
   const currentTeamId = useAuthStore(state => state.teamInfo?.id);
   const setSessionId = useSessionStore(state => state.setSessionId);
   const setSessionStatus = useSessionStore(state => state.setSessionStatus);
+  const [pendingPlayPath, setPendingPlayPath] = useState(null);
   const challenge = useMemo(
     () => PATHS.find(item => item.id === Number(problemId)) ?? PATHS[0],
     [problemId]
@@ -622,10 +622,15 @@ export default function Challenge() {
         ? 'bg-[#3F454C] text-white'
         : 'bg-[#353B44] text-white';
   const [activeTab, setActiveTab] = useState('overview');
+
+  const startPlayTransition = () => {
+    setPendingPlayPath(`/challenge/${challenge.id}/play`);
+  };
+
   const handleSessionOpen = (sessionId, status) => {
     setSessionId(sessionId);
     setSessionStatus(status === 'failed' ? 'fail' : status);
-    navigate(`/challenge/${challenge.id}/play`);
+    startPlayTransition();
   };
   const tabs = [
     { id: 'overview', label: '챌린지 개요' },
@@ -720,8 +725,22 @@ export default function Challenge() {
           ) : null}
         </main>
 
-        <SidePanel challenge={challenge} record={record} />
+        <SidePanel
+          challenge={challenge}
+          record={record}
+          onStartChallenge={startPlayTransition}
+          isStarting={Boolean(pendingPlayPath)}
+        />
       </div>
+
+      <ChallengeEnterTransition
+        isOpen={Boolean(pendingPlayPath)}
+        title={challenge.title}
+        onComplete={() => {
+          if (!pendingPlayPath) return;
+          navigate(pendingPlayPath, { viewTransition: true });
+        }}
+      />
     </div>
   );
 }

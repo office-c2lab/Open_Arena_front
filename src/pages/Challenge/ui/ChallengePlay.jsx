@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 
 import { useProblemBundleQuery } from '@/hooks/useProblemBundleQuery';
 import useModalStore from '@/stores/useModalStore';
@@ -19,8 +20,11 @@ import FailedModal from '../ChallengeModal/FailedModal';
 import SuccessModal from '../ChallengeModal/SuccesModal';
 import ChallengeBg from '@/assets/images/chalbg.png';
 
+const MotionDiv = motion.div;
+
 export default function ChallengePlay() {
   const navigate = useNavigate();
+  const shouldReduceMotion = useReducedMotion();
   const { problemId } = useParams();
   const currentProblemId = parseInt(problemId, 10) || undefined;
   const currentTeamId = useAuthStore(state => state.teamInfo?.id) || undefined;
@@ -124,7 +128,12 @@ export default function ChallengePlay() {
   }, [setResetChatAction]);
 
   return (
-    <div className="relative flex h-full min-w-[1120px] w-full gap-6 overflow-hidden bg-[#E5EAF0] p-6">
+    <MotionDiv
+      className="relative flex h-full min-w-[1120px] w-full gap-6 overflow-hidden bg-[#E5EAF0] p-6"
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 26, filter: 'blur(10px)' }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+      transition={{ duration: 0.44, ease: [0.16, 1, 0.3, 1] }}
+    >
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.55]"
         style={{ backgroundImage: `url(${ChallengeBg})` }}
@@ -167,6 +176,6 @@ export default function ChallengePlay() {
       )}
       {isFailedModalOpen && <FailedModal />}
       {isSuccessModalOpen && <SuccessModal />}
-    </div>
+    </MotionDiv>
   );
 }
