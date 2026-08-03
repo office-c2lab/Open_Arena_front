@@ -229,7 +229,34 @@ const DEFAULT_FILTERS = {
   difficulty: '',
 };
 
-const SOLVED_PROBLEM_IDS = new Set([3]);
+const PROBLEM_STATUS_BY_ID = {
+  1: 'untried',
+  2: 'failed',
+  3: 'success',
+  4: 'untried',
+  5: 'failed',
+  6: 'success',
+  7: 'untried',
+  8: 'failed',
+  9: 'success',
+  10: 'untried',
+  11: 'failed',
+};
+
+const problemStatusMeta = {
+  success: {
+    label: '성공',
+    className: 'text-[#1EC186]',
+  },
+  failed: {
+    label: '실패',
+    className: 'text-[#FF4854]',
+  },
+  untried: {
+    label: '미도전',
+    className: 'text-white',
+  },
+};
 
 const tagColors = {
   Beginner: 'border-[#8FE07A] text-[#38A12A]',
@@ -238,7 +265,19 @@ const tagColors = {
   Hard: 'border-[#FF7D8A] text-[#FF4854]',
 };
 
-function PathPreview({ path, isSolved = false }) {
+function ProblemStatusBadge({ status = 'untried' }) {
+  const meta = problemStatusMeta[status] ?? problemStatusMeta.untried;
+
+  return (
+    <span
+      className={`absolute right-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-[12px] font-900 shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${meta.className}`}
+    >
+      {meta.label}
+    </span>
+  );
+}
+
+function PathPreview({ path, status = 'untried', label }) {
   return (
     <div className="relative h-[180px] overflow-hidden">
       <img
@@ -246,12 +285,12 @@ function PathPreview({ path, isSolved = false }) {
         alt={`${path.title} 챌린지`}
         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
       />
-      {isSolved ? (
-        <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-[#BFEFD0] bg-[#ECFDF3] px-3 py-1.5 text-[12px] font-900 text-[#079C4C] shadow-[0_8px_18px_rgba(7,156,76,0.18)]">
-          <Check className="h-3.5 w-3.5" strokeWidth={3} />
-          성공 완료
+      {label ? (
+        <span className="absolute left-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-[12px] font-900 text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
+          {label}
         </span>
       ) : null}
+      <ProblemStatusBadge status={status} />
       <div className="absolute inset-0 flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
         <p className="text-[13px] font-800 leading-[18px] text-white">
           {path.title} 시나리오에서 AI의 보안 규칙과 취약점을 분석해 목표를 달성하세요.
@@ -264,7 +303,7 @@ function PathPreview({ path, isSolved = false }) {
   );
 }
 
-export function PathCard({ path, onClick, isSolved = false }) {
+export function PathCard({ path, onClick, status = 'untried', label }) {
   const levelClass =
     path.level === 'Try for Free'
       ? 'bg-[#D8F9E4] text-[#1BAE5B]'
@@ -277,7 +316,7 @@ export function PathCard({ path, onClick, isSolved = false }) {
       className="surface surface-interactive surface-no-hover-border group flex min-w-0 cursor-pointer flex-col overflow-hidden"
       onClick={onClick}
     >
-      <PathPreview path={path} isSolved={isSolved} />
+      <PathPreview path={path} status={status} label={label} />
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-[21px] font-900 text-[#151A21]">{path.title}</h2>
         <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
@@ -572,7 +611,7 @@ const ChallengeSection = () => {
               <PathCard
                 key={path.id}
                 path={path}
-                isSolved={SOLVED_PROBLEM_IDS.has(path.id)}
+                status={PROBLEM_STATUS_BY_ID[path.id] ?? 'untried'}
                 onClick={() => handleSolveProblem(path.id)}
               />
             ))}
