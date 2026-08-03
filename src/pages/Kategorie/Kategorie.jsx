@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Check, ChevronDown, Search } from 'lucide-react';
+import { RotateCcw, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 import ProblemImage1 from '@/assets/images/problemimages/p1.png';
@@ -206,29 +206,6 @@ export const PATHS = [
   },
 ];
 
-const SEASONS = ['시즌1', '시즌2'];
-
-const CATEGORIES = [
-  'System Hacking',
-  'Reverse Engineering',
-  'Cryptography',
-  'Cloud',
-  'Blockchain',
-  'Hardware',
-];
-
-const FILTER_GROUPS = [
-  { key: 'category', title: '카테고리', items: CATEGORIES },
-  { key: 'tier', title: 'Tier', items: ['Tier 0', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4'] },
-  { key: 'difficulty', title: '난이도', items: ['Beginner', 'Easy', 'Medium', 'Hard'] },
-];
-
-const DEFAULT_FILTERS = {
-  category: '',
-  tier: '',
-  difficulty: '',
-};
-
 const PROBLEM_STATUS_BY_ID = {
   1: 'untried',
   2: 'failed',
@@ -350,134 +327,25 @@ export function PathCard({ path, onClick, status = 'untried', label }) {
   );
 }
 
-function FilterColumn({ title, value, options, onChange }) {
-  const allOptions = [
-    { label: `${title} 전체`, value: '' },
-    ...options.map(option => ({ label: option, value: option })),
-  ];
-
-  return (
-    <div className="min-w-0">
-      <p className="mb-3 text-[13px] font-900 text-[#2E3338]">{title}</p>
-      <div className="flex flex-col gap-2">
-        {allOptions.map(option => {
-          const isSelected = value === option.value;
-
-          return (
-            <button
-              key={option.label}
-              type="button"
-              onClick={() => onChange(option.value)}
-              className={`group flex h-9 w-full cursor-pointer items-center gap-2 rounded-[3px] border px-3 text-left text-[12px] font-800 transition ${
-                isSelected
-                  ? 'border-[#FF4854] bg-[#FFF3F4] text-[#151A21]'
-                  : 'border-[#D8DDE4] bg-white text-[#596575] hover:border-[#FFB8BE] hover:text-[#FF4854]'
-              }`}
-            >
-              <span
-                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px] border transition ${
-                  isSelected
-                    ? 'border-[#FF4854] bg-[#FF4854]'
-                    : 'border-[#C9D0DA] bg-white group-hover:border-[#FF4854]'
-                }`}
-              >
-                {isSelected ? <Check className="h-3 w-3 text-white" strokeWidth={3} /> : null}
-              </span>
-              <span>{option.label}</span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function SeasonColumn({ value, options, onChange }) {
-  const allOptions = [
-    { label: '전체 시즌', value: '' },
-    ...options.map(option => ({ label: option, value: option })),
-  ];
-
-  return (
-    <div className="min-w-0">
-      <p className="mb-3 text-[13px] font-900 text-[#2E3338]">시즌</p>
-      <div className="flex flex-col gap-2">
-        {allOptions.map(option => {
-          const isSelected = value === option.value;
-
-          return (
-            <button
-              key={option.label}
-              type="button"
-              onClick={() => onChange(option.value)}
-              className={`group flex h-9 w-full cursor-pointer items-center gap-2 rounded-[3px] border px-3 text-left text-[12px] font-800 transition ${
-                isSelected
-                  ? 'border-[#FF4854] bg-[#FFF3F4] text-[#151A21]'
-                  : 'border-[#D8DDE4] bg-white text-[#596575] hover:border-[#FFB8BE] hover:text-[#FF4854]'
-              }`}
-            >
-              <span
-                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px] border transition ${
-                  isSelected
-                    ? 'border-[#FF4854] bg-[#FF4854]'
-                    : 'border-[#C9D0DA] bg-white group-hover:border-[#FF4854]'
-                }`}
-              >
-                {isSelected ? <Check className="h-3 w-3 text-white" strokeWidth={3} /> : null}
-              </span>
-              <span>{option.label}</span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 const ChallengeSection = () => {
   const navigate = useNavigate();
-  const [activeSeason, setActiveSeason] = useState('');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const filterSummary = useMemo(
-    () =>
-      [
-        activeSeason || '전체 시즌',
-        filters.category || '카테고리 전체',
-        filters.tier || 'Tier 전체',
-        filters.difficulty || '난이도 전체',
-      ].join(' | '),
-    [activeSeason, filters]
-  );
 
   const filteredPaths = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
 
     return PATHS.filter(
       path =>
-        (!activeSeason || path.season === activeSeason) &&
-        (!filters.category || path.category === filters.category) &&
-        (!filters.tier || path.tier === filters.tier) &&
-        (!filters.difficulty || path.difficulty === filters.difficulty) &&
         (!normalizedKeyword ||
           [path.title, path.category, path.difficulty, path.tier, ...path.tags]
             .join(' ')
             .toLowerCase()
             .includes(normalizedKeyword))
     );
-  }, [activeSeason, filters, keyword]);
+  }, [keyword]);
 
   const visiblePaths = filteredPaths.slice(0, 11);
-
-  const updateFilter = useCallback((key, value) => {
-    setFilters(current => ({ ...current, [key]: value }));
-  }, []);
-
-  const resetFilters = useCallback(() => {
-    setFilters(DEFAULT_FILTERS);
-  }, []);
 
   const handleSearch = useCallback(
     event => {
@@ -486,6 +354,11 @@ const ChallengeSection = () => {
     },
     [searchInput]
   );
+
+  const handleResetSearch = useCallback(() => {
+    setSearchInput('');
+    setKeyword('');
+  }, []);
 
   const handleSolveProblem = useCallback(
     problemId => {
@@ -517,91 +390,41 @@ const ChallengeSection = () => {
 
       <div
         id="challenge-path-section"
-        className={`border-b border-[#E6E9EE] ${isFilterOpen ? 'mb-7 pb-5' : 'mb-5 pb-3'}`}
+        className="mb-8 flex flex-col gap-4 border-b border-[#E6E9EE] pb-5 sm:flex-row sm:items-center sm:justify-between"
       >
-        <div className={`${isFilterOpen ? 'mb-5' : 'mb-0'} flex items-start justify-between gap-3`}>
+        <h2 className="border-b-2 border-[#FF4854] pb-3 text-[18px] font-700 text-black">
+          챌린지
+        </h2>
+        <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
+          <label className="relative min-w-0 flex-1">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
+            <input
+              type="search"
+              value={searchInput}
+              onChange={event => setSearchInput(event.target.value)}
+              placeholder="관심 있는 챌린지를 검색해보세요."
+              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+            />
+          </label>
+          <button type="submit" className="btn btn-primary btn-lg">
+            검색
+          </button>
           <button
             type="button"
-            className="cursor-default border-b-2 border-[#FF4854] pb-3 text-[18px] font-700 text-black"
+            aria-label="검색 초기화"
+            onClick={handleResetSearch}
+            className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-[12px] border border-[#FF4854] bg-[#FF4854] text-white shadow-[0_6px_14px_rgba(255,72,84,0.12)] transition hover:-translate-y-0.5 hover:border-[#E73541] hover:bg-[#E73541] hover:shadow-[0_8px_18px_rgba(255,72,84,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
           >
-            {activeSeason || '전체 시즌'}
+            <RotateCcw className="h-5 w-5" strokeWidth={2.5} />
           </button>
-          <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
-            {!isFilterOpen ? (
-              <p className="min-w-0 truncate text-right text-[12px] font-700 text-[#7A8491]">
-                {filterSummary}
-              </p>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => setIsFilterOpen(current => !current)}
-              className={`btn btn-sm shrink-0 ${
-                isFilterOpen
-                  ? 'btn-secondary border-[#FFB8BE] text-[#FF4854]'
-                  : 'btn-secondary'
-              }`}
-            >
-              {isFilterOpen ? '필터 접기' : '필터 펼치기'}
-              <ChevronDown
-                className={`h-4 w-4 transition ${isFilterOpen ? 'rotate-180' : ''}`}
-                strokeWidth={2.4}
-              />
-            </button>
-          </div>
-        </div>
-
-        {isFilterOpen ? (
-          <>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <SeasonColumn value={activeSeason} options={SEASONS} onChange={setActiveSeason} />
-              {FILTER_GROUPS.map(group => (
-                <FilterColumn
-                  key={group.key}
-                  title={group.title}
-                  value={filters[group.key]}
-                  options={group.items}
-                  onChange={value => updateFilter(group.key, value)}
-                />
-              ))}
-            </div>
-
-            <div className="mt-4 flex justify-end">
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="btn btn-secondary btn-sm min-w-[92px] text-[#98A1AD]"
-              >
-                초기화
-              </button>
-            </div>
-          </>
-        ) : null}
+        </form>
       </div>
-
-      <form onSubmit={handleSearch} className="mb-8 flex gap-3">
-        <label className="relative min-w-0 flex-1">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
-          <input
-            type="search"
-            value={searchInput}
-            onChange={event => setSearchInput(event.target.value)}
-            placeholder="관심 있는 강의를 검색해보세요."
-            className="h-10 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
-          />
-        </label>
-        <button
-          type="submit"
-          className="btn btn-primary btn-md"
-        >
-          검색
-        </button>
-      </form>
 
       <div>
         <section className="min-w-0">
           <div className="mb-5 flex items-center justify-between">
             <h1 className="text-[16px] font-700 text-[#2E3338]">
-              {activeSeason || '전체 시즌'}{' '}
+              전체 챌린지{' '}
               <span className="text-[#FF4854]">{visiblePaths.length}</span>
             </h1>
           </div>

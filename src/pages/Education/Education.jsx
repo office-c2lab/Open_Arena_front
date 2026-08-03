@@ -5,6 +5,7 @@ import {
   BookOpen,
   CalendarDays,
   CheckCircle2,
+  RotateCcw,
   Search,
   XCircle,
 } from 'lucide-react';
@@ -270,6 +271,11 @@ function EducationList() {
     setKeyword(searchInput);
   };
 
+  const handleResetSearch = () => {
+    setSearchInput('');
+    setKeyword('');
+  };
+
   return (
     <div className="w-full bg-white pb-16">
       <section className="relative mb-9 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
@@ -290,8 +296,8 @@ function EducationList() {
       </section>
 
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-[18px] font-700 text-black]">학습 자료</h2>
-        <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,440px)]">
+        <h2 className="border-b-2 border-[#FF4854] pb-3 text-[18px] font-700 text-black">학습 자료</h2>
+        <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
           <label className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
             <input
@@ -299,7 +305,7 @@ function EducationList() {
               value={searchInput}
               onChange={event => setSearchInput(event.target.value)}
               placeholder="관심 있는 교육 자료를 검색해보세요."
-              className="h-11 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
             />
           </label>
           <button
@@ -307,6 +313,14 @@ function EducationList() {
             className="btn btn-primary btn-lg"
           >
             검색
+          </button>
+          <button
+            type="button"
+            aria-label="검색 초기화"
+            onClick={handleResetSearch}
+            className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-[12px] border border-[#FF4854] bg-[#FF4854] text-white shadow-[0_6px_14px_rgba(255,72,84,0.12)] transition hover:-translate-y-0.5 hover:border-[#E73541] hover:bg-[#E73541] hover:shadow-[0_8px_18px_rgba(255,72,84,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
+          >
+            <RotateCcw className="h-5 w-5" strokeWidth={2.5} />
           </button>
         </form>
       </div>

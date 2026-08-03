@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { ArrowRight, Clock3, Search, Star } from 'lucide-react';
+import { ArrowRight, Clock3, RotateCcw, Search, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import TutorialCardImage from '@/assets/images/tutorial.png';
@@ -316,6 +316,11 @@ export default function TutorialList() {
     [searchInput]
   );
 
+  const handleResetSearch = useCallback(() => {
+    setSearchInput('');
+    setKeyword('');
+  }, []);
+
   return (
     <div className="w-full bg-white pb-14">
       <section className="relative mb-8 h-[220px] overflow-hidden rounded-[6px] bg-black md:h-[320px]">
@@ -346,7 +351,7 @@ export default function TutorialList() {
         >
           Tutorial
         </button>
-        <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,440px)]">
+        <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
           <label className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
             <input
@@ -354,14 +359,22 @@ export default function TutorialList() {
               value={searchInput}
               onChange={event => setSearchInput(event.target.value)}
               placeholder="관심 있는 튜토리얼을 검색해보세요."
-              className="h-10 w-full rounded-[3px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
             />
           </label>
           <button
             type="submit"
-            className="btn btn-primary btn-md"
+            className="btn btn-primary btn-lg"
           >
             검색
+          </button>
+          <button
+            type="button"
+            aria-label="검색 초기화"
+            onClick={handleResetSearch}
+            className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-[12px] border border-[#FF4854] bg-[#FF4854] text-white shadow-[0_6px_14px_rgba(255,72,84,0.12)] transition hover:-translate-y-0.5 hover:border-[#E73541] hover:bg-[#E73541] hover:shadow-[0_8px_18px_rgba(255,72,84,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
+          >
+            <RotateCcw className="h-5 w-5" strokeWidth={2.5} />
           </button>
         </form>
       </div>

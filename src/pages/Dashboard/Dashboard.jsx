@@ -863,14 +863,14 @@ function ChallengeActivityHeatmap() {
   const [activeTooltip, setActiveTooltip] = useState(null);
 
   return (
-    <section className="mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 lg:px-0">
+    <section className="mx-auto flex w-full max-w-[1200px] flex-col gap-7 px-4 py-7 sm:px-6 lg:px-0">
       <ActivityHeatmapTooltip tooltip={activeTooltip} />
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-stretch">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-stretch">
         <DashboardProfileSummaryCard />
         <RecentAttemptProblemsCard />
       </div>
       
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
         <section className="surface max-w-full px-5 py-4 sm:px-6">
           <DashboardSectionHeader title="도전 활동 히트맵" description="일별 도전 참여 현황" />
           <div className="mt-5 flex max-w-full justify-center">
@@ -1122,8 +1122,8 @@ function RecommendedChallengeSection() {
   }, [emblaApi, updateSelectedQueueIndex]);
 
   return (
-    <div className="flex flex-col gap-5">
-      <section className="surface relative px-5 py-5 sm:px-6">
+    <div className="flex flex-col gap-7">
+      <section className="surface relative px-5 py-6 sm:px-6">
         <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-[20px] font-900 leading-none text-[#202832]">추천 챌린지</h2>
@@ -1188,7 +1188,7 @@ function RecommendedChallengeSection() {
         </div>
       </section>
 
-      <section className="surface px-5 py-5 sm:px-6">
+      <section className="surface px-5 py-6 sm:px-6">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <h2 className="text-[20px] font-900 text-[#202832]">챌린지 현황</h2>
           <div className="flex items-center gap-5 text-[13px] font-900">

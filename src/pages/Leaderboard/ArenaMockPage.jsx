@@ -4,6 +4,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  RotateCcw,
   Search,
   ShieldCheck,
 } from 'lucide-react';
@@ -329,6 +330,12 @@ export default function Leaderboard() {
     setCurrentPage(1);
   };
 
+  const handleResetSearch = () => {
+    setSearchInput('');
+    setKeyword('');
+    setCurrentPage(1);
+  };
+
   const goToPage = page => {
     setCurrentPage(Math.min(Math.max(page, 1), totalPages));
   };
@@ -370,23 +377,28 @@ export default function Leaderboard() {
 
             <form
               onSubmit={handleSearch}
-              className="flex h-12 w-full overflow-hidden rounded-full border border-[#F3C6CB] bg-white/78 shadow-[0_6px_18px_rgba(245,47,69,0.08)] backdrop-blur-sm sm:w-[min(100%,500px)]"
+              className="flex w-full gap-3 sm:w-[min(100%,500px)]"
             >
               <label className="relative min-w-0 flex-1">
-                <Search className="pointer-events-none absolute left-5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-[#FF6B74]" />
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
                 <input
                   type="search"
                   value={searchInput}
                   onChange={event => setSearchInput(event.target.value)}
                   placeholder="유저 닉네임을 검색해 보세요."
-                  className="h-full w-full border-0 bg-transparent pl-12 pr-4 text-[14px] font-700 text-[#344050] outline-none placeholder:text-[#A0A9B6]"
+                  className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
                 />
               </label>
-              <button
-                type="submit"
-                className="flex h-full shrink-0 cursor-pointer items-center justify-center bg-[#FF4854] px-8 text-[14px] font-900 text-white transition hover:bg-[#E73541]"
-              >
+              <button type="submit" className="btn btn-primary btn-lg">
                 검색
+              </button>
+              <button
+                type="button"
+                aria-label="검색 초기화"
+                onClick={handleResetSearch}
+                className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-[12px] border border-[#FF4854] bg-[#FF4854] text-white shadow-[0_6px_14px_rgba(255,72,84,0.12)] transition hover:-translate-y-0.5 hover:border-[#E73541] hover:bg-[#E73541] hover:shadow-[0_8px_18px_rgba(255,72,84,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
+              >
+                <RotateCcw className="h-5 w-5" strokeWidth={2.5} />
               </button>
             </form>
           </div>
