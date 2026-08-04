@@ -29,7 +29,7 @@ export default function HeroSection({ onVisibilityChange }) {
   return (
     <section
       ref={heroRef}
-      className="relative flex min-h-[calc(86vh-64px)] items-center overflow-hidden bg-black"
+      className="relative flex min-h-[calc(100vh)] items-center overflow-hidden bg-black"
     >
       <motion.div
         className="absolute inset-0"
@@ -43,13 +43,13 @@ export default function HeroSection({ onVisibilityChange }) {
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(255,72,84,0.06),transparent_30%)]" />
 
-      <Container className="relative w-full py-10 sm:py-12 lg:py-14">
-        <div className="grid items-center gap-8">
+      <Container className="relative w-full py-20 sm:py-24 lg:py-26">
+        <div className="grid items-center gap-12">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
-            className="flex flex-col items-center gap-7 text-center"
+            className="flex flex-col items-center gap-10 text-center"
           >
             <div className="flex flex-col items-center text-center">
               <ArenaOpeningHeroArt />
@@ -58,7 +58,7 @@ export default function HeroSection({ onVisibilityChange }) {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, ease: 'easeOut', delay: 1.2 }}
-                className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-center sm:mt-3 sm:gap-x-5"
+                className="mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-center sm:mt-5 sm:gap-x-6"
               >
                 <span className="text-label font-medium uppercase tracking-[0.32em] text-white sm:text-label">
                   <span className="mr-1 text-card-title font-strong tracking-[0.18em] text-[#ff4854] sm:text-card-title">
@@ -100,11 +100,11 @@ export default function HeroSection({ onVisibilityChange }) {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, ease: 'easeOut', delay: 1.35 }}
-                className="mt-5 flex flex-col items-center sm:mt-6 sm:flex-row sm:justify-center"
+                className="mt-6 flex flex-col items-center sm:mt-7 sm:flex-row sm:justify-center lg:mt-8"
               >
                 <a
-                  href="/"
-                  className="group relative z-[1] inline-flex min-w-[260px] items-center justify-center overflow-hidden rounded-2xl bg-[#1d1d1d] px-6 py-3.5 text-body font-bold text-[#747474] no-underline shadow-[0_4px_12px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.16),inset_0_1px_1px_rgba(255,255,255,0.05)] transition duration-300 hover:scale-[1.04] hover:bg-[#ff4854] hover:text-white hover:shadow-[0_0_90px_rgba(255,72,84,0.36),0_4px_12px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.16),inset_0_1px_1px_rgba(255,255,255,0.32)] active:scale-[1.02] sm:min-w-[272px] sm:px-7 sm:py-4 sm:text-body-lg"
+                  href="/dashboard"
+                  className="group relative z-[1] inline-flex min-w-[280px] items-center justify-center overflow-hidden rounded-2xl bg-[#1d1d1d] px-7 py-4 text-body-lg font-bold text-[#747474] no-underline shadow-[0_4px_12px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.16),inset_0_1px_1px_rgba(255,255,255,0.05)] transition duration-300 hover:scale-[1.04] hover:bg-[#ff4854] hover:text-white hover:shadow-[0_0_90px_rgba(255,72,84,0.36),0_4px_12px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.16),inset_0_1px_1px_rgba(255,255,255,0.32)] active:scale-[1.02]"
                 >
                   <span
                     aria-hidden="true"

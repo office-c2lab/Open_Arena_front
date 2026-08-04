@@ -24,8 +24,8 @@ const TokenInfoCard = ({ problemId, teamId, tokenUsed, compact = false }) => {
       className={`w-full 
         ${compact ? 'h-[58px]' : 'h-[80px]'}
         flex flex-col justify-center
-        ${compact ? 'p-2.5' : 'p-4'} flex-shrink-0
-        glass-panel rounded-[20px]`}
+        ${compact ? 'px-5 py-2.5' : 'p-4'} flex-shrink-0
+        ${compact ? 'glass-subtle rounded-[18px]' : 'glass-panel rounded-[20px]'}`}
     >
       <div className="flex items-center">
         <div

@@ -70,7 +70,7 @@ export default function ChallengePlay() {
     ? '문제 정보를 불러오는 중입니다...'
     : undefined;
 
-  const { CHALLENGE_HEADER_INFO, activeTabContent, SESSIONS_LIST } = useMemo(() => {
+  const { CHALLENGE_HEADER_INFO, overviewSections, SESSIONS_LIST } = useMemo(() => {
     if (!problemBundleData?.problem) {
       return {
         CHALLENGE_HEADER_INFO: {
@@ -81,7 +81,7 @@ export default function ChallengePlay() {
           category: '일반',
           score: 0,
         },
-        activeTabContent: null,
+        overviewSections: [],
         SESSIONS_LIST: [],
       };
     }
@@ -95,22 +95,19 @@ export default function ChallengePlay() {
       score: problem.score,
     };
 
-    const tabContents = {
-      description: { title: '설명', content: problem.description },
-      goal: { title: '목표', content: problem.goal },
-      success: { title: '성공조건', content: problem.success_criteria },
-      failure: { title: '실패조건', content: problem.failure_criteria },
-    };
-
-    const design = TABS.find(tab => tab.id === activeTab);
-    const tabContent = tabContents[activeTab];
+    const sections = [
+      { id: 'description', title: '설명', content: problem.description },
+      { id: 'goal', title: '목표', content: problem.goal },
+      { id: 'success', title: '성공조건', content: problem.success_criteria },
+      { id: 'failure', title: '실패조건', content: problem.failure_criteria },
+    ];
 
     return {
       CHALLENGE_HEADER_INFO: headerInfo,
-      activeTabContent: { ...design, ...tabContent },
+      overviewSections: sections,
       SESSIONS_LIST: sessions,
     };
-  }, [problemBundleData, activeTab, isProblemBundleLoading]);
+  }, [problemBundleData, isProblemBundleLoading]);
 
   const hasSuccessSession = useMemo(() => {
     return SESSIONS_LIST?.some(s => s.status?.toLowerCase() === 'success');
@@ -141,7 +138,8 @@ export default function ChallengePlay() {
       <ChallengeInfoPanel
         TABS={TABS}
         activeTab={activeTab}
-        activeTabContent={activeTabContent}
+        overviewSections={overviewSections}
+        sessions={SESSIONS_LIST}
         handleTabClick={handleTabClick}
         CHALLENGE_HEADER_INFO={CHALLENGE_HEADER_INFO}
         isLoading={isProblemBundleLoading}

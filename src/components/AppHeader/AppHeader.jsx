@@ -17,7 +17,7 @@ const navItems = [
 
 const isNavItemActive = (item, pathname) => item.match.some(path => pathname.startsWith(path));
 
-export default function AppHeader() {
+export default function AppHeader({ isHidden = false }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { isLoggedIn, logout, teamInfo } = useAuthStore();
@@ -66,7 +66,13 @@ export default function AppHeader() {
   };
 
   return (
-    <header className="glass-subtle fixed inset-x-0 top-0 z-50 h-16 w-full border-x-0 border-t-0 border-b-[#ece7e1]">
+    <header
+      aria-hidden={isHidden}
+      inert={isHidden}
+      className={`glass-subtle fixed inset-x-0 top-0 z-50 h-16 w-full border-x-0 border-t-0 border-b-[#ece7e1] transition-[transform,opacity] duration-300 ease-out ${
+        isHidden ? 'pointer-events-none -translate-y-full opacity-0' : 'translate-y-0 opacity-100'
+      }`}
+    >
       <div className="flex h-full w-full items-center px-4 sm:px-12">
         <button
           type="button"

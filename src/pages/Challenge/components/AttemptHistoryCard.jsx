@@ -60,6 +60,7 @@ const AttemptHistoryCard = ({
   isActive,
   showAttemptNumber = true,
   attemptNumberVariant = 'badge',
+  compactSurface = false,
 }) => {
   let resultText, resultBgColor, summaryBgColor;
 
@@ -79,11 +80,11 @@ const AttemptHistoryCard = ({
 
   return (
     <div
-      className="glass-panel group flex h-[110px] w-full flex-shrink-0 cursor-pointer flex-col justify-between rounded-[20px] p-3 transition-all duration-200 hover:-translate-y-[1px] hover:border-white/80 hover:bg-white/60"
+      className={`${compactSurface ? 'glass-subtle rounded-[18px]' : 'glass-panel rounded-[20px]'} group flex h-[110px] w-full flex-shrink-0 cursor-pointer flex-col justify-between p-3 transition-all duration-200 hover:-translate-y-[1px] hover:border-white/80 hover:bg-white/60`}
       onClick={onClick}
       style={{
         borderColor: isActive ? 'rgba(71,85,105,0.45)' : 'rgba(255,255,255,0.65)',
-        boxShadow: isActive ? CARD_ACTIVE_SHADOW : CARD_SHADOW,
+        boxShadow: compactSurface ? undefined : isActive ? CARD_ACTIVE_SHADOW : CARD_SHADOW,
       }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 (Flex Row) */}

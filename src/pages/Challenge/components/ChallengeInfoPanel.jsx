@@ -1,19 +1,24 @@
 // src/features/Challenge/components/ChallengeInfoPanel.jsx
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import ApiInfoPanel from './ApiInfoPanel';
+import AttemptHistoryCard from './AttemptHistoryCard';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 import TokenInfoCard from './TokenInfoCard';
+import { useSessionStore } from '@/stores/useSessionStore';
 
 const TAB_ACCENT_COLOR_MAP = {
-  description: '#475569',
-  goal: '#E6AA02',
-  success: '#079C4C',
-  failure: '#FF4854',
+  overview: '#475569',
+  history: '#FF4854',
 };
 
 const TAB_TITLE_COLOR_CLASS_MAP = {
+  overview: 'text-[#475569]',
+  history: 'text-[#FF4854]',
+};
+
+const OVERVIEW_TITLE_COLOR_CLASS_MAP = {
   description: 'text-[#475569]',
   goal: 'text-[#E6AA02]',
   success: 'text-[#079C4C]',
@@ -29,12 +34,12 @@ const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
         <Skeleton className="h-4 w-full rounded mb-3" />
       </div>
       <div className="w-full flex-shrink-0 flex flex-col bg-white/30 flex-grow">
-        <div className="flex justify-center p-4 gap-2 border-b border-white/60 flex-shrink-0">
+        <div className="grid grid-cols-2 gap-2 border-b border-white/60 p-4 flex-shrink-0">
           {TABS.map(tab => (
             <button
               key={tab.id}
               onClick={e => handleTabClick(e, tab.id)}
-              className={`py-2 px-2 text-body-lg font-medium rounded-lg transition-colors duration-200 cursor-pointer
+              className={`w-full py-2 px-2 text-body-lg font-medium rounded-lg transition-colors duration-200 cursor-pointer
                 text-gray-500 border border-white/65 bg-white/45 hover:bg-white/65 whitespace-nowrap`}
             >
               {tab.title}
@@ -54,7 +59,8 @@ const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
 export default function ChallengeInfoPanel({
   TABS,
   activeTab,
-  activeTabContent,
+  overviewSections = [],
+  sessions = [],
   handleTabClick,
   CHALLENGE_HEADER_INFO,
   isLoading,
@@ -71,9 +77,37 @@ export default function ChallengeInfoPanel({
   const navigate = useNavigate();
   const [hoveredTab, setHoveredTab] = useState(null);
   const panelRef = useRef(null);
-  const gap = 1.15;
-  const padding = 1.2;
+  const { sessionId: currentSessionId, setSessionId, setSessionStatus } = useSessionStore();
   const lineHeight = 1.75;
+
+  const historyItems = useMemo(
+    () =>
+      sessions.map((session, index) => {
+        const status = session.status?.toLowerCase() || 'unsubmitted';
+        const isSubmitted = ['success', 'fail', 'failed'].includes(status);
+
+        return {
+          id: session.id,
+          status,
+          attemptNumber: sessions.length - index,
+          isSubmitted,
+          isSuccess: status === 'success',
+          isActive: session.id === currentSessionId,
+          promptSummary:
+            session.judge_reason?.split('\n')[0]?.slice(0, 50) ||
+            session.title ||
+            (isSubmitted ? '제출한 시도' : '새로운 대화'),
+        };
+      }),
+    [currentSessionId, sessions]
+  );
+
+  const handleHistoryClick = item => {
+    if (!problemId || item.id === currentSessionId) return;
+
+    setSessionId(item.id);
+    setSessionStatus(item.status === 'failed' ? 'fail' : item.status);
+  };
 
   if (isLoading) {
     return (
@@ -110,10 +144,8 @@ export default function ChallengeInfoPanel({
         {/* 탭 영역 */}
         <div className="relative w-full flex flex-col flex-grow min-h-0 px-4 pb-3">
           <div
-            className="glass-subtle flex flex-shrink-0 justify-between rounded-[18px]"
+            className="glass-subtle grid flex-shrink-0 grid-cols-2 rounded-[18px]"
             style={{
-              gap: `${Math.min(gap, 1)}rem`,
-              padding: `0 ${padding * 0.75}rem`,
               transition: 'all 0.2s ease',
             }}
           >
@@ -123,7 +155,7 @@ export default function ChallengeInfoPanel({
                 onClick={e => handleTabClick(e, tab.id)}
                 onMouseEnter={() => setHoveredTab(tab.id)}
                 onMouseLeave={() => setHoveredTab(null)}
-                className={`relative h-[58px] px-1 text-body-lg font-strong transition-colors duration-200 cursor-pointer whitespace-nowrap flex-shrink-0 ${
+                className={`relative h-[58px] w-full px-1 text-body-lg font-strong transition-colors duration-200 cursor-pointer whitespace-nowrap ${
                   activeTab === tab.id || hoveredTab === tab.id
                     ? TAB_TITLE_COLOR_CLASS_MAP[tab.id]
                     : 'text-[#0F172A]'
@@ -132,7 +164,7 @@ export default function ChallengeInfoPanel({
                 {tab.title}
                 {activeTab === tab.id ? (
                   <span
-                    className="absolute bottom-0 left-0 h-[5px] w-full rounded-t-full shadow-[0_2px_6px_rgba(131,123,189,0.20)]"
+                    className="absolute bottom-0 left-1/2 h-[3px] w-12 -translate-x-1/2 rounded-t-full shadow-[0_2px_6px_rgba(131,123,189,0.20)]"
                     style={{ backgroundColor: TAB_ACCENT_COLOR_MAP[tab.id] }}
                   />
                 ) : null}
@@ -141,53 +173,81 @@ export default function ChallengeInfoPanel({
           </div>
 
           {/* 탭 콘텐츠 */}
-          {activeTabContent && (
-            <div
-              className="flex-grow min-h-0 overflow-hidden pt-4"
-              style={{
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <div className="flex h-full min-h-0 flex-col pr-1">
-                <div className="surface-solid relative flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] p-6">
-                  <span
-                    className={`text-card-title font-strong ${activeTabContent.titleColor} block mb-6`}
-                  >
-                    {activeTabContent.title}
-                  </span>
+          <div className="min-h-0 flex-grow overflow-hidden pt-4">
+            <div className="flex h-full min-h-0 flex-col pr-1">
+              <div
+                className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-[18px] ${
+                  activeTab === 'overview' ? 'glass-subtle p-6' : 'p-0'
+                }`}
+              >
+                {activeTab === 'overview' ? (
+                  <div className="no-scrollbar min-h-0 flex-1 space-y-9 overflow-y-auto pr-1">
+                    {overviewSections.map(section => (
+                      <section key={section.id}>
+                        <h2
+                          className={`text-card-title font-strong ${OVERVIEW_TITLE_COLOR_CLASS_MAP[section.id]}`}
+                        >
+                          {section.title}
+                        </h2>
 
-                  <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto">
-                    {activeTab === 'description' && CHALLENGE_HEADER_INFO?.subtitle ? (
-                      <p className="mb-6 text-body-lg font-strong text-[#0F172A]">
-                        {CHALLENGE_HEADER_INFO.subtitle}
-                      </p>
-                    ) : null}
+                        {section.id === 'description' && CHALLENGE_HEADER_INFO?.subtitle ? (
+                          <p className="mt-4 text-body-lg font-strong text-[#0F172A]">
+                            {CHALLENGE_HEADER_INFO.subtitle}
+                          </p>
+                        ) : null}
 
-                    <p
-                      className="text-body-lg font-medium text-[#0F172A] whitespace-pre-wrap"
-                      style={{ lineHeight }}
-                    >
-                      {activeTabContent.content}
-                    </p>
+                        <p
+                          className="mt-4 whitespace-pre-wrap text-body-lg font-medium text-[#0F172A]"
+                          style={{ lineHeight }}
+                        >
+                          {section.content}
+                        </p>
 
-                    {/* ⭐ API 패널 — 문제 설명 탭에서 표시 */}
-                    {activeTab === 'description' && problemApiUrl && (
-                      <div className="mt-4">
-                        <ApiInfoPanel
-                          isLoading={false}
-                          apiUrl={problemApiUrl}
-                          method={problemApiMethod}
-                          headerName={problemApiHeaderName}
-                          apiKey={problemApiKey}
-                          problemCode={problemCode}
-                        />
-                      </div>
-                    )}
+                        {section.id === 'description' && problemApiUrl ? (
+                          <div className="mt-5">
+                            <ApiInfoPanel
+                              isLoading={false}
+                              apiUrl={problemApiUrl}
+                              method={problemApiMethod}
+                              headerName={problemApiHeaderName}
+                              apiKey={problemApiKey}
+                              problemCode={problemCode}
+                            />
+                          </div>
+                        ) : null}
+                      </section>
+                    ))}
                   </div>
-                </div>
+                ) : (
+                  <div className="flex min-h-0 flex-1 flex-col">
+                    <div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
+                      {historyItems.length > 0 ? (
+                        historyItems.map(item => (
+                          <AttemptHistoryCard
+                            key={item.id}
+                            attemptNumber={item.attemptNumber}
+                            isSubmitted={item.isSubmitted}
+                            isSuccess={item.isSuccess}
+                            promptSummary={item.promptSummary}
+                            isActive={item.isActive}
+                            attemptNumberVariant="text"
+                            compactSurface
+                            onClick={() => handleHistoryClick(item)}
+                          />
+                        ))
+                      ) : (
+                        <div className="flex flex-1 items-center justify-center text-center">
+                          <p className="text-body-lg font-medium text-[#475569]">
+                            아직 시도 기록이 없습니다.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         {problemId ? (

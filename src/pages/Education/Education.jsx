@@ -337,66 +337,122 @@ function EducationList() {
 
 function EducationQuiz({ quiz }) {
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const hasAnswered = selectedIndex !== null;
-  const isCorrect = selectedIndex === quiz.answerIndex;
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const isCorrect = isSubmitted && selectedIndex === quiz.answerIndex;
 
   return (
-    <section className="overflow-hidden border-y border-[#e7e1d9] bg-white">
-      <div className="border-b border-[#e7e1d9] bg-white px-5 py-5 sm:px-6">
-        <p className="text-body font-bold uppercase tracking-[0.22em] text-[#FF4854]">Quiz</p>
-        <h2 className="mt-3 text-body-lg font-bold text-[#30343b] sm:text-card-title">
+    <section className="bg-white" aria-labelledby="education-quiz-question">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <p className="text-page-title font-bold uppercase tracking-[0.18em] ">
+            Quiz
+          </p>
+          <p className="text-body font-strong text-[#7B8491]">
+            문제 풀이를 통해 제대로 학습했는지 확인해보세요.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-7 rounded-[16px] bg-[#F7F8FA] px-5 py-6 sm:px-7 sm:py-7">
+        <p className="text-label font-bold uppercase tracking-[0.16em] text-[#8A93A5]">
+          Question
+        </p>
+        <h2
+          id="education-quiz-question"
+          className="mt-3 text-card-title font-bold text-[#202832] sm:text-section-title"
+        >
           Q. {quiz.question}
         </h2>
       </div>
 
-      <div className="grid gap-0 bg-white">
+      <div className="mt-5 grid gap-3" role="radiogroup" aria-labelledby="education-quiz-question">
         {quiz.options.map((option, index) => {
           const isSelected = selectedIndex === index;
           const isAnswer = quiz.answerIndex === index;
-          const showCorrect = hasAnswered && isAnswer;
-          const showWrong = hasAnswered && isSelected && !isAnswer;
+          const showCorrect = isSubmitted && isAnswer;
+          const showWrong = isSubmitted && isSelected && !isAnswer;
 
           return (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setSelectedIndex(index)}
+            <label
+              key={`${option}-${index}`}
               className={[
-                'group flex w-full cursor-pointer items-center justify-between gap-4 border-b border-[#f0ece7] px-5 py-4 text-left transition last:border-b-0 sm:px-6',
+                'group flex min-h-[68px] w-full cursor-pointer items-center justify-between gap-4 rounded-[14px] px-5 py-4 transition sm:px-6',
                 showCorrect
-                  ? 'bg-[#FFF7F7] text-[#FF4854]'
+                  ? 'bg-[#ECFBF5] text-[#14875F] shadow-[inset_0_0_0_2px_#1EC186]'
                   : showWrong
-                    ? 'bg-[#F7F8FA] text-[#8A93A5]'
-                    : 'bg-white text-[#4D5968] hover:bg-[#fff7f7] hover:text-[#FF4854]',
+                    ? 'bg-[#FFF1F2] text-[#D93642] shadow-[inset_0_0_0_2px_#FF4854]'
+                    : isSelected
+                      ? 'bg-[#FFF1F2] text-[#D93642] shadow-[inset_0_0_0_2px_#FF4854]'
+                      : 'bg-[#F7F8FA] text-[#4D5968] hover:bg-[#FFF4F5] hover:text-[#D93642]',
               ].join(' ')}
             >
-              <span className="flex min-w-0 items-center gap-3 text-body font-strong sm:text-body">
+              <input
+                type="radio"
+                name="education-quiz-answer"
+                value={index}
+                checked={isSelected}
+                onChange={() => {
+                  setSelectedIndex(index);
+                  setIsSubmitted(false);
+                }}
+                className="sr-only"
+              />
+
+              <span className="flex min-w-0 items-center gap-4 text-body-lg font-strong">
                 <span
                   className={[
-                    'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-label font-bold transition',
-                    showCorrect || isSelected
-                      ? 'border-[#FF4854] bg-[#FF4854] text-white'
-                      : 'border-[#e7e1d9] bg-white text-[#8A93A5] group-hover:border-[#FF4854] group-hover:text-[#FF4854]',
+                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-body font-bold transition',
+                    showCorrect
+                      ? 'bg-[#1EC186] text-white'
+                      : showWrong || isSelected
+                        ? 'bg-[#FF4854] text-white'
+                        : 'bg-white text-[#7B8491] shadow-[0_2px_8px_rgba(32,40,50,0.08)] group-hover:text-[#FF4854]',
                   ].join(' ')}
                 >
-                  {index + 1}
+                  {String.fromCharCode(65 + index)}
                 </span>
-                {option}
+                <span>{option}</span>
               </span>
 
-              {showCorrect ? <CheckCircle2 className="h-5 w-5 shrink-0 text-[#FF4854]" /> : null}
-              {showWrong ? <XCircle className="h-5 w-5 shrink-0 text-[#A4ADB8]" /> : null}
-            </button>
+              {showCorrect ? <CheckCircle2 className="h-6 w-6 shrink-0 text-[#1EC186]" /> : null}
+              {showWrong ? <XCircle className="h-6 w-6 shrink-0 text-[#FF4854]" /> : null}
+            </label>
           );
         })}
       </div>
 
-      {hasAnswered ? (
-        <div className="border-t border-[#f0ece7] bg-[#fafafa] px-5 py-5 sm:px-6">
-          <p className="text-body font-strong text-[#30343b]">
-            {isCorrect ? '정답입니다.' : '아쉽지만 정답을 다시 확인해보세요.'}
+      <div className="mt-7 flex items-center justify-between gap-4">
+        <p className="text-body font-medium text-[#8A93A5]">답을 하나 선택해 주세요.</p>
+        <button
+          type="button"
+          disabled={selectedIndex === null}
+          onClick={() => setIsSubmitted(true)}
+          className="btn btn-primary btn-lg min-w-[132px] disabled:cursor-not-allowed disabled:bg-[#D8DDE4] disabled:text-white disabled:shadow-none"
+        >
+          정답 확인
+        </button>
+      </div>
+
+      {isSubmitted ? (
+        <div
+          className={`mt-6 rounded-[14px] px-5 py-5 sm:px-6 ${
+            isCorrect ? 'bg-[#ECFBF5]' : 'bg-[#FFF1F2]'
+          }`}
+          role="status"
+        >
+          <div className="flex items-center gap-2.5">
+            {isCorrect ? (
+              <CheckCircle2 className="h-6 w-6 shrink-0 text-[#1EC186]" />
+            ) : (
+              <XCircle className="h-6 w-6 shrink-0 text-[#FF4854]" />
+            )}
+            <p className={`text-body-lg font-bold ${isCorrect ? 'text-[#14875F]' : 'text-[#D93642]'}`}>
+              {isCorrect ? '정답입니다!' : '아쉽지만 정답을 다시 확인해보세요.'}
+            </p>
+          </div>
+          <p className="mt-3 text-body font-medium text-[#596575]">
+            {quiz.explanation}
           </p>
-          <p className="mt-2 text-body font-medium text-[#6b6f76]">{quiz.explanation}</p>
         </div>
       ) : null}
     </section>
@@ -417,7 +473,7 @@ function EducationDetail({ article }) {
         교육 목록으로
       </button>
 
-      <header className="text-center">
+      <header className="border-b border-[#E3E6EB] pb-12 text-center sm:pb-14">
         <p className="text-body font-bold uppercase tracking-[0.14em] text-[#FF4854]">
           {article.category}
         </p>
@@ -429,39 +485,23 @@ function EducationDetail({ article }) {
         </p>
       </header>
 
-      <div className="mx-auto mt-10 max-w-[760px] space-y-9">
-        <p className="text-card-title font-strong text-[#3D4754]">{article.summary}</p>
+      <div className="border-b border-[#E3E6EB]">
+        <div className="mx-auto max-w-[760px] space-y-12 py-14 sm:space-y-14 sm:py-16">
+          <p className="text-card-title font-strong text-[#3D4754]">{article.summary}</p>
 
-        {article.sections.map(section => (
-          <section key={section.title}>
-            <h2 className="text-section-title font-bold text-[#151A21]">{section.title}</h2>
-            <p className="mt-4 text-body-lg font-medium text-[#4D5968]">{section.body}</p>
-          </section>
-        ))}
-
-        <EducationQuiz key={article.id} quiz={article.quiz} />
-
-        <div className="flex flex-wrap gap-x-10 gap-y-4 border-t border-[#E3E6EB] pt-7">
-          <div className="w-full">
-            <h2 className="text-card-title font-bold text-[#151A21]">다음 단계</h2>
-            <p className="mt-3 text-body font-strong text-[#596575]">
-              개념을 이해했다면 튜토리얼에서 기본 흐름을 익히고, 챌린지에서 직접 AI Red Teaming
-              시나리오를 실습해보세요.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate('/tutorial')}
-            className="group flex cursor-pointer items-center gap-3 text-card-title font-bold text-[#151A21] transition hover:text-[#FF4854]"
-          >
-            튜토리얼 풀기
-            <ArrowRight
-              className="h-6 w-6 transition group-hover:translate-x-1"
-              strokeWidth={2.5}
-            />
-          </button>
+          {article.sections.map(section => (
+            <section key={section.title}>
+              <h2 className="text-section-title font-bold text-[#151A21]">{section.title}</h2>
+              <p className="mt-5 text-body-lg font-medium text-[#4D5968]">{section.body}</p>
+            </section>
+          ))}
         </div>
       </div>
+
+      <div className="mx-auto max-w-[760px] py-14 sm:py-16">
+        <EducationQuiz key={article.id} quiz={article.quiz} />
+      </div>
+
     </article>
   );
 }

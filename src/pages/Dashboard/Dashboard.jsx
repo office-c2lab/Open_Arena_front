@@ -964,7 +964,7 @@ function DashboardProfileSummaryCard() {
           </div>
         </div>
 
-        <p className="mt-6 text-body font-bold text-[#7B8491]">
+        <p className="mt-6 text-body-lg font-bold text-[#7B8491]">
           꾸준함이 경험이 됩니다.
           <br />
           지금의 흐름을 유지해보세요!
