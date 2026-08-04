@@ -1,26 +1,61 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ThinkingOrb } from 'thinking-orbs';
 
-export default function ChatBubble({ role, content, isTyping = false, compact = false }) {
-  const [displayedText, setDisplayedText] = useState(content);
+export default function ChatBubble({
+  role,
+  content,
+  isTyping = false,
+  compact = false,
+  animateOnMount = false,
+  typingDelayMs = 0,
+  typingSpeedMs = 14,
+}) {
+  const [displayedText, setDisplayedText] = useState(animateOnMount ? '' : content);
+  const [isVisible, setIsVisible] = useState(!animateOnMount);
   const prevContentRef = useRef(content);
 
-  // 🪄 글자 타이핑 애니메이션 (새 메시지일 때만 실행)
   useEffect(() => {
+    if (animateOnMount && !isTyping) {
+      setDisplayedText('');
+      setIsVisible(false);
+
+      let interval = null;
+      const delayTimer = setTimeout(() => {
+        setIsVisible(true);
+
+        let index = 0;
+        interval = setInterval(() => {
+          setDisplayedText(content.slice(0, index));
+          index += 1;
+
+          if (index > content.length) clearInterval(interval);
+        }, typingSpeedMs);
+
+        prevContentRef.current = content;
+      }, typingDelayMs);
+
+      return () => {
+        clearTimeout(delayTimer);
+        if (interval) clearInterval(interval);
+      };
+    }
+
     if (role === 'assistant' && content !== prevContentRef.current && !isTyping) {
       prevContentRef.current = content;
       setDisplayedText('');
-      let i = 0;
+      setIsVisible(true);
+      let index = 0;
       const interval = setInterval(() => {
-        setDisplayedText(content.slice(0, i));
-        i++;
-        if (i > content.length) clearInterval(interval);
-      }, 1);
+        setDisplayedText(content.slice(0, index));
+        index += 1;
+        if (index > content.length) clearInterval(interval);
+      }, typingSpeedMs);
       return () => clearInterval(interval);
-    } else {
-      setDisplayedText(content);
     }
-  }, [content, role, isTyping]);
+
+    setIsVisible(true);
+    setDisplayedText(content);
+  }, [animateOnMount, content, role, isTyping, typingDelayMs, typingSpeedMs]);
 
   if (isTyping && role === 'assistant') {
     return (
@@ -39,7 +74,11 @@ export default function ChatBubble({ role, content, isTyping = false, compact = 
   }
 
   return (
-    <div className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+    <div
+      className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'} mb-4 transition-all duration-300 ${
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+      }`}
+    >
       <div
         className={`max-w-[80%] p-3 rounded-2xl backdrop-blur-md ${
           role === 'user'
