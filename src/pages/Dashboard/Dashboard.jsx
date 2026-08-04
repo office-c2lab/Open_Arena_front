@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ArrowRight,
-  BookOpen,
-  ChevronLeft,
-  ChevronDown,
-  ChevronRight,
-} from 'lucide-react';
+import { ArrowRight, BookOpen, ChevronLeft, ChevronDown, ChevronRight } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useNavigate } from 'react-router-dom';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
@@ -256,17 +250,17 @@ function DashboardBannerSlider() {
               {banner.type === 'tutorial' && (
                 <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
                   <div className="max-w-[760px]">
-                    <h1 className="whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+                    <h1 className="whitespace-nowrap text-section-title font-bold text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-display md:text-display-lg">
                       <span className="text-[#FF4854]">Beginners</span>를 위한 완벽한 입문 가이드
                       시작하기
                     </h1>
-                    <p className="mt-3 text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+                    <p className="mt-3 text-body font-strong text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-card-title md:text-section-title">
                       레드티밍이 뭔가요? ARENA는 어떻게 시작하나요?
                     </p>
                     <button
                       type="button"
                       onClick={() => navigate('/tutorial')}
-                      className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
+                      className="group mt-7 flex cursor-pointer items-center gap-4 text-card-title font-bold text-white transition-colors hover:text-[#FF4854] sm:text-section-title md:mt-9"
                     >
                       지금 바로 확인하기
                       <ArrowRight
@@ -289,16 +283,16 @@ function DashboardBannerSlider() {
                 <>
                   <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/24 to-transparent" />
                   <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
-                    <h1 className="whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+                    <h1 className="whitespace-nowrap text-section-title font-bold text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-display md:text-display-lg">
                       <span className="text-[#FF4854]">LLM Safety</span> 학습 자료로 시작하세요
                     </h1>
-                    <p className="mt-3 text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+                    <p className="mt-3 text-body font-strong text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-card-title md:text-section-title">
                       AI Red Teaming을 더 깊게 이해하고 싶다면
                     </p>
                     <button
                       type="button"
                       onClick={() => navigate('/education')}
-                      className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
+                      className="group mt-7 flex cursor-pointer items-center gap-4 text-card-title font-bold text-white transition-colors hover:text-[#FF4854] sm:text-section-title md:mt-9"
                     >
                       지금 바로 확인하기
                       <ArrowRight
@@ -313,7 +307,7 @@ function DashboardBannerSlider() {
                 <>
                   <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
                   <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
-                    <h1 className="max-w-full whitespace-nowrap text-[18px] font-900 leading-tight tracking-normal text-white sm:text-[26px] md:text-[34px] lg:text-[42px]">
+                    <h1 className="max-w-full whitespace-nowrap text-card-title font-bold tracking-normal text-white sm:text-page-title md:text-page-title lg:text-display">
                       {banner.type === 'challenge' ? (
                         <>
                           지금 바로 <span className="text-[#FF4854]">Red Teaming</span>에 도전하세요
@@ -322,13 +316,13 @@ function DashboardBannerSlider() {
                         banner.title
                       )}
                     </h1>
-                    <p className="mt-3 max-w-[620px] text-[14px] font-700 leading-relaxed text-white/72 sm:text-[17px] md:mt-4 md:text-[22px]">
+                    <p className="mt-3 max-w-[620px] text-body font-strong text-white/72 sm:text-body-lg md:mt-4 md:text-section-title">
                       {banner.caption}
                     </p>
                     <button
                       type="button"
                       onClick={() => navigate('/kategorie')}
-                      className="group mt-7 flex cursor-pointer items-center gap-4 text-[18px] font-900 text-white transition-colors hover:text-[#FF4854] sm:text-[24px] md:mt-9"
+                      className="group mt-7 flex cursor-pointer items-center gap-4 text-card-title font-bold text-white transition-colors hover:text-[#FF4854] sm:text-section-title md:mt-9"
                     >
                       챌린지에 도전하기
                       <ArrowRight
@@ -388,10 +382,12 @@ function ProfileCard() {
           </div>
           <div className="min-w-0 flex-1 pb-1">
             <div className="flex items-center justify-between gap-2">
-              <div className="truncate text-[18px] font-900 text-[#3A414B]">{displayName}</div>
-              <div className="shrink-0 text-[12px] font-800 text-[#FF4854]">{membershipLabel}</div>
+              <div className="truncate text-card-title font-bold text-[#3A414B]">{displayName}</div>
+              <div className="shrink-0 text-label font-strong text-[#FF4854]">
+                {membershipLabel}
+              </div>
             </div>
-            <p className="mt-1 truncate text-[12px] font-600 text-[#8A93A5]">{displayEmail}</p>
+            <p className="mt-1 truncate text-label font-strong text-[#8A93A5]">{displayEmail}</p>
           </div>
         </div>
 
@@ -403,8 +399,8 @@ function ProfileCard() {
               ['랭킹', `${profileStats.rank || '-'}위`],
             ].map(([label, value]) => (
               <div key={label}>
-                <p className="text-[10px] font-800 text-[#A0A8B3]">{label}</p>
-                <p className="mt-1 text-[16px] font-900 text-[#4B5563]">{value}</p>
+                <p className="text-caption font-strong text-[#A0A8B3]">{label}</p>
+                <p className="mt-1 text-body-lg font-bold text-[#4B5563]">{value}</p>
               </div>
             ))}
           </div>
@@ -416,8 +412,8 @@ function ProfileCard() {
               ['무료 토큰', 1000],
             ].map(([label, value]) => (
               <div key={label}>
-                <p className="text-[10px] font-800 text-[#A0A8B3]">{label}</p>
-                <p className="mt-1 text-[16px] font-900 text-[#4B5563]">{value}</p>
+                <p className="text-caption font-strong text-[#A0A8B3]">{label}</p>
+                <p className="mt-1 text-body-lg font-bold text-[#4B5563]">{value}</p>
               </div>
             ))}
           </div>
@@ -435,11 +431,11 @@ function MissionCard({ onShowDetails }) {
   return (
     <section>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-[14px] font-900 text-[#2E3338]">진행중인 챌린지</h2>
+        <h2 className="text-body font-bold text-[#2E3338]">진행중인 챌린지</h2>
         <button
           type="button"
           onClick={onShowDetails}
-          className="flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#FF4854]"
+          className="flex cursor-pointer items-center gap-1 text-label font-bold text-[#FF4854]"
         >
           자세히 보기 <ArrowRight className="h-3 w-3" />
         </button>
@@ -448,18 +444,18 @@ function MissionCard({ onShowDetails }) {
         <div className="flex items-start gap-3">
           <div className="relative flex h-16 w-20 shrink-0 items-center overflow-hidden bg-[#0B0D18] px-2">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
-            <strong className="relative text-[11px] font-900 leading-[12px] text-white">
+            <strong className="relative text-caption font-bold text-white">
               {challenge.title}
             </strong>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-800 text-[#FF4854]">
+            <p className="text-caption font-strong text-[#FF4854]">
               {challenge.tier} · {challenge.difficulty}
             </p>
-            <p className="mt-1 line-clamp-2 text-[14px] font-900 leading-[18px] text-[#2E3338]">
+            <p className="mt-1 line-clamp-2 text-body font-bold text-[#2E3338]">
               {challenge.title}
             </p>
-            <p className="mt-1 truncate text-[11px] font-600 text-[#8A93A5]">
+            <p className="mt-1 truncate text-caption font-strong text-[#8A93A5]">
               {challenge.category}
             </p>
           </div>
@@ -477,11 +473,11 @@ function LearningProgressCard({ onShowDetails }) {
   return (
     <section>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-[14px] font-900 text-[#2E3338]">진행중인 학습</h2>
+        <h2 className="text-body font-bold text-[#2E3338]">진행중인 학습</h2>
         <button
           type="button"
           onClick={onShowDetails}
-          className="flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#FF4854]"
+          className="flex cursor-pointer items-center gap-1 text-label font-bold text-[#FF4854]"
         >
           자세히 보기 <ArrowRight className="h-3 w-3" />
         </button>
@@ -490,14 +486,14 @@ function LearningProgressCard({ onShowDetails }) {
         <div className="flex items-start gap-3">
           <div className="relative flex h-16 w-20 shrink-0 items-center overflow-hidden bg-[#0B0D18] px-2">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
-            <strong className="relative text-[11px] font-900 leading-[12px] text-white">
+            <strong className="relative text-caption font-bold text-white">
               {article.visualTitle}
             </strong>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-800 text-[#FF4854]">{article.category}</p>
-            <p className="mt-1 truncate text-[14px] font-900 text-[#2E3338]">{article.title}</p>
-            <p className="mt-1 line-clamp-2 text-[11px] font-600 leading-[16px] text-[#8A93A5]">
+            <p className="text-caption font-strong text-[#FF4854]">{article.category}</p>
+            <p className="mt-1 truncate text-body font-bold text-[#2E3338]">{article.title}</p>
+            <p className="mt-1 line-clamp-2 text-caption font-strong text-[#8A93A5]">
               {article.summary}
             </p>
           </div>
@@ -518,9 +514,9 @@ function LearningDetailPanel() {
 
   return (
     <section>
-      <h1 className="text-[22px] font-900 text-[#151A21]">학습</h1>
+      <h1 className="text-section-title font-bold text-[#151A21]">학습</h1>
 
-      <div className="mt-5 flex flex-wrap items-center gap-3 text-[13px] font-800">
+      <div className="mt-5 flex flex-wrap items-center gap-3 text-body font-strong">
         {learningStatusOptions.map(option => {
           const isSelected = selectedLearningStatus === option.key;
 
@@ -547,24 +543,26 @@ function LearningDetailPanel() {
           >
             <div className="relative flex h-[112px] w-full shrink-0 items-center overflow-hidden bg-[#0B0D18] px-4 sm:w-[184px]">
               <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
-              <strong className="relative text-[17px] font-900 leading-[19px] text-white">
+              <strong className="relative text-body-lg font-bold text-white">
                 {article.visualTitle}
               </strong>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-800 text-[#FF4854]">
+              <p className="text-caption font-strong text-[#FF4854]">
                 {article.category} · {article.date}
               </p>
-              <h2 className="mt-2 text-[18px] font-900 text-[#151A21]">{article.title}</h2>
-              <p className="mt-2 line-clamp-2 text-[13px] font-500 leading-[20px] text-[#66717E]">
+              <h2 className="mt-2 text-card-title font-bold text-[#151A21]">{article.title}</h2>
+              <p className="mt-2 line-clamp-2 text-body font-medium text-[#66717E]">
                 {article.summary}
               </p>
-              <p className="mt-3 text-[11px] font-700 text-[#8A93A5]">{article.readTime} 읽기</p>
+              <p className="mt-3 text-caption font-strong text-[#8A93A5]">
+                {article.readTime} 읽기
+              </p>
             </div>
           </article>
         ))}
         {!visibleArticles.length ? (
-          <p className="py-12 text-center text-[13px] font-700 text-[#8A93A5]">
+          <p className="py-12 text-center text-body font-strong text-[#8A93A5]">
             완료한 학습 자료가 없습니다.
           </p>
         ) : null}
@@ -579,8 +577,8 @@ function TutorialDetailPanel() {
 
   return (
     <section>
-      <h1 className="text-[22px] font-900 text-[#151A21]">튜토리얼</h1>
-      <div className="mt-5 flex items-center gap-3 text-[13px] font-800">
+      <h1 className="text-section-title font-bold text-[#151A21]">튜토리얼</h1>
+      <div className="mt-5 flex items-center gap-3 text-body font-strong">
         {[
           { key: 'in-progress', label: '진행 중', count: 1 },
           { key: 'completed', label: '완료', count: 0 },
@@ -607,22 +605,22 @@ function TutorialDetailPanel() {
           >
             <div className="relative flex h-[112px] w-full shrink-0 items-center overflow-hidden bg-[#0B0D18] px-4 sm:w-[184px]">
               <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
-              <strong className="relative text-[17px] font-900 leading-[19px] text-white">
+              <strong className="relative text-body-lg font-bold text-white">
                 {tutorial.title}
               </strong>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-800 text-[#FF4854]">
+              <p className="text-caption font-strong text-[#FF4854]">
                 {tutorial.tier} · {tutorial.difficulty}
               </p>
-              <h2 className="mt-2 text-[18px] font-900 text-[#151A21]">{tutorial.title}</h2>
-              <p className="mt-2 text-[13px] font-500 text-[#66717E]">{tutorial.category}</p>
-              <p className="mt-3 text-[11px] font-700 text-[#8A93A5]">약 {tutorial.duration}</p>
+              <h2 className="mt-2 text-card-title font-bold text-[#151A21]">{tutorial.title}</h2>
+              <p className="mt-2 text-body font-medium text-[#66717E]">{tutorial.category}</p>
+              <p className="mt-3 text-caption font-strong text-[#8A93A5]">약 {tutorial.duration}</p>
             </div>
           </article>
         ))}
         {!visibleTutorials.length ? (
-          <p className="py-12 text-center text-[13px] font-700 text-[#8A93A5]">
+          <p className="py-12 text-center text-body font-strong text-[#8A93A5]">
             완료한 튜토리얼이 없습니다.
           </p>
         ) : null}
@@ -638,8 +636,8 @@ function ChallengeDetailPanel() {
 
   return (
     <section>
-      <h1 className="text-[22px] font-900 text-[#151A21]">챌린지</h1>
-      <div className="mt-5 flex items-center gap-3 text-[13px] font-800">
+      <h1 className="text-section-title font-bold text-[#151A21]">챌린지</h1>
+      <div className="mt-5 flex items-center gap-3 text-body font-strong">
         {[
           { key: 'in-progress', label: '진행 중', count: 1 },
           { key: 'completed', label: '완료', count: 0 },
@@ -666,22 +664,24 @@ function ChallengeDetailPanel() {
           >
             <div className="relative flex h-[112px] w-full shrink-0 items-center overflow-hidden bg-[#0B0D18] px-4 sm:w-[184px]">
               <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
-              <strong className="relative text-[17px] font-900 leading-[19px] text-white">
+              <strong className="relative text-body-lg font-bold text-white">
                 {challenge.title}
               </strong>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-800 text-[#FF4854]">
+              <p className="text-caption font-strong text-[#FF4854]">
                 {challenge.tier} · {challenge.difficulty}
               </p>
-              <h2 className="mt-2 text-[18px] font-900 text-[#151A21]">{challenge.title}</h2>
-              <p className="mt-2 text-[13px] font-500 text-[#66717E]">{challenge.category}</p>
-              <p className="mt-3 text-[11px] font-700 text-[#8A93A5]">약 {challenge.duration}</p>
+              <h2 className="mt-2 text-card-title font-bold text-[#151A21]">{challenge.title}</h2>
+              <p className="mt-2 text-body font-medium text-[#66717E]">{challenge.category}</p>
+              <p className="mt-3 text-caption font-strong text-[#8A93A5]">
+                약 {challenge.duration}
+              </p>
             </div>
           </article>
         ))}
         {!visibleChallenges.length ? (
-          <p className="py-12 text-center text-[13px] font-700 text-[#8A93A5]">
+          <p className="py-12 text-center text-body font-strong text-[#8A93A5]">
             완료한 챌린지가 없습니다.
           </p>
         ) : null}
@@ -699,11 +699,11 @@ function TutorialProgressCard({ onShowDetails }) {
   return (
     <section>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-[14px] font-900 text-[#2E3338]">진행중인 튜토리얼</h2>
+        <h2 className="text-body font-bold text-[#2E3338]">진행중인 튜토리얼</h2>
         <button
           type="button"
           onClick={onShowDetails}
-          className="flex cursor-pointer items-center gap-1 text-[12px] font-900 text-[#FF4854]"
+          className="flex cursor-pointer items-center gap-1 text-label font-bold text-[#FF4854]"
         >
           자세히 보기 <ArrowRight className="h-3 w-3" />
         </button>
@@ -715,8 +715,8 @@ function TutorialProgressCard({ onShowDetails }) {
               <BookOpen className="h-5 w-5 text-[#FF4854]" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-900 text-[#2E3338]">튜토리얼 입문 여정</p>
-              <p className="mt-1 text-[11px] font-600 text-[#8A93A5]">
+              <p className="text-body font-bold text-[#2E3338]">튜토리얼 입문 여정</p>
+              <p className="mt-1 text-caption font-strong text-[#8A93A5]">
                 튜토리얼 완료까지 4개 남았어요!
               </p>
             </div>
@@ -725,7 +725,7 @@ function TutorialProgressCard({ onShowDetails }) {
             <div className="h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-white">
               <div className="h-full w-1/5 rounded-full bg-[#FF4854]" />
             </div>
-            <span className="text-[11px] font-800 text-[#FF4854]">20%</span>
+            <span className="text-caption font-strong text-[#FF4854]">20%</span>
           </div>
         </div>
 
@@ -744,11 +744,11 @@ function TutorialProgressCard({ onShowDetails }) {
                   }
                   className="flex w-full cursor-pointer items-center justify-between gap-3 py-3 text-left"
                 >
-                  <p className="min-w-0 truncate text-[13px] font-900 text-[#2E3338]">
+                  <p className="min-w-0 truncate text-body font-bold text-[#2E3338]">
                     {tutorial.title}
                   </p>
                   <span
-                    className={`shrink-0 text-[11px] font-800 ${status === '완료' ? 'text-[#1BAE5B]' : 'text-[#A0A8B3]'}`}
+                    className={`shrink-0 text-caption font-strong ${status === '완료' ? 'text-[#1BAE5B]' : 'text-[#A0A8B3]'}`}
                   >
                     {status}
                   </span>
@@ -758,18 +758,18 @@ function TutorialProgressCard({ onShowDetails }) {
                   <div className="mb-3 flex items-start gap-3">
                     <div className="relative flex h-16 w-20 shrink-0 items-center overflow-hidden bg-[#0B0D18] px-2">
                       <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
-                      <strong className="relative text-[11px] font-900 leading-[12px] text-white">
+                      <strong className="relative text-caption font-bold text-white">
                         {tutorial.title}
                       </strong>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[10px] font-800 text-[#FF4854]">
+                      <p className="text-caption font-strong text-[#FF4854]">
                         {tutorial.tier} · {tutorial.difficulty}
                       </p>
-                      <p className="mt-1 line-clamp-2 text-[14px] font-900 leading-[18px] text-[#2E3338]">
+                      <p className="mt-1 line-clamp-2 text-body font-bold text-[#2E3338]">
                         {tutorial.title}
                       </p>
-                      <p className="mt-1 truncate text-[11px] font-600 text-[#8A93A5]">
+                      <p className="mt-1 truncate text-caption font-strong text-[#8A93A5]">
                         {tutorial.category}
                       </p>
                     </div>
@@ -788,9 +788,9 @@ function DashboardSectionHeader({ title, description, action }) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h2 className="text-[18px] font-900 leading-none text-[#202832]">{title}</h2>
+        <h2 className="text-card-title font-bold text-[#202832]">{title}</h2>
         {description ? (
-          <p className="mt-2 text-[14px] font-700 text-[#6F7885]">{description}</p>
+          <p className="mt-2 text-body font-strong text-[#6F7885]">{description}</p>
         ) : null}
       </div>
       {action}
@@ -810,11 +810,9 @@ function ActivityHeatmapTooltip({ tooltip }) {
         transform: 'translate(-50%, -100%)',
       }}
     >
-      <span className="block text-[12px] font-900 text-[#202832]">{tooltip.dateText}</span>
-      <span className="mt-1 block text-[11px] font-800 text-[#7B8491]">{tooltip.hourText}</span>
-      <span className="mt-1 block text-[12px] font-900 text-[#FF4854]">
-        도전 {tooltip.count}회
-      </span>
+      <span className="block text-label font-bold text-[#202832]">{tooltip.dateText}</span>
+      <span className="mt-1 block text-caption font-strong text-[#7B8491]">{tooltip.hourText}</span>
+      <span className="mt-1 block text-label font-bold text-[#FF4854]">도전 {tooltip.count}회</span>
     </div>
   );
 }
@@ -869,7 +867,7 @@ function ChallengeActivityHeatmap() {
         <DashboardProfileSummaryCard />
         <RecentAttemptProblemsCard />
       </div>
-      
+
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
         <section className="surface max-w-full px-5 py-4 sm:px-6">
           <DashboardSectionHeader title="도전 활동 히트맵" description="일별 도전 참여 현황" />
@@ -882,7 +880,7 @@ function ChallengeActivityHeatmap() {
 
                     return (
                       <React.Fragment key={dayLabels[dayIndex]}>
-                        <span className="flex h-[22px] items-center text-[14px] font-900 text-[#596575]">
+                        <span className="flex h-[22px] items-center text-body font-bold text-[#596575]">
                           {dayLabels[dayIndex]}
                         </span>
                         {cells.map(cell => (
@@ -899,7 +897,7 @@ function ChallengeActivityHeatmap() {
                   })}
                 </div>
 
-                <div className="mt-5 flex items-center justify-between gap-4 text-[14px] font-800 text-[#596575]">
+                <div className="mt-5 flex items-center justify-between gap-4 text-body font-strong text-[#596575]">
                   <div className="flex items-center gap-2">
                     <span>낮음</span>
                     <div className="flex gap-[4px]">
@@ -911,7 +909,7 @@ function ChallengeActivityHeatmap() {
                   </div>
                   <p>
                     총 도전{' '}
-                    <strong className="font-900 text-[#202832]">
+                    <strong className="font-bold text-[#202832]">
                       {totalCount.toLocaleString()}회
                     </strong>
                   </p>
@@ -924,7 +922,6 @@ function ChallengeActivityHeatmap() {
         <div className="flex min-w-0 w-full flex-col gap-5">
           <SuccessRateCard />
         </div>
-        
       </div>
       <RecommendedChallengeSection />
     </section>
@@ -948,25 +945,26 @@ function DashboardProfileSummaryCard() {
       }}
     >
       <div className="relative z-10 max-w-[390px]">
-       
-
         <div className="mt-5 flex items-start gap-3">
-          {hasProfileImage ? (
+          <div
+            className={`flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-full ${
+              hasProfileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854]'
+            }`}
+          >
             <img
               src={profileImage}
               alt=""
-              className="h-12 w-12 shrink-0 rounded-full object-cover"
+              className={hasProfileImage ? 'h-full w-full object-cover' : 'h-9 w-9'}
+              aria-hidden="true"
             />
-          ) : null}
+          </div>
           <div className="min-w-0">
-            <h2 className="truncate text-[26px] font-900 leading-none text-[#202832]">
-              {displayName}
-            </h2>
-            <p className="mt-2 truncate text-[14px] font-800 text-[#7B8491]">{displayEmail}</p>
+            <h2 className="truncate text-page-title font-bold text-[#202832]">{displayName}</h2>
+            <p className="mt-2 truncate text-body font-strong text-[#7B8491]">{displayEmail}</p>
           </div>
         </div>
 
-        <p className="mt-6 text-[15px] font-900 leading-[24px] text-[#7B8491]">
+        <p className="mt-6 text-body font-bold text-[#7B8491]">
           꾸준함이 경험이 됩니다.
           <br />
           지금의 흐름을 유지해보세요!
@@ -985,11 +983,11 @@ function DashboardProfileSummaryCard() {
 function DashboardProfileStatCard({ stat }) {
   return (
     <div className="min-h-[104px] rounded-[8px] border border-white/70 bg-white/72 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.76),0_12px_26px_rgba(15,23,42,0.06)] backdrop-blur-md">
-      <p className="text-[12px] font-900 text-[#7B8491]">{stat.label}</p>
-      <strong className="mt-4 block text-[24px] font-900 leading-none text-[#202832]">
+      <p className="text-label font-bold text-[#7B8491]">{stat.label}</p>
+      <strong className="mt-4 block text-section-title font-bold text-[#202832]">
         {stat.value}
       </strong>
-      <p className="mt-2 truncate text-[11px] font-800 text-[#9AA3AF]">{stat.subText}</p>
+      <p className="mt-2 truncate text-caption font-strong text-[#9AA3AF]">{stat.subText}</p>
     </div>
   );
 }
@@ -999,7 +997,7 @@ function ChallengeProgressBadge({ status = 'success', className = '' }) {
 
   return (
     <span
-      className={`absolute right-4 top-4 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-[12px] font-900 shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${meta.className} ${className}`}
+      className={`absolute right-4 top-4 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${meta.className} ${className}`}
     >
       {meta.label}
     </span>
@@ -1043,11 +1041,11 @@ function BrowseChallengeCard({ challenge, onClick }) {
         />
         <ChallengeProgressBadge
           status={challenge.status}
-          className="right-3 top-3 px-2.5 py-1 text-[11px]"
+          className="right-3 top-3 px-2.5 py-1 text-caption"
         />
       </div>
       <div className="p-4">
-        <h3 className="line-clamp-2 min-h-[44px] text-[17px] font-900 leading-[22px] text-[#202832]">
+        <h3 className="line-clamp-2 min-h-[44px] text-body-lg font-bold text-[#202832]">
           {challenge.title}
         </h3>
       </div>
@@ -1126,12 +1124,11 @@ function RecommendedChallengeSection() {
       <section className="surface relative px-5 py-6 sm:px-6">
         <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h2 className="text-[20px] font-900 leading-none text-[#202832]">추천 챌린지</h2>
-            <p className="mt-2 text-[13px] font-800 text-[#8A93A5]">
+            <h2 className="text-card-title font-bold text-[#202832]">추천 챌린지</h2>
+            <p className="mt-2 text-body font-strong text-[#8A93A5]">
               회원님의 기록을 바탕으로 추천한 챌린지예요.
             </p>
           </div>
-         
         </div>
 
         <button
@@ -1157,14 +1154,10 @@ function RecommendedChallengeSection() {
               const isSelected = index === selectedQueueIndex;
 
               return (
-                <div
-                  key={challenge.id}
-                  className="min-w-0 shrink-0 grow-0 basis-[444px] pl-16"
-                >
+                <div key={challenge.id} className="min-w-0 shrink-0 grow-0 basis-[444px] pl-16">
                   <PathCard
                     path={challenge}
                     status={challenge.status}
-                    
                     onClick={() => navigate(`/challenge/${challenge.id}`)}
                   />
                 </div>
@@ -1190,8 +1183,8 @@ function RecommendedChallengeSection() {
 
       <section className="surface px-5 py-6 sm:px-6">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <h2 className="text-[20px] font-900 text-[#202832]">챌린지 현황</h2>
-          <div className="flex items-center gap-5 text-[13px] font-900">
+          <h2 className="text-card-title font-bold text-[#202832]">챌린지 현황</h2>
+          <div className="flex items-center gap-5 text-body font-bold">
             {statusTabs.map(tab => (
               <button
                 key={tab.key}
@@ -1239,19 +1232,19 @@ function TokenEfficiencyCard() {
             <DashboardSectionHeader title="토큰 효율" description="적게 쓸수록 높은 점수" />
 
             <div className="mt-8 flex flex-wrap items-end gap-x-6 gap-y-4">
-              <strong className="text-[76px] font-900 leading-none text-[#FF4854]">
+              <strong className="text-metric-lg font-bold text-[#FF4854]">
                 {efficiency.toFixed(2)}
               </strong>
               <div className="pb-3">
-                <p className="text-[20px] font-900 text-[#202832]">효율 점수</p>
-                <p className="mt-2 text-[14px] font-800 text-[#7B8491]">
+                <p className="text-card-title font-bold text-[#202832]">효율 점수</p>
+                <p className="mt-2 text-body font-strong text-[#7B8491]">
                   토큰을 적게 사용할수록 더 높은 효율을 얻어요.
                 </p>
               </div>
             </div>
 
             <div className="mt-9">
-              <div className="mb-2 grid grid-cols-5 text-[12px] font-800 text-[#9AA3AF]">
+              <div className="mb-2 grid grid-cols-5 text-label font-strong text-[#9AA3AF]">
                 <span>낮은 효율</span>
                 <span className="text-center">0.50</span>
                 <span className="text-center">1.00</span>
@@ -1268,36 +1261,31 @@ function TokenEfficiencyCard() {
                   style={{ left: `calc(${gaugePercent}% - 10px)` }}
                 />
                 <span
-                  className="absolute bottom-[calc(100%+8px)] rounded-[7px] bg-[#FF4854] px-3 py-1 text-[13px] font-900 leading-none text-white"
+                  className="absolute bottom-[calc(100%+8px)] rounded-[7px] bg-[#FF4854] px-3 py-1 text-body font-bold text-white"
                   style={{ left: `calc(${gaugePercent}% - 24px)` }}
                 >
                   {efficiency.toFixed(2)}
                 </span>
               </div>
             </div>
-
-            
           </div>
         </div>
 
         <div className="grid min-w-0 gap-4 sm:grid-cols-3 xl:grid-cols-3">
-          <div className="surface-muted flex min-h-[190px] flex-col justify-end px-6 py-5">
-            
-            
-          </div>
+          <div className="surface-muted flex min-h-[190px] flex-col justify-end px-6 py-5"></div>
           <div className="flex min-h-[190px] flex-col justify-end rounded-[8px] border border-[#FFB8BE] bg-[#FFF7F8] px-6 py-5 shadow-[0_12px_26px_rgba(255,72,84,0.08)]">
-            <p className="text-[18px] font-900 text-[#FF4854]">최저 사용량</p>
-            <strong className="mt-6 block text-[46px] font-900 leading-none text-[#FF4854]">
+            <p className="text-card-title font-bold text-[#FF4854]">최저 사용량</p>
+            <strong className="mt-6 block text-display-lg font-bold text-[#FF4854]">
               {minTokens.toLocaleString()}
             </strong>
-            <p className="mt-4 text-[14px] font-800 text-[#8A93A5]">성공한 도전 기준</p>
+            <p className="mt-4 text-body font-strong text-[#8A93A5]">성공한 도전 기준</p>
           </div>
           <div className="surface-muted flex min-h-[190px] flex-col justify-end px-6 py-5">
-            <p className="text-[18px] font-900 text-[#596575]">최고 사용량</p>
-            <strong className="mt-6 block text-[46px] font-900 leading-none text-[#202832]">
+            <p className="text-card-title font-bold text-[#596575]">최고 사용량</p>
+            <strong className="mt-6 block text-display-lg font-bold text-[#202832]">
               {maxTokens.toLocaleString()}
             </strong>
-            <p className="mt-4 text-[14px] font-800 text-[#8A93A5]">전체 도전 기준</p>
+            <p className="mt-4 text-body font-strong text-[#8A93A5]">전체 도전 기준</p>
           </div>
         </div>
       </div>
@@ -1317,7 +1305,7 @@ function SuccessRateTooltip({ active, payload }) {
   const segment = payload[0].payload;
 
   return (
-    <div className="rounded-xl border border-[#E9ECF1] bg-white px-3 py-2 text-[12px] font-800 shadow-[0_14px_30px_rgba(15,23,42,0.12)]">
+    <div className="rounded-xl border border-[#E9ECF1] bg-white px-3 py-2 text-label font-strong shadow-[0_14px_30px_rgba(15,23,42,0.12)]">
       <div className="flex items-center gap-2 text-[#202832]">
         <ChartTooltipDot color={segment.color} />
         <span>{segment.label}</span>
@@ -1344,10 +1332,7 @@ function SuccessRateCard() {
 
   return (
     <section className="surface w-full px-5 py-4">
-      <DashboardSectionHeader
-        title="성공률"
-        description="이번 주 도전 결과"
-      />
+      <DashboardSectionHeader title="성공률" description="이번 주 도전 결과" />
 
       <div className="mt-5 flex flex-col items-center">
         <div className="relative h-[210px] w-[210px]">
@@ -1382,14 +1367,14 @@ function SuccessRateCard() {
             </PieChart>
           </ResponsiveContainer>
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-[12px] font-800 text-[#8A93A5]">
+            <span className="text-label font-strong text-[#8A93A5]">
               {selectedSegment ? selectedSegment.label : '성공률'}
             </span>
-            <strong className="mt-1 text-[32px] font-900 leading-none text-[#202832]">
+            <strong className="mt-1 text-page-title font-bold text-[#202832]">
               {selectedSegment ? selectedSegment.count : `${successRate}%`}
             </strong>
             {selectedSegment ? (
-              <span className="mt-1 text-[12px] font-800 text-[#7B8491]">
+              <span className="mt-1 text-label font-strong text-[#7B8491]">
                 {selectedSegment.value}%
               </span>
             ) : null}
@@ -1411,8 +1396,8 @@ function SuccessRateCard() {
                 }`}
               >
                 <ChartTooltipDot color={segment.color} />
-                <span className="text-[12px] font-900 text-[#202832]">{segment.label}</span>
-                <span className="text-[12px] font-800 text-[#7B8491]">
+                <span className="text-label font-bold text-[#202832]">{segment.label}</span>
+                <span className="text-label font-strong text-[#7B8491]">
                   {segment.value}% · {segment.count}
                 </span>
               </button>

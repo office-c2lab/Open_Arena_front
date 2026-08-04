@@ -8,7 +8,7 @@ export default function SidebarSectionTitle({ title, isCollapsed }) {
 
   return (
     <div className="px-3">
-      <span className="body-medium font-500 text-[#0F172A]/50 uppercase">{title}</span>
+      <span className="text-body font-medium text-[#0F172A]/50 uppercase">{title}</span>
     </div>
   );
 }

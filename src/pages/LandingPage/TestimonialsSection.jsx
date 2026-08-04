@@ -24,7 +24,12 @@ import apc06 from '@/assets/APC/apc6.png';
 import apc07 from '@/assets/APC/apc7.png';
 import arenaComingSoon from '@/assets/2026 LLM CHALLENGE/comingsoon.png';
 
-import { Container, GradientCard, SectionTitle, SECTION_TITLE_REVEAL } from './LandingPage.primitives';
+import {
+  Container,
+  GradientCard,
+  SectionTitle,
+  SECTION_TITLE_REVEAL,
+} from './LandingPage.primitives';
 
 export default function TestimonialsSection() {
   const MASONRY_ROW_HEIGHT = 8;
@@ -101,7 +106,8 @@ export default function TestimonialsSection() {
     selectedArchiveItem && previewIndex !== null ? selectedArchiveItem.photos[previewIndex] : null;
 
   const movePreview = direction => {
-    if (!selectedArchiveItem || previewIndex === null || selectedArchiveItem.photos.length <= 1) return;
+    if (!selectedArchiveItem || previewIndex === null || selectedArchiveItem.photos.length <= 1)
+      return;
 
     const totalPhotos = selectedArchiveItem.photos.length;
     setPreviewIndex(currentIndex => (currentIndex + direction + totalPhotos) % totalPhotos);
@@ -116,7 +122,9 @@ export default function TestimonialsSection() {
     const imageHeight = image.getBoundingClientRect().height;
     const span = Math.ceil((imageHeight + MASONRY_GAP) / (MASONRY_ROW_HEIGHT + MASONRY_GAP));
 
-    setPhotoSpans(currentSpans => (currentSpans[photoKey] === span ? currentSpans : { ...currentSpans, [photoKey]: span }));
+    setPhotoSpans(currentSpans =>
+      currentSpans[photoKey] === span ? currentSpans : { ...currentSpans, [photoKey]: span }
+    );
   };
 
   const updateAllPhotoSpans = () => {
@@ -222,7 +230,7 @@ export default function TestimonialsSection() {
                     </div>
 
                     <div className="pb-2 pt-5">
-                      <div className="text-[1.65rem] font-semibold tracking-tight text-[#171717] sm:text-[1.85rem]">
+                      <div className="text-page-title font-strong tracking-tight text-[#171717] sm:text-page-title">
                         {item.title}
                       </div>
                     </div>
@@ -231,7 +239,7 @@ export default function TestimonialsSection() {
                       <button
                         type="button"
                         onClick={() => setSelectedArchiveItem(item)}
-                        className="group inline-flex w-full cursor-pointer items-center justify-center rounded-[999px] bg-[#050608] px-5 py-4 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(5,6,8,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#FF4854] focus:outline-none focus-visible:-translate-y-0.5 focus-visible:bg-[#FF4854] focus-visible:ring-2 focus-visible:ring-[#FF4854] focus-visible:ring-offset-2"
+                        className="group inline-flex w-full cursor-pointer items-center justify-center rounded-[999px] bg-[#050608] px-5 py-4 text-body font-strong text-white shadow-[0_14px_28px_rgba(5,6,8,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#FF4854] focus:outline-none focus-visible:-translate-y-0.5 focus-visible:bg-[#FF4854] focus-visible:ring-2 focus-visible:ring-[#FF4854] focus-visible:ring-offset-2"
                       >
                         {item.ctaLabel}
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-focus-visible:translate-x-1" />
@@ -264,10 +272,10 @@ export default function TestimonialsSection() {
             </button>
 
             <div className="mb-5">
-              <div className="text-2xl font-semibold tracking-tight text-[#171717]">
+              <div className="text-section-title font-strong tracking-tight text-[#171717]">
                 {selectedArchiveItem.title}
               </div>
-              <p className="mt-2 text-sm leading-7 text-[#57534e] sm:text-base">
+              <p className="mt-2 text-body text-[#57534e] sm:text-body-lg">
                 {selectedArchiveItem.description}
               </p>
             </div>
@@ -276,7 +284,7 @@ export default function TestimonialsSection() {
               className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3"
               style={{ gridAutoRows: `${MASONRY_ROW_HEIGHT}px` }}
             >
-              {selectedArchiveItem.photos.map((photo, index) => (
+              {selectedArchiveItem.photos.map((photo, index) =>
                 (() => {
                   const photoKey = `${selectedArchiveItem.key}-${index}-${photo}`;
 
@@ -300,7 +308,7 @@ export default function TestimonialsSection() {
                     </button>
                   );
                 })()
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -353,7 +361,7 @@ export default function TestimonialsSection() {
             />
 
             {selectedArchiveItem.photos.length > 1 ? (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-3 py-1 text-sm font-medium text-white">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-3 py-1 text-body font-medium text-white">
                 {previewIndex + 1} / {selectedArchiveItem.photos.length}
               </div>
             ) : null}

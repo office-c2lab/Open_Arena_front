@@ -23,7 +23,7 @@ export default function LeaderboardTabs({ activeTab, onChange }) {
               key={tab}
               onClick={() => onChange(tab)}
               className={`
-                px-6 py-2 rounded-full text-sm font-semibold 
+                px-6 py-2 rounded-full text-body font-strong
                 transition-all duration-200 cursor-pointer
                 ${
                   isActive

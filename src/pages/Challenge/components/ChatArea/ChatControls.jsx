@@ -28,8 +28,8 @@ export default function ChatControls({
         <img src={ResetIcon} alt="Reset" className="w-4 h-4" />
         <span
           className="
-            font-700 text-[#515151] leading-[26px]
-            text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px]
+            font-strong text-[#515151]
+            text-label sm:text-body md:text-body-lg lg:text-card-title
           "
         >
           새로운 대화 시작
@@ -48,8 +48,8 @@ export default function ChatControls({
       >
         <span
           className="
-            font-700 text-white leading-[26px]
-            text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px]
+            font-strong text-white
+            text-label sm:text-body md:text-body-lg lg:text-card-title
           "
         >
           {hasJudgeResult ? '저지 결과 보기' : '제출하기'}

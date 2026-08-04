@@ -12,7 +12,7 @@ export default function AdminTotalGraphToggle() {
   return (
     <div className="flex items-center gap-4">
       {/* 설명 텍스트 */}
-      <span className="text-[#030102] text-[20px] font-bold whitespace-nowrap">
+      <span className="text-[#030102] text-card-title font-bold whitespace-nowrap">
         토탈 그래프 공개 설정
       </span>
 
@@ -32,7 +32,7 @@ export default function AdminTotalGraphToggle() {
       </div>
 
       {/* 상태 텍스트 */}
-      <p className="text-[14px] text-[#616161] whitespace-nowrap">
+      <p className="text-body text-[#616161] whitespace-nowrap">
         {isPending ? '변경 중...' : setting ? '공개됨' : '비공개'}
       </p>
     </div>

@@ -20,7 +20,7 @@ const COL_WIDTHS = {
 // -------------------------------
 const TableSkeleton = ({ rows = 8 }) => (
   <div className="relative w-full max-w-[1027px] rounded-[10px] bg-white/80 shadow-md">
-    <div className="flex items-center h-[79px] heading-3 border-b border-[#FF4854] text-[#FF4854] font-500">
+    <div className="flex items-center h-[79px] text-card-title border-b border-[#FF4854] text-[#FF4854] font-medium">
       <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
       <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
       <div className={`${COL_WIDTHS.score} text-center`}>획득 점수</div>
@@ -85,7 +85,7 @@ export default function AdminLeaderboardTable() {
   return (
     <div className="relative w-full max-w-[1027px] rounded-[10px] bg-white/80 shadow-md">
       {/* ------------------- 헤더 ------------------- */}
-      <div className="flex items-center h-[79px] heading-3 border-b border-[#FF4854] text-[#FF4854] font-500">
+      <div className="flex items-center h-[79px] text-card-title border-b border-[#FF4854] text-[#FF4854] font-medium">
         <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
         <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
         <div className={`${COL_WIDTHS.score} text-center`}>획득 점수</div>
@@ -100,7 +100,7 @@ export default function AdminLeaderboardTable() {
           <div
             key={idx}
             className={`
-              flex items-center h-[79px] border-b border-[#FF4854]/30 heading-3 font-700
+              flex items-center h-[79px] border-b border-[#FF4854]/30 text-card-title font-strong
               transition-all duration-500
               ${isHighlighted ? 'bg-[#FFF5E1]' : 'text-[#010101]'}
             `}

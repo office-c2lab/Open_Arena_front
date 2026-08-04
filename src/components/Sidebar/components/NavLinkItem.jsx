@@ -63,7 +63,7 @@ export default function NavLinkItem({ item, isCollapsed }) {
           <img src={currentIcon} alt={item.label} className="w-[20px] h-[20px] flex-shrink-0" />
           {/* 텍스트: isCollapsed가 아닐 때만 표시 */}
           {!isCollapsed && (
-            <span className={`body-large font-500 flex-grow ${defaultTextColor}`}>
+            <span className={`text-body-lg font-medium flex-grow ${defaultTextColor}`}>
               {item.label}
             </span>
           )}
@@ -98,7 +98,7 @@ export default function NavLinkItem({ item, isCollapsed }) {
      `}
               >
                 <span
-                  className={`body-large font-500
+                  className={`text-body-lg font-medium
       ${isSubActive ? 'text-white/80' : `${primaryTextColor}/50`}`}
                 >
                   {sub.label}

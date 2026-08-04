@@ -29,7 +29,7 @@ export default function ChatTestPage() {
 
   return (
     <div className="p-4 max-w-xl mx-auto">
-      <h1 className="text-xl font-bold mb-4">Chat API 테스트 페이지</h1>
+      <h1 className="text-card-title font-bold mb-4">Chat API 테스트 페이지</h1>
 
       {/* 세션 생성 */}
       <div className="mb-4">
@@ -84,7 +84,7 @@ export default function ChatTestPage() {
       {/* 메시지 조회 */}
       {sessionId && (
         <div>
-          <h2 className="font-semibold mb-2">메시지 목록</h2>
+          <h2 className="font-strong mb-2">메시지 목록</h2>
           <button
             onClick={() => messagesQuery.refetch()}
             className="bg-gray-300 px-3 py-1 rounded mb-2"

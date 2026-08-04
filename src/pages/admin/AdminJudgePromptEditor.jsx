@@ -65,7 +65,7 @@ export default function AdminJudgePromptPage() {
           🔹 왼쪽 — 문제 리스트
       ======================================== */}
       <div className="w-[300px] bg-[#0B021C]/70 border border-white/10 rounded-xl p-5">
-        <h2 className="text-lg font-bold mb-4">문제 목록</h2>
+        <h2 className="text-card-title font-bold mb-4">문제 목록</h2>
 
         <div className="mb-4 flex flex-col gap-3">
           <label className="relative">
@@ -91,7 +91,7 @@ export default function AdminJudgePromptPage() {
 
         <div className="flex flex-col gap-2 max-h-[70vh] overflow-y-auto">
           {filteredProblems.length === 0 && (
-            <div className="rounded-lg border border-white/10 bg-[#10050F]/50 p-4 text-sm text-gray-400">
+            <div className="rounded-lg border border-white/10 bg-[#10050F]/50 p-4 text-body text-gray-400">
               검색 결과가 없습니다.
             </div>
           )}
@@ -109,7 +109,7 @@ export default function AdminJudgePromptPage() {
               `}
             >
               <div className="font-bold">{problem.title}</div>
-              <div className="text-xs opacity-70">ID: {problem.id}</div>
+              <div className="text-label opacity-70">ID: {problem.id}</div>
             </button>
           ))}
         </div>
@@ -119,7 +119,7 @@ export default function AdminJudgePromptPage() {
           🔹 오른쪽 — 프롬프트 에디터
       ======================================== */}
       <div className="flex-1 bg-[#0B021C]/70 border border-white/10 rounded-xl p-6">
-        <h2 className="text-xl font-bold text-[#FF4854] mb-4">Judge 프롬프트 수정</h2>
+        <h2 className="text-card-title font-bold text-[#FF4854] mb-4">Judge 프롬프트 수정</h2>
 
         {!selectedProblemId && (
           <div className="text-gray-400">문제를 선택하면 Judge 프롬프트를 수정할 수 있습니다.</div>

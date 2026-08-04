@@ -52,7 +52,7 @@ export default function AdminProblemCreatePage() {
           text-white
         "
       >
-        <h1 className="text-3xl font-bold mb-8 text-[#FF4854]">문제 생성</h1>
+        <h1 className="text-page-title font-bold mb-8 text-[#FF4854]">문제 생성</h1>
 
         {/* ────────────────────── */}
         {/* 기본 정보 */}
@@ -147,7 +147,7 @@ export default function AdminProblemCreatePage() {
         <button
           onClick={handleSubmit}
           disabled={isPending}
-          className="mt-8 w-full py-4 bg-[#FF4854] rounded-[12px] text-2xl font-bold hover:bg-[#ff6075] transition"
+          className="mt-8 w-full py-4 bg-[#FF4854] rounded-[12px] text-section-title font-bold hover:bg-[#ff6075] transition"
         >
           {isPending ? '생성 중...' : '문제 생성하기'}
         </button>
@@ -163,7 +163,7 @@ export default function AdminProblemCreatePage() {
 function Section({ title, children }) {
   return (
     <div className="mb-10">
-      <h2 className="text-xl font-bold mb-4 text-[#FF4854]">{title}</h2>
+      <h2 className="text-card-title font-bold mb-4 text-[#FF4854]">{title}</h2>
       <div className="flex flex-col gap-6">{children}</div>
     </div>
   );
@@ -172,7 +172,7 @@ function Section({ title, children }) {
 function Input({ label, name, value, onChange, type = 'text' }) {
   return (
     <div className="flex flex-col">
-      <label className="font-semibold mb-1">{label}</label>
+      <label className="font-strong mb-1">{label}</label>
       <input
         type={type}
         name={name}
@@ -193,7 +193,7 @@ function Input({ label, name, value, onChange, type = 'text' }) {
 function TextArea({ label, name, value, onChange, className = '' }) {
   return (
     <div className="flex flex-col">
-      <label className="font-semibold mb-1">{label}</label>
+      <label className="font-strong mb-1">{label}</label>
       <textarea
         name={name}
         value={value}

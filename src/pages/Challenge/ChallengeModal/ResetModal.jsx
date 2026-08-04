@@ -44,7 +44,7 @@ const ResetModal = () => {
           <div className="w-[29px] h-[42px] flex justify-center items-center">
             <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
           </div>
-          <span className="ml-[9px] heading-3 font-700 text-[#FF084A]">ARENA</span>
+          <span className="ml-[9px] text-card-title font-strong text-[#FF084A]">ARENA</span>
         </div>
 
         {/* 아이콘 */}
@@ -53,7 +53,7 @@ const ResetModal = () => {
         </div>
 
         {/* 메시지 */}
-        <p className="absolute w-[380px] left-1/2 -translate-x-1/2 top-[334.91px] text-center text-[18px] font-500 leading-8 text-[#0F172A] m-0">
+        <p className="absolute w-[380px] left-1/2 -translate-x-1/2 top-[334.91px] text-center text-card-title font-medium text-[#0F172A] m-0">
           현재 입력한 내용과 진행 중인 모든 작업이 <br /> 즉시 중지되며, 되돌릴 수 없습니다.
         </p>
 
@@ -68,7 +68,7 @@ const ResetModal = () => {
             hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]
             transition-all duration-200"
         >
-          <span className="heading-3 font-700 text-white">새로운 대화 시작</span>
+          <span className="text-card-title font-strong text-white">새로운 대화 시작</span>
         </button>
       </div>
     </div>

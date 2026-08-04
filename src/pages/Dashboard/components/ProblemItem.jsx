@@ -3,7 +3,7 @@ import LockIconSvg from '@/assets/icons/Lock.svg';
 import Skeleton from '@/components/Skeleton/Skeleton';
 
 // === UI 상수 정의 ===
-const BaseTextStyle = 'body-medium font-500 truncate';
+const BaseTextStyle = 'text-body font-medium truncate';
 const ItemWidth = '238px';
 const ItemHeight = '52px';
 
@@ -66,7 +66,7 @@ const ProblemItem = ({ problem, isLoading = false }) => {
 
         {/* 오른쪽 영역: 흰 배경, 초록 글자 */}
         <div
-          className="flex items-center justify-center font-bold text-[14px]"
+          className="flex items-center justify-center font-bold text-body"
           style={{
             width: '70px',
             height: '100%',

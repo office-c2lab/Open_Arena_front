@@ -11,7 +11,7 @@ function SessionCard({ session, isActive, onClick }) {
       } mb-2`}
     >
       <p className="font-bold text-[#0F172A]">{session.title}</p>
-      <p className="text-sm text-gray-500">{new Date(session.created_at).toLocaleString()}</p>
+      <p className="text-body text-gray-500">{new Date(session.created_at).toLocaleString()}</p>
     </div>
   );
 }

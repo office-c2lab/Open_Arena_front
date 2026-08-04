@@ -6,10 +6,10 @@ import { useAuthStore } from '@/stores/authStore';
 function InfoRow({ label, children, last = false }) {
   return (
     <div
-      className={`grid grid-cols-[150px_minmax(0,1fr)] items-center gap-4 px-4 py-4 text-[13px] sm:px-5 ${last ? '' : 'border-b border-[#E3E6EB]'}`}
+      className={`grid grid-cols-[150px_minmax(0,1fr)] items-center gap-4 px-4 py-4 text-body sm:px-5 ${last ? '' : 'border-b border-[#E3E6EB]'}`}
     >
-      <span className="font-700 text-[#697586]">{label}</span>
-      <div className="min-w-0 font-700 text-[#3D4754]">{children}</div>
+      <span className="font-strong text-[#697586]">{label}</span>
+      <div className="min-w-0 font-strong text-[#3D4754]">{children}</div>
     </div>
   );
 }
@@ -17,19 +17,13 @@ function InfoRow({ label, children, last = false }) {
 function InfoSection({ title, children }) {
   return (
     <section className="mt-8">
-      <h2 className="mb-4 text-[17px] font-900 text-[#151A21]">{title}</h2>
+      <h2 className="mb-4 text-body-lg font-bold text-[#151A21]">{title}</h2>
       <div className="surface overflow-hidden">{children}</div>
     </section>
   );
 }
 
-function AccountModal({ title, description, children, onClose, tone = 'default' }) {
-  const toneMap = {
-    default: 'bg-[#FF4854] text-white',
-    danger: 'bg-[#DC2626] text-white',
-    neutral: 'bg-[#151A21] text-white',
-  };
-
+function AccountModal({ title, description, children, onClose }) {
   return (
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center bg-black/45 px-4 py-6 backdrop-blur-sm"
@@ -44,13 +38,11 @@ function AccountModal({ title, description, children, onClose, tone = 'default' 
       >
         <div className="flex items-start justify-between gap-4 border-b border-[#E3E6EB] px-6 py-5">
           <div>
-            <h2 id="account-modal-title" className="text-[20px] font-900 text-[#151A21]">
+            <h2 id="account-modal-title" className="text-card-title font-bold text-[#151A21]">
               {title}
             </h2>
             {description ? (
-              <p className="mt-2 text-[13px] font-700 leading-[22px] text-[#697586]">
-                {description}
-              </p>
+              <p className="mt-2 text-body font-strong text-[#697586]">{description}</p>
             ) : null}
           </div>
           <button
@@ -63,7 +55,6 @@ function AccountModal({ title, description, children, onClose, tone = 'default' 
           </button>
         </div>
         <div className="px-6 py-5">{children}</div>
-        <div className={`h-1 ${toneMap[tone]}`} aria-hidden="true" />
       </div>
     </div>
   );
@@ -72,17 +63,17 @@ function AccountModal({ title, description, children, onClose, tone = 'default' 
 function Field({ label, children, hint }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-[12px] font-900 text-[#596575]">{label}</span>
+      <span className="mb-2 block text-label font-bold text-[#596575]">{label}</span>
       {children}
       {hint ? (
-        <span className="mt-1.5 block text-[11px] font-700 text-[#8A93A5]">{hint}</span>
+        <span className="mt-1.5 block text-caption font-strong text-[#8A93A5]">{hint}</span>
       ) : null}
     </label>
   );
 }
 
 const modalInputClass =
-  'h-10 w-full rounded-[6px] border border-[#DDE3EA] bg-white px-3 text-[13px] font-700 text-[#3D4754] outline-none transition focus:border-[#FF4854]';
+  'h-10 w-full rounded-[6px] border border-[#DDE3EA] bg-white px-3 text-body font-strong text-[#3D4754] outline-none transition focus:border-[#FF4854]';
 
 export default function MyPage({ embedded = false }) {
   const navigate = useNavigate();
@@ -112,9 +103,9 @@ export default function MyPage({ embedded = false }) {
     gender: '비공개',
   });
   const inputClass =
-    'h-8 w-full rounded-[3px] border border-[#DDE3EA] bg-white px-3 text-[12px] font-700 text-[#3D4754] outline-none focus:border-[#FF4854]';
+    'h-8 w-full rounded-[3px] border border-[#DDE3EA] bg-white px-3 text-label font-strong text-[#3D4754] outline-none focus:border-[#FF4854]';
   const disabledInputClass =
-    'h-8 w-full rounded-[3px] border border-[#DDE3EA] bg-[#F4F6F8] px-3 text-[12px] font-700 text-[#A0A8B3] outline-none';
+    'h-8 w-full rounded-[3px] border border-[#DDE3EA] bg-[#F4F6F8] px-3 text-label font-strong text-[#A0A8B3] outline-none';
   const updateProfile = (key, value) => setProfile(current => ({ ...current, [key]: value }));
   const closeModal = () => {
     setActiveModal(null);
@@ -200,33 +191,44 @@ export default function MyPage({ embedded = false }) {
           : 'mx-auto w-full max-w-[1200px] bg-white px-5 py-10 sm:px-8'
       }
     >
-      <div className="flex items-center gap-8">
-        <h1 className="text-[23px] font-900 text-[#151A21]">기본정보</h1>
-        <button
-          type="button"
-          onClick={isEditing ? handleSave : () => setIsEditing(true)}
-          className="cursor-pointer text-[13px] font-800 text-[#FF4854]"
-        >
-          {isEditing ? '저장' : '편집'}
-        </button>
-      </div>
+      <h1 className="text-section-title font-bold text-[#151A21]">기본정보</h1>
 
       <InfoSection title="공개정보">
         <InfoRow label="닉네임">
-          {isEditing ? (
-            <div>
-              <input
-                value={profile.nickname}
-                onChange={event => updateProfile('nickname', event.target.value)}
-                className={inputClass}
-              />
-              <p className="mt-1 text-[10px] font-600 text-[#8A93A5]">
-                수정하면 7일 후에 다시 변경할 수 있습니다.
-              </p>
+          <div className="flex items-start justify-between gap-4">
+            {isEditing ? (
+              <div className="min-w-0 flex-1">
+                <input
+                  value={profile.nickname}
+                  onChange={event => updateProfile('nickname', event.target.value)}
+                  className={inputClass}
+                />
+                <p className="mt-1 text-caption font-strong text-[#8A93A5]">
+                  수정하면 7일 후에 다시 변경할 수 있습니다.
+                </p>
+              </div>
+            ) : (
+              <span className="min-w-0 flex-1 truncate">{nickname}</span>
+            )}
+            <div className="flex shrink-0 items-center gap-3">
+              {isEditing ? (
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                >
+                  취소
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={isEditing ? handleSave : () => setIsEditing(true)}
+                className="cursor-pointer text-body font-strong text-[#FF4854]"
+              >
+                {isEditing ? '저장' : '편집'}
+              </button>
             </div>
-          ) : (
-            nickname
-          )}
+          </div>
         </InfoRow>
       </InfoSection>
 
@@ -234,7 +236,7 @@ export default function MyPage({ embedded = false }) {
         <InfoRow label="계정연동">
           <div className="flex flex-wrap items-center justify-between gap-3 text-[#8A93A5]">
             <span className="flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#9AA0A6] text-[11px] font-900 text-white">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#9AA0A6] text-caption font-bold text-white">
                 G
               </span>
               계정이 연동되어 있습니다.
@@ -253,7 +255,7 @@ export default function MyPage({ embedded = false }) {
             <button
               type="button"
               onClick={() => setActiveModal('externalApps')}
-              className="cursor-pointer font-800 text-[#FF4854]"
+              className="cursor-pointer font-strong text-[#FF4854]"
             >
               연동하기
             </button>
@@ -264,11 +266,11 @@ export default function MyPage({ embedded = false }) {
             <div>
               <div className="flex gap-3">
                 <input disabled value={email} className={disabledInputClass} />
-                <button type="button" className="shrink-0 text-[12px] font-800 text-[#FF4854]">
+                <button type="button" className="shrink-0 text-label font-strong text-[#FF4854]">
                   인증하기
                 </button>
               </div>
-              <p className="mt-1 text-[10px] font-600 text-[#8A93A5]">
+              <p className="mt-1 text-caption font-strong text-[#8A93A5]">
                 이메일 변경을 위해 이메일 인증이 필요합니다.
               </p>
             </div>
@@ -285,7 +287,7 @@ export default function MyPage({ embedded = false }) {
             <button
               type="button"
               onClick={() => setActiveModal('password')}
-              className="cursor-pointer font-800 text-[#FF4854]"
+              className="cursor-pointer font-strong text-[#FF4854]"
             >
               변경하기
             </button>
@@ -293,24 +295,13 @@ export default function MyPage({ embedded = false }) {
         </InfoRow>
       </InfoSection>
 
-      {isEditing ? (
-        <div className="mt-8 flex justify-end gap-3">
-          <button type="button" onClick={handleCancel} className="btn btn-secondary btn-sm">
-            취소
-          </button>
-          <button type="button" onClick={handleSave} className="btn btn-primary btn-sm">
-            저장하기
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setActiveModal('delete')}
-          className="mt-8 w-full cursor-pointer text-center text-[13px] font-800 text-[#FF4854]"
-        >
-          회원 탈퇴하기
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => setActiveModal('delete')}
+        className="mt-8 w-full cursor-pointer text-center text-body font-strong text-[#FF4854]"
+      >
+        회원 탈퇴하기
+      </button>
 
       {activeModal === 'password' ? (
         <AccountModal
@@ -319,7 +310,7 @@ export default function MyPage({ embedded = false }) {
           onClose={closeModal}
         >
           <div className="space-y-4">
-            <div className="flex items-center gap-3 rounded-[8px] bg-[#FFF7F8] px-4 py-3 text-[13px] font-800 text-[#D83A45]">
+            <div className="flex items-center gap-3 rounded-[8px] bg-[#FFF7F8] px-4 py-3 text-body font-strong text-[#D83A45]">
               <KeyRound className="h-5 w-5 shrink-0" />
               목업 환경에서는 입력값 검증 후 화면에서만 변경 완료로 처리됩니다.
             </div>
@@ -357,7 +348,7 @@ export default function MyPage({ embedded = false }) {
               />
             </Field>
             {modalMessage ? (
-              <p className="rounded-[6px] bg-[#F4F6F8] px-3 py-2 text-[12px] font-800 text-[#596575]">
+              <p className="rounded-[6px] bg-[#F4F6F8] px-3 py-2 text-label font-strong text-[#596575]">
                 {modalMessage}
               </p>
             ) : null}
@@ -382,7 +373,6 @@ export default function MyPage({ embedded = false }) {
           title="외부 앱 연동"
           description="연동할 외부 앱을 선택하세요. 현재는 목업으로 화면 상태만 변경됩니다."
           onClose={closeModal}
-          tone="neutral"
         >
           <div className="space-y-3">
             {externalApps.map(app => {
@@ -399,8 +389,8 @@ export default function MyPage({ embedded = false }) {
                       <Icon className="h-5 w-5" />
                     </span>
                     <div className="min-w-0">
-                      <p className="text-[14px] font-900 text-[#151A21]">{app.name}</p>
-                      <p className="mt-1 text-[12px] font-700 leading-[18px] text-[#697586]">
+                      <p className="text-body font-bold text-[#151A21]">{app.name}</p>
+                      <p className="mt-1 text-label font-strong text-[#697586]">
                         {app.description}
                       </p>
                     </div>
@@ -408,7 +398,7 @@ export default function MyPage({ embedded = false }) {
                   <button
                     type="button"
                     onClick={() => toggleExternalApp(app.id)}
-                    className={`shrink-0 cursor-pointer rounded-[6px] px-3 py-2 text-[12px] font-900 transition ${
+                    className={`shrink-0 cursor-pointer rounded-[6px] px-3 py-2 text-label font-bold transition ${
                       isLinked
                         ? 'bg-[#F4F6F8] text-[#596575] hover:bg-[#E8ECF2]'
                         : 'bg-[#FF4854] text-white hover:bg-[#E63B47]'
@@ -433,10 +423,9 @@ export default function MyPage({ embedded = false }) {
           title="회원 탈퇴"
           description="탈퇴하면 계정 정보와 챌린지 기록을 더 이상 사용할 수 없습니다. 이 작업은 되돌릴 수 없습니다."
           onClose={closeModal}
-          tone="danger"
         >
           <div className="space-y-4">
-            <div className="flex items-start gap-3 rounded-[8px] bg-[#FEF2F2] px-4 py-3 text-[13px] font-800 leading-[22px] text-[#B91C1C]">
+            <div className="flex items-start gap-3 rounded-[8px] bg-[#FEF2F2] px-4 py-3 text-body font-strong text-[#B91C1C]">
               <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
               계속하려면 아래 입력창에 탈퇴라고 입력해 주세요. 목업 환경에서는 확인 후 로그아웃
               처리됩니다.
@@ -450,7 +439,7 @@ export default function MyPage({ embedded = false }) {
               />
             </Field>
             {modalMessage ? (
-              <p className="rounded-[6px] bg-[#FEF2F2] px-3 py-2 text-[12px] font-800 text-[#B91C1C]">
+              <p className="rounded-[6px] bg-[#FEF2F2] px-3 py-2 text-label font-strong text-[#B91C1C]">
                 {modalMessage}
               </p>
             ) : null}

@@ -20,7 +20,7 @@ export default function AdminProblemPage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`
-                px-6 py-3 rounded-xl font-bold text-base transition-all duration-200
+                px-6 py-3 rounded-xl font-bold text-body-lg transition-all duration-200
                 border  cursor-pointer
                 ${
                   isActive

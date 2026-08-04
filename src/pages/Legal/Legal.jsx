@@ -122,20 +122,20 @@ export default function Legal({ type }) {
     <div className="bg-white px-[10px] py-14">
       <div className="mx-auto w-full max-w-[1200px] px-2 py-6 md:py-10">
         <div className="border-b border-[#E5E7EB] pb-8">
-          <p className="body-large font-700 text-[#FF4854]">ARENA POLICY</p>
-          <h1 className="mt-3 heading-1 font-700 text-[#2D3035]">{document.title}</h1>
-          <p className="mt-3 body-large font-500 text-[#6B6B6B]">{document.description}</p>
-          <p className="mt-5 body-medium font-500 text-[#8A93A5]">시행일: 2026년 7월 21일</p>
+          <p className="text-body-lg font-strong text-[#FF4854]">ARENA POLICY</p>
+          <h1 className="mt-3 text-page-title font-strong text-[#2D3035]">{document.title}</h1>
+          <p className="mt-3 text-body-lg font-medium text-[#6B6B6B]">{document.description}</p>
+          <p className="mt-5 text-body font-medium text-[#8A93A5]">시행일: 2026년 7월 21일</p>
         </div>
         <div className="mt-10 grid gap-10 lg:grid-cols-[300px_minmax(0,1fr)]">
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <p className="body-large font-700 text-[#2D3035]">목차</p>
+            <p className="text-body-lg font-strong text-[#2D3035]">목차</p>
             <ol className="mt-4 flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible">
               {document.sections.map(([heading], index) => (
                 <li key={heading} className="shrink-0">
                   <a
                     href={`#section-${index + 1}`}
-                    className="block whitespace-nowrap rounded-lg px-3 py-2 body-medium font-500 text-[#6B6B6B] transition hover:bg-[#FFF0F2] hover:text-[#FF4854]"
+                    className="block whitespace-nowrap rounded-lg px-3 py-2 text-body font-medium text-[#6B6B6B] transition hover:bg-[#FFF0F2] hover:text-[#FF4854]"
                   >
                     {heading}
                   </a>
@@ -150,12 +150,12 @@ export default function Legal({ type }) {
                 key={heading}
                 className="scroll-mt-24 border-b border-[#EDEEF0] py-8 first:pt-0 last:border-b-0"
               >
-                <h2 className="heading-2 font-700 text-[#2D3035]">{heading}</h2>
+                <h2 className="text-section-title font-strong text-[#2D3035]">{heading}</h2>
                 <div className="mt-4">
                   {content.split('\n\n').map((paragraph, paragraphIndex) => (
                     <p
                       key={`${heading}-${paragraphIndex}`}
-                      className={`whitespace-pre-line body-large font-500 leading-8 text-[#4B4B4B] ${paragraphIndex > 0 ? 'mt-5' : ''}`}
+                      className={`whitespace-pre-line text-body-lg font-medium text-[#4B4B4B] ${paragraphIndex > 0 ? 'mt-5' : ''}`}
                     >
                       {paragraph}
                     </p>
@@ -165,7 +165,7 @@ export default function Legal({ type }) {
             ))}
           </article>
         </div>
-        <div className="mt-10 flex flex-wrap gap-x-4 gap-y-2 border-t border-[#E5E7EB] pt-6 body-medium font-500">
+        <div className="mt-10 flex flex-wrap gap-x-4 gap-y-2 border-t border-[#E5E7EB] pt-6 text-body font-medium">
           <Link to="/terms" className={type === 'terms' ? 'text-[#FF4854]' : 'text-[#6B6B6B]'}>
             이용약관
           </Link>

@@ -46,7 +46,7 @@ export default function TotalLeaderboard() {
   // ⭐ 404 → 비공개 상태 메시지 출력
   if (error?.response?.status === 404) {
     return (
-      <div className="text-white text-center text-2xl mt-10">
+      <div className="text-white text-center text-section-title mt-10">
         토탈 점수 차트는 현재 비공개 상태입니다.
       </div>
     );
@@ -54,13 +54,13 @@ export default function TotalLeaderboard() {
 
   // ❌ 기타 에러
   if (error) {
-    return <div className="text-red-400 text-center text-xl mt-10">데이터 로드 실패</div>;
+    return <div className="text-red-400 text-center text-card-title mt-10">데이터 로드 실패</div>;
   }
 
   // 공개 OFF
   if (enabled === false) {
     return (
-      <div className="text-white text-center text-2xl mt-10">
+      <div className="text-white text-center text-section-title mt-10">
         토탈 점수 차트는 현재 비공개 상태입니다.
       </div>
     );
@@ -68,7 +68,9 @@ export default function TotalLeaderboard() {
 
   // 로딩
   if (isLoading || !data || data.length === 0) {
-    return <div className="text-white text-center text-xl mt-10">Loading 점수 변화 차트...</div>;
+    return (
+      <div className="text-white text-center text-card-title mt-10">Loading 점수 변화 차트...</div>
+    );
   }
 
   // 팀 목록 추출 — 가장 최근 데이터 기준
@@ -132,7 +134,7 @@ export default function TotalLeaderboard() {
                 style={{ background: colors[i % colors.length] }}
               />
               <span
-                className="text-white text-[20px]"
+                className="text-white text-card-title"
                 style={{
                   fontFamily: 'Black Han Sans',
                   textShadow: '0 0 8px rgba(255,72,84,0.7)',

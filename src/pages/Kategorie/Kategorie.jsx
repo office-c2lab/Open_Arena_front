@@ -247,7 +247,7 @@ function ProblemStatusBadge({ status = 'untried' }) {
 
   return (
     <span
-      className={`absolute right-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-[12px] font-900 shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${meta.className}`}
+      className={`absolute right-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${meta.className}`}
     >
       {meta.label}
     </span>
@@ -263,16 +263,16 @@ function PathPreview({ path, status = 'untried', label }) {
         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
       />
       {label ? (
-        <span className="absolute left-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-[12px] font-900 text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
+        <span className="absolute left-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
           {label}
         </span>
       ) : null}
       <ProblemStatusBadge status={status} />
       <div className="absolute inset-0 flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        <p className="text-[13px] font-800 leading-[18px] text-white">
+        <p className="text-body font-strong text-white">
           {path.title} 시나리오에서 AI의 보안 규칙과 취약점을 분석해 목표를 달성하세요.
         </p>
-        <p className="mt-3 text-[13px] font-900 leading-[18px] text-[#FF5A65]">
+        <p className="mt-3 text-body font-bold text-[#FF5A65]">
           {path.category} 분야의 핵심 보안 과제를 해결하는 것.
         </p>
       </div>
@@ -295,31 +295,28 @@ export function PathCard({ path, onClick, status = 'untried', label }) {
     >
       <PathPreview path={path} status={status} label={label} />
       <div className="flex flex-1 flex-col p-5">
-        <h2 className="text-[21px] font-900 text-[#151A21]">{path.title}</h2>
-        <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
+        <h2 className="text-card-title font-bold text-[#151A21]">{path.title}</h2>
+        <p className="mt-2 text-body font-strong text-[#66717E]">
           {path.category} 실전 보안 챌린지
         </p>
-        <div className="mt-5 grid grid-cols-[0.85fr_1.35fr_1.35fr_0.8fr] divide-x divide-[#D8DDE4] text-[12px] text-[#2E3338]">
-          <span className="flex items-center justify-center whitespace-nowrap pr-1 font-700">
+        <div className="mt-5 grid grid-cols-[0.85fr_1.35fr_1.35fr_0.8fr] divide-x divide-[#D8DDE4] text-label text-[#2E3338]">
+          <span className="flex items-center justify-center whitespace-nowrap pr-1 font-strong">
             성공 <em className="ml-1 not-italic text-[#FF4854]">{path.reviews}</em>명
           </span>
-          <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
+          <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
             평균 <em className="mx-1 not-italic text-[#FF4854]">1,240</em> 토큰
           </span>
-          <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
+          <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
             최대 <em className="mx-1 not-italic text-[#FF4854]">{path.maximumPoints ?? 100}</em>{' '}
             포인트
           </span>
           <span className="flex items-center justify-center pl-1">
-            <span className={`rounded-[4px] px-2 py-1 text-[12px] font-700 ${levelClass}`}>
+            <span className={`rounded-[4px] px-2 py-1 text-label font-strong ${levelClass}`}>
               {path.level}
             </span>
           </span>
         </div>
-        <button
-          type="button"
-          className="btn btn-primary btn-lg btn-block mt-5"
-        >
+        <button type="button" className="btn btn-primary btn-lg btn-block mt-5">
           문제풀기
         </button>
       </div>
@@ -337,11 +334,11 @@ const ChallengeSection = () => {
 
     return PATHS.filter(
       path =>
-        (!normalizedKeyword ||
-          [path.title, path.category, path.difficulty, path.tier, ...path.tags]
-            .join(' ')
-            .toLowerCase()
-            .includes(normalizedKeyword))
+        !normalizedKeyword ||
+        [path.title, path.category, path.difficulty, path.tier, ...path.tags]
+          .join(' ')
+          .toLowerCase()
+          .includes(normalizedKeyword)
     );
   }, [keyword]);
 
@@ -377,10 +374,10 @@ const ChallengeSection = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-transparent" />
         <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
-          <h1 className="max-w-full whitespace-nowrap text-[18px] font-900 leading-tight tracking-normal text-white sm:text-[26px] md:text-[34px] lg:text-[42px]">
+          <h1 className="max-w-full whitespace-nowrap text-card-title font-bold tracking-normal text-white sm:text-page-title md:text-page-title lg:text-display">
             지금 바로 <span className="text-[#FF4854]">Red Teaming</span>에 도전하세요
           </h1>
-          <p className="mt-3 max-w-[620px] text-[14px] font-700 leading-relaxed text-white/72 sm:text-[17px] md:mt-4 md:text-[22px]">
+          <p className="mt-3 max-w-[620px] text-body font-strong text-white/72 sm:text-body-lg md:mt-4 md:text-section-title">
             AI 레드팀 평가로 실제 공격 시나리오를 경험하고,
             <br />
             실전형 보안 역량을 강화하세요.
@@ -392,7 +389,7 @@ const ChallengeSection = () => {
         id="challenge-path-section"
         className="mb-8 flex flex-col gap-4 border-b border-[#E6E9EE] pb-5 sm:flex-row sm:items-center sm:justify-between"
       >
-        <h2 className="border-b-2 border-[#FF4854] pb-3 text-[18px] font-700 text-black">
+        <h2 className="border-b-2 border-[#FF4854] pb-3 text-card-title font-strong text-black">
           챌린지
         </h2>
         <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
@@ -403,7 +400,7 @@ const ChallengeSection = () => {
               value={searchInput}
               onChange={event => setSearchInput(event.target.value)}
               placeholder="관심 있는 챌린지를 검색해보세요."
-              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-body outline-none transition focus:border-[#FF4854]"
             />
           </label>
           <button type="submit" className="btn btn-primary btn-lg">
@@ -423,9 +420,8 @@ const ChallengeSection = () => {
       <div>
         <section className="min-w-0">
           <div className="mb-5 flex items-center justify-between">
-            <h1 className="text-[16px] font-700 text-[#2E3338]">
-              전체 챌린지{' '}
-              <span className="text-[#FF4854]">{visiblePaths.length}</span>
+            <h1 className="text-body-lg font-strong text-[#2E3338]">
+              전체 챌린지 <span className="text-[#FF4854]">{visiblePaths.length}</span>
             </h1>
           </div>
 

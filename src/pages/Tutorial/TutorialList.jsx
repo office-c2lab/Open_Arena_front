@@ -124,7 +124,7 @@ function TutorialPreview({ tutorial }) {
       <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
       <div className="absolute -right-8 -top-10 h-40 w-40 rounded-full border border-[#FF4854]/30" />
       <div className="absolute right-10 bottom-[-54px] h-36 w-36 rounded-full border border-[#FF4854]/20" />
-      <strong className="relative z-10 text-[26px] font-900 uppercase leading-[31px] text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
+      <strong className="relative z-10 text-page-title font-bold uppercase text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
         {tutorial.title}
       </strong>
     </div>
@@ -144,7 +144,7 @@ function TutorialCard({ tutorial, onClick }) {
             ? TutorialJudgeFailureCardImage
             : tutorial.id === 10
               ? TutorialJudgeSuccessCardImage
-            : TutorialCardImage;
+              : TutorialCardImage;
 
     return (
       <article
@@ -152,25 +152,17 @@ function TutorialCard({ tutorial, onClick }) {
         onClick={onClick}
       >
         <div className="relative h-[180px] overflow-hidden">
-          <img
-            src={cardImage}
-            alt={tutorial.title}
-            className="h-full w-full object-cover"
-          />
+          <img src={cardImage} alt={tutorial.title} className="h-full w-full object-cover" />
           <div className="absolute inset-0 flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-            <p className="text-[13px] font-800 leading-[18px] text-white">{tutorial.description}</p>
-            <p className="mt-3 text-[13px] font-900 leading-[18px] text-[#FF5A65]">
-              {tutorial.goal}
-            </p>
+            <p className="text-body font-strong text-white">{tutorial.description}</p>
+            <p className="mt-3 text-body font-bold text-[#FF5A65]">{tutorial.goal}</p>
           </div>
         </div>
         <div className="flex flex-1 flex-col p-5">
-          <h2 className="text-[21px] font-900 text-[#151A21]">{tutorial.title}</h2>
-          <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
-            {tutorial.subtitle}
-          </p>
-          <div className="mt-5 grid grid-cols-[1fr_1.65fr_0.65fr_0.9fr] divide-x divide-[#D8DDE4] text-[12px] text-[#2E3338]">
-            <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
+          <h2 className="text-card-title font-bold text-[#151A21]">{tutorial.title}</h2>
+          <p className="mt-2 text-body font-strong text-[#66717E]">{tutorial.subtitle}</p>
+          <div className="mt-5 grid grid-cols-[1fr_1.65fr_0.65fr_0.9fr] divide-x divide-[#D8DDE4] text-label text-[#2E3338]">
+            <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
               {isPracticeTutorial ? (
                 <>
                   성공{' '}
@@ -180,7 +172,7 @@ function TutorialCard({ tutorial, onClick }) {
                 <em className="not-italic text-[#FF4854]">Step {tutorialStep}</em>
               )}
             </span>
-            <span className="flex items-center justify-center whitespace-nowrap px-1 font-700">
+            <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
               {isPracticeTutorial ? (
                 <>
                   평균 <em className="mx-1 not-italic text-[#FF4854]">{tutorial.averageTokens}</em>{' '}
@@ -190,19 +182,16 @@ function TutorialCard({ tutorial, onClick }) {
                 <em className="not-italic text-[#2E3338]">{tutorial.title}</em>
               )}
             </span>
-            <span className="flex items-center justify-center whitespace-nowrap px-1 font-500">
+            <span className="flex items-center justify-center whitespace-nowrap px-1 font-medium">
               {tutorial.price}
             </span>
             <span className="flex items-center justify-center px-1">
-              <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-[12px] font-700 text-white">
+              <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-label font-strong text-white">
                 Tutorial
               </span>
             </span>
           </div>
-          <button
-            type="button"
-            className="btn btn-primary btn-lg btn-block mt-5"
-          >
+          <button type="button" className="btn btn-primary btn-lg btn-block mt-5">
             {isPracticeTutorial ? '문제풀기' : '튜토리얼 진행하기'}
           </button>
         </div>
@@ -224,51 +213,49 @@ function TutorialCard({ tutorial, onClick }) {
     >
       <TutorialPreview tutorial={tutorial} />
       <div className="flex flex-1 flex-col p-5">
-        <h2 className="text-[20px] font-900 leading-[26px] text-[#151A21] transition-colors group-hover:text-[#FF4854]">
+        <h2 className="text-card-title font-bold text-[#151A21] transition-colors group-hover:text-[#FF4854]">
           {tutorial.title}
         </h2>
         {tutorial.subtitle ? (
-          <p className="mt-2 line-clamp-2 text-[13px] font-600 leading-[19px] text-[#66717E]">
+          <p className="mt-2 line-clamp-2 text-body font-strong text-[#66717E]">
             {tutorial.subtitle}
           </p>
         ) : null}
         <div className="mt-3 flex flex-wrap gap-1.5">
-          <span className="rounded-[3px] border border-[#C9D8FF] px-1.5 py-0.5 text-[10px] font-600 leading-none text-[#5578EA]">
+          <span className="rounded-[3px] border border-[#C9D8FF] px-1.5 py-0.5 text-caption font-strong text-[#5578EA]">
             {tutorial.tier}
           </span>
           <span
-            className={`rounded-[3px] border px-1.5 py-0.5 text-[10px] font-600 leading-none ${tagColors[tutorial.difficulty] ?? tagColors.Easy}`}
+            className={`rounded-[3px] border px-1.5 py-0.5 text-caption font-strong ${tagColors[tutorial.difficulty] ?? tagColors.Easy}`}
           >
             {tutorial.difficulty}
           </span>
           {tutorial.tags.map(tag => (
             <span
               key={tag}
-              className="rounded-[3px] border border-[#D7DDE6] px-1.5 py-0.5 text-[10px] font-500 leading-none text-[#677281]"
+              className="rounded-[3px] border border-[#D7DDE6] px-1.5 py-0.5 text-caption font-medium text-[#677281]"
             >
               {tag}
             </span>
           ))}
         </div>
-        <div className="mt-5 flex items-center justify-between text-[12px] text-[#77808C]">
-          <span className="flex items-center gap-1 font-700 text-black">
+        <div className="mt-5 flex items-center justify-between text-label text-[#77808C]">
+          <span className="flex items-center gap-1 font-strong text-black">
             <Star className="h-3.5 w-3.5 fill-black text-black" />
-            {tutorial.rating} <span className="font-500 text-[#77808C]">({tutorial.reviews})</span>
+            {tutorial.rating}{' '}
+            <span className="font-medium text-[#77808C]">({tutorial.reviews})</span>
           </span>
           <span className="flex items-center gap-1">
             <Clock3 className="h-3.5 w-3.5" />약 {tutorial.duration}
           </span>
         </div>
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-[12px] font-500 text-[#2E3338]">{tutorial.price}</span>
-          <span className={`rounded-[4px] px-2 py-1 text-[11px] font-700 ${levelClass}`}>
+          <span className="text-label font-medium text-[#2E3338]">{tutorial.price}</span>
+          <span className={`rounded-[4px] px-2 py-1 text-caption font-strong ${levelClass}`}>
             {tutorial.level}
           </span>
         </div>
-        <button
-          type="button"
-          className="btn btn-primary btn-md btn-block mt-auto"
-        >
+        <button type="button" className="btn btn-primary btn-md btn-block mt-auto">
           튜토리얼 보기
           <ArrowRight className="h-4 w-4" />
         </button>
@@ -331,10 +318,10 @@ export default function TutorialList() {
         />
         <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
           <div className="max-w-[760px]">
-            <h1 className="whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+            <h1 className="whitespace-nowrap text-section-title font-bold text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-display md:text-display-lg">
               <span className="text-[#FF4854]">Beginners</span>를 위한 완벽한 입문 가이드 시작하기
             </h1>
-            <p className="mt-3 text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+            <p className="mt-3 text-body font-strong text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-card-title md:text-section-title">
               레드티밍이 뭔가요? ARENA는 어떻게 시작하나요?
             </p>
           </div>
@@ -347,7 +334,7 @@ export default function TutorialList() {
       >
         <button
           type="button"
-          className="cursor-pointer border-b-2 border-[#FF4854] pb-3 text-[18px] font-700 text-black"
+          className="cursor-pointer border-b-2 border-[#FF4854] pb-3 text-card-title font-strong text-black"
         >
           Tutorial
         </button>
@@ -359,13 +346,10 @@ export default function TutorialList() {
               value={searchInput}
               onChange={event => setSearchInput(event.target.value)}
               placeholder="관심 있는 튜토리얼을 검색해보세요."
-              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-body outline-none transition focus:border-[#FF4854]"
             />
           </label>
-          <button
-            type="submit"
-            className="btn btn-primary btn-lg"
-          >
+          <button type="submit" className="btn btn-primary btn-lg">
             검색
           </button>
           <button

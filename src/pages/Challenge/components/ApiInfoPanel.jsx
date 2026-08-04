@@ -36,9 +36,9 @@ export default function ApiInfoPanel({
 
   return (
     <div className="glass-subtle flex w-full flex-shrink-0 flex-col items-start gap-3 rounded-[18px] p-4">
-      <h3 className="body-large font-700 text-[#837BBD]">문제 API</h3>
+      <h3 className="text-body-lg font-strong text-[#837BBD]">문제 API</h3>
 
-      <div className="body-medium font-500 whitespace-pre-wrap text-[#0F172A]">
+      <div className="text-body font-medium whitespace-pre-wrap text-[#0F172A]">
         <p>
           <b>URL:</b> {apiUrl ?? '정보 없음'}
         </p>
@@ -52,9 +52,9 @@ export default function ApiInfoPanel({
           <b>API Key:</b> {apiKey ?? '정보 없음'}
         </p>
 
-        <p className="font-600 font-bold">Request Body (예시)</p>
+        <p className="font-bold">Request Body (예시)</p>
 
-        <pre className="surface-solid no-scrollbar mt-1 overflow-x-auto rounded-[12px] p-3 text-sm font-bold">
+        <pre className="surface-solid no-scrollbar mt-1 overflow-x-auto rounded-[12px] p-3 text-body font-bold">
           {requestBodyExample}
         </pre>
       </div>

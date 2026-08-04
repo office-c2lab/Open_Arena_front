@@ -96,14 +96,14 @@ export default function FailedModal({
             onClick={restartHandler}
             className="flex h-[56px] w-full cursor-pointer items-center justify-center rounded-[18px] bg-[#D9DADB] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#BFC0C4] sm:h-[61px] sm:w-[400px]"
           >
-            <span className="heading-2 font-700 text-[#515151]">새로운 대화 시작</span>
+            <span className="text-section-title font-strong text-[#515151]">새로운 대화 시작</span>
           </button>
           <button
             type="button"
             onClick={continueHandler}
             className="flex h-[56px] w-full cursor-pointer items-center justify-center rounded-[18px] bg-[#FF4854] shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] sm:h-[61px] sm:w-[400px]"
           >
-            <span className="heading-2 font-700 text-white">다른 문제 풀기</span>
+            <span className="text-section-title font-strong text-white">다른 문제 풀기</span>
           </button>
         </div>
       </div>

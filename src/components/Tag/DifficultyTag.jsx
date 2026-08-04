@@ -43,7 +43,7 @@ const DifficultyTag = ({ children }) => {
     rounded-full 
     border 
     p-2               
-    body-small
+    text-label
   `;
 
   // 최종 클래스 조합

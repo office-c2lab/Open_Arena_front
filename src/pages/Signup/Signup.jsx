@@ -160,15 +160,15 @@ export default function Signup() {
     }));
   };
 
-  const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
+  const inputLabelStyle = 'text-card-title font-medium text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
   const inputFieldStyle =
-    'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
+    'w-full text-card-title font-strong outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   if (isSignupComplete) {
     return (
       <div className="flex justify-center bg-white px-[10px] py-4">
         <section className="flex w-full max-w-[675px] flex-col items-center px-2 pb-10 pt-8 text-center">
-          <h1 className="heading-1 font-700 text-[#2D3035]">회원가입 완료!</h1>
+          <h1 className="text-page-title font-strong text-[#2D3035]">회원가입 완료!</h1>
 
           <div className="relative mt-14 flex h-[260px] w-full overflow-hidden rounded-[36px] bg-[radial-gradient(circle_at_50%_48%,#FFEFF3_0%,#FFDCE5_42%,#FFB8CA_100%)]">
             <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 shadow-[0_0_50px_rgba(255,255,255,0.76)]" />
@@ -193,7 +193,7 @@ export default function Signup() {
             />
           </div>
 
-          <p className="mt-8 text-[17px] font-800 leading-7 text-[#3D4754]">
+          <p className="mt-8 text-body-lg font-strong text-[#3D4754]">
             관리자 승인 후 <span className="text-[#FF4854]">유료 회원</span>으로 전환됩니다.
             <br />
             승인 완료 시 서비스를 이용할 수 있습니다.
@@ -202,7 +202,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={() => navigate('/kategorie')}
-            className="mt-8 w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white heading-3 font-700 shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer"
+            className="mt-8 w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white text-card-title font-strong shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer"
           >
             ARENA 시작하기
           </button>
@@ -224,12 +224,12 @@ export default function Signup() {
             >
               <img src={BackBtn} alt="" className="w-[10px] h-[18px]" />
             </button>
-            <h1 className="heading-3 font-500 text-black">회원가입</h1>
+            <h1 className="text-card-title font-medium text-black">회원가입</h1>
           </div>
         </header>
 
         <main className="flex flex-1 flex-col px-2 pb-8 pt-3 md:pb-10 md:pt-4">
-          <h2 className="heading-2 font-500 text-black mb-10">
+          <h2 className="text-section-title font-medium text-black mb-10">
             회원 정보를
             <br /> 입력해 주세요.
           </h2>
@@ -296,7 +296,7 @@ export default function Signup() {
                       인증번호 확인
                     </button>
                   </div>
-                  <p className="mt-2 body-small font-500 text-[#FF4854]">
+                  <p className="mt-2 text-label font-medium text-[#FF4854]">
                     이메일로 발송된 인증번호를 입력해 주세요.
                   </p>
                 </div>
@@ -368,15 +368,15 @@ export default function Signup() {
                 />
                 <label
                   htmlFor="terms-agreement"
-                  className="heading-3 cursor-pointer font-500 text-[#6B6B6B]"
+                  className="text-card-title cursor-pointer font-medium text-[#6B6B6B]"
                 >
-                  <span className="font-700">[필수]</span> 이용약관에 동의합니다.
+                  <span className="font-strong">[필수]</span> 이용약관에 동의합니다.
                 </label>
                 <a
                   href="/terms"
                   target="_blank"
                   rel="noreferrer"
-                  className="ml-auto shrink-0 body-large font-500 text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
+                  className="ml-auto shrink-0 text-body-lg font-medium text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
                 >
                   자세히 보기 &gt;
                 </a>
@@ -393,15 +393,15 @@ export default function Signup() {
                 />
                 <label
                   htmlFor="privacy-agreement"
-                  className="heading-3 cursor-pointer font-500 text-[#6B6B6B]"
+                  className="text-card-title cursor-pointer font-medium text-[#6B6B6B]"
                 >
-                  <span className="font-700">[필수]</span> 개인정보 수집 및 이용에 동의합니다.
+                  <span className="font-strong">[필수]</span> 개인정보 수집 및 이용에 동의합니다.
                 </label>
                 <a
                   href="/privacy"
                   target="_blank"
                   rel="noreferrer"
-                  className="ml-auto shrink-0 body-large font-500 text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
+                  className="ml-auto shrink-0 text-body-lg font-medium text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
                 >
                   자세히 보기 &gt;
                 </a>
@@ -409,7 +409,7 @@ export default function Signup() {
             </fieldset>
           </form>
 
-          {/* <p className="mt-8 body-medium font-500 text-[#6B6B6B]">
+          {/* <p className="mt-8 text-body font-medium text-[#6B6B6B]">
             * 비밀번호는 영문, 숫자, 특수문자를 조합하여 10~20자 이내로 입력해 주세요.
           </p> */}
         </main>

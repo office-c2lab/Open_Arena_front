@@ -35,19 +35,19 @@ export default function AgentArenaPromoSection() {
                   <div className="h-4 w-[72%] rounded-full bg-white/8" />
                   <div className="h-4 w-[48%] rounded-full bg-white/7" />
                 </div>
-                <div className="absolute left-1/2 top-1/2 flex h-8 w-[160px] -translate-x-1/2 -translate-y-1/2 items-center justify-center text-[13px] font-semibold uppercase tracking-[0.18em] text-white drop-shadow-[0_0_12px_rgba(111,238,255,0.32)]">
+                <div className="absolute left-1/2 top-1/2 flex h-8 w-[160px] -translate-x-1/2 -translate-y-1/2 items-center justify-center text-body font-strong uppercase tracking-[0.18em] text-white drop-shadow-[0_0_12px_rgba(111,238,255,0.32)]">
                   Agent Workflow
                 </div>
               </div>
 
               <div className="absolute left-[10%] top-[28%] h-[58px] w-[58px] rounded-[18px] border border-white/14 bg-[linear-gradient(180deg,rgba(86,111,255,0.88),rgba(94,53,255,0.56))] shadow-[0_14px_28px_rgba(48,78,255,0.3)]">
-                <div className="flex h-full items-center justify-center text-[18px] font-semibold text-white/90">
+                <div className="flex h-full items-center justify-center text-card-title font-strong text-white/90">
                   AI
                 </div>
               </div>
 
               <div className="absolute left-[66%] top-[24%] h-[42px] w-[42px] rounded-[14px] border border-white/12 bg-[linear-gradient(180deg,rgba(83,118,255,0.76),rgba(76,56,212,0.48))] shadow-[0_10px_20px_rgba(50,76,255,0.24)]">
-                <div className="flex h-full items-center justify-center text-[11px] font-semibold text-white/80">
+                <div className="flex h-full items-center justify-center text-caption font-strong text-white/80">
                   ✦
                 </div>
               </div>
@@ -72,7 +72,9 @@ export default function AgentArenaPromoSection() {
               </div>
 
               <div className="absolute left-[42%] top-[70%] h-[34px] w-[62px] rounded-[14px] border border-[#8acbff]/24 bg-[linear-gradient(180deg,rgba(76,133,255,0.52),rgba(36,70,154,0.24))] shadow-[0_10px_18px_rgba(47,106,255,0.18)]">
-                <div className="flex h-full items-center justify-center text-[12px] text-white/75">◔</div>
+                <div className="flex h-full items-center justify-center text-label text-white/75">
+                  ◔
+                </div>
               </div>
 
               <div className="pointer-events-none absolute left-[22%] top-[35%] h-[2px] w-[152px] rotate-[11deg] bg-gradient-to-r from-transparent via-[#c26cff]/58 to-transparent" />
@@ -88,13 +90,13 @@ export default function AgentArenaPromoSection() {
           </div>
 
           <div className="relative mt-4 mx-auto flex max-w-[560px] flex-col items-center text-center">
-            <p className="m-0 text-sm font-semibold uppercase tracking-[0.2em] text-white/45">
+            <p className="m-0 text-body font-strong uppercase tracking-[0.2em] text-white/45">
               Another Challenge
             </p>
-            <h3 className="mt-4 text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            <h3 className="mt-4 text-balance text-page-title font-strong tracking-tight text-white sm:text-display-sm">
               또 하나의 도전 Agent - Arena
             </h3>
-            <p className="mt-6 text-sm leading-7 text-white/68 sm:text-base">
+            <p className="mt-6 text-body text-white/68 sm:text-body-lg">
               이제 ARENA는 사람의 Red Teaming을 넘어,
               <br />
               사용자 에이전트가 스스로 도전하고 평가받는 Agent - Arena로 확장됩니다.
@@ -103,7 +105,7 @@ export default function AgentArenaPromoSection() {
               href="http://54.116.112.9"
               target="_blank"
               rel="noreferrer"
-              className="mt-8 inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-[#8f7dff]/35 bg-[linear-gradient(135deg,rgba(106,79,255,0.28),rgba(43,124,255,0.2))] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(66,92,255,0.18),inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:border-[#a99dff]/55 hover:bg-[linear-gradient(135deg,rgba(121,92,255,0.38),rgba(56,138,255,0.28))] hover:shadow-[0_16px_34px_rgba(76,102,255,0.28),inset_0_1px_0_rgba(255,255,255,0.2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9da4ff]"
+              className="mt-8 inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-[#8f7dff]/35 bg-[linear-gradient(135deg,rgba(106,79,255,0.28),rgba(43,124,255,0.2))] px-6 py-3 text-body font-strong text-white shadow-[0_12px_30px_rgba(66,92,255,0.18),inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:border-[#a99dff]/55 hover:bg-[linear-gradient(135deg,rgba(121,92,255,0.38),rgba(56,138,255,0.28))] hover:shadow-[0_16px_34px_rgba(76,102,255,0.28),inset_0_1px_0_rgba(255,255,255,0.2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9da4ff]"
             >
               Agent - Arena 보기
               <ArrowRight className="h-4 w-4" />

@@ -8,68 +8,46 @@
   --font-noto-sans-kr:
     'Noto Sans KR', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
+
+  /* Typography scale: use these role-based tokens instead of arbitrary pixel values. */
+  --text-caption: 0.6875rem;
+  --text-caption--line-height: 1rem;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.125rem;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.375rem;
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.625rem;
+  --text-card-title: 1.25rem;
+  --text-card-title--line-height: 1.875rem;
+  --text-section-title: 1.5rem;
+  --text-section-title--line-height: 2.125rem;
+  --text-page-title: 2rem;
+  --text-page-title--line-height: 2.625rem;
+  --text-display-sm: 2.25rem;
+  --text-display-sm--line-height: 2.875rem;
+  --text-display: 2.625rem;
+  --text-display--line-height: 3.25rem;
+  --text-display-lg: 3rem;
+  --text-display-lg--line-height: 3.625rem;
+  --text-metric: 2.875rem;
+  --text-metric--line-height: 1;
+  --text-metric-lg: 4.75rem;
+  --text-metric-lg--line-height: 1;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-strong: 600;
+  --font-weight-bold: 700;
 }
 
 @layer utilities {
-  .font-300 {
-    font-weight: 300;
-  }
-  .font-400 {
-    font-weight: 400;
-  }
-  .font-500 {
-    font-weight: 500;
-  }
-  .font-600 {
-    font-weight: 600;
-  }
-  .font-700 {
-    font-weight: 600;
-  }
-  .font-800 {
-    font-weight: 600;
-  }
-  .font-900 {
-    font-weight: 700;
-  }
-
-  .heading-1 {
-    font-size: 32px;
-    line-height: 42px;
-    letter-spacing: 0;
-  }
-  .heading-2 {
-    font-size: 24px;
-    line-height: 34px;
-    letter-spacing: 0;
-  }
-  .heading-3 {
-    font-size: 20px;
-    line-height: 30px;
-    letter-spacing: 0;
-  }
-  .body-large {
-    font-size: 16px;
-    line-height: 26px;
-    letter-spacing: 0;
-  }
-  .body-medium {
-    font-size: 14px;
-    line-height: 22px;
-    letter-spacing: 0;
-  }
-  .body-small {
-    font-size: 12px;
-    line-height: 18px;
-    letter-spacing: 0;
-  }
-
   .shimmer-effect {
-  /* 💡 바탕색을 #DEDEDE 또는 #CCCCCC로, 흐르는 빛을 #EBEBEB로 조정 */
-  background: linear-gradient(to right, #DEDEDE 4%, #EBEBEB 25%, #DEDEDE 36%);
-  background-size: 1000px 100%;
-  animation: shimmer 1.5s infinite linear;
-}
+    /* 💡 바탕색을 #DEDEDE 또는 #CCCCCC로, 흐르는 빛을 #EBEBEB로 조정 */
+    background: linear-gradient(to right, #dedede 4%, #ebebeb 25%, #dedede 36%);
+    background-size: 1000px 100%;
+    animation: shimmer 1.5s infinite linear;
+  }
 
   .no-scrollbar {
     -ms-overflow-style: none;
@@ -84,7 +62,14 @@
 @layer components {
   .thinking-text {
     animation: thinking-text-shimmer 1.8s ease-in-out infinite;
-    background: linear-gradient(90deg, #222632 0%, #6f7785 38%, #111827 52%, #6f7785 66%, #222632 100%);
+    background: linear-gradient(
+      90deg,
+      #222632 0%,
+      #6f7785 38%,
+      #111827 52%,
+      #6f7785 66%,
+      #222632 100%
+    );
     background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -96,12 +81,12 @@
     border-radius: 8px;
     cursor: pointer;
     display: inline-flex;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-strong);
     gap: 8px;
     justify-content: center;
     letter-spacing: 0;
-    line-height: 20px;
+    line-height: var(--text-body--line-height);
     transition:
       background-color 160ms ease,
       border-color 160ms ease,
@@ -160,7 +145,7 @@
   .btn-sm {
     height: 36px;
     padding: 0 12px;
-    font-size: 13px;
+    font-size: var(--text-body);
   }
 
   .btn-md {
@@ -175,9 +160,9 @@
 
   .btn-cta {
     border-radius: 16px;
-    font-size: 20px;
+    font-size: var(--text-card-title);
     height: 58px;
-    line-height: 30px;
+    line-height: var(--text-card-title--line-height);
     padding: 0 24px;
   }
 
@@ -312,10 +297,10 @@ body {
   padding: 0;
   overflow-x: hidden;
   font-family: var(--font-sans);
-  font-size: 16px;
-  font-weight: 400;
+  font-size: var(--text-body-lg);
+  font-weight: var(--font-weight-regular);
   letter-spacing: 0;
-  line-height: 1.5;
+  line-height: var(--text-body-lg--line-height);
   text-rendering: optimizeLegibility;
   width: 100%;
   -webkit-font-smoothing: antialiased;

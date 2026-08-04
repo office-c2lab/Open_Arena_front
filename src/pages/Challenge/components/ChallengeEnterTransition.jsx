@@ -38,11 +38,13 @@ export default function ChallengeEnterTransition({ isOpen, title, onComplete }) 
             }
             transition={{ duration: shouldReduceMotion ? 0 : 0.34, ease: [0.16, 1, 0.3, 1] }}
           >
-            <p className="mt-6 text-[18px] font-900 uppercase text-[#FF4854]">ARENA</p>
-            <h2 className="mt-3 max-w-[680px] text-[48px] font-900 leading-tight text-[#202832]">
+            <p className="mt-6 text-card-title font-bold uppercase text-[#FF4854]">ARENA</p>
+            <h2 className="mt-3 max-w-[680px] text-display-lg font-bold text-[#202832]">
               {title || '챌린지 진입 중'}
             </h2>
-            <p className="mt-5 text-[24px] font-700 text-[#66717E]">챌린지 환경 준비 중</p>
+            <p className="mt-5 text-section-title font-strong text-[#66717E]">
+              챌린지 환경 준비 중
+            </p>
           </MotionDiv>
 
           <MotionDiv

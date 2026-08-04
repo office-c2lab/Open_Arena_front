@@ -25,7 +25,7 @@ export default function ChatInput({
           compact ? 'h-[82px]' : 'h-[120px] md:h-[133px]'
         }`}
       >
-        <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+        <p className="text-gray-600 text-body md:text-body-lg">
           {isSuccess ? (
             <>
               이 대화는 이미 <b className="text-green-600">성공</b>하여 더 이상 대화를 이어갈 수
@@ -40,11 +40,11 @@ export default function ChatInput({
         </p>
 
         {isSuccess ? (
-          <p className="text-gray-600 text-xs md:text-sm mt-2">
+          <p className="text-gray-600 text-label md:text-body mt-2">
             하단의 <b>‘새로운 대화 시작’</b> 버튼을 클릭하여 새로 시도할 수 있습니다.
           </p>
         ) : (
-          <p className="text-gray-600 text-xs md:text-sm mt-2">
+          <p className="text-gray-600 text-label md:text-body mt-2">
             하단의 <b>‘새로운 대화 시작’</b> 버튼을 클릭하여 새로 시도할 수 있습니다.
           </p>
         )}
@@ -58,10 +58,10 @@ export default function ChatInput({
       className={`glass-subtle relative flex w-full items-start rounded-[20px] ${
         compact ? 'h-[76px] p-3' : 'h-[120px] p-3 md:h-[133px] md:p-4'
       }`}
-      >
-        <textarea
+    >
+      <textarea
         className={`no-scrollbar h-full w-full resize-none overflow-y-auto bg-transparent text-[#0F172A] placeholder:text-[#8A93A5] focus:outline-none ${
-          compact ? 'pr-10 text-sm leading-5' : 'body-large pr-12'
+          compact ? 'pr-10 text-body' : 'text-body-lg pr-12'
         }`}
         placeholder={
           isDisabled
@@ -80,13 +80,11 @@ export default function ChatInput({
       />
 
       <button
-        className={`flex-shrink-0 ${
-          compact ? 'h-8 w-8' : 'h-10 w-10'
-        } ${
+        className={`flex-shrink-0 ${compact ? 'h-8 w-8' : 'h-10 w-10'} ${
           inputValue.trim()
             ? 'bg-[#FF4854] hover:bg-[#FF4854]/90 cursor-pointer shadow-[0_3px_8px_rgba(255,72,84,0.16)]'
             : 'bg-[#D9DADB]'
-          } rounded-full flex justify-center items-center absolute ${compact ? 'bottom-3 right-3' : 'bottom-4 right-4'} transition-all duration-200 ${
+        } rounded-full flex justify-center items-center absolute ${compact ? 'bottom-3 right-3' : 'bottom-4 right-4'} transition-all duration-200 ${
           isDisabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         disabled={!inputValue.trim() || isDisabled}

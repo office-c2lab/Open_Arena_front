@@ -1,16 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Activity,
-  ArrowLeft,
-  CheckCircle2,
-  ChevronRight,
-  Coins,
-  Flag,
-  Search,
-  Trophy,
-  XCircle,
-} from 'lucide-react';
+import { ArrowLeft, ChevronRight, Coins, Flag, Search, Trophy } from 'lucide-react';
 import UserIcon from '@/assets/icons/user.svg';
 import TigerImage from '@/assets/images/tiger.png';
 import GreenTigerImage from '@/assets/images/green_tiger.png';
@@ -241,13 +231,13 @@ function ChallengeSolverList() {
   return (
     <section className="mt-5 max-w-[800px]">
       <div className="flex items-center justify-between gap-4">
-        <p className="text-[16px] font-700 leading-6 text-[#5C6875]">
+        <p className="text-body-lg font-strong text-[#5C6875]">
           <em className="not-italic text-[#FF4854]">20,879명</em>이 문제를 풀었습니다.
         </p>
         <button
           type="button"
           onClick={handleFindMyRank}
-          className="flex h-8 cursor-pointer items-center gap-1.5 rounded-[4px] border border-[#DDE3EA] px-3 text-[13px] font-800 text-[#3D4754] transition hover:border-[#FF4854] hover:text-[#FF4854]"
+          className="flex h-8 cursor-pointer items-center gap-1.5 rounded-[4px] border border-[#DDE3EA] px-3 text-body font-strong text-[#3D4754] transition hover:border-[#FF4854] hover:text-[#FF4854]"
         >
           <Search className="h-4 w-4" />내 순위 찾기
         </button>
@@ -265,17 +255,17 @@ function ChallengeSolverList() {
             <div className="flex min-w-0 items-center gap-2.5">
               <SolverAvatar solver={solver} />
               <div className="flex min-w-0 items-center gap-2">
-                <strong className="truncate text-[16px] font-900 leading-5 text-[#303843]">
+                <strong className="truncate text-body-lg font-bold text-[#303843]">
                   {solver.name}
                 </strong>
                 {solver.isMe ? (
-                  <span className="shrink-0 rounded-[4px] bg-[#FF4854] px-1.5 py-0.5 text-[10px] font-900 leading-none text-white">
+                  <span className="shrink-0 rounded-[4px] bg-[#FF4854] px-1.5 py-0.5 text-caption font-bold text-white">
                     나
                   </span>
                 ) : null}
               </div>
             </div>
-            <div className="grid shrink-0 grid-cols-3 items-center gap-3 pl-[46px] text-right text-[13px] font-800 text-[#3D4754] sm:min-w-[340px] sm:pl-0">
+            <div className="grid shrink-0 grid-cols-3 items-center gap-3 pl-[46px] text-right text-body font-strong text-[#3D4754] sm:min-w-[340px] sm:pl-0">
               <span className="whitespace-nowrap">
                 <em className="not-italic text-[#303843]">{solver.tokens.toLocaleString()}</em> 토큰
               </span>
@@ -303,23 +293,19 @@ function ChallengeOverviewContent() {
   return (
     <>
       <section>
-        <h2 className="text-[26px] font-900 text-black">챌린지 개요</h2>
-        <h3 className="mt-4 text-[20px] font-900 text-[#202832]">{challengeOverview.title}</h3>
-        <p className="mt-5 text-[15px] leading-[27px] text-[#3D4754]">
-          {challengeOverview.description}
-        </p>
+        <h2 className="text-page-title font-bold text-black">챌린지 개요</h2>
+        <h3 className="mt-4 text-card-title font-bold text-[#202832]">{challengeOverview.title}</h3>
+        <p className="mt-5 text-body text-[#3D4754]">{challengeOverview.description}</p>
       </section>
 
       <section>
-        <h2 className="text-[20px] font-900 text-[#202832]">도전 목표</h2>
-        <p className="mt-3 text-[15px] font-700 leading-[27px] text-[#3D4754]">
-          {challengeOverview.goal}
-        </p>
+        <h2 className="text-card-title font-bold text-[#202832]">도전 목표</h2>
+        <p className="mt-3 text-body font-strong text-[#3D4754]">{challengeOverview.goal}</p>
       </section>
 
       <section>
-        <h2 className="text-[20px] font-900 text-[#202832]">성공 조건</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-[26px] text-[#3D4754]">
+        <h2 className="text-card-title font-bold text-[#202832]">성공 조건</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-body text-[#3D4754]">
           {challengeOverview.successItems.map(item => (
             <li key={item}>{item}</li>
           ))}
@@ -327,8 +313,8 @@ function ChallengeOverviewContent() {
       </section>
 
       <section>
-        <h2 className="text-[20px] font-900 text-[#202832]">실패 조건</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-[26px] text-[#3D4754]">
+        <h2 className="text-card-title font-bold text-[#202832]">실패 조건</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-body text-[#3D4754]">
           {challengeOverview.failureItems.map(item => (
             <li key={item}>{item}</li>
           ))}
@@ -359,8 +345,8 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
     return (
       <div className="surface-muted mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center px-6 text-center">
         <div>
-          <p className="text-[16px] font-800 text-[#3D4754]">아직 도전 기록이 없습니다.</p>
-          <p className="mt-2 text-[13px] text-[#8A94A1]">
+          <p className="text-body-lg font-strong text-[#3D4754]">아직 도전 기록이 없습니다.</p>
+          <p className="mt-2 text-body text-[#8A94A1]">
             챌린지를 시작하면 시도 결과와 소모 토큰이 여기에 표시됩니다.
           </p>
         </div>
@@ -376,7 +362,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
   return (
     <section className="mt-5 max-w-[800px]">
       <div className="flex items-center justify-between gap-4">
-        <p className="text-[16px] font-700 leading-6 text-[#5C6875]">
+        <p className="text-body-lg font-strong text-[#5C6875]">
           내 도전 기록{' '}
           <em className="not-italic text-[#FF4854]">
             {filteredSessions.length.toLocaleString()}개
@@ -385,7 +371,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
         <select
           value={statusFilter}
           onChange={event => setStatusFilter(event.target.value)}
-          className="h-8 cursor-pointer rounded-[4px] border border-[#DDE3EA] bg-white px-3 text-[13px] font-800 text-[#3D4754] outline-none transition hover:border-[#FF4854] focus:border-[#FF4854]"
+          className="h-8 cursor-pointer rounded-[4px] border border-[#DDE3EA] bg-white px-3 text-body font-strong text-[#3D4754] outline-none transition hover:border-[#FF4854] focus:border-[#FF4854]"
           aria-label="도전 기록 상태 필터"
         >
           {attemptStatusFilters.map(filter => (
@@ -429,10 +415,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
                 };
 
           return (
-            <li
-              key={session.id}
-              className="surface overflow-hidden"
-            >
+            <li key={session.id} className="surface overflow-hidden">
               <button
                 type="button"
                 onClick={() => onSessionOpen(session.id, status)}
@@ -441,13 +424,13 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-[12px] font-800 leading-4 text-[#8A94A1]">결과요약</p>
-                    <p className="mt-1 truncate text-[15px] font-900 leading-5 text-[#303843]">
+                    <p className="text-label font-strong text-[#8A94A1]">결과요약</p>
+                    <p className="mt-1 truncate text-body font-bold text-[#303843]">
                       {promptSummary}
                     </p>
                   </div>
                   <span
-                    className="flex h-[28px] min-w-[72px] shrink-0 items-center justify-center rounded-full px-4 text-[13px] font-800 transition-transform duration-200 group-hover:scale-[1.03]"
+                    className="flex h-[28px] min-w-[72px] shrink-0 items-center justify-center rounded-full px-4 text-body font-strong transition-transform duration-200 group-hover:scale-[1.03]"
                     style={{
                       background: statusMeta.bgColor,
                       color: statusMeta.textColor,
@@ -458,7 +441,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
                   </span>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-800 text-[#7B8491]">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-label font-strong text-[#7B8491]">
                   <span>
                     사용토큰{' '}
                     <em className="ml-1 not-italic text-[#303843]">
@@ -483,7 +466,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
 
       {filteredSessions.length === 0 ? (
         <div className="flex min-h-[140px] items-center justify-center text-center">
-          <p className="text-[14px] font-700 text-[#8A94A1]">해당 상태의 도전 기록이 없습니다.</p>
+          <p className="text-body font-strong text-[#8A94A1]">해당 상태의 도전 기록이 없습니다.</p>
         </div>
       ) : null}
     </section>
@@ -494,31 +477,24 @@ function SidePanel({ challenge, record, onStartChallenge, isStarting }) {
   const statusMeta =
     record.status === '성공'
       ? {
-          icon: CheckCircle2,
           text: 'text-[#079C4C]',
-          iconStyle: 'bg-white/85 text-[#20A7B2]',
           chipClass: 'bg-[#ECFDF3] text-[#079C4C]',
           description: '목표를 달성했습니다.',
           backgroundImage: SuccessCardBg,
         }
       : record.status === '실패'
         ? {
-            icon: XCircle,
             text: 'text-[#FF4854]',
-            iconStyle: 'bg-white text-[#FF4854]',
             chipClass: 'bg-[#FFF0F2] text-[#FF4854]',
             description: '이번 도전은 실패했습니다.',
             backgroundImage: FailCardBg,
           }
         : {
-            icon: Activity,
             text: 'text-[#2E3338]',
-            iconStyle: 'bg-white text-[#9AA3AF]',
             chipClass: 'bg-[#F1F5F9] text-[#64748B]',
             description: '아직 도전 기록이 없습니다.',
             backgroundImage: NoTryCardBg,
           };
-  const StatusIcon = statusMeta.icon;
 
   return (
     <aside className="space-y-4">
@@ -529,8 +505,8 @@ function SidePanel({ challenge, record, onStartChallenge, isStarting }) {
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
         <div className="absolute left-[40%] right-[5%] top-[18%] z-10">
-          <h3 className="text-[22px] font-900 leading-[28px] text-[#202832]">챌린지 도전</h3>
-          <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
+          <h3 className="text-section-title font-bold text-[#202832]">챌린지 도전</h3>
+          <p className="mt-2 text-body font-strong text-[#66717E]">
             AI와 대화하며 성공 조건을 달성해보세요.
           </p>
         </div>
@@ -553,33 +529,24 @@ function SidePanel({ challenge, record, onStartChallenge, isStarting }) {
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
 
-        <div className="relative z-10 flex min-h-[200px] items-center justify-between px-7 py-7">
+        <div className="relative z-10 flex min-h-[200px] items-center px-7 py-7">
           <div>
-            <p className="text-[14px] font-800 text-[#6E7B88]">챌린지 성공 여부</p>
-            <strong className={`mt-3 block text-[38px] font-900 leading-none ${statusMeta.text}`}>
+            <p className="text-body font-strong text-[#6E7B88]">챌린지 성공 여부</p>
+            <strong className={`mt-3 block text-display font-bold ${statusMeta.text}`}>
               {record.status}
             </strong>
-            <p className="mt-4 text-[14px] font-600 text-[#6F7985]">{statusMeta.description}</p>
+            <p className="mt-4 text-body font-strong text-[#6F7985]">{statusMeta.description}</p>
           </div>
-          <span
-            className={`flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-full shadow-[0_10px_24px_rgba(15,23,42,0.1)] ${statusMeta.iconStyle}`}
-          >
-            <StatusIcon className="h-10 w-10" strokeWidth={2.1} />
-          </span>
         </div>
 
-        <dl className="relative z-10 divide-y divide-[#E5E9EF] bg-white/88 px-6 text-[15px]">
+        <dl className="relative z-10 divide-y divide-[#E5E9EF] bg-white/88 px-6 text-body">
           <div className="flex items-center justify-between py-5">
-            <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
-              사용 토큰
-            </dt>
-            <dd className="font-900 text-[#2E3338]">{record.tokens.toLocaleString()} 토큰</dd>
+            <dt className="flex items-center gap-3 font-strong text-[#3D4754]">사용 토큰</dt>
+            <dd className="font-bold text-[#2E3338]">{record.tokens.toLocaleString()} 토큰</dd>
           </div>
           <div className="flex items-center justify-between py-5">
-            <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
-              최대 포인트
-            </dt>
-            <dd className="font-900 text-[#FF4854]">
+            <dt className="flex items-center gap-3 font-strong text-[#3D4754]">최대 포인트</dt>
+            <dd className="font-bold text-[#FF4854]">
               {challenge.maximumPoints ?? record.score} 포인트
             </dd>
           </div>
@@ -652,34 +619,30 @@ export default function Challenge() {
       <section className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
         <ChallengePreview challenge={challenge} />
         <div className="pt-1">
-          <h1 className="text-[28px] font-900 leading-tight text-black">{challenge.title}</h1>
-          <p className="mt-3 text-[16px] font-600 leading-[24px] text-[#66717E]">
+          <h1 className="text-page-title font-bold text-black">{challenge.title}</h1>
+          <p className="mt-3 text-body-lg font-strong text-[#66717E]">
             {challenge.category} 실전 보안 챌린지
           </p>
-          <div className="mt-6 flex w-fit items-center divide-x divide-[#D8DDE4] text-[13px] text-[#2E3338]">
-            <span className="whitespace-nowrap pr-4 font-700">
+          <div className="mt-6 flex w-fit items-center divide-x divide-[#D8DDE4] text-body text-[#2E3338]">
+            <span className="whitespace-nowrap pr-4 font-strong">
               성공 <em className="ml-1 not-italic text-[#FF4854]">{challenge.reviews}</em>명
             </span>
-            <span className="whitespace-nowrap px-4 font-700">
+            <span className="whitespace-nowrap px-4 font-strong">
               평균 <em className="mx-1 not-italic text-[#FF4854]">1,240</em> 토큰
             </span>
-            <span className="whitespace-nowrap px-4 font-700">
+            <span className="whitespace-nowrap px-4 font-strong">
               최대{' '}
               <em className="mx-1 not-italic text-[#FF4854]">{challenge.maximumPoints ?? 100}</em>{' '}
               포인트
             </span>
             <span className="whitespace-nowrap pl-4">
-              <span className={`rounded-[4px] px-2 py-1 text-[12px] font-700 ${levelClass}`}>
+              <span className={`rounded-[4px] px-2 py-1 text-label font-strong ${levelClass}`}>
                 {challenge.level}
               </span>
             </span>
           </div>
-          <p className="mt-8 text-[15px] leading-[26px] text-[#3D4754]">
-            {challengeOverview.description}
-          </p>
-          <p className="mt-2 text-[15px] font-800 leading-[26px] text-[#FF4854]">
-            {challengeOverview.goal}
-          </p>
+          <p className="mt-8 text-body text-[#3D4754]">{challengeOverview.description}</p>
+          <p className="mt-2 text-body font-strong text-[#FF4854]">{challengeOverview.goal}</p>
         </div>
       </section>
 
@@ -690,7 +653,7 @@ export default function Challenge() {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`cursor-pointer border-b-2 pb-3 text-[16px] font-800 ${
+              className={`cursor-pointer border-b-2 pb-3 text-body-lg font-strong ${
                 activeTab === tab.id
                   ? 'border-[#FF4854] text-[#2E3338]'
                   : 'border-transparent text-[#7B8491] hover:text-[#FF4854]'
@@ -708,7 +671,7 @@ export default function Challenge() {
 
           {activeTab === 'history' ? (
             <section>
-              <h2 className="text-[26px] font-900 text-black">도전 기록</h2>
+              <h2 className="text-page-title font-bold text-black">도전 기록</h2>
               <ChallengeAttemptHistory
                 sessions={sessions}
                 isLoading={isHistoryLoading && !problemBundleData}
@@ -719,7 +682,7 @@ export default function Challenge() {
 
           {activeTab === 'solvers' ? (
             <section>
-              <h2 className="text-[26px] font-900 text-black">순위 현황</h2>
+              <h2 className="text-page-title font-bold text-black">순위 현황</h2>
               <ChallengeSolverList />
             </section>
           ) : null}

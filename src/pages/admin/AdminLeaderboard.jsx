@@ -22,7 +22,7 @@ const Leaderboard = () => {
       >
         {/* 왼쪽: 점수 차트 */}
         <div className="flex flex-col items-start gap-4">
-          <h1 className="heading-1 font-700 mb-5 text-[#FF4854]">팀별 점수 차트</h1>
+          <h1 className="text-page-title font-strong mb-5 text-[#FF4854]">팀별 점수 차트</h1>
           <PointChart />
         </div>
 
@@ -31,7 +31,9 @@ const Leaderboard = () => {
           {/* 토글 스위치*/}
           {/* ⬅ 타이틀 + 토글 한줄 정렬 (정확한 vertical-align 맞춤) */}
           <div className="flex items-center gap-4">
-            <h1 className="heading-1 font-700 text-[#FF4854] whitespace-nowrap">팀별 순위 현황</h1>
+            <h1 className="text-page-title font-strong text-[#FF4854] whitespace-nowrap">
+              팀별 순위 현황
+            </h1>
           </div>
 
           <AdminLeaderboardTable />
@@ -41,7 +43,7 @@ const Leaderboard = () => {
       {/* 페이지 스위치 버튼
       <button
         onClick={() => navigate('/admin/matrix')}
-        className="px-5 py-2 bg-[#FF4854] hover:bg-[#e13a47] text-white heading-3 font-500 rounded-lg"
+        className="px-5 py-2 bg-[#FF4854] hover:bg-[#e13a47] text-white text-card-title font-medium rounded-lg"
       >
         문제풀이 매트릭스 보기
       </button> */}

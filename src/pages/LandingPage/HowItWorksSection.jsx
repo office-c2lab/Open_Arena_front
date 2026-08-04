@@ -1,7 +1,13 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
-import { cn, Container, GradientCard, SectionTitle, SECTION_TITLE_REVEAL } from './LandingPage.primitives';
+import {
+  cn,
+  Container,
+  GradientCard,
+  SectionTitle,
+  SECTION_TITLE_REVEAL,
+} from './LandingPage.primitives';
 
 export default function HowItWorksSection() {
   const timelineItems = useMemo(
@@ -113,10 +119,7 @@ export default function HowItWorksSection() {
     <section id="how" className="relative py-16 sm:py-20">
       <Container>
         <div className="flex flex-col gap-10">
-          <motion.div
-            className="max-w-3xl space-y-4"
-            {...SECTION_TITLE_REVEAL}
-          >
+          <motion.div className="max-w-3xl space-y-4" {...SECTION_TITLE_REVEAL}>
             <SectionTitle
               eyebrow="Season Schedule"
               title="어떻게 진행되나요?"
@@ -191,7 +194,7 @@ export default function HowItWorksSection() {
                                 : 'lg:col-start-3 lg:pl-14 lg:text-left'
                             )}
                           >
-                            <div className="mt-2 text-base font-semibold tracking-[-0.01em] text-[#171717]">
+                            <div className="mt-2 text-body-lg font-strong tracking-[-0.01em] text-[#171717]">
                               {item.label}
                             </div>
                             <div
@@ -202,7 +205,7 @@ export default function HowItWorksSection() {
                             >
                               <div
                                 className={cn(
-                                  'text-[11px] font-semibold uppercase tracking-[0.24em] text-[#b4535c]',
+                                  'text-caption font-strong uppercase tracking-[0.24em] text-[#b4535c]',
                                   isLeftAligned && 'lg:order-2'
                                 )}
                               >
@@ -210,14 +213,14 @@ export default function HowItWorksSection() {
                               </div>
                               <div
                                 className={cn(
-                                  'text-xs text-[#78716c] sm:text-sm',
+                                  'text-label text-[#78716c] sm:text-body',
                                   isLeftAligned && 'lg:order-1'
                                 )}
                               >
                                 {item.title}
                               </div>
                             </div>
-                            <p className="mt-1 text-sm leading-6 text-[#57534e] sm:text-[15px]">
+                            <p className="mt-1 text-body text-[#57534e] sm:text-body">
                               {item.desc}
                             </p>
                           </div>

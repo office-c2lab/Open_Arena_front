@@ -127,13 +127,13 @@ export default function SuccessModal({
                      justify-center border px-10 py-8 gap-4 shadow-[0_8px_22px_rgba(15,23,42,0.08)]"
           style={{ borderColor: 'rgba(4, 176, 123, 0.24)' }}
         >
-          <h2 className="heading-1 font-700" style={{ color: SUCCESS_COLOR_PRIMARY }}>
+          <h2 className="text-page-title font-strong" style={{ color: SUCCESS_COLOR_PRIMARY }}>
             챌린지 성공!
           </h2>
 
           <img src={ArenaGreen} alt="성공 아이콘" className="w-[250px] h-[250px] opacity-95" />
 
-          <p className="body-large font-500 text-[#444] text-center leading-relaxed">
+          <p className="text-body-lg font-medium text-[#444] text-center">
             3개의 Judge AI 중 2개 이상이 성공으로 판단했습니다.
             <br />
             다음 문제에도 도전해보세요!
@@ -141,8 +141,8 @@ export default function SuccessModal({
 
           {typeof rewardPoints === 'number' ? (
             <div className="flex items-baseline gap-2 rounded-[14px]  px-5 py-3">
-              <span className="heading-2 font-700 text-[#047857]">획득 포인트</span>
-              <span className="heading-2 font-700 text-[#04B07B]">
+              <span className="text-section-title font-strong text-[#047857]">획득 포인트</span>
+              <span className="text-section-title font-strong text-[#04B07B]">
                 {rewardPoints.toLocaleString()} P
               </span>
             </div>
@@ -157,7 +157,9 @@ export default function SuccessModal({
             className="w-[48%] h-[61px] bg-[#D9DADB] rounded-[18px] 
                        hover:-translate-y-[1px] hover:bg-[#BFC0C4] transition-all duration-200 flex items-center justify-center cursor-pointer"
           >
-            <span className="heading-2 font-700 text-[#515151]">챌린지 화면으로 돌아가기</span>
+            <span className="text-section-title font-strong text-[#515151]">
+              챌린지 화면으로 돌아가기
+            </span>
           </button>
 
           <button
@@ -167,7 +169,7 @@ export default function SuccessModal({
                        text-white shadow-[0_3px_8px_rgba(4,176,123,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:opacity-90 hover:shadow-[0_5px_12px_rgba(4,176,123,0.18)] cursor-pointer"
             style={{ backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
-            <span className="heading-2 font-700">다른 문제 풀기</span>
+            <span className="text-section-title font-strong">다른 문제 풀기</span>
           </button>
         </div>
       </div>

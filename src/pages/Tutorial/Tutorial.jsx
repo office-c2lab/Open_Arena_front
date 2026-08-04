@@ -111,10 +111,10 @@ function ChallengePlayPreview() {
 function SectionDescription({ intro, items, steps = [], cautions = [], showSteps = false }) {
   return (
     <div className="mt-4 space-y-4">
-      <p className="text-[16px] font-700 leading-[29px] text-[#344050]">{intro}</p>
+      <p className="text-body-lg font-strong text-[#344050]">{intro}</p>
       <ul className="space-y-3">
         {items.map(item => (
-          <li key={item} className="flex gap-3 text-[15px] font-600 leading-[27px] text-[#4A5565]">
+          <li key={item} className="flex gap-3 text-body font-strong text-[#4A5565]">
             <Check className="mt-1.5 h-4.5 w-4.5 shrink-0 text-[#FF4854]" strokeWidth={2.4} />
             <span>{item}</span>
           </li>
@@ -122,8 +122,8 @@ function SectionDescription({ intro, items, steps = [], cautions = [], showSteps
       </ul>
       {cautions.length ? (
         <div className="mt-7 space-y-4">
-          <p className="text-[18px] font-900 text-[#D83A45]">주의 포인트</p>
-          <ul className="space-y-3 text-[16px] font-700 leading-[30px] text-[#5A4650]">
+          <p className="text-card-title font-bold text-[#D83A45]">주의 포인트</p>
+          <ul className="space-y-3 text-body-lg font-strong text-[#5A4650]">
             {cautions.map(caution => (
               <li key={caution} className="flex gap-2">
                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#FF4854]" />
@@ -135,11 +135,11 @@ function SectionDescription({ intro, items, steps = [], cautions = [], showSteps
       ) : null}
       {showSteps && steps.length ? (
         <div className="mt-7 space-y-4">
-          <p className="text-[18px] font-900 text-[#202832]">따라 해보기</p>
-          <ol className="space-y-3 text-[16px] font-700 leading-[30px] text-[#344050]">
+          <p className="text-card-title font-bold text-[#202832]">따라 해보기</p>
+          <ol className="space-y-3 text-body-lg font-strong text-[#344050]">
             {steps.map((step, index) => (
               <li key={step} className="flex gap-3">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FF4854] text-[12px] font-900 text-white">
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FF4854] text-label font-bold text-white">
                   {index + 1}
                 </span>
                 <span>{step}</span>
@@ -167,7 +167,7 @@ function PanelPreviewSection({
   return (
     <section className="space-y-5 border-b border-[#DDE3EA] pb-12">
       <div className="border-b border-[#DDE3EA] pb-5">
-        <h2 className="text-[26px] font-900 leading-tight text-[#202832]">{title}</h2>
+        <h2 className="text-page-title font-bold text-[#202832]">{title}</h2>
         <SectionDescription
           intro={intro}
           items={items}
@@ -182,14 +182,14 @@ function PanelPreviewSection({
           style={{ backgroundImage: `url(${ChallengeBg})` }}
         />
         {showSteps && steps?.length ? (
-          <div className="relative mb-4 rounded-[8px] border border-white/65 bg-white/78 px-4 py-3 text-[14px] font-800 leading-[24px] text-[#344050] shadow-[0_6px_16px_rgba(15,23,42,0.06)] backdrop-blur-md">
+          <div className="relative mb-4 rounded-[8px] border border-white/65 bg-white/78 px-4 py-3 text-body font-strong text-[#344050] shadow-[0_6px_16px_rgba(15,23,42,0.06)] backdrop-blur-md">
             아래 프리뷰에서 따라 해보기 항목을 직접 실행해보세요.
           </div>
         ) : null}
         <div className={`relative h-[660px] ${width}`}>{children}</div>
       </div>
       {nextAction ? (
-        <p className="rounded-[10px] bg-[#202832] px-5 py-4 text-[15px] font-800 leading-[26px] text-white">
+        <p className="rounded-[10px] bg-[#202832] px-5 py-4 text-body font-strong text-white">
           {nextAction}
         </p>
       ) : null}
@@ -301,8 +301,8 @@ function ChatTokenGuide() {
   return (
     <>
       <section className="border-b border-[#DDE3EA] pb-10">
-        <h2 className="text-[26px] font-900 leading-tight text-[#202832]">학습 목표</h2>
-        <p className="mt-4 text-[16px] font-700 leading-[29px] text-[#344050]">
+        <h2 className="text-page-title font-bold text-[#202832]">학습 목표</h2>
+        <p className="mt-4 text-body-lg font-strong text-[#344050]">
           이번 튜토리얼에서는 AI와 대화를 시작하는 방법과 대화가 진행될 때 토큰 사용량이 어떻게
           확인되는지 익힙니다. 입력창에 프롬프트를 작성하고, 응답을 읽고, 필요한 경우 다음
           프롬프트로 보완하는 흐름을 중심으로 살펴봅니다.
@@ -314,10 +314,7 @@ function ChatTokenGuide() {
             '프롬프트를 길게 쓰거나 여러 번 대화하면 챌린지 정보 영역 하단의 사용 토큰이 늘어난다는 점을 이해합니다.',
             '토큰을 아끼기보다 먼저 목표 조건을 만족하는 응답을 만들고, 이후에 더 효율적인 표현으로 줄이는 흐름을 익힙니다.',
           ].map(item => (
-            <li
-              key={item}
-              className="flex gap-3 text-[15px] font-600 leading-[27px] text-[#4A5565]"
-            >
+            <li key={item} className="flex gap-3 text-body font-strong text-[#4A5565]">
               <Check className="mt-1.5 h-4.5 w-4.5 shrink-0 text-[#FF4854]" strokeWidth={2.4} />
               <span>{item}</span>
             </li>
@@ -381,32 +378,32 @@ function ChatTokenGuide() {
 
       <section className="space-y-5 border-b border-[#DDE3EA] pb-10">
         <div>
-          <h2 className="text-[26px] font-900 leading-tight text-[#202832]">점수 계산 예시</h2>
-          <p className="mt-4 text-[16px] font-700 leading-[29px] text-[#344050]">
+          <h2 className="text-page-title font-bold text-[#202832]">점수 계산 예시</h2>
+          <p className="mt-4 text-body-lg font-strong text-[#344050]">
             토큰은 단순한 사용량 표시가 아니라 점수에도 영향을 줍니다. 정답을 맞히는 것이 우선이고,
             그 다음에는 더 적은 토큰으로 성공할수록 토큰 점수를 더 많이 받을 수 있습니다.
           </p>
         </div>
 
-        <div className="space-y-5 text-[18px] font-800 leading-[33px] text-[#344050]">
+        <div className="space-y-5 text-card-title font-strong text-[#344050]">
           <p>
-            예를 들어 총 배점이 <span className="font-900 text-[#202832]">150점</span>인 챌린지라면,
-            점수는 보통 정답 점수와 토큰 점수로 나뉩니다.
+            예를 들어 총 배점이 <span className="font-bold text-[#202832]">150점</span>인
+            챌린지라면, 점수는 보통 정답 점수와 토큰 점수로 나뉩니다.
           </p>
           <p>
-            정답 조건을 만족하면 <span className="font-900 text-[#FF4854]">75점</span>을 받고, 남은{' '}
-            <span className="font-900 text-[#FF4854]">75점</span>은 사용한 토큰 수에 따라
+            정답 조건을 만족하면 <span className="font-bold text-[#FF4854]">75점</span>을 받고, 남은{' '}
+            <span className="font-bold text-[#FF4854]">75점</span>은 사용한 토큰 수에 따라
             계산됩니다.
           </p>
-          <p className="text-[20px] font-900 leading-[34px] text-[#202832]">
+          <p className="text-card-title font-bold text-[#202832]">
             토큰 점수 = (3000 - 사용 토큰) / 3000 * 75
           </p>
           <p>
-            만약 사용한 토큰이 <span className="font-900 text-[#202832]">1000개</span>라면, 토큰
-            점수는 <span className="font-900 text-[#202832]">(3000 - 1000) / 3000 * 75</span>
-            이므로 <span className="font-900 text-[#FF4854]">50점</span>입니다.
+            만약 사용한 토큰이 <span className="font-bold text-[#202832]">1000개</span>라면, 토큰
+            점수는 <span className="font-bold text-[#202832]">(3000 - 1000) / 3000 * 75</span>
+            이므로 <span className="font-bold text-[#FF4854]">50점</span>입니다.
           </p>
-          <p className="text-[22px] font-900 leading-[36px] text-[#202832]">
+          <p className="text-section-title font-bold text-[#202832]">
             최종 점수는 정답 점수 75점 + 토큰 점수 50점 ={' '}
             <span className="text-[#FF4854]">125점</span>입니다.
           </p>
@@ -445,8 +442,8 @@ function JudgeFailureGuide() {
   return (
     <>
       <section className="border-b border-[#DDE3EA] pb-10">
-        <h2 className="text-[26px] font-900 leading-tight text-[#202832]">학습 목표</h2>
-        <p className="mt-4 text-[16px] font-700 leading-[29px] text-[#344050]">
+        <h2 className="text-page-title font-bold text-[#202832]">학습 목표</h2>
+        <p className="mt-4 text-body-lg font-strong text-[#344050]">
           이번 튜토리얼에서는 제출 결과가 실패로 판정될 때 어떤 화면이 나타나는지 익힙니다. 실패는
           단순히 끝났다는 뜻이 아니라, Judge AI가 어떤 기준에서 부족하다고 판단했는지 알려주는
           피드백입니다.
@@ -458,10 +455,7 @@ function JudgeFailureGuide() {
             '실패 기록이 다음 프롬프트를 고치는 데 쓰이는 피드백이라는 점을 이해합니다.',
             '마지막 실습에서 채팅 응답을 받은 뒤 제출하면 로딩 모달 다음 실패 모달이 뜨는 흐름을 직접 확인합니다.',
           ].map(item => (
-            <li
-              key={item}
-              className="flex gap-3 text-[15px] font-600 leading-[27px] text-[#4A5565]"
-            >
+            <li key={item} className="flex gap-3 text-body font-strong text-[#4A5565]">
               <Check className="mt-1.5 h-4.5 w-4.5 shrink-0 text-[#FF4854]" strokeWidth={2.4} />
               <span>{item}</span>
             </li>
@@ -529,8 +523,8 @@ function JudgeSuccessGuide() {
   return (
     <>
       <section className="border-b border-[#DDE3EA] pb-10">
-        <h2 className="text-[26px] font-900 leading-tight text-[#202832]">학습 목표</h2>
-        <p className="mt-4 text-[16px] font-700 leading-[29px] text-[#344050]">
+        <h2 className="text-page-title font-bold text-[#202832]">학습 목표</h2>
+        <p className="mt-4 text-body-lg font-strong text-[#344050]">
           이번 튜토리얼에서는 제출 결과가 성공으로 판정될 때 어떤 화면이 나타나는지 익힙니다. 성공은
           3개의 Judge AI 중 충분한 수가 목표 조건을 만족했다고 판단했을 때 표시됩니다.
         </p>
@@ -541,10 +535,7 @@ function JudgeSuccessGuide() {
             '성공 후에도 토큰 사용량과 점수를 함께 확인해야 한다는 흐름을 익힙니다.',
             '마지막 실습에서 채팅 응답을 받은 뒤 제출하면 로딩 모달 다음 성공 모달이 뜨는 흐름을 직접 확인합니다.',
           ].map(item => (
-            <li
-              key={item}
-              className="flex gap-3 text-[15px] font-600 leading-[27px] text-[#4A5565]"
-            >
+            <li key={item} className="flex gap-3 text-body font-strong text-[#4A5565]">
               <Check className="mt-1.5 h-4.5 w-4.5 shrink-0 text-[#FF4854]" strokeWidth={2.4} />
               <span>{item}</span>
             </li>
@@ -612,8 +603,8 @@ function ChallengeElementGuide() {
   return (
     <>
       <section className="border-b border-[#DDE3EA] pb-10">
-        <h2 className="text-[26px] font-900 leading-tight text-[#202832]">학습 목표</h2>
-        <p className="mt-4 text-[16px] font-700 leading-[29px] text-[#344050]">
+        <h2 className="text-page-title font-bold text-[#202832]">학습 목표</h2>
+        <p className="mt-4 text-body-lg font-strong text-[#344050]">
           이번 튜토리얼에서는 챌린지 play 화면을 구성하는 주요 영역을 먼저 파악합니다. 문제를 읽고
           토큰을 확인하는 곳, AI와 대화하고 제출하는 곳이 각각 어디에 있고 어떤 역할을 하는지
           이해하는 것이 목표입니다.
@@ -625,10 +616,7 @@ function ChallengeElementGuide() {
             '채팅 입력, 제출하기, 새로운 대화 시작이 풀이 흐름에서 언제 쓰이는지 이해합니다.',
             '실제 챌린지에 들어갔을 때 어디부터 보고 어떤 순서로 행동해야 하는지 감을 잡습니다.',
           ].map(item => (
-            <li
-              key={item}
-              className="flex gap-3 text-[15px] font-600 leading-[27px] text-[#4A5565]"
-            >
+            <li key={item} className="flex gap-3 text-body font-strong text-[#4A5565]">
               <Check className="mt-1.5 h-4.5 w-4.5 shrink-0 text-[#FF4854]" strokeWidth={2.4} />
               <span>{item}</span>
             </li>
@@ -637,7 +625,7 @@ function ChallengeElementGuide() {
       </section>
       <section className="space-y-5 border-b border-[#DDE3EA] pb-12">
         <div className="border-b border-[#DDE3EA] pb-3">
-          <h2 className="text-[22px] font-900 text-[#202832]">전체 화면</h2>
+          <h2 className="text-section-title font-bold text-[#202832]">전체 화면</h2>
           <SectionDescription
             intro="전체 화면은 실제 챌린지를 진행할 때 보는 play 화면의 기본 구조입니다. 왼쪽 챌린지 정보 영역에서 문제 조건과 사용 토큰을 확인하고, 오른쪽 채팅 영역에서 AI와 대화한 뒤 제출하는 구성입니다."
             items={[
@@ -658,7 +646,7 @@ function ChallengeElementGuide() {
           />
         </div>
         <ChallengePlayPreview />
-        <p className="rounded-[10px] bg-[#202832] px-5 py-4 text-[15px] font-800 leading-[26px] text-white">
+        <p className="rounded-[10px] bg-[#202832] px-5 py-4 text-body font-strong text-white">
           먼저 전체 구조를 익힌 뒤, 아래의 챌린지 정보 영역부터 순서대로 읽어보세요.
         </p>
       </section>
@@ -695,23 +683,19 @@ function PracticeChallengeOverviewContent() {
   return (
     <>
       <section>
-        <h2 className="text-[26px] font-900 text-black">챌린지 개요</h2>
-        <h3 className="mt-4 text-[20px] font-900 text-[#202832]">{practiceOverview.title}</h3>
-        <p className="mt-5 text-[15px] leading-[27px] text-[#3D4754]">
-          {practiceOverview.description}
-        </p>
+        <h2 className="text-page-title font-bold text-black">챌린지 개요</h2>
+        <h3 className="mt-4 text-card-title font-bold text-[#202832]">{practiceOverview.title}</h3>
+        <p className="mt-5 text-body text-[#3D4754]">{practiceOverview.description}</p>
       </section>
 
       <section>
-        <h2 className="text-[20px] font-900 text-[#202832]">도전 목표</h2>
-        <p className="mt-3 text-[15px] font-700 leading-[27px] text-[#3D4754]">
-          {practiceOverview.goal}
-        </p>
+        <h2 className="text-card-title font-bold text-[#202832]">도전 목표</h2>
+        <p className="mt-3 text-body font-strong text-[#3D4754]">{practiceOverview.goal}</p>
       </section>
 
       <section>
-        <h2 className="text-[20px] font-900 text-[#202832]">성공 조건</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-[26px] text-[#3D4754]">
+        <h2 className="text-card-title font-bold text-[#202832]">성공 조건</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-body text-[#3D4754]">
           {practiceOverview.successItems.map(item => (
             <li key={item}>{item}</li>
           ))}
@@ -719,8 +703,8 @@ function PracticeChallengeOverviewContent() {
       </section>
 
       <section>
-        <h2 className="text-[20px] font-900 text-[#202832]">실패 조건</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-[26px] text-[#3D4754]">
+        <h2 className="text-card-title font-bold text-[#202832]">실패 조건</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-body text-[#3D4754]">
           {practiceOverview.failureItems.map(item => (
             <li key={item}>{item}</li>
           ))}
@@ -743,8 +727,8 @@ function PracticeChallengeSidePanel() {
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
           <div className="absolute left-[40%] right-[5%] top-[18%] z-10">
-            <h3 className="text-[22px] font-900 leading-[28px] text-[#202832]">실전 연습</h3>
-            <p className="mt-2 text-[13px] font-600 leading-[20px] text-[#66717E]">
+            <h3 className="text-section-title font-bold text-[#202832]">실전 연습</h3>
+            <p className="mt-2 text-body font-strong text-[#66717E]">
               튜토리얼에서 익힌 흐름을 챌린지처럼 확인해보세요.
             </p>
           </div>
@@ -769,11 +753,11 @@ function PracticeChallengeSidePanel() {
             }}
           >
             <div className="relative z-10">
-              <p className="text-[14px] font-800 text-[#6E7B88]">챌린지 성공 여부</p>
-              <strong className="mt-3 block text-[38px] font-900 leading-none text-[#2E3338]">
+              <p className="text-body font-strong text-[#6E7B88]">챌린지 성공 여부</p>
+              <strong className="mt-3 block text-display font-bold text-[#2E3338]">
                 {practiceRecord.status}
               </strong>
-              <p className="mt-4 text-[14px] font-600 text-[#6F7985]">
+              <p className="mt-4 text-body font-strong text-[#6F7985]">
                 아직 실전 연습 기록이 없습니다.
               </p>
             </div>
@@ -782,20 +766,20 @@ function PracticeChallengeSidePanel() {
             </span>
           </div>
 
-          <dl className="surface divide-y divide-[#E5E9EF] overflow-hidden px-6 text-[15px]">
+          <dl className="surface divide-y divide-[#E5E9EF] overflow-hidden px-6 text-body">
             <div className="flex items-center justify-between py-5">
-              <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
+              <dt className="flex items-center gap-3 font-strong text-[#3D4754]">
                 <Coins className="h-5 w-5 text-[#77808C]" /> 사용 토큰
               </dt>
-              <dd className="font-900 text-[#2E3338]">
+              <dd className="font-bold text-[#2E3338]">
                 {practiceRecord.tokens.toLocaleString()} 토큰
               </dd>
             </div>
             <div className="flex items-center justify-between py-5">
-              <dt className="flex items-center gap-3 font-800 text-[#3D4754]">
+              <dt className="flex items-center gap-3 font-strong text-[#3D4754]">
                 <Trophy className="h-5 w-5 text-[#77808C]" /> 최대 포인트
               </dt>
-              <dd className="font-900 text-[#FF4854]">{practiceRecord.score} 포인트</dd>
+              <dd className="font-bold text-[#FF4854]">{practiceRecord.score} 포인트</dd>
             </div>
           </dl>
         </div>
@@ -821,7 +805,7 @@ function PracticeChallengeDetail() {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`cursor-pointer border-b-2 pb-3 text-[16px] font-800 ${
+              className={`cursor-pointer border-b-2 pb-3 text-body-lg font-strong ${
                 activeTab === tab.id
                   ? 'border-[#FF4854] text-[#2E3338]'
                   : 'border-transparent text-[#7B8491] hover:text-[#FF4854]'
@@ -839,11 +823,13 @@ function PracticeChallengeDetail() {
 
           {activeTab === 'history' ? (
             <section>
-              <h2 className="text-[26px] font-900 text-black">도전 기록</h2>
+              <h2 className="text-page-title font-bold text-black">도전 기록</h2>
               <div className="surface-muted mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center px-6 text-center">
                 <div>
-                  <p className="text-[16px] font-800 text-[#3D4754]">아직 도전 기록이 없습니다.</p>
-                  <p className="mt-2 text-[13px] text-[#8A94A1]">
+                  <p className="text-body-lg font-strong text-[#3D4754]">
+                    아직 도전 기록이 없습니다.
+                  </p>
+                  <p className="mt-2 text-body text-[#8A94A1]">
                     실전 연습을 시작하면 제출 결과와 소모 토큰이 여기에 표시됩니다.
                   </p>
                 </div>
@@ -853,13 +839,13 @@ function PracticeChallengeDetail() {
 
           {activeTab === 'solvers' ? (
             <section>
-              <h2 className="text-[26px] font-900 text-black">순위 현황</h2>
+              <h2 className="text-page-title font-bold text-black">순위 현황</h2>
               <div className="surface-muted mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center px-6 text-center">
                 <div>
-                  <p className="text-[16px] font-800 text-[#3D4754]">
+                  <p className="text-body-lg font-strong text-[#3D4754]">
                     아직 성공한 사용자가 없습니다.
                   </p>
-                  <p className="mt-2 text-[13px] text-[#8A94A1]">
+                  <p className="mt-2 text-body text-[#8A94A1]">
                     실전 연습을 완료하면 순위 구조를 확인할 수 있습니다.
                   </p>
                 </div>
@@ -879,11 +865,11 @@ function DefaultLearningGuide() {
     <>
       {learningSections.map(section => (
         <section key={section.title} className="space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-[4px] border border-[#DDE3EA] bg-[#F7F9FC] px-3 py-2 text-[13px] font-800 text-[#2E3338]">
+          <div className="inline-flex items-center gap-2 rounded-[4px] border border-[#DDE3EA] bg-[#F7F9FC] px-3 py-2 text-body font-strong text-[#2E3338]">
             <span>{section.icon}</span>
             {section.title}
           </div>
-          <ul className="space-y-2 text-[15px] leading-[28px] text-[#26313D]">
+          <ul className="space-y-2 text-body text-[#26313D]">
             {section.items.map(item => (
               <li key={item} className="flex gap-2">
                 <Check className="mt-1.5 h-4 w-4 shrink-0 text-[#9BA4B0]" strokeWidth={2} />
@@ -922,12 +908,10 @@ export default function Tutorial() {
       <section className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
         <PathPreview tutorial={tutorial} />
         <div className="pt-1">
-          <h1 className="text-[28px] font-900 leading-tight text-black">{tutorial.title}</h1>
-          <p className="mt-3 text-[16px] font-600 leading-[24px] text-[#66717E]">
-            {tutorial.subtitle}
-          </p>
-          <div className="mt-6 flex w-fit items-center divide-x divide-[#D8DDE4] text-[13px] text-[#2E3338]">
-            <span className="whitespace-nowrap pr-4 font-700">
+          <h1 className="text-page-title font-bold text-black">{tutorial.title}</h1>
+          <p className="mt-3 text-body-lg font-strong text-[#66717E]">{tutorial.subtitle}</p>
+          <div className="mt-6 flex w-fit items-center divide-x divide-[#D8DDE4] text-body text-[#2E3338]">
+            <span className="whitespace-nowrap pr-4 font-strong">
               {isPracticeTutorial ? (
                 <>
                   성공{' '}
@@ -937,7 +921,7 @@ export default function Tutorial() {
                 <em className="not-italic text-[#FF4854]">Step {tutorialStep}</em>
               )}
             </span>
-            <span className="whitespace-nowrap px-4 font-700">
+            <span className="whitespace-nowrap px-4 font-strong">
               {isPracticeTutorial ? (
                 <>
                   평균 <em className="mx-1 not-italic text-[#FF4854]">{tutorial.averageTokens}</em>{' '}
@@ -947,15 +931,15 @@ export default function Tutorial() {
                 <em className="not-italic text-[#2E3338]">{tutorial.title}</em>
               )}
             </span>
-            <span className="whitespace-nowrap px-4 font-500">{tutorial.price}</span>
+            <span className="whitespace-nowrap px-4 font-medium">{tutorial.price}</span>
             <span className="whitespace-nowrap pl-4">
-              <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-[12px] font-700 text-white">
+              <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-label font-strong text-white">
                 Tutorial
               </span>
             </span>
           </div>
-          <p className="mt-8 text-[15px] leading-[26px] text-[#3D4754]">{tutorial.description}</p>
-          <p className="mt-2 text-[15px] font-800 leading-[26px] text-[#FF4854]">{tutorial.goal}</p>
+          <p className="mt-8 text-body text-[#3D4754]">{tutorial.description}</p>
+          <p className="mt-2 text-body font-strong text-[#FF4854]">{tutorial.goal}</p>
         </div>
       </section>
 
@@ -965,7 +949,7 @@ export default function Tutorial() {
         <>
           <div className="mt-8 border-b border-[#DDE3EA]">
             <div className="flex gap-8">
-              <span className="border-b-2 border-[#FF4854] pb-3 text-[16px] font-800 text-[#2E3338]">
+              <span className="border-b-2 border-[#FF4854] pb-3 text-body-lg font-strong text-[#2E3338]">
                 학습 목표
               </span>
             </div>

@@ -87,7 +87,7 @@ export default function ArenaJudgeLoader({
 
           <div className="relative z-[2] flex flex-col items-center justify-center text-center">
             <motion.h1
-              className={`font-[Orbitron] tracking-[0.25em] ${compact ? 'text-4xl sm:text-[2.5rem]' : 'text-5xl'}`}
+              className={`font-sans tracking-[0.25em] ${compact ? 'text-display-sm sm:text-display-lg' : 'text-display-lg'}`}
               style={{
                 color: '#FF4854',
                 textShadow: '0 0 20px #FF4854',
@@ -101,7 +101,7 @@ export default function ArenaJudgeLoader({
 
             <motion.div
               key="looped-fullname"
-              className={`tracking-wide text-[#6B6B6B] ${compact ? 'mt-7 text-[11px] sm:text-xs' : 'mt-16 text-xs md:text-sm'}`}
+              className={`tracking-wide text-[#6B6B6B] ${compact ? 'mt-7 text-caption sm:text-label' : 'mt-16 text-label md:text-body'}`}
             >
               {[
                 {
@@ -163,7 +163,7 @@ export default function ArenaJudgeLoader({
             </motion.div>
 
             {compact ? (
-              <motion.div className="mt-5 text-[11px] font-light tracking-wider text-[#6B6B6B] sm:text-xs">
+              <motion.div className="mt-5 text-caption font-light tracking-wider text-[#6B6B6B] sm:text-label">
                 {displayPercent}
               </motion.div>
             ) : null}
@@ -172,7 +172,7 @@ export default function ArenaJudgeLoader({
 
         {!compact ? (
           <motion.div
-            className="absolute bottom-24 text-xs font-light tracking-wider text-[#6B6B6B]"
+            className="absolute bottom-24 text-label font-light tracking-wider text-[#6B6B6B]"
             style={{ zIndex: 10 }}
           >
             {displayPercent}

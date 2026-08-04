@@ -13,9 +13,11 @@ export default function LandingFooterSection() {
         <div className="flex flex-col gap-5">
           <img src={c2LabLogo} alt="C2LAB" className="h-auto w-[180px] sm:w-[210px]" />
 
-          <div className="space-y-1.5 text-[15px] leading-7 text-white">
-            <div className="text-[17px] font-semibold">주식회사 씨투랩</div>
-            <p className="text-white/80">씨투랩 C2Lab은 신뢰할 수 있는 AI 보안을 만드는 AI 보안 전문 기업입니다.</p>
+          <div className="space-y-1.5 text-body text-white">
+            <div className="text-body-lg font-strong">주식회사 씨투랩</div>
+            <p className="text-white/80">
+              씨투랩 C2Lab은 신뢰할 수 있는 AI 보안을 만드는 AI 보안 전문 기업입니다.
+            </p>
             <div>대표이사 정미심</div>
             <div>서울 구로구 디지털로31길 20 에이스테크노타워5차 3층 310호 (08380)</div>
             <div className="flex flex-wrap items-center gap-x-3">
@@ -30,7 +32,9 @@ export default function LandingFooterSection() {
           </div>
         </div>
 
-        <div className="text-sm text-white/80 sm:text-right">© 2026 C2LAB. All rights reserved.</div>
+        <div className="text-body text-white/80 sm:text-right">
+          © 2026 C2LAB. All rights reserved.
+        </div>
       </Container>
     </footer>
   );

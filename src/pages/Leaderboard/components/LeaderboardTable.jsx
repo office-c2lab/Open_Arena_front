@@ -36,7 +36,7 @@ const formatTime = iso => {
 /* ============================================================== */
 const LeaderboardTableSkeleton = ({ rows = 12 }) => (
   <div className="relative w-full max-w-[1027px] rounded-[30px] bg-[#0B021C]/80 border-[2px] border-[#FF4854]/60 shadow-[0_0_40px_rgba(255,72,84,0.7)] overflow-hidden">
-    <div className="flex items-center h-[79px] heading-3 font-700 border-b border-[#FF4854] text-[#FF4854] bg-[#1A0B15]/90 shadow-[0_0_15px_rgba(255,72,84,0.6)]">
+    <div className="flex items-center h-[79px] text-card-title font-strong border-b border-[#FF4854] text-[#FF4854] bg-[#1A0B15]/90 shadow-[0_0_15px_rgba(255,72,84,0.6)]">
       <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
       <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
       <div className={`${COL_WIDTHS.score} text-center`}>점수</div>
@@ -84,7 +84,7 @@ export default function LeaderboardTable() {
 
   if (!leaderboardEnabled) {
     return (
-      <div className="text-gray-300 text-center py-10 text-[22px] font-bold">
+      <div className="text-gray-300 text-center py-10 text-section-title font-bold">
         공용 리더보드가 현재 비공개 상태입니다.
       </div>
     );
@@ -119,7 +119,7 @@ export default function LeaderboardTable() {
       "
     >
       {/* Header */}
-      <div className="flex items-center h-[79px] heading-3 font-700 border-b border-[#FF4854] text-[#FF4854] bg-[#1A0B15]/90 shadow-[0_0_20px_rgba(255,72,84,0.6)]">
+      <div className="flex items-center h-[79px] text-card-title font-strong border-b border-[#FF4854] text-[#FF4854] bg-[#1A0B15]/90 shadow-[0_0_20px_rgba(255,72,84,0.6)]">
         <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
         <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
         <div className={`${COL_WIDTHS.score} text-center`}>점수</div>
@@ -149,21 +149,21 @@ export default function LeaderboardTable() {
               {row.displayedRank <= 3 ? (
                 <img src={MEDAL_ICON_MAP[row.displayedRank]} className="w-[42px] h-[42px]" />
               ) : (
-                <span className="font-700">{row.displayedRank}</span>
+                <span className="font-strong">{row.displayedRank}</span>
               )}
             </div>
 
             {/* 팀명 */}
-            <div className={`${COL_WIDTHS.team} text-center font-600`}>{row.teamname}</div>
+            <div className={`${COL_WIDTHS.team} text-center font-strong`}>{row.teamname}</div>
 
             {/* 점수 */}
-            <div className={`${COL_WIDTHS.score} text-center font-600`}>{row.score}</div>
+            <div className={`${COL_WIDTHS.score} text-center font-strong`}>{row.score}</div>
 
             {/* 해결 문제 수 */}
-            <div className={`${COL_WIDTHS.solved} text-center font-600`}>{row.solved_count}</div>
+            <div className={`${COL_WIDTHS.solved} text-center font-strong`}>{row.solved_count}</div>
 
             {/* 해결 시간 */}
-            <div className={`${COL_WIDTHS.time} text-center font-600`}>
+            <div className={`${COL_WIDTHS.time} text-center font-strong`}>
               {formatTime(row.last_solved_at)}
             </div>
           </div>

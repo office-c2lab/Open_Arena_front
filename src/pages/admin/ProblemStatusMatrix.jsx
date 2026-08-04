@@ -31,7 +31,7 @@ export default function ProblemStatusMatrix() {
   if (isLoading) return <ProblemStatusMatrixSkeleton />;
   if (error)
     return (
-      <div className="text-red-400 text-center py-10 text-[20px]">
+      <div className="text-red-400 text-center py-10 text-card-title">
         데이터를 불러오는 중 오류가 발생했습니다.
       </div>
     );
@@ -66,7 +66,7 @@ export default function ProblemStatusMatrix() {
             {/* 문제번호 */}
             <div
               className="
-                text-[#C56CFF] font-extrabold text-[22px]
+                text-[#C56CFF] font-bold text-section-title
                 flex items-center justify-center
                 bg-[#3A0A4C]/60 border border-[#C56CFF]/50
                 rounded-[14px] h-[50px]
@@ -80,7 +80,7 @@ export default function ProblemStatusMatrix() {
               <div
                 key={p.id}
                 className="
-                  text-[#C56CFF] text-[16px] font-bold
+                  text-[#C56CFF] text-body-lg font-bold
                   flex items-center justify-center
                   bg-[#2A063B]/50 rounded-[10px] h-[50px]
                   shadow-[0_0_10px_rgba(197,108,255,0.3)]
@@ -92,7 +92,7 @@ export default function ProblemStatusMatrix() {
 
             <div
               className="
-                text-[#FF4854] font-extrabold text-[22px]
+                text-[#FF4854] font-bold text-section-title
                 flex items-center justify-center
                 bg-[#3A0A2A]/60 border border-[#FF4854]/50
                 rounded-[14px] min-h-[60px]
@@ -106,7 +106,7 @@ export default function ProblemStatusMatrix() {
               <div
                 key={p.id}
                 className="
-                  text-white text-[15px] font-bold
+                  text-white text-body font-bold
                   flex items-center justify-center text-center
                   bg-[#1A0B15]/40 rounded-[10px]
                   border border-[#FF4854]/25 px-2 py-2
@@ -127,7 +127,7 @@ export default function ProblemStatusMatrix() {
                 <React.Fragment key={`team-row-${tIdx}`}>
                   <div
                     className="
-                      text-white text-[18px] font-bold
+                      text-white text-card-title font-bold
                       h-[44px] flex items-center justify-between
                       bg-[#1A0B15]/70 border border-[#FF4854]/40 rounded-[12px]
                       shadow-[0_0_12px_rgba(255,72,84,0.3)] px-3
@@ -136,7 +136,7 @@ export default function ProblemStatusMatrix() {
                     <span className="truncate">{team}</span>
 
                     {/* solved_count 표시 */}
-                    <span className="text-sm font-semibold text-[#10B981] bg-gray-800/50 px-2 py-0.5 rounded-full border border-[#10B981]/50">
+                    <span className="text-body font-strong text-[#10B981] bg-gray-800/50 px-2 py-0.5 rounded-full border border-[#10B981]/50">
                       {solvedCount}
                     </span>
                   </div>

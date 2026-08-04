@@ -28,10 +28,10 @@ export default function SidebarProfile({ isCollapsed, name, role, profileImage }
       {/* 접힘 상태가 아닐 때만 텍스트 표시 */}
       {!isCollapsed && (
         <div className="flex flex-col gap-[4px] flex-grow">
-          <span className="body-medium font-500 tracking-[0.4px] text-[#0F172A]/50">
+          <span className="text-body font-medium tracking-[0.4px] text-[#0F172A]/50">
             {role || '게스트'}
           </span>
-          <span className="body-medium font-500 text-[#0F172A]/80">{name || '로그인 필요'}</span>
+          <span className="text-body font-medium text-[#0F172A]/80">{name || '로그인 필요'}</span>
         </div>
       )}
     </div>

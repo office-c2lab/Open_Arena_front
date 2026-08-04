@@ -21,7 +21,7 @@ export default function SidebarHeader({ isCollapsed, setIsCollapsed }) {
       ) : (
         <div className="flex items-center gap-[9px] flex-shrink-0">
           <img src={ArenaLogo} alt="ARENA Logo" className="w-[29px] h-[42px]" />
-          <span className="heading-3 font-700 text-[#FF084A]">ARENA</span>
+          <span className="text-card-title font-strong text-[#FF084A]">ARENA</span>
         </div>
       )}
       {/* 2. 토글 버튼 (흰색 박스 + 그림자 + Absolute 위치) */}

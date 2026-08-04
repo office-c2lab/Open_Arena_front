@@ -60,36 +60,36 @@ export default function HeroSection({ onVisibilityChange }) {
                 transition={{ duration: 0.7, ease: 'easeOut', delay: 1.2 }}
                 className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-center sm:mt-3 sm:gap-x-5"
               >
-                <span className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-white sm:text-[0.8rem]">
-                  <span className="mr-1 text-[1.15rem] font-semibold tracking-[0.18em] text-[#ff4854] sm:text-[1.24rem]">
+                <span className="text-label font-medium uppercase tracking-[0.32em] text-white sm:text-label">
+                  <span className="mr-1 text-card-title font-strong tracking-[0.18em] text-[#ff4854] sm:text-card-title">
                     A
                   </span>
                   I
                 </span>
 
-                <span className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-white sm:text-[0.8rem]">
-                  <span className="mr-1 text-[1.15rem] font-semibold tracking-[0.18em] text-[#ff4854] sm:text-[1.24rem]">
+                <span className="text-label font-medium uppercase tracking-[0.32em] text-white sm:text-label">
+                  <span className="mr-1 text-card-title font-strong tracking-[0.18em] text-[#ff4854] sm:text-card-title">
                     R
                   </span>
                   ed Teaming
                 </span>
 
-                <span className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-white sm:text-[0.8rem]">
-                  <span className="mr-1 text-[1.15rem] font-semibold tracking-[0.18em] text-[#ff4854] sm:text-[1.24rem]">
+                <span className="text-label font-medium uppercase tracking-[0.32em] text-white sm:text-label">
+                  <span className="mr-1 text-card-title font-strong tracking-[0.18em] text-[#ff4854] sm:text-card-title">
                     E
                   </span>
                   valuation
                 </span>
 
-                <span className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-white sm:text-[0.8rem]">
-                  <span className="mr-1 text-[1.15rem] font-semibold tracking-[0.18em] text-[#ff4854] sm:text-[1.24rem]">
+                <span className="text-label font-medium uppercase tracking-[0.32em] text-white sm:text-label">
+                  <span className="mr-1 text-card-title font-strong tracking-[0.18em] text-[#ff4854] sm:text-card-title">
                     N
                   </span>
                   ext-gen
                 </span>
 
-                <span className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-white sm:text-[0.8rem]">
-                  <span className="mr-1 text-[1.15rem] font-semibold tracking-[0.18em] text-[#ff4854] sm:text-[1.24rem]">
+                <span className="text-label font-medium uppercase tracking-[0.32em] text-white sm:text-label">
+                  <span className="mr-1 text-card-title font-strong tracking-[0.18em] text-[#ff4854] sm:text-card-title">
                     A
                   </span>
                   I
@@ -103,58 +103,58 @@ export default function HeroSection({ onVisibilityChange }) {
                 className="mt-5 flex flex-col items-center sm:mt-6 sm:flex-row sm:justify-center"
               >
                 <a
-  href="/"
-  className="group relative z-[1] inline-flex min-w-[260px] items-center justify-center overflow-hidden rounded-2xl bg-[#1d1d1d] px-6 py-3.5 text-sm font-bold leading-[24px] text-[#747474] no-underline shadow-[0_4px_12px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.16),inset_0_1px_1px_rgba(255,255,255,0.05)] transition duration-300 hover:scale-[1.04] hover:bg-[#ff4854] hover:text-white hover:shadow-[0_0_90px_rgba(255,72,84,0.36),0_4px_12px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.16),inset_0_1px_1px_rgba(255,255,255,0.32)] active:scale-[1.02] sm:min-w-[272px] sm:px-7 sm:py-4 sm:text-base"
->
-  <span
-    aria-hidden="true"
-    className="absolute inset-0 rounded-2xl border border-white/10"
-  />
+                  href="/"
+                  className="group relative z-[1] inline-flex min-w-[260px] items-center justify-center overflow-hidden rounded-2xl bg-[#1d1d1d] px-6 py-3.5 text-body font-bold text-[#747474] no-underline shadow-[0_4px_12px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.16),inset_0_1px_1px_rgba(255,255,255,0.05)] transition duration-300 hover:scale-[1.04] hover:bg-[#ff4854] hover:text-white hover:shadow-[0_0_90px_rgba(255,72,84,0.36),0_4px_12px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.16),inset_0_1px_1px_rgba(255,255,255,0.32)] active:scale-[1.02] sm:min-w-[272px] sm:px-7 sm:py-4 sm:text-body-lg"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-2xl border border-white/10"
+                  />
 
-  <svg
-    aria-hidden="true"
-    className="pointer-events-none absolute inset-0 h-full w-full rounded-2xl opacity-0 transition duration-300 group-hover:opacity-100"
-    viewBox="0 0 280 58"
-    preserveAspectRatio="none"
-  >
-    <rect
-      x="1"
-      y="1"
-      width="278"
-      height="56"
-      rx="16"
-      fill="none"
-      stroke="rgba(255,255,255,0.9)"
-      strokeWidth="1"
-      strokeDasharray="36 244"
-      pathLength="280"
-      className="[animation:arena-border-line_1.8s_linear_infinite]"
-    />
-    <rect
-      x="1"
-      y="1"
-      width="278"
-      height="56"
-      rx="16"
-      fill="none"
-      stroke="rgba(255,255,255,0.45)"
-      strokeWidth="2"
-      strokeDasharray="36 244"
-      pathLength="280"
-      filter="blur(3px)"
-      className="[animation:arena-border-line_1.8s_linear_infinite]"
-    />
-  </svg>
+                  <svg
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 h-full w-full rounded-2xl opacity-0 transition duration-300 group-hover:opacity-100"
+                    viewBox="0 0 280 58"
+                    preserveAspectRatio="none"
+                  >
+                    <rect
+                      x="1"
+                      y="1"
+                      width="278"
+                      height="56"
+                      rx="16"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.9)"
+                      strokeWidth="1"
+                      strokeDasharray="36 244"
+                      pathLength="280"
+                      className="[animation:arena-border-line_1.8s_linear_infinite]"
+                    />
+                    <rect
+                      x="1"
+                      y="1"
+                      width="278"
+                      height="56"
+                      rx="16"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.45)"
+                      strokeWidth="2"
+                      strokeDasharray="36 244"
+                      pathLength="280"
+                      filter="blur(3px)"
+                      className="[animation:arena-border-line_1.8s_linear_infinite]"
+                    />
+                  </svg>
 
-  <span
-    aria-hidden="true"
-    className="absolute bottom-[-10px] left-[20%] right-[20%] z-[2] h-5 rounded-full bg-[#ff8f98] opacity-0 blur-[12.5px] transition duration-300 group-hover:opacity-100"
-  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute bottom-[-10px] left-[20%] right-[20%] z-[2] h-5 rounded-full bg-[#ff8f98] opacity-0 blur-[12.5px] transition duration-300 group-hover:opacity-100"
+                  />
 
-  <span className="relative z-[1]">지금 바로 Red Teaming에 도전하세요</span>
+                  <span className="relative z-[1]">지금 바로 Red Teaming에 도전하세요</span>
 
-  <style>
-    {`
+                  <style>
+                    {`
       @keyframes arena-border-line {
         from {
           stroke-dashoffset: 280;
@@ -164,8 +164,8 @@ export default function HeroSection({ onVisibilityChange }) {
         }
       }
     `}
-  </style>
-</a>
+                  </style>
+                </a>
               </motion.div>
             </div>
           </motion.div>

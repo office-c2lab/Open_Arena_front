@@ -64,9 +64,9 @@ export default function Login() {
 
   const isPending = loginMutation.isPending;
 
-  const inputLabelStyle = 'heading-3 font-500 text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
+  const inputLabelStyle = 'text-card-title font-medium text-[#6B6B6B] mb-2 md:mb-4 cursor-pointer';
   const inputFieldStyle =
-    'w-full heading-3 font-700 outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
+    'w-full text-card-title font-strong outline-none border-b border-[#D9DADB] focus:border-[#6B6B6B] pb-2 text-[#6B6B6B] bg-transparent placeholder:text-[#D9DADB]';
 
   return (
     <div className="flex justify-center bg-white px-[10px] py-14">
@@ -75,14 +75,14 @@ export default function Login() {
         <header className="px-2 pt-4 pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <h1 className="heading-3 font-500 text-black">로그인</h1>
+              <h1 className="text-card-title font-medium text-black">로그인</h1>
             </div>
           </div>
         </header>
 
         {/* Main */}
         <main className="flex flex-col px-2 pb-8 pt-3 md:pb-10 md:pt-4">
-          <h2 className="heading-2 font-500 text-black mb-10">
+          <h2 className="text-section-title font-medium text-black mb-10">
             로그인 정보를
             <br /> 입력해 주세요.
           </h2>
@@ -142,7 +142,7 @@ export default function Login() {
             {isPending ? '로그인 중...' : '로그인'}
           </button>
 
-          <div className="mt-7 text-center body-large font-500 text-[#6B6B6B]">
+          <div className="mt-7 text-center text-body-lg font-medium text-[#6B6B6B]">
             <span>계정이 없으신가요? </span>
             <button
               type="button"

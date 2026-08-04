@@ -67,7 +67,9 @@ export default function ChatBubble({
             theme="light"
             aria-label="AI가 응답을 생성 중입니다"
           />
-          <span className="thinking-text body-large font-500">AI가 답변을 생성 중입니다...</span>
+          <span className="thinking-text text-body-lg font-medium">
+            AI가 답변을 생성 중입니다...
+          </span>
         </div>
       </div>
     );
@@ -86,11 +88,7 @@ export default function ChatBubble({
             : 'border border-[#323746] bg-[#222632] text-white rounded-r-2xl rounded-tl-2xl shadow-[0_3px_8px_rgba(15,23,42,0.10)]'
         }`}
       >
-        <p
-          className={`font-500 whitespace-pre-wrap ${
-            compact ? 'text-sm leading-6' : 'body-large leading-7'
-          }`}
-        >
+        <p className={`font-medium whitespace-pre-wrap ${compact ? 'text-body' : 'text-body-lg'}`}>
           {displayedText}
         </p>
       </div>

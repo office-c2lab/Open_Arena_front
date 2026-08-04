@@ -221,12 +221,12 @@ function EducationListItem({ article, onOpen }) {
           <div className="absolute inset-0 bg-[linear-gradient(135deg,#120F1D_0%,#250B13_52%,#FF4854_220%)]" />
           <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full border border-[#FF4854]/30" />
           <div className="absolute -bottom-12 right-5 h-28 w-28 rounded-full border border-[#FF4854]/20" />
-          <strong className="relative z-10 text-[20px] font-900 leading-[22px] text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
+          <strong className="relative z-10 text-card-title font-bold text-white [text-shadow:0_3px_14px_rgba(255,72,84,0.32)]">
             {article.visualTitle}
           </strong>
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-700 text-[#8A93A5]">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-label font-strong text-[#8A93A5]">
             <span>{article.category}</span>
             <span aria-hidden="true">·</span>
             <span className="flex items-center gap-1.5">
@@ -236,12 +236,10 @@ function EducationListItem({ article, onOpen }) {
             <span aria-hidden="true">·</span>
             <span>{article.readTime} 읽기</span>
           </div>
-          <h2 className="mt-2 text-[19px] font-900 leading-[26px] text-[#151A21] transition group-hover:text-[#FF4854] sm:text-[21px]">
+          <h2 className="mt-2 text-card-title font-bold text-[#151A21] transition group-hover:text-[#FF4854] sm:text-card-title">
             {article.title}
           </h2>
-          <p className="mt-2 text-[14px] font-500 leading-[23px] text-[#66717E]">
-            {article.summary}
-          </p>
+          <p className="mt-2 text-body font-medium text-[#66717E]">{article.summary}</p>
         </div>
         <ArrowRight className="mt-1 h-5 w-5 shrink-0 text-[#A4ADB8] transition group-hover:translate-x-1 group-hover:text-[#FF4854]" />
       </button>
@@ -286,17 +284,19 @@ function EducationList() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/24 to-transparent" />
         <div className="absolute inset-0 flex flex-col items-start justify-center px-6 text-left sm:px-10 md:px-14">
-          <h1 className="whitespace-nowrap text-[24px] font-900 leading-tight text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-[36px] md:text-[46px]">
+          <h1 className="whitespace-nowrap text-section-title font-bold text-white [text-shadow:0_3px_16px_rgba(0,0,0,0.8)] sm:text-display md:text-display-lg">
             <span className="text-[#FF4854]">LLM Safety</span> 학습 자료로 시작하세요
           </h1>
-          <p className="mt-3 text-[15px] font-800 leading-tight text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-[20px] md:text-[24px]">
+          <p className="mt-3 text-body font-strong text-white/72 [text-shadow:0_2px_10px_rgba(0,0,0,0.65)] sm:text-card-title md:text-section-title">
             AI Red Teaming을 더 깊게 이해하고 싶다면
           </p>
         </div>
       </section>
 
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="border-b-2 border-[#FF4854] pb-3 text-[18px] font-700 text-black">학습 자료</h2>
+        <h2 className="border-b-2 border-[#FF4854] pb-3 text-card-title font-strong text-black">
+          학습 자료
+        </h2>
         <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
           <label className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
@@ -305,13 +305,10 @@ function EducationList() {
               value={searchInput}
               onChange={event => setSearchInput(event.target.value)}
               placeholder="관심 있는 교육 자료를 검색해보세요."
-              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+              className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-body outline-none transition focus:border-[#FF4854]"
             />
           </label>
-          <button
-            type="submit"
-            className="btn btn-primary btn-lg"
-          >
+          <button type="submit" className="btn btn-primary btn-lg">
             검색
           </button>
           <button
@@ -346,8 +343,8 @@ function EducationQuiz({ quiz }) {
   return (
     <section className="overflow-hidden border-y border-[#e7e1d9] bg-white">
       <div className="border-b border-[#e7e1d9] bg-white px-5 py-5 sm:px-6">
-        <p className="text-[13px] font-900 uppercase tracking-[0.22em] text-[#FF4854]">Quiz</p>
-        <h2 className="mt-3 text-[16px] font-900 leading-[26px] text-[#30343b] sm:text-[18px]">
+        <p className="text-body font-bold uppercase tracking-[0.22em] text-[#FF4854]">Quiz</p>
+        <h2 className="mt-3 text-body-lg font-bold text-[#30343b] sm:text-card-title">
           Q. {quiz.question}
         </h2>
       </div>
@@ -373,10 +370,10 @@ function EducationQuiz({ quiz }) {
                     : 'bg-white text-[#4D5968] hover:bg-[#fff7f7] hover:text-[#FF4854]',
               ].join(' ')}
             >
-              <span className="flex min-w-0 items-center gap-3 text-[14px] font-800 leading-[23px] sm:text-[15px]">
+              <span className="flex min-w-0 items-center gap-3 text-body font-strong sm:text-body">
                 <span
                   className={[
-                    'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-900 transition',
+                    'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-label font-bold transition',
                     showCorrect || isSelected
                       ? 'border-[#FF4854] bg-[#FF4854] text-white'
                       : 'border-[#e7e1d9] bg-white text-[#8A93A5] group-hover:border-[#FF4854] group-hover:text-[#FF4854]',
@@ -396,10 +393,10 @@ function EducationQuiz({ quiz }) {
 
       {hasAnswered ? (
         <div className="border-t border-[#f0ece7] bg-[#fafafa] px-5 py-5 sm:px-6">
-          <p className="text-[15px] font-800 text-[#30343b]">
+          <p className="text-body font-strong text-[#30343b]">
             {isCorrect ? '정답입니다.' : '아쉽지만 정답을 다시 확인해보세요.'}
           </p>
-          <p className="mt-2 text-[14px] font-500 leading-7 text-[#6b6f76]">{quiz.explanation}</p>
+          <p className="mt-2 text-body font-medium text-[#6b6f76]">{quiz.explanation}</p>
         </div>
       ) : null}
     </section>
@@ -421,26 +418,24 @@ function EducationDetail({ article }) {
       </button>
 
       <header className="text-center">
-        <p className="text-[13px] font-900 uppercase tracking-[0.14em] text-[#FF4854]">
+        <p className="text-body font-bold uppercase tracking-[0.14em] text-[#FF4854]">
           {article.category}
         </p>
-        <h1 className="mt-3 text-[38px] font-900 leading-tight text-[#151A21] md:text-[48px]">
+        <h1 className="mt-3 text-display font-bold text-[#151A21] md:text-display-lg">
           {article.title}
         </h1>
-        <p className="mt-4 text-[14px] font-700 text-[#8A93A5]">
+        <p className="mt-4 text-body font-strong text-[#8A93A5]">
           {article.date} · {article.readTime} 읽기
         </p>
       </header>
 
       <div className="mx-auto mt-10 max-w-[760px] space-y-9">
-        <p className="text-[18px] font-700 leading-[32px] text-[#3D4754]">{article.summary}</p>
+        <p className="text-card-title font-strong text-[#3D4754]">{article.summary}</p>
 
         {article.sections.map(section => (
           <section key={section.title}>
-            <h2 className="text-[25px] font-900 text-[#151A21]">{section.title}</h2>
-            <p className="mt-4 text-[16px] font-500 leading-[31px] text-[#4D5968]">
-              {section.body}
-            </p>
+            <h2 className="text-section-title font-bold text-[#151A21]">{section.title}</h2>
+            <p className="mt-4 text-body-lg font-medium text-[#4D5968]">{section.body}</p>
           </section>
         ))}
 
@@ -448,8 +443,8 @@ function EducationDetail({ article }) {
 
         <div className="flex flex-wrap gap-x-10 gap-y-4 border-t border-[#E3E6EB] pt-7">
           <div className="w-full">
-            <h2 className="text-[20px] font-900 text-[#151A21]">다음 단계</h2>
-            <p className="mt-3 text-[15px] font-600 leading-[27px] text-[#596575]">
+            <h2 className="text-card-title font-bold text-[#151A21]">다음 단계</h2>
+            <p className="mt-3 text-body font-strong text-[#596575]">
               개념을 이해했다면 튜토리얼에서 기본 흐름을 익히고, 챌린지에서 직접 AI Red Teaming
               시나리오를 실습해보세요.
             </p>
@@ -457,7 +452,7 @@ function EducationDetail({ article }) {
           <button
             type="button"
             onClick={() => navigate('/tutorial')}
-            className="group flex cursor-pointer items-center gap-3 text-[20px] font-900 text-[#151A21] transition hover:text-[#FF4854]"
+            className="group flex cursor-pointer items-center gap-3 text-card-title font-bold text-[#151A21] transition hover:text-[#FF4854]"
           >
             튜토리얼 풀기
             <ArrowRight

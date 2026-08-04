@@ -41,7 +41,7 @@ export default function LandingPage() {
       {/* <div className="bg-[#050608] px-0 pt-10 pb-8 text-white sm:pt-10 sm:pb-10">
         <div className="mx-auto flex max-w-[1280px] items-center gap-5 px-5 sm:gap-8">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#ff8f98] to-[#3a3a3f]" />
-          <div className="shrink-0 text-center text-base font-semibold tracking-[-0.01em] text-white/88 sm:text-lg">
+          <div className="shrink-0 text-center text-body-lg font-strong tracking-[-0.01em] text-white/88 sm:text-card-title">
             우리는 이런 기업과 함께합니다.
           </div>
           <div className="h-px flex-1 bg-gradient-to-l from-transparent via-[#ff8f98] to-[#3a3a3f]" />
@@ -54,10 +54,10 @@ export default function LandingPage() {
         />
       </div> */}
       <section className="bg-white px-5 py-14 text-center sm:py-20">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#ff4854]">
+        <p className="text-body font-strong uppercase tracking-[0.24em] text-[#ff4854]">
           AI Red Teaming Evaluation Next-gen AI
         </p>
-        <h2 className="mt-5 text-balance text-3xl font-semibold tracking-[-0.04em] text-[#171717] sm:text-5xl">
+        <h2 className="mt-5 text-balance text-page-title font-strong tracking-[-0.04em] text-[#171717] sm:text-display-lg">
           차세대 AI 레드팀 평가 플랫폼
         </h2>
       </section>

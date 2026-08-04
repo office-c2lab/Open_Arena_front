@@ -75,7 +75,7 @@ export default function LoadingModal({ isOpen }) {
 
             {/* 🟣 중앙 로고 */}
             <motion.h1
-              className="font-[Orbitron] text-6xl tracking-[0.25em]"
+              className="font-sans text-metric tracking-[0.25em]"
               style={{
                 color: '#FF4854',
                 textShadow: '0 0 20px #FF4854',
@@ -91,7 +91,7 @@ export default function LoadingModal({ isOpen }) {
             {/* ✨ 풀네임 (순차 깜빡이기) */}
             <motion.div
               key="looped-fullname"
-              className="text-sm md:text-base text-[#6B6B6B] mt-20 tracking-wide text-center"
+              className="text-body md:text-body-lg text-[#6B6B6B] mt-20 tracking-wide text-center"
               style={{ zIndex: 2 }}
             >
               {[
@@ -155,7 +155,7 @@ export default function LoadingModal({ isOpen }) {
 
             {/* 🧠 진행률 */}
             <motion.div
-              className="absolute bottom-30 text-[#6B6B6B] font-light tracking-wider text-sm"
+              className="absolute bottom-30 text-[#6B6B6B] font-light tracking-wider text-body"
               style={{ zIndex: 10 }}
             >
               {displayPercent}

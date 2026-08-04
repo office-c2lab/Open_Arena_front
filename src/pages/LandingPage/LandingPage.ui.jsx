@@ -18,12 +18,7 @@ export const SECTION_COPY_REVEAL = {
 
 export function Container({ children, className }) {
   return (
-    <div
-      className={cn(
-        'mx-auto w-full max-w-[1380px] px-5 sm:px-6 lg:px-8 xl:px-10',
-        className
-      )}
-    >
+    <div className={cn('mx-auto w-full max-w-[1380px] px-5 sm:px-6 lg:px-8 xl:px-10', className)}>
       {children}
     </div>
   );
@@ -36,16 +31,14 @@ export function SectionTitle({ eyebrow, title, desc, align = 'left' }) {
   return (
     <div className={cn('flex w-full flex-col gap-3', alignClass)}>
       {eyebrow ? (
-        <div className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[#ff4854]">
+        <div className="text-label font-strong uppercase tracking-[0.26em] text-[#ff4854]">
           {eyebrow}
         </div>
       ) : null}
-      <h2 className="text-balance text-2xl font-semibold tracking-tight text-[#171717] sm:text-3xl">
+      <h2 className="text-balance text-section-title font-strong tracking-tight text-[#171717] sm:text-page-title">
         {title}
       </h2>
-      {desc ? (
-        <p className="text-pretty text-sm leading-6 text-[#57534e] sm:text-base">{desc}</p>
-      ) : null}
+      {desc ? <p className="text-pretty text-body text-[#57534e] sm:text-body-lg">{desc}</p> : null}
     </div>
   );
 }

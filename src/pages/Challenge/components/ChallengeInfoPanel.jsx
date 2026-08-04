@@ -34,7 +34,7 @@ const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
             <button
               key={tab.id}
               onClick={e => handleTabClick(e, tab.id)}
-              className={`py-2 px-2 body-large font-500 rounded-lg transition-colors duration-200 cursor-pointer
+              className={`py-2 px-2 text-body-lg font-medium rounded-lg transition-colors duration-200 cursor-pointer
                 text-gray-500 border border-white/65 bg-white/45 hover:bg-white/65 whitespace-nowrap`}
             >
               {tab.title}
@@ -101,7 +101,7 @@ export default function ChallengeInfoPanel({
                 strokeWidth={2}
               />
             </button>
-            <span className="min-w-0 line-clamp-2 heading-2 font-700 text-[#2E3338]">
+            <span className="min-w-0 line-clamp-2 text-section-title font-strong text-[#2E3338]">
               {CHALLENGE_HEADER_INFO?.title}
             </span>
           </div>
@@ -123,7 +123,7 @@ export default function ChallengeInfoPanel({
                 onClick={e => handleTabClick(e, tab.id)}
                 onMouseEnter={() => setHoveredTab(tab.id)}
                 onMouseLeave={() => setHoveredTab(null)}
-                className={`relative h-[58px] px-1 body-large font-700 transition-colors duration-200 cursor-pointer whitespace-nowrap flex-shrink-0 ${
+                className={`relative h-[58px] px-1 text-body-lg font-strong transition-colors duration-200 cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   activeTab === tab.id || hoveredTab === tab.id
                     ? TAB_TITLE_COLOR_CLASS_MAP[tab.id]
                     : 'text-[#0F172A]'
@@ -150,19 +150,21 @@ export default function ChallengeInfoPanel({
             >
               <div className="flex h-full min-h-0 flex-col pr-1">
                 <div className="surface-solid relative flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] p-6">
-                  <span className={`heading-3 font-700 ${activeTabContent.titleColor} block mb-6`}>
+                  <span
+                    className={`text-card-title font-strong ${activeTabContent.titleColor} block mb-6`}
+                  >
                     {activeTabContent.title}
                   </span>
 
                   <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto">
                     {activeTab === 'description' && CHALLENGE_HEADER_INFO?.subtitle ? (
-                      <p className="mb-6 body-large font-700 leading-7 text-[#0F172A]">
+                      <p className="mb-6 text-body-lg font-strong text-[#0F172A]">
                         {CHALLENGE_HEADER_INFO.subtitle}
                       </p>
                     ) : null}
 
                     <p
-                      className="body-large font-500 text-[#0F172A] whitespace-pre-wrap"
+                      className="text-body-lg font-medium text-[#0F172A] whitespace-pre-wrap"
                       style={{ lineHeight }}
                     >
                       {activeTabContent.content}

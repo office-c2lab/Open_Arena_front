@@ -26,7 +26,9 @@ const PointInfoCardSkeleton = ({ compact = false }) => (
       />
     </div>
     <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-      <span className={`${compact ? 'body-large' : 'heading-3'} font-500 text-black`}>점수</span>
+      <span className={`${compact ? 'text-body-lg' : 'text-card-title'} font-medium text-black`}>
+        점수
+      </span>
       <Skeleton className="h-8 w-20 rounded" />
     </div>
   </div>
@@ -71,21 +73,31 @@ export default function PointInfoCard({ compact = false }) {
       </div>
 
       <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-        <span className={`${compact ? 'body-large' : 'heading-3'} font-500 text-black`}>점수</span>
+        <span className={`${compact ? 'text-body-lg' : 'text-card-title'} font-medium text-black`}>
+          점수
+        </span>
 
         <div className="flex items-baseline">
           {/* 최고 점수 */}
-          <span className={`${compact ? 'heading-3' : 'heading-2'} font-700 text-gray-600`}>
+          <span
+            className={`${compact ? 'text-card-title' : 'text-section-title'} font-strong text-gray-600`}
+          >
             {bestScore}
           </span>
 
           {/* / 구분 */}
-          <span className={`${compact ? 'heading-3' : 'heading-2'} font-500 text-black mx-2`}>
+          <span
+            className={`${compact ? 'text-card-title' : 'text-section-title'} font-medium text-black mx-2`}
+          >
             /
           </span>
 
           {/* 문제 점수 */}
-          <span className={`${compact ? 'heading-3' : 'heading-2'} font-700 text-black`}>{score}</span>
+          <span
+            className={`${compact ? 'text-card-title' : 'text-section-title'} font-strong text-black`}
+          >
+            {score}
+          </span>
         </div>
       </div>
     </div>

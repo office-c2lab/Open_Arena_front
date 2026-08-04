@@ -31,9 +31,7 @@ export const SuccessSummaryPanel = ({ imageSrc, animalName, title, description, 
         }}
       >
         {/* 3. 동물 이미지 그룹 */}
-        <div
-          className="flex h-[74px] w-[68px] items-center justify-center overflow-hidden rounded-full border border-white bg-white shadow-[0_6px_14px_rgba(15,23,42,0.07)] sm:h-[90px] sm:w-[80px]"
-        >
+        <div className="flex h-[74px] w-[68px] items-center justify-center overflow-hidden rounded-full border border-white bg-white shadow-[0_6px_14px_rgba(15,23,42,0.07)] sm:h-[90px] sm:w-[80px]">
           <img
             src={imageSrc}
             alt={animalName}
@@ -48,7 +46,7 @@ export const SuccessSummaryPanel = ({ imageSrc, animalName, title, description, 
         </div>
         {/* 4. '성공' 텍스트 */}
         <p
-          className={`heading-2 font-700`}
+          className={`text-section-title font-strong`}
           style={{ marginBottom: '0px', color: SUCCESS_COLOR_PRIMARY }}
         >
           성공
@@ -58,13 +56,13 @@ export const SuccessSummaryPanel = ({ imageSrc, animalName, title, description, 
       <div className="z-0 flex min-w-0 flex-1 flex-col items-center bg-white">
         {/* 5. 동물 이름 (모델명) */}
         <p
-          className="heading-3 font-700 mt-[14px] w-full px-3 text-center"
+          className="text-card-title font-strong mt-[14px] w-full px-3 text-center"
           style={{ color: animalNameColor }}
         >
           {title} {/* 💡 Success에서는 title이 모델명입니다. */}
         </p>
         {/* 6. 설명 텍스트 - 중앙 배치 */}
-        <p className="no-scrollbar body-large font-500 mt-5 max-h-[82px] w-full overflow-auto px-4 text-center leading-7 text-[#0F172A] sm:mt-[36px] sm:max-h-[90px] sm:px-6">
+        <p className="no-scrollbar text-body-lg font-medium mt-5 max-h-[82px] w-full overflow-auto px-4 text-center text-[#0F172A] sm:mt-[36px] sm:max-h-[90px] sm:px-6">
           {description}
         </p>
       </div>
@@ -109,9 +107,7 @@ export const FailedSummaryPanel = ({
         }}
       >
         {/* 3. 동물 이미지 그룹 */}
-        <div
-          className="flex h-[74px] w-[68px] items-center justify-center overflow-hidden rounded-full border border-white bg-white shadow-[0_6px_14px_rgba(15,23,42,0.07)] sm:h-[90px] sm:w-[80px]"
-        >
+        <div className="flex h-[74px] w-[68px] items-center justify-center overflow-hidden rounded-full border border-white bg-white shadow-[0_6px_14px_rgba(15,23,42,0.07)] sm:h-[90px] sm:w-[80px]">
           <img
             src={imageSrc}
             alt={animalName}
@@ -126,7 +122,7 @@ export const FailedSummaryPanel = ({
         </div>
         {/* 4. '실패/재검토' 텍스트 (동적 표시) */}
         <p
-          className={`heading-2 font-700`}
+          className={`text-section-title font-strong`}
           style={{ marginBottom: '0px', color: panelTheme.primaryColor }} // 동적 텍스트 색상
         >
           {panelTheme.statusText} {/* '실패' 또는 '재검토' */}
@@ -136,13 +132,13 @@ export const FailedSummaryPanel = ({
       <div className="z-0 flex min-w-0 flex-1 flex-col items-center bg-white">
         {/* 5. 모델 이름 (title) */}
         <p
-          className="heading-3 font-700 mt-[14px] w-full px-3 text-center"
+          className="text-card-title font-strong mt-[14px] w-full px-3 text-center"
           style={{ color: animalNameColor }}
         >
           {title} {/* 💡 [수정] 모델명 사용 */}
         </p>
         {/* 6. 설명 텍스트 */}
-        <p className="no-scrollbar body-large font-500 mt-[10px] max-h-[96px] w-full overflow-auto px-4 text-center leading-7 text-[#0F172A] sm:max-h-[100px] sm:px-6">
+        <p className="no-scrollbar text-body-lg font-medium mt-[10px] max-h-[96px] w-full overflow-auto px-4 text-center text-[#0F172A] sm:max-h-[100px] sm:px-6">
           {description}
         </p>
       </div>

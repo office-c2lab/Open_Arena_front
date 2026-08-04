@@ -252,7 +252,7 @@ export default function AdminUserManagementPage() {
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="heading-1 font-700 text-[#FF4854]">사용자 관리</h1>
+            <h1 className="text-page-title font-strong text-[#FF4854]">사용자 관리</h1>
           </div>
 
           <button
@@ -275,8 +275,8 @@ export default function AdminUserManagementPage() {
         <div className="bg-[#0B021C]/70 border border-white/10 rounded-xl overflow-hidden shadow-lg">
           <div className="p-5 border-b border-white/10 flex flex-col gap-5">
             <div>
-              <h2 className="heading-2 font-700 text-[#FF4854]">사용자 목록</h2>
-              <p className="body-medium text-gray-400 mt-1">
+              <h2 className="text-section-title font-strong text-[#FF4854]">사용자 목록</h2>
+              <p className="text-body text-gray-400 mt-1">
                 무료회원 토큰 한도와 회원 등급은 목업으로 화면에서만 변경됩니다.
               </p>
             </div>
@@ -306,7 +306,7 @@ export default function AdminUserManagementPage() {
                       key={filter.value}
                       type="button"
                       onClick={() => setMembershipFilter(filter.value)}
-                      className={`rounded-md px-3 body-small font-700 whitespace-nowrap cursor-pointer transition ${
+                      className={`rounded-md px-3 text-label font-strong whitespace-nowrap cursor-pointer transition ${
                         membershipFilter === filter.value
                           ? 'bg-[#FF4854] text-white'
                           : 'text-gray-400 hover:text-white'
@@ -321,7 +321,7 @@ export default function AdminUserManagementPage() {
                   <button
                     type="button"
                     onClick={() => setIsDailyLimitModalOpen(true)}
-                    className="h-11 px-4 rounded-lg bg-[#FF4854] text-white body-small font-700 whitespace-nowrap hover:bg-[#ff3242] cursor-pointer transition"
+                    className="h-11 px-4 rounded-lg bg-[#FF4854] text-white text-label font-strong whitespace-nowrap hover:bg-[#ff3242] cursor-pointer transition"
                   >
                     일일 제한량 설정
                   </button>
@@ -368,10 +368,8 @@ export default function AdminUserManagementPage() {
                         title={`${getDisplayName(user)} 상세 보기`}
                       >
                         <Td>
-                          <div className="font-700 text-white">{getDisplayName(user)}</div>
-                          <div className="body-small leading-4 text-gray-400">
-                            ID: {userId ?? '-'}
-                          </div>
+                          <div className="font-strong text-white">{getDisplayName(user)}</div>
+                          <div className="text-label text-gray-400">ID: {userId ?? '-'}</div>
                         </Td>
                         <Td>{getEmail(user)}</Td>
                         <Td>{Number(getScore(user) || 0).toLocaleString()}</Td>
@@ -379,7 +377,7 @@ export default function AdminUserManagementPage() {
                         <Td>{formatDate(getCreatedAt(user))}</Td>
                         <Td>
                           <span
-                            className={`px-3 py-1 rounded-full body-small leading-4 font-700 border ${
+                            className={`px-3 py-1 rounded-full text-label font-strong border ${
                               membership === 'paid'
                                 ? 'bg-[#FFB155]/15 text-[#FFD08A] border-[#FFB155]/30'
                                 : 'bg-sky-500/15 text-sky-300 border-sky-400/30'
@@ -441,8 +439,8 @@ export default function AdminUserManagementPage() {
 function SummaryCard({ label, value }) {
   return (
     <div className="rounded-xl bg-[#0B021C]/70 border border-white/10 p-5 shadow-lg">
-      <div className="body-medium text-gray-400 mb-2">{label}</div>
-      <div className="heading-2 font-700 text-[#FF4854]">{value}</div>
+      <div className="text-body text-gray-400 mb-2">{label}</div>
+      <div className="text-section-title font-strong text-[#FF4854]">{value}</div>
     </div>
   );
 }
@@ -474,8 +472,11 @@ function FreeDailyLimitModal({ values, onChange, onClose, onSave }) {
       >
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
           <div>
-            <p className="body-small text-gray-400">무료회원 전체 설정</p>
-            <h2 id="daily-limit-title" className="heading-2 font-700 text-[#FF4854] mt-1">
+            <p className="text-label text-gray-400">무료회원 전체 설정</p>
+            <h2
+              id="daily-limit-title"
+              className="text-section-title font-strong text-[#FF4854] mt-1"
+            >
               일일 제한량 설정
             </h2>
           </div>
@@ -492,7 +493,7 @@ function FreeDailyLimitModal({ values, onChange, onClose, onSave }) {
         <div className="p-6 space-y-4">
           {limitFields.map(field => (
             <label key={field.key} className="block">
-              <span className="body-small text-gray-400">{field.label}</span>
+              <span className="text-label text-gray-400">{field.label}</span>
               <div className="mt-2 flex items-center gap-3">
                 <input
                   type="number"
@@ -507,7 +508,7 @@ function FreeDailyLimitModal({ values, onChange, onClose, onSave }) {
             </label>
           ))}
 
-          <p className="body-small text-gray-400 mt-3">
+          <p className="text-label text-gray-400 mt-3">
             저장하면 현재 무료회원 전체에 같은 일일 한도가 목업으로 적용됩니다.
           </p>
 
@@ -575,8 +576,11 @@ function UserDetailModal({
       >
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#10050F] px-6 py-5">
           <div>
-            <p className="body-small text-gray-400">사용자 상세 · 목업 설정</p>
-            <h2 id="user-detail-title" className="heading-2 font-700 text-[#FF4854] mt-1">
+            <p className="text-label text-gray-400">사용자 상세 · 목업 설정</p>
+            <h2
+              id="user-detail-title"
+              className="text-section-title font-strong text-[#FF4854] mt-1"
+            >
               {getDisplayName(user)}
             </h2>
           </div>
@@ -599,10 +603,10 @@ function UserDetailModal({
           </div>
 
           <div className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
-            <h3 className="font-700 text-white">회원 등급</h3>
+            <h3 className="font-strong text-white">회원 등급</h3>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
               <span
-                className={`px-3 py-1 rounded-full body-small font-700 border ${
+                className={`px-3 py-1 rounded-full text-label font-strong border ${
                   membership === 'paid'
                     ? 'bg-[#FFB155]/15 text-[#FFD08A] border-[#FFB155]/30'
                     : 'bg-sky-500/15 text-sky-300 border-sky-400/30'
@@ -633,7 +637,7 @@ function UserDetailModal({
           </div>
 
           <div className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
-            <h3 className="font-700 text-white">무료회원 일일 한도</h3>
+            <h3 className="font-strong text-white">무료회원 일일 한도</h3>
             {membership === 'free' ? (
               <div className="mt-3 space-y-4">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -653,8 +657,8 @@ function UserDetailModal({
                 </div>
 
                 <div className="border-t border-white/10 pt-4">
-                  <div className="body-small font-700 text-gray-300">추가 지급</div>
-                  <p className="body-small text-gray-500 mt-1">
+                  <div className="text-label font-strong text-gray-300">추가 지급</div>
+                  <p className="text-label text-gray-500 mt-1">
                     입력한 수량만큼 현재 일일 한도에 더해집니다.
                   </p>
                 </div>
@@ -696,8 +700,8 @@ function UserDetailModal({
 
           <div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="font-700 text-white">계정 활성화</h3>
-              <p className="body-small text-gray-400 mt-1">
+              <h3 className="font-strong text-white">계정 활성화</h3>
+              <p className="text-label text-gray-400 mt-1">
                 현재 {isActive ? '활성' : '비활성'} 상태입니다.
               </p>
             </div>
@@ -710,8 +714,8 @@ function UserDetailModal({
 
           <div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="font-700 text-white">비밀번호 초기화</h3>
-              <p className="body-small text-gray-400 mt-1">사용자의 비밀번호를 초기화합니다.</p>
+              <h3 className="font-strong text-white">비밀번호 초기화</h3>
+              <p className="text-label text-gray-400 mt-1">사용자의 비밀번호를 초기화합니다.</p>
             </div>
             <button
               type="button"
@@ -731,12 +735,12 @@ function UserDetailModal({
 function LimitUsageCard({ label, used, limit, suffix }) {
   return (
     <div className="rounded-lg border border-white/10 bg-[#10050F]/70 p-3">
-      <div className="body-small text-gray-400">{label}</div>
-      <div className="mt-2 text-lg font-700 text-white">
+      <div className="text-label text-gray-400">{label}</div>
+      <div className="mt-2 text-card-title font-strong text-white">
         {Number(used || 0).toLocaleString()}
         <span className="mx-1 text-gray-500">/</span>
         {Number(limit || 0).toLocaleString()}
-        <span className="ml-1 body-small text-gray-400">{suffix}</span>
+        <span className="ml-1 text-label text-gray-400">{suffix}</span>
       </div>
     </div>
   );
@@ -745,7 +749,7 @@ function LimitUsageCard({ label, used, limit, suffix }) {
 function LimitInput({ label, suffix, value, onChange }) {
   return (
     <label className="block">
-      <span className="body-small text-gray-400">{label}</span>
+      <span className="text-label text-gray-400">{label}</span>
       <div className="mt-2 flex items-center gap-2">
         <input
           type="number"
@@ -756,7 +760,7 @@ function LimitInput({ label, suffix, value, onChange }) {
           className="h-11 min-w-0 flex-1 rounded-lg border border-white/10 bg-[#1A0B15] px-3 text-white outline-none focus:border-[#FF4854]"
           aria-label={`${label} 한도`}
         />
-        <span className="body-small text-gray-400">{suffix}</span>
+        <span className="text-label text-gray-400">{suffix}</span>
       </div>
     </label>
   );
@@ -765,8 +769,8 @@ function LimitInput({ label, suffix, value, onChange }) {
 function DetailItem({ label, value }) {
   return (
     <div>
-      <div className="body-small text-gray-400">{label}</div>
-      <div className="mt-1 font-700 text-white break-all">{value}</div>
+      <div className="text-label text-gray-400">{label}</div>
+      <div className="mt-1 font-strong text-white break-all">{value}</div>
     </div>
   );
 }
@@ -792,13 +796,11 @@ function ActiveToggle({ enabled, disabled, onToggle }) {
 }
 
 function Th({ children }) {
-  return <th className="px-5 py-4 body-medium font-700 whitespace-nowrap">{children}</th>;
+  return <th className="px-5 py-4 text-body font-strong whitespace-nowrap">{children}</th>;
 }
 
 function Td({ children }) {
   return (
-    <td className="px-5 py-4 body-medium text-gray-200 align-middle whitespace-nowrap">
-      {children}
-    </td>
+    <td className="px-5 py-4 text-body text-gray-200 align-middle whitespace-nowrap">{children}</td>
   );
 }

@@ -32,7 +32,7 @@ const TokenInfoCard = ({ problemId, teamId, tokenUsed, compact = false }) => {
           className={`flex flex-row items-center flex-1 justify-between ${compact ? '' : 'ml-4'}`}
         >
           <span
-            className={`${compact ? 'body-large font-700 text-[#0F172A]' : 'heading-3 font-500 text-black'}`}
+            className={`${compact ? 'text-body-lg font-strong text-[#0F172A]' : 'text-card-title font-medium text-black'}`}
           >
             사용한 토큰
           </span>
@@ -40,13 +40,13 @@ const TokenInfoCard = ({ problemId, teamId, tokenUsed, compact = false }) => {
           <div className="flex items-baseline">
             {!isReady || isLoading ? (
               <span
-                className={`${compact ? 'body-large font-700 text-[#64748B]' : 'heading-1 font-700 text-gray-400'}`}
+                className={`${compact ? 'text-body-lg font-strong text-[#64748B]' : 'text-page-title font-strong text-gray-400'}`}
               >
                 0
               </span>
             ) : (
               <span
-                className={`${compact ? 'body-large font-700 text-[#0F172A]' : 'heading-1 font-700 text-black'}`}
+                className={`${compact ? 'text-body-lg font-strong text-[#0F172A]' : 'text-page-title font-strong text-black'}`}
               >
                 {usedToken}
               </span>

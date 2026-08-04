@@ -74,10 +74,10 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
   }`;
   const contentClasses = `p-6 flex flex-col gap-2.5`;
   const tagsContainerClasses = `flex space-x-1.5 items-start`;
-  const titleClasses = `heading-3 font-500 line-clamp-2 text-[#0F172A]`;
+  const titleClasses = `text-card-title font-medium line-clamp-2 text-[#0F172A]`;
   const overlayClasses = `absolute inset-0 flex flex-col justify-start p-6 text-white pointer-events-none transition-opacity duration-300 bg-black/45 backdrop-blur-[2px]`;
-  const textBlock1Classes = `body-medium font-500 text-white/90`;
-  const textBlock2Classes = `body-medium font-700 text-[#FFB4BA] mt-2`;
+  const textBlock1Classes = `text-body font-medium text-white/90`;
+  const textBlock2Classes = `text-body font-strong text-[#FFB4BA] mt-2`;
 
   return (
     <div

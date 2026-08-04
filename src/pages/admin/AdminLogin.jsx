@@ -59,20 +59,20 @@ export default function AdminLogin() {
               className="w-[10px] h-[18px] cursor-pointer"
               onClick={() => navigate(-1)}
             />
-            <h1 className="heading-3 font-500 text-black ml-4">관리자 로그인</h1>
+            <h1 className="text-card-title font-medium text-black ml-4">관리자 로그인</h1>
           </div>
         </header>
 
         {/* Main */}
         <main className="flex flex-col p-8 md:p-10">
-          <h2 className="heading-2 font-500 text-black mt-8 mb-12">
+          <h2 className="text-section-title font-medium text-black mt-8 mb-12">
             로그인 정보를
             <br /> 입력해 주세요.
           </h2>
 
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col">
-              <label htmlFor="id-input" className="heading-3 font-500 text-[#6B6B6B] mb-2">
+              <label htmlFor="id-input" className="text-card-title font-medium text-[#6B6B6B] mb-2">
                 관리자 아이디
               </label>
               <input
@@ -86,7 +86,7 @@ export default function AdminLogin() {
             </div>
 
             <div className="flex flex-col">
-              <label htmlFor="pw-input" className="heading-3 font-500 text-[#6B6B6B] mb-2">
+              <label htmlFor="pw-input" className="text-card-title font-medium text-[#6B6B6B] mb-2">
                 관리자 비밀번호
               </label>
               <input

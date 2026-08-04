@@ -79,7 +79,7 @@ export default function AdminConversationReviewPage() {
 
   return (
     <div className="w-full p-10 text-white flex flex-col gap-6">
-      <h1 className="text-3xl font-bold text-[#FF4854]">관리자 세션 / 판정 관리 페이지</h1>
+      <h1 className="text-page-title font-bold text-[#FF4854]">관리자 세션 / 판정 관리 페이지</h1>
 
       <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-[#0B021C]/70 p-4 sm:flex-row sm:items-center">
         <label className="relative flex-1">
@@ -165,7 +165,7 @@ export default function AdminConversationReviewPage() {
           2) 세션 전체 대화
       ============================================ */}
       <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/10 h-[80vh] overflow-y-auto">
-        <h2 className="text-xl font-bold text-[#FF4854] mb-4">세션 전체 대화</h2>
+        <h2 className="text-card-title font-bold text-[#FF4854] mb-4">세션 전체 대화</h2>
 
         {!sessionId && <Empty>세션을 선택하세요</Empty>}
 
@@ -235,7 +235,7 @@ function Item({ label, active, onClick }) {
 }
 
 function Empty({ children }) {
-  return <div className="text-gray-400 text-sm">{children}</div>;
+  return <div className="text-gray-400 text-body">{children}</div>;
 }
 
 function ChatBubble({ msg }) {
@@ -246,7 +246,7 @@ function ChatBubble({ msg }) {
       className={`max-w-[85%] p-3 rounded-lg 
         ${isUser ? 'ml-auto bg-[#2A1620]' : 'mr-auto bg-[#16202A]'}`}
     >
-      <div className="text-xs opacity-60 mb-1">{msg.role}</div>
+      <div className="text-label opacity-60 mb-1">{msg.role}</div>
       <div className="whitespace-pre-wrap">{msg.content}</div>
     </div>
   );
@@ -273,7 +273,7 @@ function JudgePanel({ judgeResult, sessionId }) {
 
   return (
     <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/20 flex flex-col gap-6">
-      <h2 className="text-xl font-bold text-[#FF4854] mb-2">Judge 모델 결과</h2>
+      <h2 className="text-card-title font-bold text-[#FF4854] mb-2">Judge 모델 결과</h2>
 
       {/* 모델별 결과 3컬럼 */}
       <div className="grid grid-cols-3 gap-4 h-[45vh]">
@@ -291,13 +291,13 @@ function JudgePanel({ judgeResult, sessionId }) {
               scrollbar-thumb-[#FF4854]/40
             "
           >
-            <div className="font-bold text-[#FF4854] text-lg mb-4">{r.model}</div>
+            <div className="font-bold text-[#FF4854] text-card-title mb-4">{r.model}</div>
 
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-sm opacity-70">판단:</span>
+              <span className="text-body opacity-70">판단:</span>
               <span
                 className={`
-                  px-3 py-1 rounded-full text-white text-sm
+                  px-3 py-1 rounded-full text-white text-body
                   ${
                     r.verdict?.toLowerCase() === 'passed'
                       ? 'bg-green-600'
@@ -311,16 +311,14 @@ function JudgePanel({ judgeResult, sessionId }) {
               </span>
             </div>
 
-            <div className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed">
-              {r.output}
-            </div>
+            <div className="text-gray-300 whitespace-pre-wrap text-body">{r.output}</div>
           </div>
         ))}
       </div>
 
       {/* ⭐ 최종 판정 */}
       <div className="mt-4 p-4 rounded-lg bg-[#1A0B15] border border-white/10">
-        <div className="text-lg font-bold mb-2">최종 판정</div>
+        <div className="text-card-title font-bold mb-2">최종 판정</div>
         <div
           className={`px-4 py-2 inline-block rounded-full text-white font-bold ${
             status === 'success' ? 'bg-green-600' : status === 'fail' ? 'bg-red-600' : 'bg-gray-600'

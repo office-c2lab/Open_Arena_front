@@ -44,12 +44,7 @@ export default function FaqSection() {
         <SectionTitle
           eyebrow="FAQ"
           title="자주 묻는 질문"
-          desc={
-            <>
-              ARENA 참여와 운영 방식에 대해
-              자주 묻는 질문을 정리했습니다.
-            </>
-          }
+          desc={<>ARENA 참여와 운영 방식에 대해 자주 묻는 질문을 정리했습니다.</>}
         />
       </motion.div>
 
@@ -66,7 +61,7 @@ export default function FaqSection() {
               >
                 <span
                   className={cn(
-                    'text-[15px] font-bold tracking-[-0.02em] transition sm:text-base',
+                    'text-body font-bold tracking-[-0.02em] transition sm:text-body-lg',
                     isOpen ? 'text-[#FF4854]' : 'text-[#30343b] group-hover:text-[#FF4854]'
                   )}
                 >
@@ -90,7 +85,7 @@ export default function FaqSection() {
                   transition={{ duration: 0.18, ease: 'easeOut' }}
                   className="border-t border-[#f0ece7] bg-[#fafafa] px-5 py-6 sm:px-6"
                 >
-                  <p className="whitespace-pre-line text-[15px] leading-8 text-[#6b6f76] sm:text-base">
+                  <p className="whitespace-pre-line text-body text-[#6b6f76] sm:text-body-lg">
                     {item.a}
                   </p>
                 </motion.div>

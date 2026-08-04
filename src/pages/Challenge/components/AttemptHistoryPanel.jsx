@@ -120,7 +120,9 @@ export default function AttemptHistoryPanel({
       {/* 시도 기록 */}
       <div className="glass-panel flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px]">
         <div className="w-full h-[70px] p-3 md:p-4 flex items-center justify-between border-b border-white/50 bg-white/35">
-          <span className="heading-2 font-500 text-[#475569]">최근 시도 ({sessions.length})</span>
+          <span className="text-section-title font-medium text-[#475569]">
+            최근 시도 ({sessions.length})
+          </span>
         </div>
 
         <div className="p-3 md:p-4 flex justify-end relative" ref={dropdownRef}>
@@ -128,7 +130,7 @@ export default function AttemptHistoryPanel({
             className="glass-subtle flex h-[39px] w-[126px] cursor-pointer items-center justify-between rounded-[12px] px-4 py-[10px]"
             onClick={toggleDropdown}
           >
-            <span className="body-large font-700 text-[#475569]">{selectedFilter.label}</span>
+            <span className="text-body-lg font-strong text-[#475569]">{selectedFilter.label}</span>
             <ChevronDown
               className={`h-4 w-4 text-[#475569] transition-transform ${
                 isDropdownOpen ? 'rotate-180' : ''
@@ -143,7 +145,7 @@ export default function AttemptHistoryPanel({
                 <button
                   type="button"
                   key={option.key}
-                  className={`flex w-full cursor-pointer items-center justify-between rounded-[10px] px-3.5 py-2.5 text-left body-large font-700 text-[#475569] transition-colors hover:bg-[#F8FAFC] ${
+                  className={`flex w-full cursor-pointer items-center justify-between rounded-[10px] px-3.5 py-2.5 text-left text-body-lg font-strong text-[#475569] transition-colors hover:bg-[#F8FAFC] ${
                     option.key === selectedFilter.key ? 'bg-[#F1F5F9]' : ''
                   }`}
                   onClick={() => handleFilterSelect(option)}
@@ -173,7 +175,7 @@ export default function AttemptHistoryPanel({
             ))
           ) : (
             <div className="flex flex-1 justify-center items-center text-center">
-              <p className="body-large font-500 text-[#000000]">
+              <p className="text-body-lg font-medium text-[#000000]">
                 {selectedFilter.key === 'ALL'
                   ? '아직 시도 기록이 없습니다.'
                   : `${selectedFilter.label} 기록이 없습니다.`}

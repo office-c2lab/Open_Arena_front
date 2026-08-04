@@ -11,7 +11,7 @@ export default function AdminDashboardStatusToggle() {
 
   return (
     <div className="flex items-center gap-4">
-      <span className="text-[#030102] text-[20px] font-bold whitespace-nowrap">
+      <span className="text-[#030102] text-card-title font-bold whitespace-nowrap">
         대회 현황 공개 설정
       </span>
 
@@ -29,7 +29,7 @@ export default function AdminDashboardStatusToggle() {
         ></div>
       </div>
 
-      <p className="text-[14px] text-[#616161] whitespace-nowrap">
+      <p className="text-body text-[#616161] whitespace-nowrap">
         {isPending ? '변경 중...' : setting ? '공개됨' : '비공개'}
       </p>
     </div>

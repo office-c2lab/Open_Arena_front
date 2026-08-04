@@ -39,7 +39,7 @@ export default function AdminProblemManagementPage({ activeOnly = false, onActiv
   return (
     <div className="p-10 text-white max-w-[1200px] mx-auto">
       <div className="flex items-center justify-between gap-4 mb-8">
-        <h1 className="text-4xl font-bold text-[#FF4854]">문제 관리</h1>
+        <h1 className="text-display-sm font-bold text-[#FF4854]">문제 관리</h1>
 
         <label className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#0B021C]/70 border border-white/10 text-white cursor-pointer">
           <ToggleSwitch enabled={activeOnly} onToggle={onActiveOnlyToggle} />
@@ -77,11 +77,11 @@ export default function AdminProblemManagementPage({ activeOnly = false, onActiv
             className="p-5 bg-[#0B021C]/70 border border-[#FF4854]/40 rounded-xl shadow-lg"
           >
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-xl font-bold">{p.title}</h2>
+              <h2 className="text-card-title font-bold">{p.title}</h2>
 
               <button
                 onClick={() => toggle.mutate(p.id)}
-                className={`px-3 py-1 text-sm rounded-lg  cursor-pointer ${
+                className={`px-3 py-1 text-body rounded-lg  cursor-pointer ${
                   p.is_active ? 'bg-green-600' : 'bg-gray-600'
                 }`}
               >
@@ -89,7 +89,7 @@ export default function AdminProblemManagementPage({ activeOnly = false, onActiv
               </button>
             </div>
 
-            <p className="text-gray-400 text-sm mb-4">{p.description?.slice(0, 80)}...</p>
+            <p className="text-gray-400 text-body mb-4">{p.description?.slice(0, 80)}...</p>
 
             <button
               onClick={() => setEditingProblem(p)}

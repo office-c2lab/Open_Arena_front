@@ -38,7 +38,7 @@ const TeamInfoCardSkeleton = ({ cardStyle, iconType = 'coin', title = '획득한
       {/* 2. 텍스트 컨테이너 */}
       <div className="flex-1 flex items-center justify-between">
         {/* 제목 (고정) */}
-        <span className="heading-1 font-500 text-[#000000]">{title}</span>
+        <span className="text-page-title font-medium text-[#000000]">{title}</span>
 
         {/* 값만 스켈레톤 */}
         <Skeleton className="h-[52px] w-20" />
@@ -91,10 +91,10 @@ const TeamInfoCard = ({
       {/* 2. 텍스트 컨테이너 */}
       <div className="flex-1 flex items-center justify-between">
         {/* 제목 */}
-        <span className="heading-1 font-500 text-[#000000]">{title}</span>
+        <span className="text-page-title font-medium text-[#000000]">{title}</span>
 
         {/* 값 */}
-        <span className="heading-1 font-700 text-right" style={{ color: valueColor }}>
+        <span className="text-page-title font-strong text-right" style={{ color: valueColor }}>
           {value}
         </span>
       </div>

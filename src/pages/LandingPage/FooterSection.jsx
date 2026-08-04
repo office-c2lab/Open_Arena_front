@@ -14,13 +14,13 @@ export default function FooterSection() {
           <img src={c2LabLogo} alt="C2LAB" className="h-auto w-[180px] sm:w-[210px]" />
         </a>
 
-        <div className="space-y-3 text-[15px] leading-6 text-[#303030]">
+        <div className="space-y-3 text-body text-[#303030]">
           <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
             <a
               href="https://c2lab.kr/"
               target="_blank"
               rel="noreferrer"
-              className="text-[17px] font-semibold text-[#171717] transition hover:text-[#FF4854]"
+              className="text-body-lg font-strong text-[#171717] transition hover:text-[#FF4854]"
             >
               (주)씨투랩
             </a>
@@ -43,7 +43,7 @@ export default function FooterSection() {
             <span>|</span>
             <span>FAX 02-2247-7001</span>
           </div>
-          <div className="text-sm text-[#57534e]">© 2026 C2LAB. All rights reserved.</div>
+          <div className="text-body text-[#57534e]">© 2026 C2LAB. All rights reserved.</div>
         </div>
       </div>
     </footer>

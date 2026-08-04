@@ -22,18 +22,18 @@ export default function NotFound() {
       />
 
       <section className="relative z-10 flex w-full max-w-[41.5rem] flex-col items-center rounded-[24px] border border-white bg-white px-8 py-10 text-center shadow-[0_24px_70px_rgba(255,72,84,0.14)] sm:px-14 sm:py-12 [@media(max-height:720px)]:max-w-[38rem] [@media(max-height:720px)]:py-8">
-        <h1 className="bg-gradient-to-b from-[#FF4854] to-[#FF9AA3] bg-clip-text text-[5.25rem] font-black leading-none text-transparent sm:text-[7.3rem] [@media(max-height:720px)]:text-[5.8rem]">
+        <h1 className="bg-gradient-to-b from-[#FF4854] to-[#FF9AA3] bg-clip-text text-metric-lg font-bold text-transparent">
           404
         </h1>
-        <p className="mt-4 text-[1.3rem] font-black leading-8 text-[#151A21] sm:text-[1.55rem] [@media(max-height:720px)]:mt-3">
+        <p className="mt-4 text-section-title font-bold text-[#151A21] [@media(max-height:720px)]:mt-3">
           페이지를 찾을 수 없습니다.
         </p>
-        <p className="mt-5 text-sm font-semibold leading-7 text-[#667085] sm:text-base [@media(max-height:720px)]:mt-3">
+        <p className="mt-5 text-body font-strong text-[#667085] sm:text-body-lg [@media(max-height:720px)]:mt-3">
           요청하신 페이지가 존재하지 않거나,
           <br />
           접근 가능한 주소가 변경되었을 수 있습니다.
         </p>
-        <p className="mt-2 text-sm font-semibold leading-7 text-[#667085] sm:text-base">
+        <p className="mt-2 text-body font-strong text-[#667085] sm:text-body-lg">
           입력한 주소를 다시 확인해 주세요.
         </p>
 
@@ -43,7 +43,7 @@ export default function NotFound() {
 
         <div className="mt-8 h-px w-full bg-[#FFE0E3] [@media(max-height:720px)]:mt-5" />
 
-        <p className="mt-6 inline-flex items-center justify-center gap-2 text-xs font-semibold leading-5 text-[#8A94A6] sm:text-sm [@media(max-height:720px)]:mt-4">
+        <p className="mt-6 inline-flex items-center justify-center gap-2 text-label font-strong text-[#8A94A6] sm:text-body [@media(max-height:720px)]:mt-4">
           <Info className="h-4 w-4 shrink-0 text-[#FF4854]" aria-hidden="true" strokeWidth={2} />
           문제가 계속되면 관리자에게 문의해 주세요.
         </p>

@@ -31,7 +31,7 @@ export default function ProblemEditModal({ problem, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
       <div className="w-[700px] max-h-[90vh] overflow-y-auto bg-[#0B021C] text-white p-8 rounded-xl border border-[#FF4854] shadow-xl">
-        <h2 className="text-2xl font-bold text-[#FF4854] mb-6">문제 수정 / 삭제</h2>
+        <h2 className="text-section-title font-bold text-[#FF4854] mb-6">문제 수정 / 삭제</h2>
 
         {/*  기본 정보  */}
         <SectionTitle title="기본 정보" />
@@ -111,7 +111,7 @@ export default function ProblemEditModal({ problem, onClose }) {
 
         {/* is_active 토글 */}
         <div className="mt-4 mb-6">
-          <label className="font-semibold mr-3">활성 여부</label>
+          <label className="font-strong mr-3">활성 여부</label>
           <input
             type="checkbox"
             checked={form.is_active}
@@ -124,7 +124,7 @@ export default function ProblemEditModal({ problem, onClose }) {
           <button
             onClick={handleUpdate}
             disabled={isUpdating}
-            className="flex-1 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition text-lg font-bold cursor-pointer"
+            className="flex-1 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition text-card-title font-bold cursor-pointer"
           >
             {isUpdating ? '저장 중...' : '수정하기'}
           </button>
@@ -132,7 +132,7 @@ export default function ProblemEditModal({ problem, onClose }) {
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className="flex-1 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition text-lg font-bold cursor-pointer"
+            className="flex-1 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition text-card-title font-bold cursor-pointer"
           >
             {isDeleting ? '삭제 중...' : '삭제하기'}
           </button>
@@ -152,13 +152,13 @@ export default function ProblemEditModal({ problem, onClose }) {
 /*  공용 UI 컴포넌트  */
 
 function SectionTitle({ title }) {
-  return <h3 className="text-xl font-bold text-[#FF4854] mt-6 mb-3">{title}</h3>;
+  return <h3 className="text-card-title font-bold text-[#FF4854] mt-6 mb-3">{title}</h3>;
 }
 
 function Input({ label, name, value, onChange, type = 'text' }) {
   return (
     <div className="flex flex-col mb-4">
-      <label className="font-semibold mb-1">{label}</label>
+      <label className="font-strong mb-1">{label}</label>
       <input
         type={type}
         name={name}
@@ -176,7 +176,7 @@ function Input({ label, name, value, onChange, type = 'text' }) {
 function TextArea({ label, name, value, onChange, className = '' }) {
   return (
     <div className="flex flex-col mb-4">
-      <label className="font-semibold mb-1">{label}</label>
+      <label className="font-strong mb-1">{label}</label>
       <textarea
         name={name}
         value={value}

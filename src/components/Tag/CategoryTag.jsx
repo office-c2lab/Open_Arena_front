@@ -43,9 +43,9 @@ const CategoryTag = ({ children, compact = false }) => {
     rounded-full
     border
     px-2
-    text-[11px]
-    leading-[14px]
-    font-500
+    text-caption
+
+    font-medium
   `
     : `
     flex items-center justify-center 
@@ -54,7 +54,7 @@ const CategoryTag = ({ children, compact = false }) => {
     rounded-full 
     border 
     p-2               
-    body-small
+    text-label
   `;
 
   // 최종 클래스 조합

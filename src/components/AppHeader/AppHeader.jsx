@@ -91,10 +91,10 @@ export default function AppHeader() {
               <NavLink
                 key={item.path}
                 to={item.path}
-                className={`text-sm transition ${
+                className={`text-body transition ${
                   isActive
-                    ? 'font-700 text-[#171717]'
-                    : 'font-500 text-[#57534e] hover:text-[#171717]'
+                    ? 'font-strong text-[#171717]'
+                    : 'font-medium text-[#57534e] hover:text-[#171717]'
                 }`}
               >
                 {item.label}
@@ -147,14 +147,14 @@ export default function AppHeader() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <div className="truncate text-lg font-700 text-[#303030]">
+                          <div className="truncate text-card-title font-strong text-[#303030]">
                             {displayName}
                           </div>
-                          <div className="shrink-0 text-xs font-700 text-[#FF4854]">
+                          <div className="shrink-0 text-label font-strong text-[#FF4854]">
                             {membershipLabel}
                           </div>
                         </div>
-                        <div className="truncate text-sm font-500 text-[#76787a]">
+                        <div className="truncate text-body font-medium text-[#76787a]">
                           {displayEmail}
                         </div>
                       </div>
@@ -166,23 +166,23 @@ export default function AppHeader() {
 
                     {isPaidMember ? (
                       <>
-                        <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-sm font-500 text-[#76787a]">
+                        <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
                           성공한 챌린지{' '}
-                          <span className="font-700 text-[#1ec186]">
+                          <span className="font-strong text-[#1ec186]">
                             {profileStats.solvedChallenges || 0} 개
                           </span>
                         </div>
 
                         <div className="mt-3 grid grid-cols-2 gap-2">
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
                             랭킹{' '}
-                            <span className="font-700 text-[#FFB155]">
+                            <span className="font-strong text-[#FFB155]">
                               {profileStats.rank || '-'} 위
                             </span>
                           </div>
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
                             총 포인트{' '}
-                            <span className="font-700 text-[#A8AAFF]">
+                            <span className="font-strong text-[#A8AAFF]">
                               {profileStats.totalPoints ?? 188}점
                             </span>
                           </div>
@@ -190,16 +190,16 @@ export default function AppHeader() {
                       </>
                     ) : (
                       <>
-                        <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-sm font-500 text-[#76787a]">
-                          무료 도전 횟수 <span className="font-700 text-[#1ec186]">1 / 6</span>
+                        <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
+                          무료 도전 횟수 <span className="font-strong text-[#1ec186]">1 / 6</span>
                         </div>
 
                         <div className="mt-3 grid grid-cols-2 gap-2">
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                            무료 제출 <span className="font-700 text-[#A8AAFF]">2/10</span>
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
+                            무료 제출 <span className="font-strong text-[#A8AAFF]">2/10</span>
                           </div>
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-sm font-500 text-[#76787a]">
-                            무료 토큰 <span className="font-700 text-[#FFB155]">1000</span>
+                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
+                            무료 토큰 <span className="font-strong text-[#FFB155]">1000</span>
                           </div>
                         </div>
                       </>
@@ -211,13 +211,13 @@ export default function AppHeader() {
                     >
                       <Link
                         to="/terms"
-                        className="flex rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                        className="flex rounded-[4px] px-2 py-2 text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
                       >
                         이용약관
                       </Link>
                       <Link
                         to="/privacy"
-                        className="flex rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                        className="flex rounded-[4px] px-2 py-2 text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
                       >
                         개인정보처리방침
                       </Link>
@@ -227,7 +227,7 @@ export default function AppHeader() {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="flex cursor-pointer items-center gap-3 rounded-[4px] px-2 py-2 text-left text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                        className="flex cursor-pointer items-center gap-3 rounded-[4px] px-2 py-2 text-left text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
                       >
                         <LogOut className="h-5 w-5 text-[#AAACB0]" />
                         로그아웃
@@ -279,10 +279,10 @@ export default function AppHeader() {
                   <NavLink
                     key={item.path}
                     to={item.path}
-                    className={`rounded-xl px-4 py-3 text-base ${
+                    className={`rounded-xl px-4 py-3 text-body-lg ${
                       isActive
-                        ? 'bg-[#fff1f2] font-700 text-[#FF4854]'
-                        : 'font-500 text-[#57534e] hover:bg-white hover:text-[#171717]'
+                        ? 'bg-[#fff1f2] font-strong text-[#FF4854]'
+                        : 'font-medium text-[#57534e] hover:bg-white hover:text-[#171717]'
                     }`}
                   >
                     {item.label}
@@ -294,7 +294,7 @@ export default function AppHeader() {
             <div className="mt-auto border-t border-[#ece7e1] p-4">
               <Link
                 to="/kategorie"
-                className="block rounded-xl px-4 py-3 text-base font-700 text-[#FF4854] hover:bg-white hover:text-[#e63d48]"
+                className="block rounded-xl px-4 py-3 text-body-lg font-strong text-[#FF4854] hover:bg-white hover:text-[#e63d48]"
               >
                 대회 살펴보기
               </Link>

@@ -101,7 +101,11 @@ const SubmitModal = ({ setProgress }) => {
       });
 
       const rewardPoints =
-        resultData.earned_points ?? resultData.points ?? resultData.score ?? resultData.point ?? null;
+        resultData.earned_points ??
+        resultData.points ??
+        resultData.score ??
+        resultData.point ??
+        null;
 
       setChallengeResults(results);
       setChallengeRewardPoints(rewardPoints);
@@ -170,7 +174,7 @@ const SubmitModal = ({ setProgress }) => {
           <div className="w-[29px] h-[42px] flex justify-center items-center">
             <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
           </div>
-          <span className="ml-[9px] heading-3 font-700 text-[#FF084A]">ARENA</span>
+          <span className="ml-[9px] text-card-title font-strong text-[#FF084A]">ARENA</span>
         </div>
 
         {/* 중앙 아이콘 */}
@@ -179,7 +183,7 @@ const SubmitModal = ({ setProgress }) => {
         </div>
 
         {/* 안내문 */}
-        <div className="absolute w-[380px] left-[30px] top-[340px] text-center text-[18px] font-500 leading-8 text-[#0F172A] m-0 whitespace-pre-wrap">
+        <div className="absolute w-[380px] left-[30px] top-[340px] text-center text-card-title font-medium text-[#0F172A] m-0 whitespace-pre-wrap">
           <p>제출하면 3개의 JUDGE AI가 결과를 판단합니다.</p>
           <p>대화 기록은 우측 화면에서 확인할 수 있습니다.</p>
           <p>제출 후에는 약 30초간 다시 제출할 수 없습니다.</p>
@@ -199,7 +203,7 @@ const SubmitModal = ({ setProgress }) => {
             }`}
           disabled={!sessionId || cooldown > 0}
         >
-          <span className="heading-3 font-700 text-white">
+          <span className="text-card-title font-strong text-white">
             {cooldown > 0 ? `재시도 ${cooldown}s` : '제출하기'}
           </span>
         </button>

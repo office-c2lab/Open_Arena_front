@@ -161,16 +161,16 @@ function RankMedal({ rank }) {
 
 function StatPair({ value, label, featured = false, compact = false }) {
   const valueClass = featured
-    ? 'text-[30px] leading-8 text-[#111827]'
+    ? 'text-page-title text-[#111827]'
     : compact
-      ? 'text-[22px] leading-7 text-[#1F2937]'
-      : 'text-[25px] leading-7 text-[#1F2937]';
-  const labelClass = featured ? 'text-[15px]' : compact ? 'text-[13px]' : 'text-[14px]';
+      ? 'text-section-title text-[#1F2937]'
+      : 'text-section-title text-[#1F2937]';
+  const labelClass = featured ? 'text-body' : compact ? 'text-body' : 'text-body';
 
   return (
     <div className="min-w-0 text-center">
-      <span className={`block truncate font-700 text-[#525B66] ${labelClass}`}>{label}</span>
-      <strong className={`mt-2 block truncate font-900 ${valueClass}`}>{value}</strong>
+      <span className={`block truncate font-strong text-[#525B66] ${labelClass}`}>{label}</span>
+      <strong className={`mt-2 block truncate font-bold ${valueClass}`}>{value}</strong>
     </div>
   );
 }
@@ -187,12 +187,12 @@ function MyRankCard() {
               className="h-[88px] w-[88px] shrink-0 object-contain drop-shadow-[0_8px_18px_rgba(255,72,84,0.16)]"
             />
             <div className="min-w-0">
-              <span className="block text-[15px] font-900 text-[#FF4854]">내 순위</span>
+              <span className="block text-body font-bold text-[#FF4854]">내 순위</span>
               <div className="flex items-end gap-3 whitespace-nowrap">
-                <strong className="text-[72px] font-900 leading-[0.86] text-[#111827]">12</strong>
-                <span className="pb-1.5 text-[28px] font-900 text-[#111827]">위</span>
+                <strong className="text-metric-lg font-bold text-[#111827]">12</strong>
+                <span className="pb-1.5 text-page-title font-bold text-[#111827]">위</span>
               </div>
-              <div className="mt-2 flex items-center gap-4 whitespace-nowrap text-[14px] font-800 text-[#96A0AE]">
+              <div className="mt-2 flex items-center gap-4 whitespace-nowrap text-body font-strong text-[#96A0AE]">
                 <span>/ 12,856명</span>
                 <span className="h-4 w-px bg-[#CBD1DA]" />
                 <span className="text-[#FF4854]">상위 0.1%</span>
@@ -207,10 +207,10 @@ function MyRankCard() {
               key={item.label}
               className="min-w-0 py-2 sm:border-l sm:border-[#E7EAF0] sm:px-7 sm:first:border-l-0 sm:first:pl-0 sm:last:pr-0"
             >
-              <div className="whitespace-nowrap text-[14px] font-800 text-[#8B95A3]">
+              <div className="whitespace-nowrap text-body font-strong text-[#8B95A3]">
                 {item.label}
               </div>
-              <strong className="mt-4 block whitespace-nowrap text-[30px] font-900 leading-none text-[#111827]">
+              <strong className="mt-4 block whitespace-nowrap text-page-title font-bold text-[#111827]">
                 {item.value}
               </strong>
             </div>
@@ -246,15 +246,15 @@ function TopRankCard({ row }) {
       : 'mt-2';
   const titleSpacingClass = isThird ? 'mt-5' : 'mt-6';
   const nameClass = isFirst
-    ? 'text-[24px] leading-8'
+    ? 'text-section-title'
     : isThird
-      ? 'text-[18px] leading-6'
-      : 'text-[20px] leading-7';
+      ? 'text-card-title'
+      : 'text-card-title';
   const scoreClass = isFirst
-    ? 'text-[42px] leading-none text-[#F52F45]'
+    ? 'text-display text-[#F52F45]'
     : isThird
-      ? 'text-[28px] leading-9 text-[#111827]'
-      : 'text-[32px] leading-10 text-[#111827]';
+      ? 'text-page-title text-[#111827]'
+      : 'text-page-title text-[#111827]';
   const dividerClass = isFirst ? 'mt-6' : isThird ? 'mt-3' : 'mt-4';
   const statGridClass = isFirst ? 'mt-4' : isThird ? 'mt-3' : 'mt-3';
 
@@ -265,11 +265,11 @@ function TopRankCard({ row }) {
       <RankMedal rank={row.rank} />
       <Avatar image={row.image} rank={row.rank} size="lg" className={avatarClass} />
       <h2
-        className={`${titleSpacingClass} max-w-full text-center font-900 text-[#111827] ${nameClass}`}
+        className={`${titleSpacingClass} max-w-full text-center font-bold text-[#111827] ${nameClass}`}
       >
         {row.name}
       </h2>
-      <p className={`mt-1 font-900 ${scoreClass}`}>{formatNumber(row.score)}점</p>
+      <p className={`mt-1 font-bold ${scoreClass}`}>{formatNumber(row.score)}점</p>
       <div className={`${dividerClass} h-px w-full bg-white/70`} />
       <div className={`${statGridClass} grid w-full grid-cols-2 divide-x divide-[#D7DDE6]`}>
         <StatPair
@@ -309,8 +309,8 @@ function LegacyTableAvatar({ rank }) {
 
 function LeaderboardRow({ row }) {
   return (
-    <tr className="h-[58px] text-[15px] font-700 text-[#344050]">
-      <td className="w-[88px] font-900">
+    <tr className="h-[58px] text-body font-strong text-[#344050]">
+      <td className="w-[88px] font-bold">
         <div className="flex w-[40px] items-center justify-center">
           {row.rank <= 3 ? (
             <img src={MEDAL_ICON_MAP[row.rank]} alt={`${row.rank}위`} className="h-8 w-8" />
@@ -322,11 +322,11 @@ function LeaderboardRow({ row }) {
       <td className="min-w-[230px]">
         <div className="flex items-center gap-4">
           <LegacyTableAvatar rank={row.rank} />
-          <span className="font-700">{row.name}</span>
+          <span className="font-strong">{row.name}</span>
         </div>
       </td>
       <td className="w-[190px]">
-        <span className="inline-flex items-center gap-3 font-900 ">{row.score}</span>
+        <span className="inline-flex items-center gap-3 font-bold ">{row.score}</span>
       </td>
       <td className="w-[190px] text-center ">{row.challenges || ''}</td>
       <td className="w-[170px] text-center ">{formatToken(row.tokens)}</td>
@@ -387,8 +387,8 @@ export default function Leaderboard() {
     >
       <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-0">
         <header className="mb-20 text-center">
-          <h1 className="text-[42px] font-900 leading-tight text-[#111827]">2026 시즌 1 랭킹</h1>
-          <p className="mt-4 text-[16px]  font-600 text-[#4B5563]">
+          <h1 className="text-display font-bold text-[#111827]">2026 시즌 1 랭킹</h1>
+          <p className="mt-4 text-body-lg  font-strong text-[#4B5563]">
             이번 시즌 최고의 도전자들을 확인해 보세요.
           </p>
         </header>
@@ -406,7 +406,7 @@ export default function Leaderboard() {
             <div className="flex items-end gap-8">
               <button
                 type="button"
-                className="border-b-[3px] border-[#F52F45] pb-5 text-[21px] font-900 "
+                className="border-b-[3px] border-[#F52F45] pb-5 text-card-title font-bold "
               >
                 전체 랭킹
               </button>
@@ -420,7 +420,7 @@ export default function Leaderboard() {
                   value={searchInput}
                   onChange={event => setSearchInput(event.target.value)}
                   placeholder="유저 닉네임을 검색해 보세요."
-                  className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#FF4854]"
+                  className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-body outline-none transition focus:border-[#FF4854]"
                 />
               </label>
               <button type="submit" className="btn btn-primary btn-lg">
@@ -440,7 +440,7 @@ export default function Leaderboard() {
           <div className="mt-10 h-[2260px] overflow-x-auto overflow-y-hidden">
             <table className="w-full min-w-[920px] border-separate border-spacing-y-[14px] text-left">
               <thead>
-                <tr className="text-[14px] font-900 text-[#99A5B8]">
+                <tr className="text-body font-bold text-[#99A5B8]">
                   <th className="w-[88px]">
                     <span className="flex w-[40px] justify-center">순위</span>
                   </th>
@@ -460,7 +460,7 @@ export default function Leaderboard() {
             </table>
           </div>
 
-          <nav className="mt-6 flex items-center justify-center gap-2 text-[16px] font-600 text-[#111827]">
+          <nav className="mt-6 flex items-center justify-center gap-2 text-body-lg font-strong text-[#111827]">
             <button
               type="button"
               onClick={() => goToPage(1)}
@@ -505,7 +505,7 @@ export default function Leaderboard() {
             </button>
           </nav>
 
-          <p className="mt-7 border-t border-[#E5E7EB] pt-6 text-center text-[15px] font-500 text-[#8A93A0]">
+          <p className="mt-7 border-t border-[#E5E7EB] pt-6 text-center text-body font-medium text-[#8A93A0]">
             랭킹 데이터는 매일 00:00 기준으로 갱신됩니다.
           </p>
         </section>

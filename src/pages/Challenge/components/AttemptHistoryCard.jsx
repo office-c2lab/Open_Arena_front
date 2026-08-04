@@ -10,10 +10,8 @@ const COLOR_RED = '#FF4854';
 const COLOR_GREEN = '#84CC16';
 const COLOR_WHITE = '#FFFFFF';
 const COLOR_NOT_SUBMITTED = '#D9DADB';
-const CARD_SHADOW =
-  'inset 0 1px 0 rgba(255,255,255,0.7), 0 6px 18px rgba(15,23,42,0.07)';
-const CARD_ACTIVE_SHADOW =
-  'inset 0 1px 0 rgba(255,255,255,0.72), 0 8px 20px rgba(71,85,105,0.13)';
+const CARD_SHADOW = 'inset 0 1px 0 rgba(255,255,255,0.7), 0 6px 18px rgba(15,23,42,0.07)';
+const CARD_ACTIVE_SHADOW = 'inset 0 1px 0 rgba(255,255,255,0.72), 0 8px 20px rgba(71,85,105,0.13)';
 
 // ------------------------------------------------------------------
 // 💡 AttemptHistoryCard Skeleton 정의
@@ -93,7 +91,7 @@ const AttemptHistoryCard = ({
         className={`flex items-center flex-shrink-0 h-[32px] ${showAttemptNumber ? 'justify-between' : 'justify-end'}`}
       >
         {showAttemptNumber && attemptNumberVariant === 'text' ? (
-          <span className="body-medium font-700 text-[#64748B]">{attemptNumber}번째 시도</span>
+          <span className="text-body font-strong text-[#64748B]">{attemptNumber}번째 시도</span>
         ) : null}
         {showAttemptNumber && attemptNumberVariant === 'badge' ? (
           <div
@@ -101,12 +99,11 @@ const AttemptHistoryCard = ({
             style={{
               border: `1px solid ${isActive ? COLOR_CHALLENGE : 'rgba(255,255,255,0.7)'}`,
               backgroundColor: isActive ? COLOR_CHALLENGE : 'transparent',
-              boxShadow:
-                'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(15,23,42,0.06)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 12px rgba(15,23,42,0.06)',
             }}
           >
             <span
-              className="heading-3 font-700"
+              className="text-card-title font-strong"
               style={{ color: isActive ? COLOR_WHITE : COLOR_CHALLENGE_LIGHT }}
             >
               {attemptNumber}
@@ -123,7 +120,9 @@ const AttemptHistoryCard = ({
               : 'inset 0 1px 0 rgba(255,255,255,0.35)',
           }}
         >
-          <span className={`body-medium font-700 ${isSubmitted ? 'text-white' : 'text-[#4C4C4C]'}`}>
+          <span
+            className={`text-body font-strong ${isSubmitted ? 'text-white' : 'text-[#4C4C4C]'}`}
+          >
             {resultText}
           </span>
         </div>
@@ -135,7 +134,7 @@ const AttemptHistoryCard = ({
       >
         {/* 프롬프트 요약 텍스트 */}
         <p
-          className="w-full body-large font-500 overflow-hidden text-[#0F172A]"
+          className="w-full text-body-lg font-medium overflow-hidden text-[#0F172A]"
           style={{
             display: '-webkit-box',
             WebkitLineClamp: 2,
