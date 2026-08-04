@@ -118,14 +118,14 @@ export default function AttemptHistoryPanel({
       </div>
 
       {/* 시도 기록 */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
+      <div className="glass-panel flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px]">
         <div className="w-full h-[70px] p-3 md:p-4 flex items-center justify-between border-b border-white/50 bg-white/35">
           <span className="heading-2 font-500 text-[#475569]">최근 시도 ({sessions.length})</span>
         </div>
 
         <div className="p-3 md:p-4 flex justify-end relative" ref={dropdownRef}>
           <div
-            className="flex items-center justify-between w-[126px] h-[39px] px-4 py-[10px] rounded-[12px] border border-white/65 bg-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_12px_rgba(15,23,42,0.06)] backdrop-blur-md cursor-pointer"
+            className="glass-subtle flex h-[39px] w-[126px] cursor-pointer items-center justify-between rounded-[12px] px-4 py-[10px]"
             onClick={toggleDropdown}
           >
             <span className="body-large font-700 text-[#475569]">{selectedFilter.label}</span>
@@ -138,7 +138,7 @@ export default function AttemptHistoryPanel({
           </div>
 
           {isDropdownOpen && (
-            <div className="absolute top-[60px] right-[16px] z-10 w-[132px] overflow-hidden rounded-[14px] border border-white/65 bg-white/92 p-1.5 shadow-[0_8px_22px_rgba(15,23,42,0.12)] backdrop-blur-md">
+            <div className="glass-overlay absolute right-[16px] top-[60px] z-10 w-[132px] overflow-hidden rounded-[14px] p-1.5">
               {FILTER_OPTIONS.map(option => (
                 <button
                   type="button"

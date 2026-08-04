@@ -8,7 +8,7 @@ import Skeleton from '../../../components/Skeleton/Skeleton';
 // ------------------------------------------------------------------
 const ApiInfoPanelSkeleton = () => {
   return (
-    <div className="flex flex-col items-start w-full p-4 gap-2 flex-shrink-0 animate-pulse rounded-[18px] border border-white/65 bg-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_4px_12px_rgba(15,23,42,0.05)] backdrop-blur-md">
+    <div className="glass-subtle flex w-full flex-shrink-0 animate-pulse flex-col items-start gap-2 rounded-[18px] p-4">
       <Skeleton className="h-4 w-1/4 rounded mb-2" />
       <Skeleton className="h-4 w-3/4 rounded" />
       <Skeleton className="h-4 w-1/2 rounded" />
@@ -35,7 +35,7 @@ export default function ApiInfoPanel({
 }`;
 
   return (
-    <div className="flex flex-col items-start w-full p-4 gap-3 flex-shrink-0 rounded-[18px] border border-white/65 bg-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_4px_12px_rgba(15,23,42,0.05)] backdrop-blur-md">
+    <div className="glass-subtle flex w-full flex-shrink-0 flex-col items-start gap-3 rounded-[18px] p-4">
       <h3 className="body-large font-700 text-[#837BBD]">문제 API</h3>
 
       <div className="body-medium font-500 whitespace-pre-wrap text-[#0F172A]">
@@ -54,7 +54,7 @@ export default function ApiInfoPanel({
 
         <p className="font-600 font-bold">Request Body (예시)</p>
 
-        <pre className="no-scrollbar mt-1 rounded-[12px] border border-white/65 bg-white/45 p-3 text-sm overflow-x-auto font-bold">
+        <pre className="surface-solid no-scrollbar mt-1 overflow-x-auto rounded-[12px] p-3 text-sm font-bold">
           {requestBodyExample}
         </pre>
       </div>

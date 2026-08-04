@@ -20,7 +20,7 @@ export default function ChatControls({
     <div className="flex justify-between flex-shrink-0 gap-4 md:gap-16">
       {/* 새로운 대화 시작 버튼 — 항상 활성화! */}
       <button
-        className="flex items-center justify-center flex-1 h-[44px] rounded-[12px] gap-2 border border-white/65 bg-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_4px_12px_rgba(15,23,42,0.06)] backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-white/66 cursor-pointer"
+        className="glass-subtle flex h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-[12px] transition-all duration-200 hover:-translate-y-[1px] hover:bg-white/75"
         onClick={() => {
           openResetModal(); // 무조건 새 대화 가능
         }}

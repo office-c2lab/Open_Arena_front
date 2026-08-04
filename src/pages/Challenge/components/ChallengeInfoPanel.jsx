@@ -22,7 +22,7 @@ const TAB_TITLE_COLOR_CLASS_MAP = {
 
 const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
   <div className="flex flex-col flex-shrink-0 w-[340px] h-full animate-pulse">
-    <div className="rounded-[30px] overflow-hidden flex flex-col h-full border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
+    <div className="glass-panel flex h-full flex-col overflow-hidden rounded-[30px]">
       <div className="flex flex-col p-4 h-[110px] border-b border-white/60 bg-white/45 rounded-t-[30px] flex-shrink-0">
         <Skeleton className="h-6 w-3/4 rounded mb-3" />
         <Skeleton className="h-4 w-full rounded mb-3" />
@@ -85,13 +85,11 @@ export default function ChallengeInfoPanel({
 
   return (
     <div ref={panelRef} className="relative flex h-full min-h-0 w-[340px] flex-col flex-shrink-0">
-      <div
-        className="relative shadow-[0_8px_22px_rgba(15,23,42,0.08)] rounded-[30px] overflow-hidden flex min-h-0 flex-col h-full border border-white/60 bg-white/42 backdrop-blur-xl"
-      >
+      <div className="glass-panel relative flex h-full min-h-0 flex-col overflow-hidden rounded-[30px]">
         <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
         {/* 문제 헤더 */}
         <div className="relative flex flex-col justify-center overflow-hidden flex-shrink-0 px-4 pt-4 pb-3">
-          <div className="relative flex w-full items-center gap-3 rounded-[18px] border border-white/65 bg-white/65 px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
+          <div className="glass-subtle relative flex w-full items-center gap-3 rounded-[18px] px-3 py-2.5">
             <button
               type="button"
               onClick={onBackClick ?? (() => navigate(-1))}
@@ -112,7 +110,7 @@ export default function ChallengeInfoPanel({
         {/* 탭 영역 */}
         <div className="relative w-full flex flex-col flex-grow min-h-0 px-4 pb-3">
           <div
-            className="flex justify-between flex-shrink-0 rounded-[18px] border border-white/65 bg-white/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md"
+            className="glass-subtle flex flex-shrink-0 justify-between rounded-[18px]"
             style={{
               gap: `${Math.min(gap, 1)}rem`,
               padding: `0 ${padding * 0.75}rem`,
@@ -151,7 +149,7 @@ export default function ChallengeInfoPanel({
               }}
             >
               <div className="flex h-full min-h-0 flex-col pr-1">
-                <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/65 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_3px_8px_rgba(15,23,42,0.05)] backdrop-blur-md">
+                <div className="surface-solid relative flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] p-6">
                   <span className={`heading-3 font-700 ${activeTabContent.titleColor} block mb-6`}>
                     {activeTabContent.title}
                   </span>

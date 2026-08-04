@@ -25,9 +25,7 @@ const TokenInfoCard = ({ problemId, teamId, tokenUsed, compact = false }) => {
         ${compact ? 'h-[58px]' : 'h-[80px]'}
         flex flex-col justify-center
         ${compact ? 'p-2.5' : 'p-4'} flex-shrink-0
-        rounded-[20px] border border-white/65 bg-white/48
-        shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)]
-        backdrop-blur-md`}
+        glass-panel rounded-[20px]`}
     >
       <div className="flex items-center">
         <div

@@ -66,7 +66,7 @@ export default function AppHeader() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-16 w-full border-b border-[#ece7e1] bg-[rgba(255,255,255,0.88)] backdrop-blur supports-[backdrop-filter]:bg-[rgba(255,255,255,0.78)]">
+    <header className="glass-subtle fixed inset-x-0 top-0 z-50 h-16 w-full border-x-0 border-t-0 border-b-[#ece7e1]">
       <div className="flex h-full w-full items-center px-4 sm:px-12">
         <button
           type="button"
@@ -129,7 +129,7 @@ export default function AppHeader() {
                     className="fixed inset-0 z-[75] cursor-default"
                     onClick={() => setIsProfileOpen(false)}
                   />
-                  <div className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[326px] rounded-[3px] border border-[#ece7e1] bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.16)]">
+                  <div className="glass-overlay absolute right-0 top-[calc(100%+12px)] z-[90] w-[326px] rounded-[8px] border-[#ece7e1] p-4">
                     <div className="flex items-start gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F2F4F6]">
                         {hasProfileImage ? (
@@ -259,7 +259,7 @@ export default function AppHeader() {
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
-          <aside className="relative flex h-full w-[min(20rem,calc(100vw-3rem))] flex-col border-r border-[#ece7e1] bg-[rgba(255,255,255,0.96)] shadow-2xl backdrop-blur">
+          <aside className="glass-overlay relative flex h-full w-[min(20rem,calc(100vw-3rem))] flex-col rounded-none border-y-0 border-l-0 border-r-[#ece7e1]">
             <div className="flex h-16 items-center justify-between border-b border-[#ece7e1] px-5">
               <Link to="/" className="flex items-center gap-2.5 no-underline">
                 <img src={ArenaLogo} alt="" className="h-10 w-10" aria-hidden="true" />

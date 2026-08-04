@@ -522,7 +522,7 @@ function SidePanel({ challenge, record, onStartChallenge, isStarting }) {
 
   return (
     <aside className="space-y-4">
-      <section className="relative aspect-[1619/842] overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
+      <section className="glass-panel relative aspect-[1619/842] overflow-hidden rounded-[24px]">
         <img
           src={StartCardBg}
           alt=""
@@ -546,7 +546,7 @@ function SidePanel({ challenge, record, onStartChallenge, isStarting }) {
         </button>
       </section>
 
-      <section className="relative overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md">
+      <section className="glass-panel relative overflow-hidden rounded-[24px]">
         <img
           src={statusMeta.backgroundImage}
           alt=""

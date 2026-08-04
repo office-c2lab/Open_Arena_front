@@ -21,8 +21,7 @@ const CARD_ACTIVE_SHADOW =
 export const AttemptHistoryCardSkeleton = () => {
   return (
     <div
-      className="w-full h-[110px] flex flex-col justify-between p-3 flex-shrink-0 
-            bg-white/48 rounded-[20px] border border-white/65 animate-pulse backdrop-blur-md"
+      className="glass-panel flex h-[110px] w-full flex-shrink-0 animate-pulse flex-col justify-between rounded-[20px] p-3"
       style={{ boxShadow: CARD_SHADOW }}
     >
       {/* 1. 상단 영역: 시도 번호 태그와 결과 태그 스켈레톤 */}
@@ -82,8 +81,7 @@ const AttemptHistoryCard = ({
 
   return (
     <div
-      className="group w-full h-[110px] flex flex-col justify-between p-3 flex-shrink-0 cursor-pointer 
-            bg-white/48 rounded-[20px] border border-white/65 backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:border-white/80 hover:bg-white/60"
+      className="glass-panel group flex h-[110px] w-full flex-shrink-0 cursor-pointer flex-col justify-between rounded-[20px] p-3 transition-all duration-200 hover:-translate-y-[1px] hover:border-white/80 hover:bg-white/60"
       onClick={onClick}
       style={{
         borderColor: isActive ? 'rgba(71,85,105,0.45)' : 'rgba(255,255,255,0.65)',

@@ -133,7 +133,7 @@ export default function ChatArea({
 
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-grow flex-col">
-      <div className="flex min-h-0 flex-1 rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md flex-col overflow-hidden">
+      <div className="glass-panel flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px]">
         <ChatMessages
           messages={displayMessages}
           isLoading={isMessagesLoading}

@@ -13,7 +13,7 @@ const COLOR_BLACK = '#000000';
 const PointInfoCardSkeleton = ({ compact = false }) => (
   <div
     className={`w-full ${compact ? 'h-[58px] p-2.5' : 'h-[80px] p-4'} flex justify-start items-center flex-shrink-0 
-               rounded-[20px] border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md animate-pulse`}
+               glass-panel rounded-[20px] animate-pulse`}
   >
     <div
       className={`${compact ? 'h-[36px] w-[36px]' : 'w-[49px] h-[49px]'} flex justify-center items-center rounded-[10px] flex-shrink-0`}
@@ -57,7 +57,7 @@ export default function PointInfoCard({ compact = false }) {
   return (
     <div
       className={`w-full ${compact ? 'h-[58px] p-2.5' : 'h-[80px] p-4'} flex justify-start items-center flex-shrink-0 
-                 rounded-[20px] border border-white/65 bg-white/48 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md`}
+                 glass-panel rounded-[20px]`}
     >
       <div
         className={`${compact ? 'h-[36px] w-[36px]' : 'w-[49px] h-[49px]'} flex justify-center items-center rounded-[10px] flex-shrink-0`}

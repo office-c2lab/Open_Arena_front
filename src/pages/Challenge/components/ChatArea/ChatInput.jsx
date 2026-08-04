@@ -21,7 +21,7 @@ export default function ChatInput({
 
     return (
       <div
-        className={`flex w-full flex-col items-center justify-center rounded-[20px] border border-white/65 bg-white/52 px-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md ${
+        className={`glass-subtle flex w-full flex-col items-center justify-center rounded-[20px] px-4 text-center ${
           compact ? 'h-[82px]' : 'h-[120px] md:h-[133px]'
         }`}
       >
@@ -55,7 +55,7 @@ export default function ChatInput({
   // 기본 입력창
   return (
     <div
-      className={`relative flex w-full items-start rounded-[20px] border border-white/65 bg-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_4px_14px_rgba(15,23,42,0.06)] backdrop-blur-md ${
+      className={`glass-subtle relative flex w-full items-start rounded-[20px] ${
         compact ? 'h-[76px] p-3' : 'h-[120px] p-3 md:h-[133px] md:p-4'
       }`}
       >
