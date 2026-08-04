@@ -129,7 +129,7 @@ export default function AppHeader() {
                     className="fixed inset-0 z-[75] cursor-default"
                     onClick={() => setIsProfileOpen(false)}
                   />
-                  <div className="glass-overlay absolute right-0 top-[calc(100%+12px)] z-[90] w-[326px] rounded-[8px] border-[#ece7e1] p-4">
+                  <div className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[326px] rounded-[8px] border border-[#ece7e1] bg-white p-4 shadow-[0_16px_36px_rgba(15,23,42,0.12)]">
                     <div className="flex items-start gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F2F4F6]">
                         {hasProfileImage ? (
@@ -160,10 +160,7 @@ export default function AppHeader() {
                       </div>
                     </div>
 
-                    <Link
-                      to="/settings"
-                      className="btn btn-primary btn-md btn-block mt-4"
-                    >
+                    <Link to="/settings" className="btn btn-primary btn-md btn-block mt-4">
                       계정 설정
                     </Link>
 
@@ -189,7 +186,6 @@ export default function AppHeader() {
                               {profileStats.totalPoints ?? 188}점
                             </span>
                           </div>
-                          
                         </div>
                       </>
                     ) : (
@@ -209,7 +205,10 @@ export default function AppHeader() {
                       </>
                     )}
 
-                    <nav className="mt-4 border-t border-[#ece7e1] pt-3" aria-label="프로필 정책 링크">
+                    <nav
+                      className="mt-4 border-t border-[#ece7e1] pt-3"
+                      aria-label="프로필 정책 링크"
+                    >
                       <Link
                         to="/terms"
                         className="flex rounded-[4px] px-2 py-2 text-sm font-500 text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
@@ -239,11 +238,7 @@ export default function AppHeader() {
               ) : null}
             </div>
           ) : (
-            <button
-              type="button"
-              onClick={handleAuthClick}
-              className="btn btn-primary btn-md"
-            >
+            <button type="button" onClick={handleAuthClick} className="btn btn-primary btn-md">
               로그인
             </button>
           )}

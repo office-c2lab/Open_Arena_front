@@ -103,9 +103,9 @@ const MEDAL_ICON_MAP = { 1: medalGold, 2: medalSilver, 3: medalBronze };
 
 const summaryItems = [
   { label: '시즌 점수', value: '2,480점' },
-  { label: '성공 챌린지', value: '18개' },
-  { label: '최소 토큰', value: '14,200' },
   { label: '다음 순위까지', value: '120포인트' },
+  { label: '성공 챌린지', value: '18개' },
+  { label: '최소 소모 토큰', value: '14,200' },
 ];
 
 const ROWS_PER_PAGE = 30;
@@ -159,13 +159,18 @@ function RankMedal({ rank }) {
   );
 }
 
-function StatPair({ value, label }) {
+function StatPair({ value, label, featured = false, compact = false }) {
+  const valueClass = featured
+    ? 'text-[30px] leading-8 text-[#111827]'
+    : compact
+      ? 'text-[22px] leading-7 text-[#1F2937]'
+      : 'text-[25px] leading-7 text-[#1F2937]';
+  const labelClass = featured ? 'text-[15px]' : compact ? 'text-[13px]' : 'text-[14px]';
+
   return (
     <div className="min-w-0 text-center">
-      <span className="block truncate text-[15px] font-700 text-[#525B66]">{label}</span>
-      <strong className="mt-2 block truncate text-[24px] font-900 leading-7 text-[#111827]">
-        {value}
-      </strong>
+      <span className={`block truncate font-700 text-[#525B66] ${labelClass}`}>{label}</span>
+      <strong className={`mt-2 block truncate font-900 ${valueClass}`}>{value}</strong>
     </div>
   );
 }
@@ -173,7 +178,7 @@ function StatPair({ value, label }) {
 function MyRankCard() {
   return (
     <section className="mt-12 overflow-hidden rounded-[24px] border border-[#FFD0D4] bg-[radial-gradient(circle_at_11%_58%,rgba(255,72,84,0.12)_0%,rgba(255,72,84,0.055)_18%,transparent_33%),linear-gradient(105deg,#FFFFFF_0%,#FFFEFE_58%,#FFF7F8_100%)] px-8 py-5 shadow-[0_12px_24px_rgba(15,23,42,0.07)] sm:px-10">
-      <div className="grid items-center gap-7 lg:grid-cols-[0.9fr_1.75fr]">
+      <div className="grid items-center gap-7 lg:grid-cols-[0.95fr_2.4fr]">
         <div className="min-w-0">
           <div className="flex items-center gap-5">
             <img
@@ -184,8 +189,8 @@ function MyRankCard() {
             <div className="min-w-0">
               <span className="block text-[15px] font-900 text-[#FF4854]">내 순위</span>
               <div className="flex items-end gap-3 whitespace-nowrap">
-                <strong className="text-[64px] font-900 leading-[0.86] text-[#111827]">12</strong>
-                <span className="pb-1 text-[24px] font-800 text-[#111827]">위</span>
+                <strong className="text-[72px] font-900 leading-[0.86] text-[#111827]">12</strong>
+                <span className="pb-1.5 text-[28px] font-900 text-[#111827]">위</span>
               </div>
               <div className="mt-2 flex items-center gap-4 whitespace-nowrap text-[14px] font-800 text-[#96A0AE]">
                 <span>/ 12,856명</span>
@@ -205,11 +210,7 @@ function MyRankCard() {
               <div className="whitespace-nowrap text-[14px] font-800 text-[#8B95A3]">
                 {item.label}
               </div>
-              <strong
-                className={`mt-4 block whitespace-nowrap font-900 leading-none text-[#111827] ${
-                  item.label === '다음 순위까지' ? 'text-[26px] text-[#FF4854]' : 'text-[30px]'
-                }`}
-              >
+              <strong className="mt-4 block whitespace-nowrap text-[30px] font-900 leading-none text-[#111827]">
                 {item.value}
               </strong>
             </div>
@@ -229,13 +230,33 @@ function TopRankCard({ row }) {
       ? 'border-[#C9CED6]/70 bg-[radial-gradient(circle_at_50%_0%,rgba(174,183,192,0.28)_0%,rgba(255,255,255,0.62)_72%)] shadow-[0_14px_30px_rgba(100,116,139,0.12)]'
       : 'border-[#D08A52]/50 bg-[radial-gradient(circle_at_50%_0%,rgba(208,138,82,0.24)_0%,rgba(255,248,243,0.72)_62%,rgba(255,255,255,0.62)_100%)] shadow-[0_14px_30px_rgba(173,103,40,0.12)]';
   const heightClass = isFirst
-    ? 'md:-mt-10 md:h-[440px]'
+    ? 'md:-mt-10 md:h-[448px]'
     : isThird
       ? 'md:h-[350px]'
       : 'md:h-[380px]';
-  const paddingClass = isThird ? 'px-8 pb-5 pt-10' : 'px-8 pb-7 pt-12';
-  const avatarClass = isFirst ? 'mt-4' : isThird ? 'mt-1 md:h-[104px] md:w-[104px]' : 'mt-2';
+  const paddingClass = isFirst
+    ? 'px-8 pb-8 pt-11'
+    : isThird
+      ? 'px-8 pb-5 pt-10'
+      : 'px-8 pb-7 pt-12';
+  const avatarClass = isFirst
+    ? 'mt-3 md:h-[120px] md:w-[120px]'
+    : isThird
+      ? 'mt-1 md:h-[104px] md:w-[104px]'
+      : 'mt-2';
   const titleSpacingClass = isThird ? 'mt-5' : 'mt-6';
+  const nameClass = isFirst
+    ? 'text-[24px] leading-8'
+    : isThird
+      ? 'text-[18px] leading-6'
+      : 'text-[20px] leading-7';
+  const scoreClass = isFirst
+    ? 'text-[42px] leading-none text-[#F52F45]'
+    : isThird
+      ? 'text-[28px] leading-9 text-[#111827]'
+      : 'text-[32px] leading-10 text-[#111827]';
+  const dividerClass = isFirst ? 'mt-6' : isThird ? 'mt-3' : 'mt-4';
+  const statGridClass = isFirst ? 'mt-4' : isThird ? 'mt-3' : 'mt-3';
 
   return (
     <article
@@ -244,17 +265,25 @@ function TopRankCard({ row }) {
       <RankMedal rank={row.rank} />
       <Avatar image={row.image} rank={row.rank} size="lg" className={avatarClass} />
       <h2
-        className={`${titleSpacingClass} max-w-full  text-center text-[20px] font-900 text-[#111827]`}
+        className={`${titleSpacingClass} max-w-full text-center font-900 text-[#111827] ${nameClass}`}
       >
         {row.name}
       </h2>
-      <p className={`mt-1 text-[30px] font-900 ${isFirst ? 'text-[#F52F45]' : 'text-[#111827]'}`}>
-        {formatNumber(row.score)}점
-      </p>
-      <div className={`${isFirst ? 'mt-4' : 'mt-2'}  h-px w-full bg-white/70`} />
-      <div className={`mt-2 grid w-full grid-cols-2 divide-x divide-[#D7DDE6]`}>
-        <StatPair value={`${row.challenges}개`} label="성공 챌린지" />
-        <StatPair value={formatNumber(row.tokens)} label="최소 토큰" />
+      <p className={`mt-1 font-900 ${scoreClass}`}>{formatNumber(row.score)}점</p>
+      <div className={`${dividerClass} h-px w-full bg-white/70`} />
+      <div className={`${statGridClass} grid w-full grid-cols-2 divide-x divide-[#D7DDE6]`}>
+        <StatPair
+          value={`${row.challenges}개`}
+          label="성공 챌린지"
+          featured={isFirst}
+          compact={isThird}
+        />
+        <StatPair
+          value={formatNumber(row.tokens)}
+          label="최소 소모 토큰"
+          featured={isFirst}
+          compact={isThird}
+        />
       </div>
     </article>
   );
@@ -281,7 +310,15 @@ function LegacyTableAvatar({ rank }) {
 function LeaderboardRow({ row }) {
   return (
     <tr className="h-[58px] text-[15px] font-700 text-[#344050]">
-      <td className="w-[88px] font-900">{row.rank}위</td>
+      <td className="w-[88px] font-900">
+        <div className="flex w-[40px] items-center justify-center">
+          {row.rank <= 3 ? (
+            <img src={MEDAL_ICON_MAP[row.rank]} alt={`${row.rank}위`} className="h-8 w-8" />
+          ) : (
+            <span>{row.rank}위</span>
+          )}
+        </div>
+      </td>
       <td className="min-w-[230px]">
         <div className="flex items-center gap-4">
           <LegacyTableAvatar rank={row.rank} />
@@ -289,10 +326,10 @@ function LeaderboardRow({ row }) {
         </div>
       </td>
       <td className="w-[190px]">
-        <span className="inline-flex items-center gap-3 font-900 text-[#FF4854]">{row.score}</span>
+        <span className="inline-flex items-center gap-3 font-900 ">{row.score}</span>
       </td>
-      <td className="w-[190px] text-center text-[#7C8797]">{row.challenges || ''}</td>
-      <td className="w-[170px] text-center text-[#7C8797]">{formatToken(row.tokens)}</td>
+      <td className="w-[190px] text-center ">{row.challenges || ''}</td>
+      <td className="w-[170px] text-center ">{formatToken(row.tokens)}</td>
     </tr>
   );
 }
@@ -369,16 +406,13 @@ export default function Leaderboard() {
             <div className="flex items-end gap-8">
               <button
                 type="button"
-                className="border-b-[3px] border-[#F52F45] pb-5 text-[21px] font-900 text-[#F52F45]"
+                className="border-b-[3px] border-[#F52F45] pb-5 text-[21px] font-900 "
               >
                 전체 랭킹
               </button>
             </div>
 
-            <form
-              onSubmit={handleSearch}
-              className="flex w-full gap-3 sm:w-[min(100%,500px)]"
-            >
+            <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
               <label className="relative min-w-0 flex-1">
                 <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
                 <input
@@ -407,13 +441,15 @@ export default function Leaderboard() {
             <table className="w-full min-w-[920px] border-separate border-spacing-y-[14px] text-left">
               <thead>
                 <tr className="text-[14px] font-900 text-[#99A5B8]">
-                  <th className="w-[88px] ">순위</th>
+                  <th className="w-[88px]">
+                    <span className="flex w-[40px] justify-center">순위</span>
+                  </th>
                   <th>유저 정보</th>
                   <th className="w-[190px]">
                     <span className="inline-flex items-center gap-2">점수</span>
                   </th>
-                  <th className="w-[190px] text-center">참여 챌린지 수</th>
-                  <th className="w-[170px] text-center">최소 토큰</th>
+                  <th className="w-[190px] text-center">성공 챌린지</th>
+                  <th className="w-[170px] text-center">최소 소모 토큰</th>
                 </tr>
               </thead>
               <tbody>
