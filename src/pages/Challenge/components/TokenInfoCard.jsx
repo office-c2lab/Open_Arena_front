@@ -1,6 +1,5 @@
 // src/features/Challenge/components/TokenInfoCard.jsx
 import React from 'react';
-import TokenSvg from '../../../assets/icons/Token.svg';
 
 import { useSessionStore } from '@/stores/useSessionStore';
 import { useTokenUsage } from '@/hooks/useTokenUsage';
@@ -30,8 +29,10 @@ const TokenInfoCard = ({ problemId, teamId, tokenUsed, compact = false }) => {
         shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_18px_rgba(15,23,42,0.07)]
         backdrop-blur-md`}
     >
-      <div className="flex items-center">       
-        <div className={`flex flex-row items-center flex-1 justify-between ${compact ? '' : 'ml-4'}`}>
+      <div className="flex items-center">
+        <div
+          className={`flex flex-row items-center flex-1 justify-between ${compact ? '' : 'ml-4'}`}
+        >
           <span
             className={`${compact ? 'body-large font-700 text-[#0F172A]' : 'heading-3 font-500 text-black'}`}
           >

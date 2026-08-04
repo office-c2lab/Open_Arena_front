@@ -90,93 +90,10 @@ export default function MyPage({ embedded = false }) {
             nickname
           )}
         </InfoRow>
-        <InfoRow label="생년월일" last>
-          {isEditing ? (
-            <div className="flex gap-2">
-              {[
-                ['year', ['2001', '2000', '1999']],
-                ['month', ['3', '2', '1']],
-                ['day', ['7', '6', '5']],
-              ].map(([key, options]) => (
-                <select
-                  key={key}
-                  value={profile[key]}
-                  onChange={event => updateProfile(key, event.target.value)}
-                  className={inputClass}
-                >
-                  {options.map(option => (
-                    <option key={option}>{option}</option>
-                  ))}
-                </select>
-              ))}
-              <button type="button" className="shrink-0 text-[12px] font-800 text-[#FF4854]">
-                초기화
-              </button>
-            </div>
-          ) : (
-            `${profile.year}-${profile.month.padStart(2, '0')}-${profile.day.padStart(2, '0')}`
-          )}
-        </InfoRow>
+       
       </InfoSection>
 
-      <InfoSection title="개인정보">
-        <InfoRow label="이름">
-          {isEditing ? (
-            <input disabled value={profile.name} className={disabledInputClass} />
-          ) : (
-            profile.name
-          )}
-        </InfoRow>
-        <InfoRow label="전화번호">
-          {isEditing ? (
-            <div>
-              <div className="flex gap-3">
-                <input
-                  value={profile.phone}
-                  onChange={event => updateProfile('phone', event.target.value)}
-                  className={disabledInputClass}
-                />
-                <button type="button" className="shrink-0 text-[12px] font-800 text-[#FF4854]">
-                  인증하기
-                </button>
-              </div>
-              <p className="mt-1 text-[10px] font-600 text-[#8A93A5]">
-                전화번호 변경을 위해 본인인증이 필요합니다.
-              </p>
-            </div>
-          ) : (
-            profile.phone
-          )}
-        </InfoRow>
-        <InfoRow label="국가">
-          {isEditing ? (
-            <select
-              value={profile.country}
-              onChange={event => updateProfile('country', event.target.value)}
-              className={inputClass}
-            >
-              <option>KR 대한민국</option>
-            </select>
-          ) : (
-            profile.country
-          )}
-        </InfoRow>
-        <InfoRow label="성별" last>
-          {isEditing ? (
-            <select
-              value={profile.gender}
-              onChange={event => updateProfile('gender', event.target.value)}
-              className={inputClass}
-            >
-              <option>비공개</option>
-              <option>남성</option>
-              <option>여성</option>
-            </select>
-          ) : (
-            profile.gender
-          )}
-        </InfoRow>
-      </InfoSection>
+
 
       <InfoSection title="계정 관리">
         <InfoRow label="계정연동">
@@ -201,7 +118,7 @@ export default function MyPage({ embedded = false }) {
             </button>
           </div>
         </InfoRow>
-        <InfoRow label="이메일 아이디">
+        <InfoRow label="이메일">
           {isEditing ? (
             <div>
               <div className="flex gap-3">
