@@ -46,7 +46,6 @@ export default function AppRouter() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/terms" element={<Legal type="terms" />} />
         <Route path="/privacy" element={<Legal type="privacy" />} />
-        <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="/admin" element={<Navigate to="/admin/problems" replace />} />
 
@@ -112,6 +111,7 @@ export default function AppRouter() {
       </Route>
       {/* ⭐ 추가된 403 페이지 */}
       <Route path="/403" element={<FourZeroThree />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

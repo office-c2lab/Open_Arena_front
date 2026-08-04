@@ -2,12 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
 import ResetIcon from '@/assets/icons/reset.svg';
-import PurpleDownIcon from '@/assets/icons/purple-downbtn.svg';
 import ChallengeInfoPanel from '@/pages/Challenge/components/ChallengeInfoPanel';
 import ChatMessages from '@/pages/Challenge/components/ChatArea/ChatMessages';
 import ChatInput from '@/pages/Challenge/components/ChatArea/ChatInput';
 import ChatControls from '@/pages/Challenge/components/ChatArea/ChatControls';
-import AttemptHistoryPanel from '@/pages/Challenge/components/AttemptHistoryPanel';
 import FailedModal from '@/pages/Challenge/ChallengeModal/FailedModal';
 import SuccessModal from '@/pages/Challenge/ChallengeModal/SuccesModal';
 import ArenaJudgeLoader from '@/components/Loading/ArenaJudgeLoader';
@@ -85,7 +83,11 @@ function TutorialJudgeLoadingOverlay() {
   );
 }
 
-export function TutorialPreviewLeftPanel({ initialActiveTab = TABS[0].id, lockActiveTab = false }) {
+export function TutorialPreviewLeftPanel({
+  initialActiveTab = TABS[0].id,
+  lockActiveTab = false,
+  tokenUsed = 0,
+}) {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
 
   const activeTabContent = useMemo(() => {
@@ -107,6 +109,8 @@ export function TutorialPreviewLeftPanel({ initialActiveTab = TABS[0].id, lockAc
       handleTabClick={handleTabClick}
       CHALLENGE_HEADER_INFO={PREVIEW_HEADER_INFO}
       isLoading={false}
+      problemId="tutorial-problem"
+      tokenUsed={tokenUsed}
       onBackClick={() => {}}
     />
   );
@@ -151,34 +155,12 @@ export function TutorialPreviewCenterPanel({ messages = [], initialInput = '' })
   );
 }
 
-export function TutorialPreviewRightPanel({ sessions = [], tokenUsed }) {
-  return (
-    <AttemptHistoryPanel
-      PurpleDownIcon={PurpleDownIcon}
-      isLoading={false}
-      sessions={sessions}
-      problemId={undefined}
-      teamId={undefined}
-      tokenUsed={tokenUsed}
-    />
-  );
-}
-
 export function TutorialChatTokenInteractivePreview() {
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState([]);
   const responseTimerRef = useRef(null);
   const isGenerating = messages.some(message => message.isTyping);
   const tokenUsed = estimateTutorialTokenUsage(messages, inputValue);
-  const sessions = messages.length
-    ? [
-        {
-          id: 'tutorial-chat-token-session',
-          status: 'unsubmitted',
-          title: `채팅 ${Math.ceil(messages.length / 2)}회 진행 중`,
-        },
-      ]
-    : [];
 
   const handleSend = () => {
     const trimmedInput = inputValue.trim();
@@ -242,6 +224,7 @@ export function TutorialChatTokenInteractivePreview() {
 
   return (
     <div className="flex h-full min-w-[980px] gap-6">
+      <TutorialPreviewLeftPanel tokenUsed={tokenUsed} />
       <div className="flex min-w-0 flex-1">
         <div className="flex h-full min-h-0 min-w-0 flex-grow flex-col">
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border border-white/65 bg-white/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_6px_18px_rgba(15,23,42,0.07)] backdrop-blur-md">
@@ -276,7 +259,6 @@ export function TutorialChatTokenInteractivePreview() {
           </div>
         </div>
       </div>
-      <TutorialPreviewRightPanel sessions={sessions} tokenUsed={tokenUsed} />
     </div>
   );
 }
@@ -415,9 +397,11 @@ export function TutorialJudgeFailureInteractivePreview() {
                 openResetModal={handleReset}
                 openSubmitModal={handleSubmit}
                 isDisabled={isGenerating || isJudgeLoading}
-                sessionId={messages.some(message => message.role === 'assistant' && !message.isTyping)
-                  ? 'tutorial-failure-session'
-                  : null}
+                sessionId={
+                  messages.some(message => message.role === 'assistant' && !message.isTyping)
+                    ? 'tutorial-failure-session'
+                    : null
+                }
               />
             </div>
           </div>
@@ -608,7 +592,6 @@ export default function TutorialChallengePlayPreview() {
       />
       <TutorialPreviewLeftPanel />
       <TutorialPreviewCenterPanel />
-      <TutorialPreviewRightPanel />
     </div>
   );
 }
