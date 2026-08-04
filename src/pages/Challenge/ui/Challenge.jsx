@@ -1,13 +1,12 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ChevronRight, Coins, Flag, Search, Trophy } from 'lucide-react';
+import { ArrowLeft, Flag, Search } from 'lucide-react';
 import UserIcon from '@/assets/icons/user.svg';
 import TigerImage from '@/assets/images/tiger.png';
 import GreenTigerImage from '@/assets/images/green_tiger.png';
-import StartCardBg from '@/assets/images/start_cardbg.png';
-import SuccessCardBg from '@/assets/images/succescard.png';
-import FailCardBg from '@/assets/images/failcard.png';
-import NoTryCardBg from '@/assets/images/notry.png';
+import SuccessCardBg from '@/assets/images/sb.png';
+import FailCardBg from '@/assets/images/fb.png';
+import NoTryCardBg from '@/assets/images/nb.png';
 import { PATHS } from '@/pages/Kategorie/Kategorie';
 import { useProblemBundle } from '@/hooks/useProblemBundle';
 import { useAuthStore } from '@/stores/authStore';
@@ -478,79 +477,68 @@ function SidePanel({ challenge, record, onStartChallenge, isStarting }) {
     record.status === '성공'
       ? {
           text: 'text-[#079C4C]',
-          chipClass: 'bg-[#ECFDF3] text-[#079C4C]',
+          chipClass: 'bg-[#10A84F] text-white shadow-[0_6px_16px_rgba(16,168,79,0.24)]',
           description: '목표를 달성했습니다.',
           backgroundImage: SuccessCardBg,
         }
       : record.status === '실패'
         ? {
             text: 'text-[#FF4854]',
-            chipClass: 'bg-[#FFF0F2] text-[#FF4854]',
+            chipClass: 'bg-[#FF5B65] text-white shadow-[0_6px_16px_rgba(255,72,84,0.22)]',
             description: '이번 도전은 실패했습니다.',
             backgroundImage: FailCardBg,
           }
         : {
-            text: 'text-[#2E3338]',
-            chipClass: 'bg-[#F1F5F9] text-[#64748B]',
+            text: 'text-[#596270]',
+            chipClass: 'bg-[#7B8491] text-white shadow-[0_6px_16px_rgba(71,85,105,0.18)]',
             description: '아직 도전 기록이 없습니다.',
             backgroundImage: NoTryCardBg,
           };
 
   return (
-    <aside className="space-y-4">
-      <section className="glass-panel relative aspect-[1619/842] overflow-hidden rounded-[24px]">
-        <img
-          src={StartCardBg}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-        <div className="absolute left-[40%] right-[5%] top-[18%] z-10">
-          <h3 className="text-section-title font-bold text-[#202832]">챌린지 도전</h3>
-          <p className="mt-2 text-body font-strong text-[#66717E]">
-            AI와 대화하며 성공 조건을 달성해보세요.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={onStartChallenge}
-          disabled={isStarting}
-          className="btn btn-primary btn-lg absolute bottom-[7%] left-[7%] right-[7%] z-10"
-        >
-          {isStarting ? '챌린지 진입 중' : '챌린지 도전하기'}
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </section>
-
-      <section className="glass-panel relative overflow-hidden rounded-[24px]">
+    <aside>
+      <section className="glass-panel relative aspect-[2/3] overflow-hidden rounded-[24px] border border-white/80 shadow-[0_12px_32px_rgba(15,23,42,0.08)]">
         <img
           src={statusMeta.backgroundImage}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover object-top"
         />
 
-        <div className="relative z-10 flex min-h-[200px] items-center px-7 py-7">
-          <div>
-            <p className="text-body font-strong text-[#6E7B88]">챌린지 성공 여부</p>
-            <strong className={`mt-3 block text-display font-bold ${statusMeta.text}`}>
-              {record.status}
-            </strong>
-            <p className="mt-4 text-body font-strong text-[#6F7985]">{statusMeta.description}</p>
-          </div>
+        <div className="absolute inset-x-8 top-[42%] z-10 flex flex-col items-center text-center">
+          <span
+            className={`rounded-[10px] px-4 py-1.5 text-label font-bold ${statusMeta.chipClass}`}
+          >
+            챌린지 성공 여부
+          </span>
+          <strong className={`mt-2 block text-[40px] font-bold leading-none ${statusMeta.text}`}>
+            {record.status}
+          </strong>
+          <p className="mt-2 text-body font-strong text-[#6F7985]">{statusMeta.description}</p>
         </div>
 
-        <dl className="relative z-10 divide-y divide-[#E5E9EF] bg-white/88 px-6 text-body">
-          <div className="flex items-center justify-between py-5">
-            <dt className="flex items-center gap-3 font-strong text-[#3D4754]">사용 토큰</dt>
-            <dd className="font-bold text-[#2E3338]">{record.tokens.toLocaleString()} 토큰</dd>
-          </div>
-          <div className="flex items-center justify-between py-5">
-            <dt className="flex items-center gap-3 font-strong text-[#3D4754]">최대 포인트</dt>
-            <dd className="font-bold text-[#FF4854]">
-              {challenge.maximumPoints ?? record.score} 포인트
-            </dd>
-          </div>
-        </dl>
+        <div className="absolute bottom-5 left-5 right-5 z-10 space-y-3">
+          <dl className="divide-y divide-[#E5E9EF] rounded-[16px] border border-white/90 bg-white/90 px-6 text-body shadow-[0_8px_24px_rgba(15,23,42,0.1)] backdrop-blur-sm">
+            <div className="flex items-center justify-between py-4">
+              <dt className="font-strong text-[#3D4754]">사용 토큰</dt>
+              <dd className="font-bold text-[#2E3338]">{record.tokens.toLocaleString()} 토큰</dd>
+            </div>
+            <div className="flex items-center justify-between py-4">
+              <dt className="font-strong text-[#3D4754]">최대 포인트</dt>
+              <dd className="font-bold text-[#FF4854]">
+                {challenge.maximumPoints ?? record.score} 포인트
+              </dd>
+            </div>
+          </dl>
+
+          <button
+            type="button"
+            onClick={onStartChallenge}
+            disabled={isStarting}
+            className="btn btn-primary btn-lg w-full"
+          >
+            {isStarting ? '챌린지 진입 중' : '챌린지 도전하기'}
+          </button>
+        </div>
       </section>
     </aside>
   );
