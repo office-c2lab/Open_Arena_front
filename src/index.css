@@ -62,14 +62,12 @@
 @layer components {
   .thinking-text {
     animation: thinking-text-shimmer 1.8s ease-in-out infinite;
-    background: linear-gradient(
-      90deg,
-      #222632 0%,
-      #6f7785 38%,
-      #111827 52%,
-      #6f7785 66%,
-      #222632 100%
-    );
+    background: linear-gradient(90deg,
+        #222632 0%,
+        #6f7785 38%,
+        #111827 52%,
+        #6f7785 66%,
+        #222632 100%);
     background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -250,6 +248,7 @@
 }
 
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+
   .glass-subtle,
   .glass-panel {
     background: rgba(255, 255, 255, 0.94);
@@ -261,6 +260,7 @@
 }
 
 @media (max-width: 767px) {
+
   .glass-subtle,
   .glass-panel,
   .glass-overlay {
@@ -269,6 +269,7 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
+
   .glass-subtle,
   .glass-panel,
   .glass-overlay {
@@ -291,6 +292,7 @@ body,
   overflow-x: hidden;
   width: 100%;
 }
+
 body {
   background-color: #fff;
   margin: 0;
@@ -350,6 +352,7 @@ body.landing-scroll-hidden *::-webkit-scrollbar {
     opacity: 0;
     transform: scale(0.9);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -361,6 +364,7 @@ body.landing-scroll-hidden *::-webkit-scrollbar {
     opacity: 0;
     transform: translateY(10px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -375,6 +379,7 @@ body.landing-scroll-hidden *::-webkit-scrollbar {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -385,6 +390,7 @@ body.landing-scroll-hidden *::-webkit-scrollbar {
   0% {
     background-position: -468px 0;
   }
+
   100% {
     background-position: 468px 0;
   }
@@ -394,9 +400,11 @@ body.landing-scroll-hidden *::-webkit-scrollbar {
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-8px);
   }
+
   100% {
     transform: translateY(0px);
   }

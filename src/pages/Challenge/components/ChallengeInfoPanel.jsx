@@ -1,5 +1,5 @@
 // src/features/Challenge/components/ChallengeInfoPanel.jsx
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import ApiInfoPanel from './ApiInfoPanel';
@@ -7,11 +7,6 @@ import AttemptHistoryCard from './AttemptHistoryCard';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 import TokenInfoCard from './TokenInfoCard';
 import { useSessionStore } from '@/stores/useSessionStore';
-
-const TAB_TITLE_COLOR_CLASS_MAP = {
-  overview: 'text-[#475569]',
-  history: 'text-[#FF4854]',
-};
 
 const OVERVIEW_TITLE_COLOR_CLASS_MAP = {
   description: 'text-[#475569]',
@@ -29,12 +24,12 @@ const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
         <Skeleton className="h-4 w-full rounded mb-3" />
       </div>
       <div className="w-full flex-shrink-0 flex flex-col bg-white/30 flex-grow">
-        <div className="glass-subtle mx-4 mt-1 grid flex-shrink-0 grid-cols-2 rounded-[18px] bg-[#E1E6EC]/75 p-1.5 shadow-[inset_0_1px_3px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.6)]">
+        <div className="mx-4 mt-1 grid flex-shrink-0 grid-cols-2 rounded-[18px] bg-[#F1F1F3] p-1">
           {TABS.map(tab => (
             <button
               key={tab.id}
               onClick={e => handleTabClick(e, tab.id)}
-              className="h-[46px] w-full cursor-pointer rounded-[14px] border border-white/55 bg-white/35 px-2 text-body-lg font-medium text-gray-400 whitespace-nowrap"
+              className="h-10 w-full cursor-pointer rounded-[14px] bg-white px-2 text-body-lg font-medium text-gray-400 shadow-[0_2px_8px_rgba(15,23,42,0.10)] whitespace-nowrap"
             >
               {tab.title}
             </button>
@@ -69,7 +64,6 @@ export default function ChallengeInfoPanel({
   onBackClick,
 }) {
   const navigate = useNavigate();
-  const [hoveredTab, setHoveredTab] = useState(null);
   const panelRef = useRef(null);
   const { sessionId: currentSessionId, setSessionId, setSessionStatus } = useSessionStore();
   const lineHeight = 1.75;
@@ -138,7 +132,7 @@ export default function ChallengeInfoPanel({
         {/* 탭 영역 */}
         <div className="relative w-full flex flex-col flex-grow min-h-0 px-4 pb-3">
           <div
-            className="glass-subtle relative grid flex-shrink-0 grid-cols-2 rounded-[18px] bg-[#E1E6EC]/75 p-1.5 shadow-[inset_0_1px_3px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.6)]"
+            className="grid flex-shrink-0 grid-cols-2 rounded-[18px] bg-[#F1F1F3] p-1"
             role="tablist"
             aria-label="챌린지 정보"
           >
@@ -149,16 +143,10 @@ export default function ChallengeInfoPanel({
                 role="tab"
                 aria-selected={activeTab === tab.id}
                 onClick={e => handleTabClick(e, tab.id)}
-                onMouseEnter={() => setHoveredTab(tab.id)}
-                onMouseLeave={() => setHoveredTab(null)}
-                className={`relative z-[1] h-[46px] w-full cursor-pointer rounded-[14px] border px-1 text-body-lg font-strong whitespace-nowrap transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/45 focus-visible:ring-offset-1 ${
-                  activeTab === tab.id || hoveredTab === tab.id
-                    ? TAB_TITLE_COLOR_CLASS_MAP[tab.id]
-                    : 'text-[#66717E]'
-                } ${
+                className={`h-10 w-full cursor-pointer rounded-[14px] px-3 text-body-lg font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/35 ${
                   activeTab === tab.id
-                    ? 'border-white/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.88),rgba(255,255,255,0.56))] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(255,255,255,0.28),0_5px_14px_rgba(15,23,42,0.09)] backdrop-blur-xl'
-                    : 'border-transparent hover:border-white/45 hover:bg-white/25'
+                    ? 'bg-white text-[#202832] shadow-[0_2px_8px_rgba(15,23,42,0.10)]'
+                    : 'text-[#747474] hover:text-[#30343B]'
                 }`}
               >
                 {tab.title}

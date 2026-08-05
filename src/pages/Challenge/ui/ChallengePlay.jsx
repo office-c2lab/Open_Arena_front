@@ -18,7 +18,6 @@ import ResetModal from '../ChallengeModal/ResetModal';
 import SubmitModal from '../ChallengeModal/SubmitMoadl';
 import FailedModal from '../ChallengeModal/FailedModal';
 import SuccessModal from '../ChallengeModal/SuccesModal';
-import ChallengeBg from '@/assets/images/chalbg.png';
 
 const MotionDiv = motion.div;
 
@@ -126,15 +125,17 @@ export default function ChallengePlay() {
 
   return (
     <MotionDiv
-      className="relative flex h-full min-w-[1120px] w-full gap-6 overflow-hidden bg-[#E5EAF0] p-6"
+      className="relative flex h-full min-w-[1120px] w-full gap-6 overflow-hidden bg-[#E2E5E9] p-6"
       initial={shouldReduceMotion ? false : { opacity: 0, y: 26, filter: 'blur(10px)' }}
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
       transition={{ duration: 0.44, ease: [0.16, 1, 0.3, 1] }}
     >
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.55]"
-        style={{ backgroundImage: `url(${ChallengeBg})` }}
-      />
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        aria-hidden="true"
+      >
+        <img src={ArenaIcon} alt="" className="h-[168px] w-auto opacity-[0.12] grayscale" />
+      </div>
       <ChallengeInfoPanel
         TABS={TABS}
         activeTab={activeTab}
@@ -163,8 +164,6 @@ export default function ChallengePlay() {
         sessions={SESSIONS_LIST}
         hasSuccessSession={hasSuccessSession}
       />
-
-      
 
       {isDebugModalOpen && <DebugModal />}
       {isResetModalOpen && <ResetModal />}
