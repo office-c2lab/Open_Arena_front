@@ -8,11 +8,6 @@ import Skeleton from '../../../components/Skeleton/Skeleton';
 import TokenInfoCard from './TokenInfoCard';
 import { useSessionStore } from '@/stores/useSessionStore';
 
-const TAB_ACCENT_COLOR_MAP = {
-  overview: '#475569',
-  history: '#FF4854',
-};
-
 const TAB_TITLE_COLOR_CLASS_MAP = {
   overview: 'text-[#475569]',
   history: 'text-[#FF4854]',
@@ -34,13 +29,12 @@ const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
         <Skeleton className="h-4 w-full rounded mb-3" />
       </div>
       <div className="w-full flex-shrink-0 flex flex-col bg-white/30 flex-grow">
-        <div className="grid grid-cols-2 gap-2 border-b border-white/60 p-4 flex-shrink-0">
+        <div className="glass-subtle mx-4 mt-1 grid flex-shrink-0 grid-cols-2 rounded-[18px] bg-[#E1E6EC]/75 p-1.5 shadow-[inset_0_1px_3px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.6)]">
           {TABS.map(tab => (
             <button
               key={tab.id}
               onClick={e => handleTabClick(e, tab.id)}
-              className={`w-full py-2 px-2 text-body-lg font-medium rounded-lg transition-colors duration-200 cursor-pointer
-                text-gray-500 border border-white/65 bg-white/45 hover:bg-white/65 whitespace-nowrap`}
+              className="h-[46px] w-full cursor-pointer rounded-[14px] border border-white/55 bg-white/35 px-2 text-body-lg font-medium text-gray-400 whitespace-nowrap"
             >
               {tab.title}
             </button>
@@ -144,30 +138,30 @@ export default function ChallengeInfoPanel({
         {/* 탭 영역 */}
         <div className="relative w-full flex flex-col flex-grow min-h-0 px-4 pb-3">
           <div
-            className="glass-subtle grid flex-shrink-0 grid-cols-2 rounded-[18px]"
-            style={{
-              transition: 'all 0.2s ease',
-            }}
+            className="glass-subtle relative grid flex-shrink-0 grid-cols-2 rounded-[18px] bg-[#E1E6EC]/75 p-1.5 shadow-[inset_0_1px_3px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.6)]"
+            role="tablist"
+            aria-label="챌린지 정보"
           >
             {TABS.map(tab => (
               <button
                 key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
                 onClick={e => handleTabClick(e, tab.id)}
                 onMouseEnter={() => setHoveredTab(tab.id)}
                 onMouseLeave={() => setHoveredTab(null)}
-                className={`relative h-[58px] w-full px-1 text-body-lg font-strong transition-colors duration-200 cursor-pointer whitespace-nowrap ${
+                className={`relative z-[1] h-[46px] w-full cursor-pointer rounded-[14px] border px-1 text-body-lg font-strong whitespace-nowrap transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/45 focus-visible:ring-offset-1 ${
                   activeTab === tab.id || hoveredTab === tab.id
                     ? TAB_TITLE_COLOR_CLASS_MAP[tab.id]
-                    : 'text-[#0F172A]'
+                    : 'text-[#66717E]'
+                } ${
+                  activeTab === tab.id
+                    ? 'border-white/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.88),rgba(255,255,255,0.56))] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(255,255,255,0.28),0_5px_14px_rgba(15,23,42,0.09)] backdrop-blur-xl'
+                    : 'border-transparent hover:border-white/45 hover:bg-white/25'
                 }`}
               >
                 {tab.title}
-                {activeTab === tab.id ? (
-                  <span
-                    className="absolute bottom-0 left-1/2 h-[3px] w-12 -translate-x-1/2 rounded-t-full shadow-[0_2px_6px_rgba(131,123,189,0.20)]"
-                    style={{ backgroundColor: TAB_ACCENT_COLOR_MAP[tab.id] }}
-                  />
-                ) : null}
               </button>
             ))}
           </div>
