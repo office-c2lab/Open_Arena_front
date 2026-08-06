@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ChevronDown, ChevronRight, Heart, Search } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Heart, Search } from 'lucide-react';
 import UserIcon from '@/assets/icons/user.svg';
 import MedalGold from '@/assets/icons/medal_gold.svg';
 import MedalSilver from '@/assets/icons/medal_silver.svg';
@@ -182,7 +182,7 @@ const attemptStatusFilters = [
   { value: 'all', label: '전체' },
   { value: 'success', label: '성공' },
   { value: 'failed', label: '실패' },
-  { value: 'unsubmitted', label: '미제출' },
+  { value: 'unsubmitted', label: '미도전' },
 ];
 
 function getAttemptStatus(status) {
@@ -365,24 +365,7 @@ function ChallengeOverviewContent() {
   );
 }
 
-function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const filterDropdownRef = useRef(null);
-  const selectedStatusFilter =
-    attemptStatusFilters.find(filter => filter.value === statusFilter) ?? attemptStatusFilters[0];
-
-  useEffect(() => {
-    const handleClickOutside = event => {
-      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
+function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen, statusFilter }) {
   if (isLoading) {
     return (
       <div className="mt-5 w-full">
@@ -417,56 +400,12 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
 
   return (
     <section className="mt-5 w-full">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-body-lg font-strong text-[#5C6875]">
-          내 도전 기록{' '}
-          <em className="not-italic text-[#FF4854]">
-            {filteredSessions.length.toLocaleString()}개
-          </em>
-        </p>
-        <div className="relative w-[140px] self-end" ref={filterDropdownRef}>
-          <button
-            type="button"
-            onClick={() => setIsFilterOpen(open => !open)}
-            aria-haspopup="listbox"
-            aria-expanded={isFilterOpen}
-            className="glass-subtle flex h-11 w-full cursor-pointer items-center justify-between rounded-[12px] px-4 text-body-lg font-strong text-[#475569] transition-colors hover:text-[#202832]"
-          >
-            <span>{selectedStatusFilter.label}</span>
-            <ChevronDown
-              className={`h-4 w-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
-              strokeWidth={2.4}
-              aria-hidden="true"
-            />
-          </button>
-
-          {isFilterOpen ? (
-            <div
-              className="glass-overlay absolute right-0 top-[52px] z-20 w-full overflow-hidden rounded-[14px] p-1.5"
-              role="listbox"
-              aria-label="도전 기록 상태 필터"
-            >
-              {attemptStatusFilters.map(filter => (
-                <button
-                  key={filter.value}
-                  type="button"
-                  role="option"
-                  aria-selected={statusFilter === filter.value}
-                  onClick={() => {
-                    setStatusFilter(filter.value);
-                    setIsFilterOpen(false);
-                  }}
-                  className={`flex w-full cursor-pointer items-center rounded-[10px] px-3.5 py-2.5 text-left text-body-lg font-strong text-[#475569] transition-colors hover:bg-[#F8FAFC] ${
-                    statusFilter === filter.value ? 'bg-[#F1F5F9]' : ''
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      </div>
+      <p className="text-body-lg font-strong text-[#5C6875]">
+        내 도전 기록{' '}
+        <em className="not-italic text-[#FF4854]">
+          {filteredSessions.length.toLocaleString()}개
+        </em>
+      </p>
 
       <ul className="mt-6">
         {filteredSessions.map(session => {
@@ -562,6 +501,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
           <p className="text-body font-strong text-[#8A94A1]">해당 상태의 도전 기록이 없습니다.</p>
         </div>
       ) : null}
+
     </section>
   );
 }
@@ -595,6 +535,7 @@ export default function Challenge() {
         ? 'bg-[#3F454C] text-white'
         : 'bg-[#353B44] text-white';
   const [activeTab, setActiveTab] = useState('overview');
+  const [historyStatusFilter, setHistoryStatusFilter] = useState('all');
 
   const startPlayTransition = () => {
     setPendingPlayPath(`/challenge/${challenge.id}/play`);
@@ -707,11 +648,32 @@ export default function Challenge() {
 
           {activeTab === 'history' ? (
             <section>
-              <h2 className="text-page-title font-bold text-black">도전 기록</h2>
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+                <h2 className="text-page-title font-bold text-black">도전 기록</h2>
+                <div className="flex gap-7" role="tablist" aria-label="도전 기록 상태">
+                  {attemptStatusFilters.map(filter => (
+                    <button
+                      key={filter.value}
+                      type="button"
+                      role="tab"
+                      aria-selected={historyStatusFilter === filter.value}
+                      onClick={() => setHistoryStatusFilter(filter.value)}
+                      className={`cursor-pointer border-b-2 pb-2 text-body-lg font-strong transition-colors ${
+                        historyStatusFilter === filter.value
+                          ? 'border-[#FF4854] text-[#202832]'
+                          : 'border-transparent text-[#7B8491] hover:text-[#FF4854]'
+                      }`}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <ChallengeAttemptHistory
                 sessions={sessions}
                 isLoading={isHistoryLoading && !problemBundleData}
                 onSessionOpen={handleSessionOpen}
+                statusFilter={historyStatusFilter}
               />
             </section>
           ) : null}

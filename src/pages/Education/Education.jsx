@@ -24,16 +24,77 @@ export const articles = [
     readTime: '8분',
     sections: [
       {
-        title: 'AI Red Teaming의 핵심',
-        body: 'AI Red Teaming은 모델이 예상하지 못한 상황에서도 안전하게 동작하는지 확인하기 위한 공격적 검증 활동입니다. 일반적인 보안 점검이 코드와 인프라의 취약점을 찾는 데 집중한다면, AI Red Teaming은 모델의 판단, 거절 정책, 정보 노출 가능성, 위험한 지시 수행 여부를 함께 살펴봅니다.',
+        title: 'AI Red Teaming이 필요한 이유',
+        paragraphs: [
+          '생성형 AI는 사용자의 질문에 답하거나 문서를 작성하는 것을 넘어, 검색·메일·데이터베이스·외부 도구와 연결되어 다양한 업무를 수행하고 있습니다.',
+          '그러나 AI가 할 수 있는 일이 많아질수록 잘못된 응답이나 예상하지 못한 행동이 미치는 영향도 커집니다. 공격자는 의도적으로 AI의 제한을 우회하려 할 수 있고, 정상적인 사용자 입력도 시스템 지시와 충돌할 수 있습니다.',
+          'AI Red Teaming은 이러한 문제를 실제 공격자의 관점에서 미리 점검하는 활동입니다.',
+        ],
       },
       {
-        title: '왜 필요한가요?',
-        body: 'LLM은 자연어를 통해 동작하기 때문에 입력 방식에 따라 결과가 크게 달라질 수 있습니다. 겉보기에는 평범한 요청이라도 문맥을 쌓거나 역할을 바꾸거나 규칙을 재해석하게 만들면 안전 정책이 흔들릴 수 있습니다. 이런 실패 지점을 미리 찾는 것이 레드팀 평가의 목적입니다.',
+        title: '일반 보안 테스트와 무엇이 다른가요?',
+        paragraphs: [
+          '기존 보안 테스트는 인증 우회, 권한 상승, 데이터 유출과 같은 소프트웨어 취약점을 주로 확인합니다.',
+          'AI Red Teaming은 여기에 더해 다음과 같은 AI 특유의 문제를 점검합니다.',
+        ],
+        bullets: [
+          '금지된 요청에 응답하는지',
+          '시스템 프롬프트가 노출되는지',
+          '사용자의 지시가 안전 정책보다 우선되는지',
+          '외부 문서에 포함된 악성 지시를 따르는지',
+          '사실이 아닌 정보를 확신하는 것처럼 생성하는지',
+          '연결된 도구를 잘못 호출하거나 과도한 권한을 사용하는지',
+        ],
+        closing:
+          '즉, 코드의 취약점뿐 아니라 모델의 판단과 행동 방식도 테스트 대상이 됩니다.',
       },
       {
-        title: 'ARENA에서 배우는 방식',
-        body: 'ARENA는 실제 공격 시나리오를 Path와 Challenge 형태로 나누어 제공합니다. 사용자는 AI와 대화하며 목표를 달성해보고, 실패와 성공 기록을 바탕으로 어떤 프롬프트가 위험하거나 효과적인지 직접 익힐 수 있습니다.',
+        title: '어떤 방식으로 테스트하나요?',
+        paragraphs: [
+          '테스터는 정상적인 질문부터 시작해 표현, 맥락, 역할, 언어를 조금씩 변경하며 모델의 반응을 살펴봅니다.',
+          '예를 들어 직접적으로 거절되는 요청을 가상의 상황으로 바꾸거나, 여러 단계로 나누어 질문하거나, 외부 문서 안에 숨겨진 지시를 모델이 따르는지 확인할 수 있습니다.',
+          '중요한 점은 단순히 모델을 속이는 것이 아닙니다. 어떤 조건에서 안전장치가 약해지는지 발견하고, 같은 문제가 다시 발생하지 않도록 개선하는 것이 목적입니다.',
+        ],
+      },
+      {
+        title: '주요 점검 영역',
+        paragraphs: ['AI Red Teaming에서는 일반적으로 다음 영역을 살펴봅니다.'],
+        topics: [
+          {
+            title: '안전 정책 우회',
+            body: '모델이 유해하거나 제한된 요청에 응답하는지 확인합니다.',
+          },
+          {
+            title: '프롬프트 인젝션',
+            body: '사용자 입력이나 외부 문서가 기존 시스템 지시를 덮어쓰는지 점검합니다.',
+          },
+          {
+            title: '민감정보 보호',
+            body: '개인정보, 내부 문서, 시스템 프롬프트 등이 노출되는지 확인합니다.',
+          },
+          {
+            title: '환각과 신뢰성',
+            body: '근거가 없는 답변을 사실처럼 생성하는지 평가합니다.',
+          },
+          {
+            title: '에이전트와 도구 사용',
+            body: 'AI가 파일 삭제, 메일 전송, 코드 실행 등의 작업을 적절한 권한과 절차에 따라 수행하는지 점검합니다.',
+          },
+        ],
+      },
+      {
+        title: '테스트 결과는 어떻게 활용하나요?',
+        paragraphs: [
+          '발견된 문제는 단순히 성공과 실패로만 기록하지 않습니다. 공격에 사용된 입력, 모델의 응답, 발생 조건, 영향 범위, 재현 가능성 등을 함께 정리해야 합니다.',
+          '이후 시스템 프롬프트 개선, 입력 필터링, 출력 검증, 권한 분리, 사용자 승인 절차 등의 대응책을 적용합니다. 개선 후에는 동일한 테스트를 다시 수행해 문제가 실제로 해결되었는지 확인합니다.',
+        ],
+      },
+      {
+        title: '마무리',
+        paragraphs: [
+          'AI Red Teaming은 AI가 완벽하지 않다는 사실을 확인하는 작업이 아닙니다. AI 시스템이 어떤 상황에서 실패할 수 있는지 구체적으로 발견하고, 실제 서비스에서 발생할 위험을 줄이는 과정입니다.',
+          '생성형 AI가 중요한 업무와 연결될수록 배포 전 테스트뿐 아니라 운영 중 반복적인 점검도 필요합니다.',
+        ],
       },
     ],
     quiz: {
@@ -492,7 +553,36 @@ function EducationDetail({ article }) {
           {article.sections.map(section => (
             <section key={section.title}>
               <h2 className="text-section-title font-bold text-[#151A21]">{section.title}</h2>
-              <p className="mt-5 text-body-lg font-medium text-[#4D5968]">{section.body}</p>
+              {section.body ? (
+                <p className="mt-5 text-body-lg font-medium text-[#4D5968]">{section.body}</p>
+              ) : null}
+              {section.paragraphs ? (
+                <div className="mt-5 space-y-4 text-body-lg font-medium text-[#4D5968]">
+                  {section.paragraphs.map(paragraph => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              ) : null}
+              {section.bullets ? (
+                <ul className="mt-5 list-disc space-y-2 pl-6 text-body-lg font-medium text-[#4D5968] marker:text-[#FF4854]">
+                  {section.bullets.map(item => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
+              {section.topics ? (
+                <div className="mt-6 space-y-5">
+                  {section.topics.map(topic => (
+                    <div key={topic.title}>
+                      <h3 className="text-body-lg font-bold text-[#202832]">{topic.title}</h3>
+                      <p className="mt-1 text-body-lg font-medium text-[#4D5968]">{topic.body}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+              {section.closing ? (
+                <p className="mt-5 text-body-lg font-medium text-[#4D5968]">{section.closing}</p>
+              ) : null}
             </section>
           ))}
         </div>
