@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 
 import { Container } from './LandingPage.primitives';
 import ArenaOpeningHeroArt from './ArenaOpeningHeroArt';
@@ -9,6 +9,7 @@ import NeuroHeroBackground from './NeuroHeroBackground';
 export default function HeroSection({ onVisibilityChange }) {
   const heroRef = useRef(null);
   const [showShaderBackground, setShowShaderBackground] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const isHeroInView = useInView(heroRef, {
     margin: '-15% 0px -55% 0px',
@@ -171,6 +172,30 @@ export default function HeroSection({ onVisibilityChange }) {
           </motion.div>
         </div>
       </Container>
+
+      <motion.a
+        href="#landing-intro"
+        aria-label="다음 섹션으로 이동"
+        className="group absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/55 transition-colors hover:text-white sm:bottom-8 [@media(max-height:720px)]:hidden"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 2.1, ease: 'easeOut' }}
+      >
+        <span className="text-caption font-strong uppercase tracking-[0.28em]">Scroll</span>
+        <span className="flex h-10 w-6 justify-center rounded-full border border-white/35 pt-2 transition-colors group-hover:border-white/70">
+          <motion.span
+            className="h-1.5 w-1.5 rounded-full bg-[#FF4854]"
+            animate={shouldReduceMotion ? undefined : { y: [0, 13, 0], opacity: [1, 0.35, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </span>
+        <motion.span
+          animate={shouldReduceMotion ? undefined : { y: [0, 4, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <ChevronDown className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
+        </motion.span>
+      </motion.a>
     </section>
   );
 }

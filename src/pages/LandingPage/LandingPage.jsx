@@ -53,7 +53,7 @@ export default function LandingPage() {
           edgeFadeClassName="from-[#050608]"
         />
       </div> */}
-      <section className="bg-white px-5 py-14 text-center sm:py-20">
+      <section id="landing-intro" className="scroll-mt-16 bg-white px-5 py-14 text-center sm:py-20">
         <p className="text-body font-strong uppercase tracking-[0.24em] text-[#ff4854]">
           AI Red Teaming Evaluation Next-gen AI
         </p>
