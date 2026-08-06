@@ -44,7 +44,7 @@ export default function HeroSection({ onVisibilityChange }) {
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(255,72,84,0.06),transparent_30%)]" />
 
-      <Container className="relative w-full py-20 sm:py-24 lg:py-26">
+      <Container className="relative w-full -translate-y-6 py-20 sm:-translate-y-8 sm:py-24 lg:py-26 [@media(max-height:720px)]:-translate-y-10">
         <div className="grid items-center gap-12">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -176,7 +176,7 @@ export default function HeroSection({ onVisibilityChange }) {
       <motion.a
         href="#landing-intro"
         aria-label="다음 섹션으로 이동"
-        className="group absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/55 transition-colors hover:text-white sm:bottom-8 [@media(max-height:720px)]:hidden"
+        className="group absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/55 transition-colors hover:text-white sm:bottom-8 [@media(max-height:720px)]:bottom-3"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 2.1, ease: 'easeOut' }}
