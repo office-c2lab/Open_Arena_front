@@ -107,8 +107,8 @@ export const articles = [
         ],
       },
     ],
-    relatedLearning: {
-      title: '관련 학습으로 이동',
+    relatedTutorial: {
+      title: '구성요소 튜토리얼',
       description:
         'AI Red Teaming의 기본 흐름을 이해했다면, 구성요소 튜토리얼에서 문제, 모델, 채팅, 제출, Judge 등 학습 환경을 이루는 요소를 직접 살펴봅니다.',
       buttonLabel: '튜토리얼 풀기',
@@ -199,13 +199,6 @@ export const articles = [
         ],
       },
     ],
-    relatedLearning: {
-      title: '다음 학습: 토큰과 컨텍스트',
-      description:
-        '지시와 대화 맥락의 관계를 이해했다면, 다음 학습에서 토큰과 컨텍스트가 모델의 응답에 미치는 영향을 살펴봅니다.',
-      buttonLabel: '다음 학습 보기',
-      to: '/education/tokens-context',
-    },
     quiz: {
       question: 'LLM의 지시 처리 방식에 대한 설명으로 가장 적절한 것은 무엇인가요?',
       options: [
@@ -282,8 +275,8 @@ export const articles = [
         ],
       },
     ],
-    relatedLearning: {
-      title: '관련 학습으로 이동',
+    relatedTutorial: {
+      title: '채팅과 토큰 튜토리얼',
       description:
         '채팅과 토큰 튜토리얼에서 메시지를 주고받을 때 입력과 출력 토큰이 어떻게 표시되고, 대화가 이어질수록 사용량이 어떻게 변하는지 확인합니다.',
       buttonLabel: '튜토리얼 풀기',
@@ -387,8 +380,8 @@ export const articles = [
         ],
       },
     ],
-    relatedLearning: {
-      title: '관련 학습으로 이동',
+    relatedTutorial: {
+      title: '저지 실패 튜토리얼',
       description:
         '제품 내부의 저지 실패 튜토리얼에서 챌린지 목표를 충족하지 못한 응답을 제출하고, 자동 평가 모델의 판정 실패가 어떤 의미인지 확인합니다.',
       buttonLabel: '튜토리얼 풀기',
@@ -499,13 +492,6 @@ export const articles = [
         ],
       },
     ],
-    relatedLearning: {
-      title: '다음 학습: Jailbreak',
-      description:
-        'Prompt Injection의 지시 충돌 원리를 이해했다면, 다음 학습에서 모델의 안전 정책을 우회하려는 Jailbreak의 특징과 차이를 살펴봅니다.',
-      buttonLabel: '다음 학습 보기',
-      to: '/education/jailbreak',
-    },
     quiz: {
       question: 'Prompt Injection의 핵심적인 발생 원인은 무엇인가요?',
       options: [
@@ -609,13 +595,6 @@ export const articles = [
         ],
       },
     ],
-    relatedLearning: {
-      title: '다음 학습: AI 보안 평가',
-      description:
-        'Jailbreak의 우회 방식을 이해했다면, 다음 학습에서 AI 시스템의 보안 평가 목표와 결과를 체계적으로 정리하는 방법을 살펴봅니다.',
-      buttonLabel: '다음 학습 보기',
-      to: '/education/ai-security-evaluation',
-    },
     quiz: {
       question: 'Jailbreak 시도의 성공 여부를 판단하는 기준으로 가장 적절한 것은 무엇인가요?',
       options: [
@@ -719,8 +698,8 @@ export const articles = [
         ],
       },
     ],
-    relatedLearning: {
-      title: '관련 학습으로 이동',
+    relatedTutorial: {
+      title: '저지 성공 튜토리얼',
       description:
         '제품 내부의 저지 성공 튜토리얼에서 챌린지 성공 조건을 충족한 응답을 제출하고, LLM Judge가 어떤 근거로 판정 통과를 결정하는지 확인합니다.',
       buttonLabel: '튜토리얼 풀기',
@@ -997,6 +976,8 @@ function EducationQuiz({ quiz }) {
 
 function EducationDetail({ article }) {
   const navigate = useNavigate();
+  const articleIndex = articles.findIndex(item => item.id === article.id);
+  const nextArticle = articles[articleIndex + 1] ?? null;
 
   return (
     <article className="mx-auto w-full max-w-[900px] bg-white pb-16">
@@ -1135,38 +1116,61 @@ function EducationDetail({ article }) {
 
         <section className="mt-14 flex flex-wrap gap-x-10 gap-y-5 border-t border-[#E3E6EB] pt-8 sm:mt-16">
           <div className="w-full">
-            <h2 className="text-section-title font-bold text-[#151A21]">
-              {article.relatedLearning?.title ??
-                (article.id === 'ai-red-teaming' ? '관련 학습으로 이동' : '다음 단계')}
-            </h2>
-            <p className="mt-3 text-body-lg font-medium text-[#4D5968]">
-              {article.relatedLearning ? (
-                article.relatedLearning.description
-              ) : article.id === 'ai-red-teaming' ? (
-                <>
-                  AI Red Teaming의 기본 흐름을 이해했다면, 구성요소 튜토리얼에서 문제,
-                  모델, 채팅, 제출, Judge 등 학습 환경을 이루는 요소를 직접 살펴봅니다.
-                </>
-              ) : (
-                <>
-                  개념을 이해했다면 튜토리얼에서 기본 흐름을 익히고, 챌린지에서 직접 AI Red
-                  Teaming 시나리오를 실습해보세요.
-                </>
-              )}
-            </p>
+            <h2 className="text-section-title font-bold text-[#151A21]">다음 학습</h2>
+            {nextArticle ? (
+              <>
+                <h3 className="mt-3 text-body-lg font-bold text-[#202832]">
+                  {nextArticle.title}
+                </h3>
+                <p className="mt-2 text-body-lg font-medium text-[#4D5968]">
+                  {nextArticle.summary}
+                </p>
+              </>
+            ) : (
+              <p className="mt-3 text-body-lg font-medium text-[#4D5968]">
+                다음 학습 자료를 준비하고 있습니다.
+              </p>
+            )}
           </div>
-          <button
-            type="button"
-            onClick={() => navigate(article.relatedLearning?.to ?? '/tutorial')}
-            className="group flex cursor-pointer items-center gap-3 text-body-lg font-bold text-[#151A21] transition hover:text-[#FF4854]"
-          >
-            {article.relatedLearning?.buttonLabel ?? '튜토리얼 풀기'}
-            <ChevronRight
-              className="h-6 w-6 shrink-0 self-center transition group-hover:translate-x-1"
-              strokeWidth={2.4}
-            />
-          </button>
+          {nextArticle ? (
+            <button
+              type="button"
+              onClick={() => navigate(`/education/${nextArticle.id}`)}
+              className="group flex cursor-pointer items-center gap-3 text-body-lg font-bold text-[#151A21] transition hover:text-[#FF4854]"
+            >
+              다음 학습 보기
+              <ChevronRight
+                className="h-6 w-6 shrink-0 self-center transition group-hover:translate-x-1"
+                strokeWidth={2.4}
+              />
+            </button>
+          ) : null}
         </section>
+
+        {article.relatedTutorial ? (
+          <section className="mt-8 flex flex-wrap gap-x-10 gap-y-5 border-t border-[#E3E6EB] pt-8">
+            <div className="w-full">
+              <h2 className="text-section-title font-bold text-[#151A21]">관련 튜토리얼</h2>
+              <h3 className="mt-3 text-body-lg font-bold text-[#202832]">
+                {article.relatedTutorial.title}
+              </h3>
+              <p className="mt-2 text-body-lg font-medium text-[#4D5968]">
+                {article.relatedTutorial.description}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate(article.relatedTutorial.to)}
+              className="group flex cursor-pointer items-center gap-3 text-body-lg font-bold text-[#151A21] transition hover:text-[#FF4854]"
+            >
+              {article.relatedTutorial.buttonLabel}
+              <ChevronRight
+                className="h-6 w-6 shrink-0 self-center transition group-hover:translate-x-1"
+                strokeWidth={2.4}
+              />
+            </button>
+          </section>
+        ) : null}
       </div>
     </article>
   );
