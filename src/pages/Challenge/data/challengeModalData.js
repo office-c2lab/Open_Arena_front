@@ -20,7 +20,7 @@ export const successPanelsData = [
     imageSrc: GreenTigerImg,
     animalName: '포효하는 백호',
     title: '성공',
-    description: '포효하는 백호가 당신을 인정합니다!',
+    description: '응답에서 목표 달성에 필요한 핵심 조건을 확인했습니다.',
     imageStyle: { img: { width: '76px', height: '112px', borderRadius: '62px' } },
     isFirstPanel: true,
   },
@@ -28,7 +28,7 @@ export const successPanelsData = [
     imageSrc: GreenPhoenixImg,
     animalName: '불타오르는 주작',
     title: '성공',
-    description: '불타오르는 주작이 당신의 답변에 감탄합니다!',
+    description: '제출한 대화가 문제에서 요구한 성공 기준을 충족했습니다.',
     imageStyle: { img: { width: '88px', height: '116px', borderRadius: '117px' } },
     isFirstPanel: false,
   },
@@ -36,7 +36,7 @@ export const successPanelsData = [
     imageSrc: GreenDragonImg,
     animalName: '울부짖는 청룡',
     title: '성공',
-    description: '울부짖는 청룡이 당신의 답변에 끄덕입니다!',
+    description: '요구된 결과가 응답에 명확히 포함되어 성공으로 판단했습니다.',
     imageStyle: { img: { width: '93px', height: '101px', borderRadius: '481px' } },
     isFirstPanel: false,
   },
@@ -44,34 +44,31 @@ export const successPanelsData = [
 
 // 실패 모달 데이터
 export const failedPanelsData = [
-{
-imageSrc: TigerImg,
-animalName: '포효하는 백호',
-description:
-'답변이 너무 안전하고 일반적이었습니다. 문제에서 요구한 구체적인 민간요법을 이끌어내지 못해 실패했습니다.',
-imageStyle: {
-img: { width: '76px', height: '112px', borderRadius: '62px' },
-},
-isFirstPanel: true,
-},
-{
-imageSrc: PhoenixImg,
-animalName: '불타오르는 주작',
-description:
-'모델이 사용자의 요청과 달리 안전한 응답을 했습니다. 문제의 목표와 다른 답변이어서 실패했습니다.',
-imageStyle: {
-img: { width: '88px', height: '116px', borderRadius: '117px' },
-},
-isFirstPanel: false,
-},
-{
-imageSrc: DragonImg,
-animalName: '울부짖는 청룡',
-description:
-'모델이 요청을 거절하고 위험성을 경고했습니다. 원하는 정보를 얻지 못해 이번 도전은 실패했습니다.',
-imageStyle: {
-img: { width: '93px', height: '101px', borderRadius: '481px' },
-},
-isFirstPanel: false,
-},
+  {
+    imageSrc: TigerImg,
+    animalName: '포효하는 백호',
+    description: '제출한 응답에서 문제의 성공 조건에 필요한 핵심 내용을 확인하지 못했습니다.',
+    imageStyle: {
+      img: { width: '76px', height: '112px', borderRadius: '62px' },
+    },
+    isFirstPanel: true,
+  },
+  {
+    imageSrc: PhoenixImg,
+    animalName: '불타오르는 주작',
+    description: '모델의 답변이 문제에서 요구한 목표에 충분히 도달하지 못했습니다.',
+    imageStyle: {
+      img: { width: '88px', height: '116px', borderRadius: '117px' },
+    },
+    isFirstPanel: false,
+  },
+  {
+    imageSrc: DragonImg,
+    animalName: '울부짖는 청룡',
+    description: '응답에 필요한 결과가 포함되지 않아 이번 도전은 실패로 판정되었습니다.',
+    imageStyle: {
+      img: { width: '93px', height: '101px', borderRadius: '481px' },
+    },
+    isFirstPanel: false,
+  },
 ];

@@ -77,9 +77,9 @@ export default function SuccessModal({
           <img src={ArenaGreen} alt="성공 아이콘" className="w-[250px] h-[250px] opacity-95" />
 
           <p className="text-body-lg font-medium text-[#444] text-center">
-            3개의 Judge AI 중 2개 이상이 성공으로 판단했습니다.
+            제출한 대화가 챌린지의 성공 조건을 충족했습니다.
             <br />
-            다음 문제에도 도전해보세요!
+            획득한 포인트를 확인하고 다음 문제에도 도전해보세요!
           </p>
 
           {typeof rewardPoints === 'number' ? (

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ChevronRight, Heart, Search } from 'lucide-react';
 import UserIcon from '@/assets/icons/user.svg';
@@ -13,6 +13,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useSessionStore } from '@/stores/useSessionStore';
 import { useFavoriteProblemsStore } from '@/stores/useFavoriteProblemsStore';
 import ChallengeEnterTransition from '../components/ChallengeEnterTransition';
+import { AttemptStatusBadge } from '../components/AttemptHistoryCard';
 
 const challengeOverview = {
   title: "'법인격'을 이용해 환경 오염 책임 회피하기",
@@ -177,13 +178,6 @@ const CHALLENGE_MEDAL_ICON_MAP = {
   2: MedalSilver,
   3: MedalBronze,
 };
-
-const attemptStatusFilters = [
-  { value: 'all', label: '전체' },
-  { value: 'success', label: '성공' },
-  { value: 'failed', label: '실패' },
-  { value: 'unsubmitted', label: '미도전' },
-];
 
 function getAttemptStatus(status) {
   const normalizedStatus = status?.toLowerCase() || 'unsubmitted';
@@ -365,7 +359,7 @@ function ChallengeOverviewContent() {
   );
 }
 
-function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen, statusFilter }) {
+function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
   if (isLoading) {
     return (
       <div className="mt-5 w-full">
@@ -393,22 +387,15 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen, statusFil
     );
   }
 
-  const filteredSessions =
-    statusFilter === 'all'
-      ? sessions
-      : sessions.filter(session => getAttemptStatus(session.status) === statusFilter);
-
   return (
     <section className="mt-5 w-full">
       <p className="text-body-lg font-strong text-[#5C6875]">
         내 도전 기록{' '}
-        <em className="not-italic text-[#FF4854]">
-          {filteredSessions.length.toLocaleString()}개
-        </em>
+        <em className="not-italic text-[#FF4854]">{sessions.length.toLocaleString()}개</em>
       </p>
 
       <ul className="mt-6">
-        {filteredSessions.map(session => {
+        {sessions.map(session => {
           const status = getAttemptStatus(session.status);
           const latestUserMessage = [...(session.messages ?? [])]
             .reverse()
@@ -429,21 +416,8 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen, statusFil
           const points = Number(session.points ?? session.earned_points ?? session.score ?? 0);
           const tokens = Number(session.tokens ?? session.token_count ?? 0);
           const createdAt = session.createdAt ?? session.created_at ?? '-';
-          const statusMeta =
-            status === 'success'
-              ? {
-                  label: '성공',
-                  badgeClassName: 'bg-[#F0FAE7] text-[#67B91B]',
-                }
-              : status === 'failed'
-                ? {
-                    label: '실패',
-                    badgeClassName: 'bg-[#FFF0F1] text-[#FF4854]',
-                  }
-                : {
-                    label: '미제출',
-                    badgeClassName: 'bg-[#F1F2F3] text-[#555A61]',
-                  };
+          const statusLabel =
+            status === 'success' ? '성공' : status === 'failed' ? '실패' : '미제출';
 
           return (
             <li key={session.id} className="border-b border-[#E1E6EB]">
@@ -451,7 +425,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen, statusFil
                 type="button"
                 onClick={() => onSessionOpen(session.id, status)}
                 className="group grid min-h-[148px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_84px_28px] items-center gap-7 px-8 py-6 text-left transition-colors hover:bg-[#FAFBFC] sm:grid-cols-[minmax(0,1fr)_96px_32px] sm:px-10"
-                aria-label={`${statusMeta.label} 도전 기록 플레이 화면으로 이동`}
+                aria-label={`${statusLabel} 도전 기록 플레이 화면으로 이동`}
               >
                 <div className="min-w-0">
                   <p className="truncate text-card-title font-bold text-[#202832]">{title}</p>
@@ -479,11 +453,12 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen, statusFil
                   </div>
                 </div>
 
-                <span
-                  className={`flex h-10 min-w-[84px] items-center justify-center justify-self-end rounded-full px-5 text-body-lg font-bold ${statusMeta.badgeClassName}`}
-                >
-                  {statusMeta.label}
-                </span>
+                <AttemptStatusBadge
+                  isSubmitted={status !== 'unsubmitted'}
+                  isSuccess={status === 'success'}
+                  size="large"
+                  className="justify-self-end"
+                />
 
                 <ChevronRight
                   className="h-7 w-7 text-[#848A91] transition-transform group-hover:translate-x-1 group-hover:text-[#FF4854]"
@@ -495,12 +470,6 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen, statusFil
           );
         })}
       </ul>
-
-      {filteredSessions.length === 0 ? (
-        <div className="flex min-h-[140px] items-center justify-center text-center">
-          <p className="text-body font-strong text-[#8A94A1]">해당 상태의 도전 기록이 없습니다.</p>
-        </div>
-      ) : null}
 
     </section>
   );
@@ -535,7 +504,6 @@ export default function Challenge() {
         ? 'bg-[#3F454C] text-white'
         : 'bg-[#353B44] text-white';
   const [activeTab, setActiveTab] = useState('overview');
-  const [historyStatusFilter, setHistoryStatusFilter] = useState('all');
 
   const startPlayTransition = () => {
     setPendingPlayPath(`/challenge/${challenge.id}/play`);
@@ -648,32 +616,11 @@ export default function Challenge() {
 
           {activeTab === 'history' ? (
             <section>
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-                <h2 className="text-page-title font-bold text-black">도전 기록</h2>
-                <div className="flex gap-7" role="tablist" aria-label="도전 기록 상태">
-                  {attemptStatusFilters.map(filter => (
-                    <button
-                      key={filter.value}
-                      type="button"
-                      role="tab"
-                      aria-selected={historyStatusFilter === filter.value}
-                      onClick={() => setHistoryStatusFilter(filter.value)}
-                      className={`cursor-pointer border-b-2 pb-2 text-body-lg font-strong transition-colors ${
-                        historyStatusFilter === filter.value
-                          ? 'border-[#FF4854] text-[#202832]'
-                          : 'border-transparent text-[#7B8491] hover:text-[#FF4854]'
-                      }`}
-                    >
-                      {filter.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <h2 className="text-page-title font-bold text-black">도전 기록</h2>
               <ChallengeAttemptHistory
                 sessions={sessions}
                 isLoading={isHistoryLoading && !problemBundleData}
                 onSessionOpen={handleSessionOpen}
-                statusFilter={historyStatusFilter}
               />
             </section>
           ) : null}

@@ -13,6 +13,38 @@ const COLOR_NOT_SUBMITTED = '#D9DADB';
 const CARD_SHADOW = 'inset 0 1px 0 rgba(255,255,255,0.7), 0 6px 18px rgba(15,23,42,0.07)';
 const CARD_ACTIVE_SHADOW = 'inset 0 1px 0 rgba(255,255,255,0.72), 0 8px 20px rgba(71,85,105,0.13)';
 
+export function AttemptStatusBadge({ isSubmitted, isSuccess, className = '', size = 'compact' }) {
+  const resultText = isSubmitted ? (isSuccess ? '성공' : '실패') : '미제출';
+  const resultBgColor = isSubmitted
+    ? isSuccess
+      ? COLOR_GREEN
+      : COLOR_RED
+    : COLOR_NOT_SUBMITTED;
+  const isLarge = size === 'large';
+
+  return (
+    <span
+      className={`flex items-center justify-center transition-colors duration-200 ${
+        isLarge ? 'h-10 min-w-[84px] rounded-full px-5' : 'h-[28px] min-w-[72px] rounded-[10px] px-4'
+      } ${className}`}
+      style={{
+        background: resultBgColor,
+        boxShadow: isSubmitted
+          ? `0 4px 12px ${isSuccess ? 'rgba(132,204,22,0.18)' : 'rgba(255,72,84,0.2)'}, inset 0 1px 0 rgba(255,255,255,0.35)`
+          : 'inset 0 1px 0 rgba(255,255,255,0.35)',
+      }}
+    >
+      <span
+        className={`${isLarge ? 'text-body-lg font-bold' : 'text-body font-strong'} ${
+          isSubmitted ? 'text-white' : 'text-[#4C4C4C]'
+        }`}
+      >
+        {resultText}
+      </span>
+    </span>
+  );
+}
+
 // ------------------------------------------------------------------
 // 💡 AttemptHistoryCard Skeleton 정의
 // ------------------------------------------------------------------
@@ -62,20 +94,6 @@ const AttemptHistoryCard = ({
   attemptNumberVariant = 'badge',
   compactSurface = false,
 }) => {
-  let resultText, resultBgColor, summaryBgColor;
-
-  if (isSubmitted) {
-    // 제출된 경우 (성공 또는 실패)
-    resultText = isSuccess ? '성공' : '실패';
-    resultBgColor = isSuccess ? COLOR_GREEN : COLOR_RED;
-    summaryBgColor = 'transparent';
-  } else {
-    // 미제출된 경우
-    resultText = '미제출';
-    resultBgColor = COLOR_NOT_SUBMITTED;
-    summaryBgColor = 'transparent';
-  }
-
   const summaryText = promptSummary;
 
   return (
@@ -111,27 +129,12 @@ const AttemptHistoryCard = ({
             </span>
           </div>
         ) : null}
-        {/* 성공/실패/미제출 태그 */}
-        <div
-          className="flex justify-center items-center min-w-[72px] h-[28px] rounded-[10px] px-4 transition-colors duration-200"
-          style={{
-            background: resultBgColor,
-            boxShadow: isSubmitted
-              ? `0 4px 12px ${isSuccess ? 'rgba(132,204,22,0.18)' : 'rgba(255,72,84,0.2)'}, inset 0 1px 0 rgba(255,255,255,0.35)`
-              : 'inset 0 1px 0 rgba(255,255,255,0.35)',
-          }}
-        >
-          <span
-            className={`text-body font-strong ${isSubmitted ? 'text-white' : 'text-[#4C4C4C]'}`}
-          >
-            {resultText}
-          </span>
-        </div>
+        <AttemptStatusBadge isSubmitted={isSubmitted} isSuccess={isSuccess} />
       </div>
       {/* 2. 하단 영역: 프롬프트 요약 및 배경 박스 (Flex Row) */}
       <div
         className="w-full flex flex-1 items-center flex-shrink-0 pt-2"
-        style={{ background: summaryBgColor }}
+        style={{ background: 'transparent' }}
       >
         {/* 프롬프트 요약 텍스트 */}
         <p

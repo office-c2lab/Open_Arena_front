@@ -98,6 +98,7 @@ export default function AppRouter() {
         <Route path="/education" element={<Education />} />
         <Route path="/education/:articleId" element={<Education />} />
         <Route path="/tutorial" element={<TutorialList />} />
+        <Route path="/tutorial/11" element={<Navigate to="/challenge/1" replace />} />
         <Route path="/tutorial/:tutorialId" element={<Tutorial />} />
         <Route path="/kategorie" element={<Kategorie />} />
       </Route>

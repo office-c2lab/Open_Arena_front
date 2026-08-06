@@ -290,7 +290,7 @@ export default function TutorialList() {
 
   const handleOpenTutorial = useCallback(
     tutorialId => {
-      navigate(`/tutorial/${tutorialId}`);
+      navigate(tutorialId === 11 ? '/challenge/1' : `/tutorial/${tutorialId}`);
     },
     [navigate]
   );

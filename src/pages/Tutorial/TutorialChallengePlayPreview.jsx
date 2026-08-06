@@ -11,7 +11,6 @@ import SuccessModal from '@/pages/Challenge/ChallengeModal/SuccesModal';
 import ArenaJudgeLoader from '@/components/Loading/ArenaJudgeLoader';
 import { failedPanelsData } from '@/pages/Challenge/data/challengeModalData';
 import { TABS } from '@/pages/Challenge/data/challengeData';
-import ChallengeBg from '@/assets/images/chalbg.png';
 
 const PREVIEW_HEADER_INFO = {
   title: '튜토리얼',
@@ -585,11 +584,13 @@ export function TutorialJudgeSuccessInteractivePreview() {
 
 export default function TutorialChallengePlayPreview() {
   return (
-    <div className="relative flex h-full min-w-[1120px] w-full gap-6 overflow-hidden bg-[#E5EAF0] p-6">
+    <div className="relative flex h-full min-w-[1120px] w-full gap-6 overflow-hidden bg-[#E2E5E9] p-6">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.55]"
-        style={{ backgroundImage: `url(${ChallengeBg})` }}
-      />
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        aria-hidden="true"
+      >
+        <img src={ArenaIcon} alt="" className="h-[168px] w-auto opacity-[0.12] grayscale" />
+      </div>
       <TutorialPreviewLeftPanel />
       <TutorialPreviewCenterPanel />
     </div>

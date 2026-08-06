@@ -1,7 +1,7 @@
 // src/features/Challenge/components/ChallengeInfoPanel.jsx
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import ApiInfoPanel from './ApiInfoPanel';
 import AttemptHistoryCard from './AttemptHistoryCard';
 import Skeleton from '../../../components/Skeleton/Skeleton';
@@ -14,13 +14,6 @@ const OVERVIEW_DOT_COLOR_CLASS_MAP = {
   success: 'bg-[#079C4C]',
   failure: 'bg-[#FF4854]',
 };
-
-const HISTORY_STATUS_FILTERS = [
-  { value: 'all', label: '전체' },
-  { value: 'success', label: '성공' },
-  { value: 'failed', label: '실패' },
-  { value: 'unsubmitted', label: '미제출' },
-];
 
 const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
   <div className="flex flex-col flex-shrink-0 w-[340px] h-full animate-pulse">
@@ -72,25 +65,8 @@ export default function ChallengeInfoPanel({
 }) {
   const navigate = useNavigate();
   const panelRef = useRef(null);
-  const filterDropdownRef = useRef(null);
-  const [historyStatusFilter, setHistoryStatusFilter] = useState('all');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { sessionId: currentSessionId, setSessionId, setSessionStatus } = useSessionStore();
   const lineHeight = 1.75;
-  const selectedStatusFilter =
-    HISTORY_STATUS_FILTERS.find(filter => filter.value === historyStatusFilter) ??
-    HISTORY_STATUS_FILTERS[0];
-
-  useEffect(() => {
-    const handleClickOutside = event => {
-      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const historyItems = useMemo(
     () =>
@@ -119,14 +95,6 @@ export default function ChallengeInfoPanel({
       }),
     [currentSessionId, sessions]
   );
-  const filteredHistoryItems = useMemo(
-    () =>
-      historyStatusFilter === 'all'
-        ? historyItems
-        : historyItems.filter(item => item.status === historyStatusFilter),
-    [historyItems, historyStatusFilter]
-  );
-
   const handleHistoryClick = item => {
     if (!problemId || item.id === currentSessionId) return;
 
@@ -241,53 +209,9 @@ export default function ChallengeInfoPanel({
                   </div>
                 ) : (
                   <div className="flex min-h-0 flex-1 flex-col">
-                    <div className="mb-3 flex flex-shrink-0 justify-end">
-                      <div className="relative w-1/2" ref={filterDropdownRef}>
-                        <button
-                          type="button"
-                          onClick={() => setIsFilterOpen(open => !open)}
-                          aria-haspopup="listbox"
-                          aria-expanded={isFilterOpen}
-                          className="glass-subtle flex h-11 w-full cursor-pointer items-center justify-between rounded-[14px] px-3 text-body-lg font-strong text-[#475569] transition-colors hover:text-[#202832]"
-                        >
-                          <span>{selectedStatusFilter.label}</span>
-                          <ChevronDown
-                            className={`h-4 w-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
-                            strokeWidth={2.4}
-                            aria-hidden="true"
-                          />
-                        </button>
-
-                        {isFilterOpen ? (
-                          <div
-                            className="glass-overlay absolute right-0 top-[52px] z-20 w-full overflow-hidden rounded-[18px] p-1"
-                            role="listbox"
-                            aria-label="도전 기록 상태 필터"
-                          >
-                            {HISTORY_STATUS_FILTERS.map(filter => (
-                              <button
-                                key={filter.value}
-                                type="button"
-                                role="option"
-                                aria-selected={historyStatusFilter === filter.value}
-                                onClick={() => {
-                                  setHistoryStatusFilter(filter.value);
-                                  setIsFilterOpen(false);
-                                }}
-                                className={`flex h-11 w-full cursor-pointer items-center rounded-[14px] px-3 text-left text-body-lg font-strong text-[#475569] transition-colors hover:bg-[#F8FAFC] ${
-                                  historyStatusFilter === filter.value ? 'bg-[#F1F5F9]' : ''
-                                }`}
-                              >
-                                {filter.label}
-                              </button>
-                            ))}
-                          </div>
-                        ) : null}
-                      </div>
-                    </div>
                     <div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
-                      {filteredHistoryItems.length > 0 ? (
-                        filteredHistoryItems.map(item => (
+                      {historyItems.length > 0 ? (
+                        historyItems.map(item => (
                           <AttemptHistoryCard
                             key={item.id}
                             attemptNumber={item.attemptNumber}
@@ -303,9 +227,7 @@ export default function ChallengeInfoPanel({
                       ) : (
                         <div className="flex flex-1 items-center justify-center text-center">
                           <p className="text-body-lg font-medium text-[#475569]">
-                            {historyItems.length > 0
-                              ? '해당 상태의 도전 기록이 없습니다.'
-                              : '아직 시도 기록이 없습니다.'}
+                            아직 시도 기록이 없습니다.
                           </p>
                         </div>
                       )}

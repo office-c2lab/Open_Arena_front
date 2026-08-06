@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Activity, ArrowLeft, ChevronRight, Coins, Flag, Trophy } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Flag } from 'lucide-react';
 import TutorialImage from '@/assets/images/tutorial.png';
 import TutorialElementImage from '@/assets/images/t1.png';
 import TutorialChatTokenImage from '@/assets/images/t2.png';
 import TutorialJudgeFailureImage from '@/assets/images/t3.png';
 import TutorialJudgeSuccessImage from '@/assets/images/t4.png';
-import StartCardBg from '@/assets/images/start_cardbg.png';
-import NoTryCardBg from '@/assets/images/notry.png';
-import ChallengeBg from '@/assets/images/chalbg.png';
 import {
   FailedJudgeModelPreview,
   SuccessJudgeModelPreview,
@@ -88,6 +85,64 @@ const tutorialTabs = {
     { key: 'practice', label: '직접 제출하기' },
   ],
 };
+
+const tutorialTabSummaries = {
+  7: {
+    overview: '챌린지 Play 화면의 전체 구조와 정보·채팅 영역의 배치를 확인합니다.',
+    'challenge-info': '문제 설명과 목표, 성공·실패 조건을 읽는 방법을 익힙니다.',
+    chat: '프롬프트 입력창과 전송·제출 버튼의 역할을 구분합니다.',
+    tokens: '사용 토큰 카드의 위치와 토큰을 확인하는 흐름을 살펴봅니다.',
+  },
+  8: {
+    chat: 'AI와 대화를 시작하고 응답을 바탕으로 다음 프롬프트를 작성합니다.',
+    tokens: '대화가 늘어날 때 사용 토큰이 어떻게 달라지는지 확인합니다.',
+    score: '사용 토큰이 최종 점수에 반영되는 방식을 예시로 알아봅니다.',
+    practice: '프롬프트를 직접 입력하며 채팅과 토큰 변화를 함께 연습합니다.',
+  },
+  9: {
+    result: '실패 모달의 판정과 Judge 피드백을 읽는 방법을 살펴봅니다.',
+    practice: '응답을 직접 제출하고 실패 결과가 표시되는 전체 흐름을 연습합니다.',
+  },
+  10: {
+    result: '성공 모달의 최종 판정과 획득 결과를 확인합니다.',
+    practice: '응답을 직접 제출하고 성공 결과가 표시되는 전체 흐름을 연습합니다.',
+  },
+};
+
+function TutorialGoalRoadmap({ tutorialId, onTabChange }) {
+  const steps = (tutorialTabs[tutorialId] ?? []).filter(tab => tab.key !== 'goals');
+
+  return (
+    <div className="mt-10 max-w-[900px]">
+      <h3 className="text-card-title font-bold text-[#202832]">이 튜토리얼에서 살펴볼 내용</h3>
+      <div className="mt-4 border-y border-[#E1E6EB]">
+        {steps.map((tab, index) => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => onTabChange(tab.key)}
+            className="group grid w-full cursor-pointer grid-cols-[36px_minmax(0,1fr)_28px] items-center gap-4 border-b border-[#E1E6EB] px-2 py-5 text-left transition-colors last:border-b-0 hover:bg-[#FAFBFC] sm:px-4"
+          >
+            <span className="text-body font-bold text-[#FF4854]">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span className="min-w-0">
+              <strong className="block text-body-lg font-bold text-[#202832]">{tab.label}</strong>
+              <span className="mt-1 block text-body font-medium text-[#66717E]">
+                {tutorialTabSummaries[tutorialId]?.[tab.key]}
+              </span>
+            </span>
+            <ChevronRight
+              className="h-6 w-6 text-[#848A91] transition-transform group-hover:translate-x-1 group-hover:text-[#FF4854]"
+              strokeWidth={2.4}
+              aria-hidden="true"
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function TutorialTabNavigation({ tabs, activeTab, onChange }) {
   return (
@@ -208,10 +263,7 @@ function PanelPreviewSection({
 }) {
   const showSteps = title.includes('직접');
   const preview = (
-    <div
-      className="no-scrollbar overflow-x-auto rounded-[16px] bg-cover bg-center bg-no-repeat p-6"
-      style={{ backgroundImage: `url(${ChallengeBg})` }}
-    >
+    <div className="no-scrollbar overflow-x-auto rounded-[16px] bg-[#E2E5E9] p-6">
       <div className={`h-[660px] ${width}`}>{children}</div>
     </div>
   );
@@ -351,7 +403,7 @@ function ChallengePanelPreviews({ activeTab }) {
   );
 }
 
-function ChatTokenGuide({ activeTab }) {
+function ChatTokenGuide({ activeTab, onTabChange }) {
   return (
     <>
       {activeTab === 'goals' ? (
@@ -367,6 +419,7 @@ function ChatTokenGuide({ activeTab }) {
               함께 고려하는 감각을 익힙니다.
             </p>
           </div>
+          <TutorialGoalRoadmap tutorialId={8} onTabChange={onTabChange} />
         </section>
       ) : null}
 
@@ -487,7 +540,7 @@ function ChatTokenGuide({ activeTab }) {
   );
 }
 
-function JudgeFailureGuide({ activeTab }) {
+function JudgeFailureGuide({ activeTab, onTabChange }) {
   return (
     <>
       {activeTab === 'goals' ? (
@@ -503,6 +556,7 @@ function JudgeFailureGuide({ activeTab }) {
               조건을 다음 시도에 반영하는 흐름을 연습합니다.
             </p>
           </div>
+          <TutorialGoalRoadmap tutorialId={9} onTabChange={onTabChange} />
         </section>
       ) : null}
 
@@ -529,10 +583,7 @@ function JudgeFailureGuide({ activeTab }) {
               다음 프롬프트에서 해당 조건을 명확하게 보완해보세요.
             </div>
           </div>
-          <div
-            className="mt-8 rounded-[16px] bg-cover bg-center bg-no-repeat p-6 lg:mt-12"
-            style={{ backgroundImage: `url(${ChallengeBg})` }}
-          >
+          <div className="mt-8 rounded-[16px] bg-[#E2E5E9] p-6 lg:mt-12">
             <FailedJudgeModelPreview bare />
           </div>
         </section>
@@ -569,7 +620,7 @@ function JudgeFailureGuide({ activeTab }) {
   );
 }
 
-function JudgeSuccessGuide({ activeTab }) {
+function JudgeSuccessGuide({ activeTab, onTabChange }) {
   return (
     <>
       {activeTab === 'goals' ? (
@@ -585,15 +636,13 @@ function JudgeSuccessGuide({ activeTab }) {
               만드는 방법을 생각해봅니다.
             </p>
           </div>
+          <TutorialGoalRoadmap tutorialId={10} onTabChange={onTabChange} />
         </section>
       ) : null}
 
       {activeTab === 'result' ? (
         <section className="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-center lg:gap-14">
-          <div
-            className="mt-8 rounded-[16px] bg-cover bg-center bg-no-repeat p-6 lg:mt-12"
-            style={{ backgroundImage: `url(${ChallengeBg})` }}
-          >
+          <div className="mt-8 rounded-[16px] bg-[#E2E5E9] p-6 lg:mt-12">
             <SuccessJudgeModelPreview bare />
           </div>
           <div className="flex flex-col gap-6 lg:pl-6">
@@ -651,7 +700,7 @@ function JudgeSuccessGuide({ activeTab }) {
   );
 }
 
-function ChallengeElementGuide({ activeTab }) {
+function ChallengeElementGuide({ activeTab, onTabChange }) {
   return (
     <>
       {activeTab === 'goals' ? (
@@ -667,6 +716,7 @@ function ChallengeElementGuide({ activeTab }) {
               흐름을 이해합니다.
             </p>
           </div>
+          <TutorialGoalRoadmap tutorialId={7} onTabChange={onTabChange} />
         </section>
       ) : null}
       {activeTab === 'overview' ? (
@@ -687,220 +737,12 @@ function ChallengeElementGuide({ activeTab }) {
               </p>
             </div>
           </div>
-          <div
-            className="overflow-hidden rounded-[16px] bg-cover bg-center bg-no-repeat p-6"
-            style={{ backgroundImage: `url(${ChallengeBg})` }}
-          >
+          <div className="overflow-hidden rounded-[16px] bg-[#E2E5E9] p-6">
             <ChallengePlayPreview />
           </div>
         </section>
       ) : null}
       <ChallengePanelPreviews activeTab={activeTab} />
-    </>
-  );
-}
-
-const practiceOverview = {
-  title: '튜토리얼 실전 연습',
-  description:
-    '지금까지 익힌 챌린지 정보 확인, 채팅 입력, 토큰 확인, 저지 실패와 성공 흐름을 하나의 미니 챌린지 상세 화면에서 다시 정리합니다.',
-  goal: '챌린지 상세에서 문제 정보를 읽고, 도전 기록과 순위 현황 구조를 확인한 뒤 실전 풀이 흐름으로 넘어가는 것.',
-  successItems: [
-    '챌린지 개요에서 도전 목표와 성공 조건을 확인합니다.',
-    '채팅 영역에서 목표 조건에 맞는 응답을 만들어 제출하는 흐름을 떠올릴 수 있습니다.',
-    '성공 여부는 제출 결과 모달로 확인하고, 사용 토큰은 play 화면의 정보 패널에서 확인해야 한다는 점을 이해합니다.',
-  ],
-  failureItems: [
-    '문제 조건을 읽지 않고 바로 채팅을 시작하는 경우',
-    '응답을 받았지만 제출하지 않아 미제출 상태로 남는 경우',
-    '실패 사유를 읽지 않고 같은 프롬프트를 반복하는 경우',
-  ],
-};
-
-const practiceRecord = {
-  status: '미도전',
-  attempts: 0,
-  tokens: 0,
-  score: 150,
-};
-
-function PracticeChallengeOverviewContent() {
-  return (
-    <>
-      <section>
-        <h2 className="text-page-title font-bold text-black">챌린지 개요</h2>
-        <h3 className="mt-4 text-card-title font-bold text-[#202832]">{practiceOverview.title}</h3>
-        <p className="mt-5 text-body text-[#3D4754]">{practiceOverview.description}</p>
-      </section>
-
-      <section>
-        <h2 className="text-card-title font-bold text-[#202832]">도전 목표</h2>
-        <p className="mt-3 text-body font-strong text-[#3D4754]">{practiceOverview.goal}</p>
-      </section>
-
-      <section>
-        <h2 className="text-card-title font-bold text-[#202832]">성공 조건</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-body text-[#3D4754]">
-          {practiceOverview.successItems.map(item => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </section>
-
-      <section>
-        <h2 className="text-card-title font-bold text-[#202832]">실패 조건</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-body text-[#3D4754]">
-          {practiceOverview.failureItems.map(item => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </section>
-    </>
-  );
-}
-
-function PracticeChallengeSidePanel() {
-  const navigate = useNavigate();
-
-  return (
-    <aside className="space-y-4">
-      <div className="surface relative aspect-[1619/842] overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <img
-            src={StartCardBg}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
-          <div className="absolute left-[40%] right-[5%] top-[18%] z-10">
-            <h3 className="text-section-title font-bold text-[#202832]">실전 연습</h3>
-            <p className="mt-2 text-body font-strong text-[#66717E]">
-              튜토리얼에서 익힌 흐름을 챌린지처럼 확인해보세요.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate('/tutorial-preview/challenge-play')}
-            className="btn btn-primary btn-lg absolute bottom-[7%] left-[7%] right-[7%] z-10"
-          >
-            실전 연습 시작하기
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      <section>
-        <div className="overflow-hidden rounded-[14px]">
-          <div
-            className="relative flex min-h-[200px] items-center justify-between bg-center bg-no-repeat px-7 py-7"
-            style={{
-              backgroundImage: `url(${NoTryCardBg})`,
-              backgroundSize: '100% 100%',
-            }}
-          >
-            <div className="relative z-10">
-              <p className="text-body font-strong text-[#6E7B88]">챌린지 성공 여부</p>
-              <strong className="mt-3 block text-display font-bold text-[#2E3338]">
-                {practiceRecord.status}
-              </strong>
-              <p className="mt-4 text-body font-strong text-[#6F7985]">
-                아직 실전 연습 기록이 없습니다.
-              </p>
-            </div>
-            <span className="relative z-10 flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-full bg-white text-[#9AA3AF] shadow-[0_10px_24px_rgba(15,23,42,0.1)]">
-              <Activity className="h-10 w-10" strokeWidth={2.1} />
-            </span>
-          </div>
-
-          <dl className="surface divide-y divide-[#E5E9EF] overflow-hidden px-6 text-body">
-            <div className="flex items-center justify-between py-5">
-              <dt className="flex items-center gap-3 font-strong text-[#3D4754]">
-                <Coins className="h-5 w-5 text-[#77808C]" /> 사용 토큰
-              </dt>
-              <dd className="font-bold text-[#2E3338]">
-                {practiceRecord.tokens.toLocaleString()} 토큰
-              </dd>
-            </div>
-            <div className="flex items-center justify-between py-5">
-              <dt className="flex items-center gap-3 font-strong text-[#3D4754]">
-                <Trophy className="h-5 w-5 text-[#77808C]" /> 최대 포인트
-              </dt>
-              <dd className="font-bold text-[#FF4854]">{practiceRecord.score} 포인트</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-    </aside>
-  );
-}
-
-function PracticeChallengeDetail() {
-  const [activeTab, setActiveTab] = React.useState('overview');
-  const tabs = [
-    { id: 'overview', label: '챌린지 개요' },
-    { id: 'history', label: '도전 기록' },
-    { id: 'solvers', label: '순위 현황' },
-  ];
-
-  return (
-    <>
-      <div className="mt-8 border-b border-[#DDE3EA]">
-        <div className="flex gap-8">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`cursor-pointer border-b-2 pb-3 text-body-lg font-strong ${
-                activeTab === tab.id
-                  ? 'border-[#FF4854] text-[#2E3338]'
-                  : 'border-transparent text-[#7B8491] hover:text-[#FF4854]'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <main className="space-y-8">
-          {activeTab === 'overview' ? <PracticeChallengeOverviewContent /> : null}
-
-          {activeTab === 'history' ? (
-            <section>
-              <h2 className="text-page-title font-bold text-black">도전 기록</h2>
-              <div className="surface-muted mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center px-6 text-center">
-                <div>
-                  <p className="text-body-lg font-strong text-[#3D4754]">
-                    아직 도전 기록이 없습니다.
-                  </p>
-                  <p className="mt-2 text-body text-[#8A94A1]">
-                    실전 연습을 시작하면 제출 결과와 소모 토큰이 여기에 표시됩니다.
-                  </p>
-                </div>
-              </div>
-            </section>
-          ) : null}
-
-          {activeTab === 'solvers' ? (
-            <section>
-              <h2 className="text-page-title font-bold text-black">순위 현황</h2>
-              <div className="surface-muted mt-5 flex max-w-[800px] min-h-[180px] items-center justify-center px-6 text-center">
-                <div>
-                  <p className="text-body-lg font-strong text-[#3D4754]">
-                    아직 성공한 사용자가 없습니다.
-                  </p>
-                  <p className="mt-2 text-body text-[#8A94A1]">
-                    실전 연습을 완료하면 순위 구조를 확인할 수 있습니다.
-                  </p>
-                </div>
-              </div>
-            </section>
-          ) : null}
-        </main>
-
-        <PracticeChallengeSidePanel />
-      </div>
     </>
   );
 }
@@ -928,7 +770,6 @@ export default function Tutorial() {
   const navigate = useNavigate();
   const { tutorialId } = useParams();
   const tutorial = TUTORIALS.find(item => item.id === Number(tutorialId)) ?? TUTORIALS[0];
-  const isPracticeTutorial = tutorial.id === 11;
   const tutorialStep = TUTORIALS.findIndex(item => item.id === tutorial.id) + 1;
   const tabs =
     tutorialTabs[tutorial.id] ??
@@ -971,24 +812,10 @@ export default function Tutorial() {
           <p className="mt-3 text-body-lg font-strong text-[#66717E]">{tutorial.subtitle}</p>
           <div className="mt-6 flex w-fit items-center divide-x divide-[#D8DDE4] text-body text-[#2E3338]">
             <span className="whitespace-nowrap pr-4 font-strong">
-              {isPracticeTutorial ? (
-                <>
-                  성공{' '}
-                  <em className="ml-1 not-italic text-[#FF4854]">{tutorial.successfulUsers}</em>명
-                </>
-              ) : (
-                <em className="not-italic text-[#FF4854]">Step {tutorialStep}</em>
-              )}
+              <em className="not-italic text-[#FF4854]">Step {tutorialStep}</em>
             </span>
             <span className="whitespace-nowrap px-4 font-strong">
-              {isPracticeTutorial ? (
-                <>
-                  평균 <em className="mx-1 not-italic text-[#FF4854]">{tutorial.averageTokens}</em>{' '}
-                  토큰
-                </>
-              ) : (
-                <em className="not-italic text-[#2E3338]">{tutorial.title}</em>
-              )}
+              <em className="not-italic text-[#2E3338]">{tutorial.title}</em>
             </span>
             <span className="whitespace-nowrap px-4 font-medium">{tutorial.price}</span>
             <span className="whitespace-nowrap pl-4">
@@ -1002,29 +829,23 @@ export default function Tutorial() {
         </div>
       </section>
 
-      {tutorial.id === 11 ? (
-        <PracticeChallengeDetail />
-      ) : (
-        <>
-          <TutorialTabNavigation tabs={tabs} activeTab={activeTab} onChange={handleTabChange} />
+      <TutorialTabNavigation tabs={tabs} activeTab={activeTab} onChange={handleTabChange} />
 
-          <div id="tutorial-tab-content" className="mt-10 scroll-mt-8">
-            <main>
-              {tutorial.id === 7 ? (
-                <ChallengeElementGuide activeTab={activeTab} />
-              ) : tutorial.id === 8 ? (
-                <ChatTokenGuide activeTab={activeTab} />
-              ) : tutorial.id === 9 ? (
-                <JudgeFailureGuide activeTab={activeTab} />
-              ) : tutorial.id === 10 ? (
-                <JudgeSuccessGuide activeTab={activeTab} />
-              ) : (
-                <DefaultLearningGuide activeTab={activeTab} />
-              )}
-            </main>
-          </div>
-        </>
-      )}
+      <div id="tutorial-tab-content" className="mt-10 scroll-mt-8">
+        <main>
+          {tutorial.id === 7 ? (
+            <ChallengeElementGuide activeTab={activeTab} onTabChange={handleTabChange} />
+          ) : tutorial.id === 8 ? (
+            <ChatTokenGuide activeTab={activeTab} onTabChange={handleTabChange} />
+          ) : tutorial.id === 9 ? (
+            <JudgeFailureGuide activeTab={activeTab} onTabChange={handleTabChange} />
+          ) : tutorial.id === 10 ? (
+            <JudgeSuccessGuide activeTab={activeTab} onTabChange={handleTabChange} />
+          ) : (
+            <DefaultLearningGuide activeTab={activeTab} />
+          )}
+        </main>
+      </div>
     </div>
   );
 }
