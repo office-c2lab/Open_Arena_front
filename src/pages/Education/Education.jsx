@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
-  ArrowRight,
   BookOpen,
   CalendarDays,
   CheckCircle2,
@@ -108,6 +107,13 @@ export const articles = [
         ],
       },
     ],
+    relatedLearning: {
+      title: '관련 학습으로 이동',
+      description:
+        'AI Red Teaming의 기본 흐름을 이해했다면, 구성요소 튜토리얼에서 문제, 모델, 채팅, 제출, Judge 등 학습 환경을 이루는 요소를 직접 살펴봅니다.',
+      buttonLabel: '튜토리얼 풀기',
+      to: '/tutorial/7',
+    },
     quiz: {
       question: 'AI Red Teaming의 가장 중요한 목적은 무엇인가요?',
       options: [
@@ -1155,9 +1161,9 @@ function EducationDetail({ article }) {
             className="group flex cursor-pointer items-center gap-3 text-body-lg font-bold text-[#151A21] transition hover:text-[#FF4854]"
           >
             {article.relatedLearning?.buttonLabel ?? '튜토리얼 풀기'}
-            <ArrowRight
-              className="h-6 w-6 transition group-hover:translate-x-1"
-              strokeWidth={2.5}
+            <ChevronRight
+              className="h-6 w-6 shrink-0 self-center transition group-hover:translate-x-1"
+              strokeWidth={2.4}
             />
           </button>
         </section>
