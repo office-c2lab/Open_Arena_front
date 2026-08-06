@@ -95,8 +95,8 @@ export default function ChallengePlay() {
     };
 
     const sections = [
-      { id: 'description', title: '설명', content: problem.description },
-      { id: 'goal', title: '목표', content: problem.goal },
+      { id: 'description', title: '챌린지 설명', content: problem.description },
+      { id: 'goal', title: '도전목표', content: problem.goal },
       { id: 'success', title: '성공조건', content: problem.success_criteria },
       { id: 'failure', title: '실패조건', content: problem.failure_criteria },
     ];
