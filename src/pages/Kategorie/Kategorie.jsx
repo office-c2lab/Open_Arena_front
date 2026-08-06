@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { RotateCcw, Search } from 'lucide-react';
+import { Heart, RotateCcw, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 import ProblemImage1 from '@/assets/images/problemimages/p1.png';
@@ -13,6 +13,7 @@ import ProblemImage8 from '@/assets/images/problemimages/p8.png';
 import ProblemImage9 from '@/assets/images/problemimages/p9.png';
 import ProblemImage10 from '@/assets/images/problemimages/p10.png';
 import ProblemImage11 from '@/assets/images/problemimages/p11.png';
+import { useFavoriteProblemsStore } from '@/stores/useFavoriteProblemsStore';
 
 export const PATHS = [
   {
@@ -328,6 +329,8 @@ const ChallengeSection = () => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
+  const [activeListTab, setActiveListTab] = useState('challenges');
+  const favoriteProblemIds = useFavoriteProblemsStore(state => state.favoriteProblemIds);
 
   const filteredPaths = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
@@ -342,7 +345,11 @@ const ChallengeSection = () => {
     );
   }, [keyword]);
 
-  const visiblePaths = filteredPaths.slice(0, 11);
+  const tabPaths =
+    activeListTab === 'favorites'
+      ? filteredPaths.filter(path => favoriteProblemIds.includes(path.id))
+      : filteredPaths;
+  const visiblePaths = tabPaths.slice(0, 11);
 
   const handleSearch = useCallback(
     event => {
@@ -389,9 +396,27 @@ const ChallengeSection = () => {
         id="challenge-path-section"
         className="mb-8 flex flex-col gap-4 border-b border-[#E6E9EE] pb-5 sm:flex-row sm:items-center sm:justify-between"
       >
-        <h2 className="border-b-2 border-[#FF4854] pb-3 text-card-title font-strong text-black">
-          챌린지
-        </h2>
+        <div className="flex items-center gap-7" role="tablist" aria-label="챌린지 목록">
+          {[
+            { id: 'challenges', label: '챌린지' },
+            { id: 'favorites', label: '찜 목록' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={activeListTab === tab.id}
+              onClick={() => setActiveListTab(tab.id)}
+              className={`cursor-pointer border-b-2 pb-3 text-card-title font-strong transition-colors ${
+                activeListTab === tab.id
+                  ? 'border-[#FF4854] text-black'
+                  : 'border-transparent text-[#8A94A1] hover:text-[#FF4854]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
         <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
           <label className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
@@ -421,20 +446,41 @@ const ChallengeSection = () => {
         <section className="min-w-0">
           <div className="mb-5 flex items-center justify-between">
             <h1 className="text-body-lg font-strong text-[#2E3338]">
-              전체 챌린지 <span className="text-[#FF4854]">{visiblePaths.length}</span>
+              {activeListTab === 'favorites' ? '찜한 챌린지' : '전체 챌린지'}{' '}
+              <span className="text-[#FF4854]">{visiblePaths.length}</span>
             </h1>
           </div>
 
-          <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
-            {visiblePaths.map(path => (
-              <PathCard
-                key={path.id}
-                path={path}
-                status={PROBLEM_STATUS_BY_ID[path.id] ?? 'untried'}
-                onClick={() => handleSolveProblem(path.id)}
-              />
-            ))}
-          </div>
+          {visiblePaths.length > 0 ? (
+            <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
+              {visiblePaths.map(path => (
+                <PathCard
+                  key={path.id}
+                  path={path}
+                  status={PROBLEM_STATUS_BY_ID[path.id] ?? 'untried'}
+                  onClick={() => handleSolveProblem(path.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex min-h-[260px] flex-col items-center justify-center rounded-[12px] border border-[#E3E8EF] bg-[#FAFBFC] px-6 text-center">
+              {activeListTab === 'favorites' ? (
+                <Heart className="h-10 w-10 text-[#C6CDD6]" strokeWidth={1.8} />
+              ) : (
+                <Search className="h-10 w-10 text-[#C6CDD6]" strokeWidth={1.8} />
+              )}
+              <p className="mt-4 text-body-lg font-strong text-[#4D5968]">
+                {activeListTab === 'favorites'
+                  ? '찜한 챌린지가 없습니다.'
+                  : '검색 결과가 없습니다.'}
+              </p>
+              {activeListTab === 'favorites' ? (
+                <p className="mt-2 text-body font-medium text-[#8A94A1]">
+                  관심 있는 챌린지 상세에서 찜하기를 눌러보세요.
+                </p>
+              ) : null}
+            </div>
+          )}
         </section>
       </div>
     </div>

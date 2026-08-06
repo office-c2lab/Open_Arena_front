@@ -1,6 +1,6 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Heart, Search } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronRight, Heart, Search } from 'lucide-react';
 import UserIcon from '@/assets/icons/user.svg';
 import TigerImage from '@/assets/images/tiger.png';
 import GreenTigerImage from '@/assets/images/green_tiger.png';
@@ -8,6 +8,7 @@ import { PATHS } from '@/pages/Kategorie/Kategorie';
 import { useProblemBundle } from '@/hooks/useProblemBundle';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionStore } from '@/stores/useSessionStore';
+import { useFavoriteProblemsStore } from '@/stores/useFavoriteProblemsStore';
 import ChallengeEnterTransition from '../components/ChallengeEnterTransition';
 
 const challengeOverview = {
@@ -170,9 +171,9 @@ const mockChallengeSolvers = [
 
 const attemptStatusFilters = [
   { value: 'all', label: '전체' },
-  { value: 'unsubmitted', label: '미제출' },
   { value: 'success', label: '성공' },
   { value: 'failed', label: '실패' },
+  { value: 'unsubmitted', label: '미제출' },
 ];
 
 function getAttemptStatus(status) {
@@ -281,7 +282,10 @@ function ChallengeOverviewContent() {
     <>
       <section className="border-b border-[#E1E6EB] pb-8">
         <h2 className="text-page-title font-bold text-black">챌린지 개요</h2>
-        <h3 className="mt-4 text-card-title font-bold text-[#202832]">챌린지 설명</h3>
+        <h3 className="mt-4 flex items-center gap-3 text-card-title font-bold text-[#475569]">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#475569]" aria-hidden="true" />
+          챌린지 설명
+        </h3>
         <h4 className="mt-3 text-body-lg font-bold text-[#202832]">{challengeOverview.title}</h4>
         <p className="mt-4 whitespace-pre-line text-body-lg font-medium text-[#4D5968]">
           {challengeOverview.description}
@@ -289,15 +293,19 @@ function ChallengeOverviewContent() {
       </section>
 
       <section className="border-b border-[#E1E6EB] pb-8">
-        <h2 className="text-card-title font-bold text-[#202832]">도전목표</h2>
-        <ul className="mt-3 list-disc pl-5 text-body-lg font-medium text-[#4D5968] marker:text-[#E6AA02]">
-          <li>{challengeOverview.goal}</li>
-        </ul>
+        <h2 className="flex items-center gap-3 text-card-title font-bold text-[#202832]">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#E6AA02]" aria-hidden="true" />
+          도전목표
+        </h2>
+        <p className="mt-3 text-body-lg font-medium text-[#4D5968]">{challengeOverview.goal}</p>
       </section>
 
       <section className="border-b border-[#E1E6EB] pb-8">
-        <h2 className="text-card-title font-bold text-[#202832]">성공조건</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-body-lg font-medium text-[#4D5968] marker:text-[#079C4C]">
+        <h2 className="flex items-center gap-3 text-card-title font-bold text-[#202832]">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#079C4C]" aria-hidden="true" />
+          성공조건
+        </h2>
+        <ul className="mt-4 space-y-2 text-body-lg font-medium text-[#4D5968]">
           {challengeOverview.successItems.map(item => (
             <li key={item}>{item}</li>
           ))}
@@ -305,8 +313,11 @@ function ChallengeOverviewContent() {
       </section>
 
       <section>
-        <h2 className="text-card-title font-bold text-[#202832]">실패조건</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-body-lg font-medium text-[#4D5968] marker:text-[#FF4854]">
+        <h2 className="flex items-center gap-3 text-card-title font-bold text-[#202832]">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#FF4854]" aria-hidden="true" />
+          실패조건
+        </h2>
+        <ul className="mt-4 space-y-2 text-body-lg font-medium text-[#4D5968]">
           {challengeOverview.failureItems.map(item => (
             <li key={item}>{item}</li>
           ))}
@@ -318,6 +329,21 @@ function ChallengeOverviewContent() {
 
 function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
   const [statusFilter, setStatusFilter] = useState('all');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterDropdownRef = useRef(null);
+  const selectedStatusFilter =
+    attemptStatusFilters.find(filter => filter.value === statusFilter) ?? attemptStatusFilters[0];
+
+  useEffect(() => {
+    const handleClickOutside = event => {
+      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   if (isLoading) {
     return (
@@ -353,103 +379,152 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
 
   return (
     <section className="mt-5 w-full">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-body-lg font-strong text-[#5C6875]">
           내 도전 기록{' '}
           <em className="not-italic text-[#FF4854]">
             {filteredSessions.length.toLocaleString()}개
           </em>
         </p>
-        <select
-          value={statusFilter}
-          onChange={event => setStatusFilter(event.target.value)}
-          className="h-8 cursor-pointer rounded-[4px] border border-[#DDE3EA] bg-white px-3 text-body font-strong text-[#3D4754] outline-none transition hover:border-[#FF4854] focus:border-[#FF4854]"
-          aria-label="도전 기록 상태 필터"
-        >
-          {attemptStatusFilters.map(filter => (
-            <option key={filter.value} value={filter.value}>
-              {filter.label}
-            </option>
-          ))}
-        </select>
+        <div className="relative w-[140px] self-end" ref={filterDropdownRef}>
+          <button
+            type="button"
+            onClick={() => setIsFilterOpen(open => !open)}
+            aria-haspopup="listbox"
+            aria-expanded={isFilterOpen}
+            className="glass-subtle flex h-11 w-full cursor-pointer items-center justify-between rounded-[12px] px-4 text-body-lg font-strong text-[#475569] transition-colors hover:text-[#202832]"
+          >
+            <span>{selectedStatusFilter.label}</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
+              strokeWidth={2.4}
+              aria-hidden="true"
+            />
+          </button>
+
+          {isFilterOpen ? (
+            <div
+              className="glass-overlay absolute right-0 top-[52px] z-20 w-full overflow-hidden rounded-[14px] p-1.5"
+              role="listbox"
+              aria-label="도전 기록 상태 필터"
+            >
+              {attemptStatusFilters.map(filter => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  role="option"
+                  aria-selected={statusFilter === filter.value}
+                  onClick={() => {
+                    setStatusFilter(filter.value);
+                    setIsFilterOpen(false);
+                  }}
+                  className={`flex w-full cursor-pointer items-center rounded-[10px] px-3.5 py-2.5 text-left text-body-lg font-strong text-[#475569] transition-colors hover:bg-[#F8FAFC] ${
+                    statusFilter === filter.value ? 'bg-[#F1F5F9]' : ''
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
 
-      <ul className="mt-4 space-y-3">
+      <ul className="mt-6 space-y-3">
         {filteredSessions.map(session => {
           const status = getAttemptStatus(session.status);
-          const isSuccess = status === 'success';
-          const isSubmitted = status === 'failed';
-          const promptSummary = isSuccess
-            ? session.title || '성공한 시도'
-            : session.judge_reason?.split('\n')[0]?.slice(0, 80) || session.title || '새로운 대화';
+          const latestUserMessage = [...(session.messages ?? [])]
+            .reverse()
+            .find(message => message.role === 'user')?.content;
+          const title =
+            session.title ||
+            latestUserMessage ||
+            (status === 'success'
+              ? '목표를 달성한 시도입니다.'
+              : status === 'failed'
+                ? '목표를 달성하지 못한 시도입니다.'
+                : '아직 제출되지 않은 시도입니다.');
+          const description =
+            session.judge_reason ||
+            (status === 'unsubmitted'
+              ? '답변을 제출하지 않아 결과가 집계되지 않았습니다.'
+              : '제출 결과에 대한 판정 내용을 확인해보세요.');
           const points = Number(session.points ?? session.earned_points ?? session.score ?? 0);
           const tokens = Number(session.tokens ?? session.token_count ?? 0);
           const createdAt = session.createdAt ?? session.created_at ?? '-';
-          const statusMeta = isSuccess
-            ? {
-                label: '성공',
-                bgColor: '#84CC16',
-                textColor: '#FFFFFF',
-                shadow: '0 8px 18px rgba(132,204,22,0.25), inset 0 1px 0 rgba(255,255,255,0.35)',
-              }
-            : isSubmitted
+          const statusMeta =
+            status === 'success'
               ? {
-                  label: '실패',
-                  bgColor: '#FF4854',
-                  textColor: '#FFFFFF',
-                  shadow: '0 8px 18px rgba(255,72,84,0.28), inset 0 1px 0 rgba(255,255,255,0.35)',
+                  label: '성공',
+                  dotClassName: 'bg-[#78C900]',
+                  badgeClassName: 'bg-[#F0FAE7] text-[#67B91B]',
                 }
-              : {
-                  label: '미제출',
-                  bgColor: '#D9DADB',
-                  textColor: '#4C4C4C',
-                  shadow: 'inset 0 1px 0 rgba(255,255,255,0.35)',
-                };
+              : status === 'failed'
+                ? {
+                    label: '실패',
+                    dotClassName: 'bg-[#FF4854]',
+                    badgeClassName: 'bg-[#FFF0F1] text-[#FF4854]',
+                  }
+                : {
+                    label: '미제출',
+                    dotClassName: 'bg-[#A9ADB3]',
+                    badgeClassName: 'bg-[#F1F2F3] text-[#555A61]',
+                  };
 
           return (
-            <li key={session.id} className="surface overflow-hidden">
+            <li
+              key={session.id}
+              className="overflow-hidden rounded-[14px] border border-[#E7EBF0] bg-white shadow-[0_6px_18px_rgba(15,23,42,0.07)]"
+            >
               <button
                 type="button"
                 onClick={() => onSessionOpen(session.id, status)}
-                className="group flex w-full cursor-pointer flex-col gap-4 rounded-[8px] px-4 py-4 text-left transition-colors hover:bg-[#FAFBFC]"
+                className="group grid min-h-[164px] w-full cursor-pointer grid-cols-[120px_minmax(0,1fr)_28px] items-center gap-7 px-8 py-7 text-left transition-all hover:bg-[#FAFBFC] sm:grid-cols-[150px_minmax(0,1fr)_32px] sm:px-10"
                 aria-label={`${statusMeta.label} 도전 기록 플레이 화면으로 이동`}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-label font-strong text-[#8A94A1]">결과요약</p>
-                    <p className="mt-1 truncate text-body font-bold text-[#303843]">
-                      {promptSummary}
-                    </p>
-                  </div>
+                <div className="flex items-center gap-3">
                   <span
-                    className="flex h-[28px] min-w-[72px] shrink-0 items-center justify-center rounded-full px-4 text-body font-strong transition-transform duration-200 group-hover:scale-[1.03]"
-                    style={{
-                      background: statusMeta.bgColor,
-                      color: statusMeta.textColor,
-                      boxShadow: statusMeta.shadow,
-                    }}
+                    className={`h-3 w-3 shrink-0 rounded-full ${statusMeta.dotClassName}`}
+                    aria-hidden="true"
+                  />
+                  <span
+                    className={`flex h-10 min-w-[84px] items-center justify-center rounded-full px-5 text-body-lg font-bold ${statusMeta.badgeClassName}`}
                   >
                     {statusMeta.label}
                   </span>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-label font-strong text-[#7B8491]">
-                  <span>
-                    사용토큰{' '}
-                    <em className="ml-1 not-italic text-[#303843]">
-                      {tokens.toLocaleString()} 토큰
-                    </em>
-                  </span>
-                  <span className="h-3 w-px bg-[#D8DDE4]" aria-hidden="true" />
-                  <span>
-                    획득 포인트{' '}
-                    <em className="ml-1 not-italic text-[#FF4854]">{points.toLocaleString()} P</em>
-                  </span>
-                  <span className="h-3 w-px bg-[#D8DDE4]" aria-hidden="true" />
-                  <span>
-                    도전일시 <time className="ml-1 text-[#5C6875]">{createdAt}</time>
-                  </span>
+                <div className="min-w-0">
+                  <p className="truncate text-card-title font-bold text-[#202832]">{title}</p>
+                  <p className="mt-3 truncate text-body-lg font-medium text-[#66717E]">
+                    {description}
+                  </p>
+                  <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-body font-strong text-[#66717E]">
+                    <span>
+                      사용토큰{' '}
+                      <em className="ml-1 not-italic text-[#303843]">
+                        {tokens.toLocaleString()}토큰
+                      </em>
+                    </span>
+                    <span className="h-4 w-px bg-[#D8DDE4]" aria-hidden="true" />
+                    <span>
+                      획득포인트{' '}
+                      <em className="ml-1 not-italic text-[#FF4854]">
+                        {points.toLocaleString()}P
+                      </em>
+                    </span>
+                    <span className="h-4 w-px bg-[#D8DDE4]" aria-hidden="true" />
+                    <span>
+                      도전일시 <time className="ml-1 text-[#4D5968]">{createdAt}</time>
+                    </span>
+                  </div>
                 </div>
+
+                <ChevronRight
+                  className="h-7 w-7 text-[#848A91] transition-transform group-hover:translate-x-1 group-hover:text-[#FF4854]"
+                  strokeWidth={2.4}
+                  aria-hidden="true"
+                />
               </button>
             </li>
           );
@@ -483,7 +558,10 @@ export default function Challenge() {
   const sessions = problemBundleData?.sessions?.length
     ? problemBundleData.sessions
     : mockChallengeSessions;
-  const [isLiked, setIsLiked] = useState(false);
+  const isLiked = useFavoriteProblemsStore(state =>
+    state.favoriteProblemIds.includes(challenge.id)
+  );
+  const toggleFavorite = useFavoriteProblemsStore(state => state.toggleFavorite);
   const levelClass =
     challenge.level === 'Try for Free'
       ? 'bg-[#D8F9E4] text-[#1BAE5B]'
@@ -564,7 +642,7 @@ export default function Challenge() {
             </button>
             <button
               type="button"
-              onClick={() => setIsLiked(liked => !liked)}
+              onClick={() => toggleFavorite(challenge.id)}
               aria-pressed={isLiked}
               className={`btn h-[52px] rounded-[6px] border bg-white text-body-lg transition-colors ${
                 isLiked

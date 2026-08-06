@@ -8,11 +8,11 @@ import Skeleton from '../../../components/Skeleton/Skeleton';
 import TokenInfoCard from './TokenInfoCard';
 import { useSessionStore } from '@/stores/useSessionStore';
 
-const OVERVIEW_TITLE_COLOR_CLASS_MAP = {
-  description: 'text-[#475569]',
-  goal: 'text-[#E6AA02]',
-  success: 'text-[#079C4C]',
-  failure: 'text-[#FF4854]',
+const OVERVIEW_DOT_COLOR_CLASS_MAP = {
+  description: 'bg-[#475569]',
+  goal: 'bg-[#E6AA02]',
+  success: 'bg-[#079C4C]',
+  failure: 'bg-[#FF4854]',
 };
 
 const ChallengeInfoPanelSkeleton = ({ TABS, handleTabClick }) => (
@@ -166,9 +166,11 @@ export default function ChallengeInfoPanel({
                   <div className="no-scrollbar min-h-0 flex-1 space-y-9 overflow-y-auto pr-1">
                     {overviewSections.map(section => (
                       <section key={section.id}>
-                        <h2
-                          className={`text-card-title font-strong ${OVERVIEW_TITLE_COLOR_CLASS_MAP[section.id]}`}
-                        >
+                        <h2 className="flex items-center gap-3 text-card-title font-strong text-[#202832]">
+                          <span
+                            className={`h-2.5 w-2.5 shrink-0 rounded-full ${OVERVIEW_DOT_COLOR_CLASS_MAP[section.id] ?? 'bg-[#475569]'}`}
+                            aria-hidden="true"
+                          />
                           {section.title}
                         </h2>
 
