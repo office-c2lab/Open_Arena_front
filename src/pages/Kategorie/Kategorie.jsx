@@ -269,14 +269,6 @@ function PathPreview({ path, status = 'untried', label }) {
         </span>
       ) : null}
       <ProblemStatusBadge status={status} />
-      <div className="absolute inset-0 flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        <p className="text-body font-strong text-white">
-          {path.title} 시나리오에서 AI의 보안 규칙과 취약점을 분석해 목표를 달성하세요.
-        </p>
-        <p className="mt-3 text-body font-bold text-[#FF5A65]">
-          {path.category} 분야의 핵심 보안 과제를 해결하는 것.
-        </p>
-      </div>
     </div>
   );
 }

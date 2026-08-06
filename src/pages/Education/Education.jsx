@@ -500,8 +500,28 @@ function EducationDetail({ article }) {
 
       <div className="mx-auto max-w-[760px] py-14 sm:py-16">
         <EducationQuiz key={article.id} quiz={article.quiz} />
-      </div>
 
+        <section className="mt-14 flex flex-wrap gap-x-10 gap-y-5 border-t border-[#E3E6EB] pt-8 sm:mt-16">
+          <div className="w-full">
+            <h2 className="text-section-title font-bold text-[#151A21]">다음 단계</h2>
+            <p className="mt-3 text-body-lg font-medium text-[#4D5968]">
+              개념을 이해했다면 튜토리얼에서 기본 흐름을 익히고, 챌린지에서 직접 AI Red
+              Teaming 시나리오를 실습해보세요.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/tutorial')}
+            className="group flex cursor-pointer items-center gap-3 text-body-lg font-bold text-[#151A21] transition hover:text-[#FF4854]"
+          >
+            튜토리얼 풀기
+            <ArrowRight
+              className="h-6 w-6 transition group-hover:translate-x-1"
+              strokeWidth={2.5}
+            />
+          </button>
+        </section>
+      </div>
     </article>
   );
 }

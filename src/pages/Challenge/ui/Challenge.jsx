@@ -325,7 +325,6 @@ function ChallengeOverviewContent() {
           <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#475569]" aria-hidden="true" />
           챌린지 설명
         </h3>
-        <h4 className="mt-3 text-body-lg font-bold text-[#202832]">{challengeOverview.title}</h4>
         <p className="mt-4 whitespace-pre-line text-body-lg font-medium text-[#4D5968]">
           {challengeOverview.description}
         </p>
@@ -469,7 +468,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
         </div>
       </div>
 
-      <ul className="mt-6 space-y-3">
+      <ul className="mt-6">
         {filteredSessions.map(session => {
           const status = getAttemptStatus(session.status);
           const latestUserMessage = [...(session.messages ?? [])]
@@ -508,14 +507,11 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
                   };
 
           return (
-            <li
-              key={session.id}
-              className="overflow-hidden rounded-[14px] border border-[#E7EBF0] bg-white shadow-[0_6px_18px_rgba(15,23,42,0.07)]"
-            >
+            <li key={session.id} className="border-b border-[#E1E6EB]">
               <button
                 type="button"
                 onClick={() => onSessionOpen(session.id, status)}
-                className="group grid min-h-[164px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_84px_28px] items-center gap-7 px-8 py-7 text-left transition-all hover:bg-[#FAFBFC] sm:grid-cols-[minmax(0,1fr)_96px_32px] sm:px-10"
+                className="group grid min-h-[148px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_84px_28px] items-center gap-7 px-8 py-6 text-left transition-colors hover:bg-[#FAFBFC] sm:grid-cols-[minmax(0,1fr)_96px_32px] sm:px-10"
                 aria-label={`${statusMeta.label} 도전 기록 플레이 화면으로 이동`}
               >
                 <div className="min-w-0">
@@ -629,18 +625,16 @@ export default function Challenge() {
       <section className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-14">
         <ChallengePreview challenge={challenge} />
         <div className="min-w-0">
-          <h1 className="text-display font-bold tracking-[-0.02em] text-black">
-            {challenge.title}
-          </h1>
-          <p className="mt-3 text-body-lg font-strong text-[#596575]">
+          <p className="text-body-lg font-strong text-[#596575]">
             {challenge.category} 실전 보안 챌린지
           </p>
-          <p className="mt-5 max-w-[600px] text-body-lg leading-7 text-[#4E5968]">
-            {challengeOverview.description}
-          </p>
-          <p className="mt-2 max-w-[620px] text-body-lg font-bold leading-7 text-[#F04452]">
-            {challengeOverview.goal}
-          </p>
+          <h1 className="mt-3 text-display font-bold tracking-[-0.02em] text-black">
+            {challenge.title}
+          </h1>
+
+          <h4 className="mt-4 text-body-lg font-bold text-[#202832]">
+            {challengeOverview.title}
+          </h4>
 
           <div className="mt-6 flex w-fit max-w-full flex-wrap items-center divide-x divide-[#D8DDE4] text-body-lg text-[#2E3338]">
             <span className="whitespace-nowrap pr-4 font-strong">
