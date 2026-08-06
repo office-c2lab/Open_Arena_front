@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ChevronDown, ChevronRight, Heart, Search } from 'lucide-react';
 import UserIcon from '@/assets/icons/user.svg';
+import MedalGold from '@/assets/icons/medal_gold.svg';
+import MedalSilver from '@/assets/icons/medal_silver.svg';
+import MedalBronze from '@/assets/icons/medal_bronze.svg';
 import TigerImage from '@/assets/images/tiger.png';
 import GreenTigerImage from '@/assets/images/green_tiger.png';
 import { PATHS } from '@/pages/Kategorie/Kategorie';
@@ -169,6 +172,12 @@ const mockChallengeSolvers = [
   },
 ];
 
+const CHALLENGE_MEDAL_ICON_MAP = {
+  1: MedalGold,
+  2: MedalSilver,
+  3: MedalBronze,
+};
+
 const attemptStatusFilters = [
   { value: 'all', label: '전체' },
   { value: 'success', label: '성공' },
@@ -231,40 +240,70 @@ function ChallengeSolverList() {
         </button>
       </div>
 
-      <ul className="mt-6 divide-y divide-transparent">
-        {solvers.map(solver => (
-          <li
-            key={solver.id}
-            ref={solver.isMe ? myRankRef : null}
-            className={`flex min-h-[65px] flex-col gap-3 rounded-[6px] px-2 py-2 transition-colors sm:flex-row sm:items-center sm:justify-between ${
-              solver.isMe && isMyRankFocused ? 'bg-[#FFF0F1]' : ''
-            }`}
-          >
-            <div className="flex min-w-0 items-center gap-2.5">
-              <SolverAvatar solver={solver} />
-              <div className="flex min-w-0 items-center gap-2">
-                <strong className="truncate text-body-lg font-bold text-[#303843]">
-                  {solver.name}
-                </strong>
-                {solver.isMe ? (
-                  <span className="shrink-0 rounded-[4px] bg-[#FF4854] px-1.5 py-0.5 text-caption font-bold text-white">
-                    나
-                  </span>
-                ) : null}
-              </div>
-            </div>
-            <div className="grid shrink-0 grid-cols-3 items-center gap-3 pl-[46px] text-right text-body font-strong text-[#3D4754] sm:min-w-[340px] sm:pl-0">
-              <span className="whitespace-nowrap">
-                <em className="not-italic text-[#303843]">{solver.tokens.toLocaleString()}</em> 토큰
-              </span>
-              <span className="whitespace-nowrap">
-                <em className="not-italic text-[#FF4854]">{solver.points.toLocaleString()}</em> P
-              </span>
-              <time className="whitespace-nowrap">{solver.solvedAt}</time>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-8 overflow-x-auto">
+        <table className="w-full min-w-[920px] border-separate border-spacing-y-[14px] text-left">
+          <thead>
+            <tr className="text-body font-bold text-[#99A5B8]">
+              <th className="w-[88px]">
+                <span className="flex w-[40px] justify-center">순위</span>
+              </th>
+              <th>유저 정보</th>
+              <th className="w-[190px]">사용 토큰</th>
+              <th className="w-[190px] text-center">획득 포인트</th>
+              <th className="w-[170px] text-center">성공 일시</th>
+            </tr>
+          </thead>
+          <tbody>
+            {solvers.map((solver, index) => {
+              const rank = index + 1;
+
+              return (
+                <tr
+                  key={solver.id}
+                  ref={solver.isMe ? myRankRef : null}
+                  className={`h-[58px] rounded-[8px] text-body font-strong text-[#344050] transition-colors ${
+                    solver.isMe && isMyRankFocused ? 'bg-[#FFF0F1]' : ''
+                  }`}
+                >
+                  <td className="w-[88px] font-bold">
+                    <div className="flex w-[40px] items-center justify-center">
+                      {rank <= 3 ? (
+                        <img
+                          src={CHALLENGE_MEDAL_ICON_MAP[rank]}
+                          alt={`${rank}위`}
+                          className="h-8 w-8"
+                        />
+                      ) : (
+                        <span>{rank}위</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="min-w-[230px]">
+                    <div className="flex items-center gap-4">
+                      <SolverAvatar solver={solver} />
+                      <div className="flex min-w-0 items-center gap-2">
+                        <span className="truncate font-strong">{solver.name}</span>
+                        {solver.isMe ? (
+                          <span className="shrink-0 rounded-[4px] bg-[#FF4854] px-1.5 py-0.5 text-caption font-bold text-white">
+                            나
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="w-[190px] font-bold">{solver.tokens.toLocaleString()}</td>
+                  <td className="w-[190px] text-center font-bold text-[#FF4854]">
+                    {solver.points.toLocaleString()} P
+                  </td>
+                  <td className="w-[170px] text-center">
+                    <time>{solver.solvedAt}</time>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }
@@ -282,7 +321,7 @@ function ChallengeOverviewContent() {
     <>
       <section className="border-b border-[#E1E6EB] pb-8">
         <h2 className="text-page-title font-bold text-black">챌린지 개요</h2>
-        <h3 className="mt-4 flex items-center gap-3 text-card-title font-bold text-[#475569]">
+        <h3 className="mt-8 flex items-center gap-3 text-card-title font-bold text-[#475569]">
           <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#475569]" aria-hidden="true" />
           챌린지 설명
         </h3>
@@ -456,18 +495,15 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
             status === 'success'
               ? {
                   label: '성공',
-                  dotClassName: 'bg-[#78C900]',
                   badgeClassName: 'bg-[#F0FAE7] text-[#67B91B]',
                 }
               : status === 'failed'
                 ? {
                     label: '실패',
-                    dotClassName: 'bg-[#FF4854]',
                     badgeClassName: 'bg-[#FFF0F1] text-[#FF4854]',
                   }
                 : {
                     label: '미제출',
-                    dotClassName: 'bg-[#A9ADB3]',
                     badgeClassName: 'bg-[#F1F2F3] text-[#555A61]',
                   };
 
@@ -479,21 +515,9 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
               <button
                 type="button"
                 onClick={() => onSessionOpen(session.id, status)}
-                className="group grid min-h-[164px] w-full cursor-pointer grid-cols-[120px_minmax(0,1fr)_28px] items-center gap-7 px-8 py-7 text-left transition-all hover:bg-[#FAFBFC] sm:grid-cols-[150px_minmax(0,1fr)_32px] sm:px-10"
+                className="group grid min-h-[164px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_84px_28px] items-center gap-7 px-8 py-7 text-left transition-all hover:bg-[#FAFBFC] sm:grid-cols-[minmax(0,1fr)_96px_32px] sm:px-10"
                 aria-label={`${statusMeta.label} 도전 기록 플레이 화면으로 이동`}
               >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`h-3 w-3 shrink-0 rounded-full ${statusMeta.dotClassName}`}
-                    aria-hidden="true"
-                  />
-                  <span
-                    className={`flex h-10 min-w-[84px] items-center justify-center rounded-full px-5 text-body-lg font-bold ${statusMeta.badgeClassName}`}
-                  >
-                    {statusMeta.label}
-                  </span>
-                </div>
-
                 <div className="min-w-0">
                   <p className="truncate text-card-title font-bold text-[#202832]">{title}</p>
                   <p className="mt-3 truncate text-body-lg font-medium text-[#66717E]">
@@ -519,6 +543,12 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
                     </span>
                   </div>
                 </div>
+
+                <span
+                  className={`flex h-10 min-w-[84px] items-center justify-center justify-self-end rounded-full px-5 text-body-lg font-bold ${statusMeta.badgeClassName}`}
+                >
+                  {statusMeta.label}
+                </span>
 
                 <ChevronRight
                   className="h-7 w-7 text-[#848A91] transition-transform group-hover:translate-x-1 group-hover:text-[#FF4854]"
