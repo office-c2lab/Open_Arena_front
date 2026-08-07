@@ -6,7 +6,6 @@ import {
   ChevronsRight,
   RotateCcw,
   Search,
-  ShieldCheck,
 } from 'lucide-react';
 import medalBronze from '@/assets/icons/medal_bronze.svg';
 import medalGold from '@/assets/icons/medal_gold.svg';
@@ -16,9 +15,7 @@ import DragonImage from '@/assets/images/dragon.png';
 import GreenDragonImage from '@/assets/images/green_dragon.png';
 import GreenPhoenixImage from '@/assets/images/green_phoenix.png';
 import GreenTigerImage from '@/assets/images/green_tiger.png';
-import MyRankImage from '@/assets/images/myrank.png';
 import PhoenixImage from '@/assets/images/phoenix.png';
-import RankBgImage from '@/assets/images/rankbg.png';
 import TigerImage from '@/assets/images/tiger.png';
 
 const legacyRows = [
@@ -94,21 +91,15 @@ const leaderboardRows = legacyRows.map(([name, score, challenges, tokens], index
 }));
 
 const topRanks = [
-  { ...leaderboardRows[1], tone: 'silver' },
   { ...leaderboardRows[0], tone: 'gold' },
+  { ...leaderboardRows[1], tone: 'silver' },
   { ...leaderboardRows[2], tone: 'bronze' },
 ];
 
 const MEDAL_ICON_MAP = { 1: medalGold, 2: medalSilver, 3: medalBronze };
 
-const summaryItems = [
-  { label: '시즌 점수', value: '2,480점' },
-  { label: '다음 순위까지', value: '120포인트' },
-  { label: '성공 챌린지', value: '18개' },
-  { label: '최소 소모 토큰', value: '14,200' },
-];
-
 const ROWS_PER_PAGE = 30;
+const seasons = [1, 2, 3];
 
 const legacyAvatarColors = [
   'bg-[#FFF2D8]',
@@ -159,131 +150,39 @@ function RankMedal({ rank }) {
   );
 }
 
-function StatPair({ value, label, featured = false, compact = false }) {
-  const valueClass = featured
-    ? 'text-page-title text-[#111827]'
-    : compact
-      ? 'text-section-title text-[#1F2937]'
-      : 'text-section-title text-[#1F2937]';
-  const labelClass = featured ? 'text-body' : compact ? 'text-body' : 'text-body';
-
+function StatPair({ value, label }) {
   return (
     <div className="min-w-0 text-center">
-      <span className={`block truncate font-strong text-[#525B66] ${labelClass}`}>{label}</span>
-      <strong className={`mt-2 block truncate font-bold ${valueClass}`}>{value}</strong>
+      <span className="block truncate text-body font-strong text-[#525B66]">{label}</span>
+      <strong className="mt-2 block truncate text-section-title font-bold text-[#1F2937]">
+        {value}
+      </strong>
     </div>
-  );
-}
-
-function MyRankCard() {
-  return (
-    <section className="mt-12 overflow-hidden rounded-[24px] border border-[#FFD0D4] bg-[radial-gradient(circle_at_11%_58%,rgba(255,72,84,0.12)_0%,rgba(255,72,84,0.055)_18%,transparent_33%),linear-gradient(105deg,#FFFFFF_0%,#FFFEFE_58%,#FFF7F8_100%)] px-8 py-5 shadow-[0_12px_24px_rgba(15,23,42,0.07)] sm:px-10">
-      <div className="grid items-center gap-7 lg:grid-cols-[0.95fr_2.4fr]">
-        <div className="min-w-0">
-          <div className="flex items-center gap-5">
-            <img
-              src={MyRankImage}
-              alt=""
-              className="h-[88px] w-[88px] shrink-0 object-contain drop-shadow-[0_8px_18px_rgba(255,72,84,0.16)]"
-            />
-            <div className="min-w-0">
-              <span className="block text-body font-bold text-[#FF4854]">내 순위</span>
-              <div className="flex items-end gap-3 whitespace-nowrap">
-                <strong className="text-metric-lg font-bold text-[#111827]">12</strong>
-                <span className="pb-1.5 text-page-title font-bold text-[#111827]">위</span>
-              </div>
-              <div className="mt-2 flex items-center gap-4 whitespace-nowrap text-body font-strong text-[#96A0AE]">
-                <span>/ 12,856명</span>
-                <span className="h-4 w-px bg-[#CBD1DA]" />
-                <span className="text-[#FF4854]">상위 0.1%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid min-h-[96px] items-center sm:grid-cols-4">
-          {summaryItems.map(item => (
-            <div
-              key={item.label}
-              className="min-w-0 py-2 sm:border-l sm:border-[#E7EAF0] sm:px-7 sm:first:border-l-0 sm:first:pl-0 sm:last:pr-0"
-            >
-              <div className="whitespace-nowrap text-body font-strong text-[#8B95A3]">
-                {item.label}
-              </div>
-              <strong className="mt-4 block whitespace-nowrap text-page-title font-bold text-[#111827]">
-                {item.value}
-              </strong>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 
 function TopRankCard({ row }) {
   const isFirst = row.rank === 1;
-  const isThird = row.rank === 3;
   const toneClass = isFirst
     ? 'border-[#FFB51F]/55 bg-[radial-gradient(circle_at_50%_0%,rgba(255,199,43,0.36)_0%,rgba(255,237,176,0.30)_42%,rgba(255,255,255,0.68)_82%)] shadow-[0_18px_38px_rgba(255,181,31,0.18)]'
     : row.rank === 2
       ? 'border-[#C9CED6]/70 bg-[radial-gradient(circle_at_50%_0%,rgba(174,183,192,0.28)_0%,rgba(255,255,255,0.62)_72%)] shadow-[0_14px_30px_rgba(100,116,139,0.12)]'
       : 'border-[#D08A52]/50 bg-[radial-gradient(circle_at_50%_0%,rgba(208,138,82,0.24)_0%,rgba(255,248,243,0.72)_62%,rgba(255,255,255,0.62)_100%)] shadow-[0_14px_30px_rgba(173,103,40,0.12)]';
-  const heightClass = isFirst
-    ? 'md:-mt-10 md:h-[448px]'
-    : isThird
-      ? 'md:h-[350px]'
-      : 'md:h-[380px]';
-  const paddingClass = isFirst
-    ? 'px-8 pb-8 pt-11'
-    : isThird
-      ? 'px-8 pb-5 pt-10'
-      : 'px-8 pb-7 pt-12';
-  const avatarClass = isFirst
-    ? 'mt-3 md:h-[120px] md:w-[120px]'
-    : isThird
-      ? 'mt-1 md:h-[104px] md:w-[104px]'
-      : 'mt-2';
-  const titleSpacingClass = isThird ? 'mt-5' : 'mt-6';
-  const nameClass = isFirst
-    ? 'text-section-title'
-    : isThird
-      ? 'text-card-title'
-      : 'text-card-title';
-  const scoreClass = isFirst
-    ? 'text-display text-[#F52F45]'
-    : isThird
-      ? 'text-page-title text-[#111827]'
-      : 'text-page-title text-[#111827]';
-  const dividerClass = isFirst ? 'mt-6' : isThird ? 'mt-3' : 'mt-4';
-  const statGridClass = isFirst ? 'mt-4' : isThird ? 'mt-3' : 'mt-3';
 
   return (
     <article
-      className={`relative flex min-h-[320px] flex-col items-center overflow-hidden rounded-[30px] border backdrop-blur-xl ${paddingClass} ${toneClass} ${heightClass}`}
+      className={`relative flex min-h-[320px] flex-col items-center overflow-hidden rounded-[30px] border px-8 pb-8 pt-10 backdrop-blur-xl md:h-[400px] ${toneClass}`}
     >
       <RankMedal rank={row.rank} />
-      <Avatar image={row.image} rank={row.rank} size="lg" className={avatarClass} />
-      <h2
-        className={`${titleSpacingClass} max-w-full text-center font-bold text-[#111827] ${nameClass}`}
-      >
+      <Avatar image={row.image} rank={row.rank} size="lg" />
+      <h2 className="mt-6 max-w-full text-center text-card-title font-bold text-[#111827]">
         {row.name}
       </h2>
-      <p className={`mt-1 font-bold ${scoreClass}`}>{formatNumber(row.score)}점</p>
-      <div className={`${dividerClass} h-px w-full bg-white/70`} />
-      <div className={`${statGridClass} grid w-full grid-cols-2 divide-x divide-[#D7DDE6]`}>
-        <StatPair
-          value={`${row.challenges}개`}
-          label="성공 챌린지"
-          featured={isFirst}
-          compact={isThird}
-        />
-        <StatPair
-          value={formatNumber(row.tokens)}
-          label="최소 소모 토큰"
-          featured={isFirst}
-          compact={isThird}
-        />
+      <p className="mt-1 text-page-title font-bold text-[#F52F45]">{formatNumber(row.score)}점</p>
+      <div className="mt-5 h-px w-full bg-white/70" />
+      <div className="mt-4 grid w-full grid-cols-2 divide-x divide-[#D7DDE6]">
+        <StatPair value={`${row.challenges}개`} label="성공 챌린지" />
+        <StatPair value={formatNumber(row.tokens)} label="최소 소모 토큰" />
       </div>
     </article>
   );
@@ -326,7 +225,7 @@ function LeaderboardRow({ row }) {
         </div>
       </td>
       <td className="w-[190px]">
-        <span className="inline-flex items-center gap-3 font-bold ">{row.score}</span>
+        <span className="inline-flex items-center gap-3 font-bold text-[#F52F45]">{row.score}</span>
       </td>
       <td className="w-[190px] text-center ">{row.challenges || ''}</td>
       <td className="w-[170px] text-center ">{formatToken(row.tokens)}</td>
@@ -335,6 +234,7 @@ function LeaderboardRow({ row }) {
 }
 
 export default function Leaderboard() {
+  const [selectedSeason, setSelectedSeason] = useState(1);
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -378,137 +278,161 @@ export default function Leaderboard() {
   };
 
   return (
-    <div
-      className="relative left-1/2 min-h-screen w-screen -translate-x-1/2 bg-white bg-top bg-no-repeat pb-10 pt-12"
-      style={{
-        backgroundImage: `url(${RankBgImage})`,
-        backgroundSize: '100% 100%',
-      }}
-    >
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-0">
+    <div className="relative left-1/2 min-h-screen w-screen -translate-x-1/2 bg-white pb-10 pt-12">
+      <div className="mx-auto w-full max-w-[1420px] px-5 sm:px-8 lg:px-10">
         <header className="mb-20 text-center">
-          <h1 className="text-display font-bold text-[#111827]">2026 시즌 1 랭킹</h1>
-          <p className="mt-4 text-body-lg  font-strong text-[#4B5563]">
+          <h1 className="text-display font-bold text-[#111827]">2026 시즌 {selectedSeason} 랭킹</h1>
+          <p className="mt-4 text-body-lg font-strong text-[#4B5563]">
             이번 시즌 최고의 도전자들을 확인해 보세요.
           </p>
         </header>
 
-        <section className="grid items-end gap-5 md:grid-cols-3 md:px-14">
-          {topRanks.map(row => (
-            <TopRankCard key={row.rank} row={row} />
-          ))}
-        </section>
+        <div className="grid gap-10 lg:grid-cols-[140px_minmax(0,1200px)]">
+          <aside
+            aria-label="시즌 선택"
+            className="flex border-b border-[#E5E7EB] lg:sticky lg:top-28 lg:self-start lg:flex-col lg:border-b-0"
+          >
+            {seasons.map(season => {
+              const isSelected = selectedSeason === season;
 
-        <MyRankCard />
+              return (
+                <button
+                  key={season}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => setSelectedSeason(season)}
+                  className={`relative flex-1 px-4 py-3 text-left text-card-title transition sm:text-section-title lg:flex-none lg:px-0 lg:py-2 lg:first:pt-0 ${
+                    isSelected
+                      ? 'font-bold text-[#F52F45]'
+                      : 'font-strong text-[#6B7280] hover:text-[#111827]'
+                  }`}
+                >
+                  시즌 {season}
+                  {isSelected && (
+                    <span className="absolute inset-x-0 bottom-[-1px] h-0.5 bg-[#F52F45] lg:hidden" />
+                  )}
+                </button>
+              );
+            })}
+          </aside>
 
-        <section className="mt-10 flex h-[2580px] flex-col rounded-[24px] border border-white/65 bg-white/65 px-6 py-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_3px_8px_rgba(15,23,42,0.05)] backdrop-blur-md sm:px-10">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-end gap-8">
-              <button
-                type="button"
-                className="border-b-[3px] border-[#F52F45] pb-5 text-card-title font-bold "
-              >
-                전체 랭킹
-              </button>
-            </div>
+          <div className="min-w-0">
+            <section className="grid items-end gap-5 md:grid-cols-3">
+              {topRanks.map(row => (
+                <TopRankCard key={row.rank} row={row} />
+              ))}
+            </section>
 
-            <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
-              <label className="relative min-w-0 flex-1">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
-                <input
-                  type="search"
-                  value={searchInput}
-                  onChange={event => setSearchInput(event.target.value)}
-                  placeholder="유저 닉네임을 검색해 보세요."
-                  className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-body outline-none transition focus:border-[#FF4854]"
-                />
-              </label>
-              <button type="submit" className="btn btn-primary btn-lg">
-                검색
-              </button>
-              <button
-                type="button"
-                aria-label="검색 초기화"
-                onClick={handleResetSearch}
-                className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-[12px] border border-[#FF4854] bg-[#FF4854] text-white shadow-[0_6px_14px_rgba(255,72,84,0.12)] transition hover:-translate-y-0.5 hover:border-[#E73541] hover:bg-[#E73541] hover:shadow-[0_8px_18px_rgba(255,72,84,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
-              >
-                <RotateCcw className="h-5 w-5" strokeWidth={2.5} />
-              </button>
-            </form>
-          </div>
+            <section className="mt-20 flex flex-col">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-end gap-8">
+                  <button
+                    type="button"
+                    className="border-b-[3px] border-[#F52F45] pb-5 text-card-title font-bold "
+                  >
+                    전체 랭킹
+                  </button>
+                </div>
 
-          <div className="mt-10 h-[2260px] overflow-x-auto overflow-y-hidden">
-            <table className="w-full min-w-[920px] border-separate border-spacing-y-[14px] text-left">
-              <thead>
-                <tr className="text-body font-bold text-[#99A5B8]">
-                  <th className="w-[88px]">
-                    <span className="flex w-[40px] justify-center">순위</span>
-                  </th>
-                  <th>유저 정보</th>
-                  <th className="w-[190px]">
-                    <span className="inline-flex items-center gap-2">점수</span>
-                  </th>
-                  <th className="w-[190px] text-center">성공 챌린지</th>
-                  <th className="w-[170px] text-center">최소 소모 토큰</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedRows.map(row => (
-                  <LeaderboardRow key={`${row.rank}-${row.name}`} row={row} />
+                <form onSubmit={handleSearch} className="flex w-full gap-3 sm:w-[min(100%,500px)]">
+                  <label className="relative min-w-0 flex-1">
+                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A4ADB8]" />
+                    <input
+                      type="search"
+                      value={searchInput}
+                      onChange={event => setSearchInput(event.target.value)}
+                      placeholder="유저 닉네임을 검색해 보세요."
+                      className="h-11 w-full rounded-[12px] border border-[#D8DDE4] bg-white pl-11 pr-4 text-body outline-none transition focus:border-[#FF4854]"
+                    />
+                  </label>
+                  <button type="submit" className="btn btn-primary btn-lg">
+                    검색
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="검색 초기화"
+                    onClick={handleResetSearch}
+                    className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-[12px] border border-[#FF4854] bg-[#FF4854] text-white shadow-[0_6px_14px_rgba(255,72,84,0.12)] transition hover:-translate-y-0.5 hover:border-[#E73541] hover:bg-[#E73541] hover:shadow-[0_8px_18px_rgba(255,72,84,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
+                  >
+                    <RotateCcw className="h-5 w-5" strokeWidth={2.5} />
+                  </button>
+                </form>
+              </div>
+
+              <div className="mt-10 overflow-x-auto">
+                <table className="w-full min-w-[920px] border-separate border-spacing-y-[14px] text-left">
+                  <thead>
+                    <tr className="text-body font-bold text-[#99A5B8]">
+                      <th className="w-[88px]">
+                        <span className="flex w-[40px] justify-center">순위</span>
+                      </th>
+                      <th>유저 정보</th>
+                      <th className="w-[190px]">
+                        <span className="inline-flex items-center gap-2">점수</span>
+                      </th>
+                      <th className="w-[190px] text-center">성공 챌린지</th>
+                      <th className="w-[170px] text-center">최소 소모 토큰</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedRows.map(row => (
+                      <LeaderboardRow key={`${row.rank}-${row.name}`} row={row} />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <nav className="mt-6 flex items-center justify-center gap-2 text-body-lg font-strong text-[#111827]">
+                <button
+                  type="button"
+                  onClick={() => goToPage(1)}
+                  disabled={currentPage === 1}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E5EA] text-[#9AA3AF] disabled:cursor-not-allowed disabled:opacity-45"
+                >
+                  <ChevronsLeft className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E5EA] text-[#9AA3AF] disabled:cursor-not-allowed disabled:opacity-45"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                {Array.from({ length: totalPages }, (_, index) => index + 1).map(page => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => goToPage(page)}
+                    className={`h-10 min-w-10 rounded-full px-3 ${page === currentPage ? 'bg-[#F52F45] text-white shadow-[0_6px_14px_rgba(245,47,69,0.28)]' : 'text-[#111827]'}`}
+                  >
+                    {page}
+                  </button>
                 ))}
-              </tbody>
-            </table>
+                <button
+                  type="button"
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E5EA] text-[#9AA3AF] disabled:cursor-not-allowed disabled:opacity-45"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goToPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E5EA] text-[#9AA3AF] disabled:cursor-not-allowed disabled:opacity-45"
+                >
+                  <ChevronsRight className="h-5 w-5" />
+                </button>
+              </nav>
+
+              <p className="mt-7 border-t border-[#E5E7EB] pt-6 text-center text-body font-medium text-[#8A93A0]">
+                랭킹 데이터는 매일 00:00 기준으로 갱신됩니다.
+              </p>
+            </section>
           </div>
-
-          <nav className="mt-6 flex items-center justify-center gap-2 text-body-lg font-strong text-[#111827]">
-            <button
-              type="button"
-              onClick={() => goToPage(1)}
-              disabled={currentPage === 1}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E5EA] text-[#9AA3AF] disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              <ChevronsLeft className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E5EA] text-[#9AA3AF] disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(page => (
-              <button
-                key={page}
-                type="button"
-                onClick={() => goToPage(page)}
-                className={`h-10 min-w-10 rounded-full px-3 ${page === currentPage ? 'bg-[#F52F45] text-white shadow-[0_6px_14px_rgba(245,47,69,0.28)]' : 'text-[#111827]'}`}
-              >
-                {page}
-              </button>
-            ))}
-            <button
-              type="button"
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E5EA] text-[#9AA3AF] disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => goToPage(totalPages)}
-              disabled={currentPage === totalPages}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E5EA] text-[#9AA3AF] disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              <ChevronsRight className="h-5 w-5" />
-            </button>
-          </nav>
-
-          <p className="mt-7 border-t border-[#E5E7EB] pt-6 text-center text-body font-medium text-[#8A93A0]">
-            랭킹 데이터는 매일 00:00 기준으로 갱신됩니다.
-          </p>
-        </section>
+        </div>
       </div>
     </div>
   );
