@@ -16,13 +16,28 @@ const CancelIcon = ({ onClick }) => (
   </div>
 );
 
-const ResetModal = () => {
+const ResetModal = ({
+  isOpen = false,
+  onClose = () => {},
+  onReset = () => {},
+  previewMode = false,
+  embeddedPreview = false,
+  hideBrandSymbol = false,
+}) => {
   const isResetModalOpen = useModalStore(state => state.isResetModalOpen);
   const { closeResetModal } = useModalStore();
   const { clearSession } = useSessionStore();
   const queryClient = useQueryClient();
+  const shouldShow = previewMode ? isOpen : isResetModalOpen;
+  const handleClose = previewMode ? onClose : closeResetModal;
 
   const handleReset = useCallback(() => {
+    if (previewMode) {
+      onReset();
+      onClose();
+      return;
+    }
+
     // ✅ 세션 클리어 및 캐시 초기화
     clearSession();
     queryClient.removeQueries({ queryKey: ['chatMessages'] });
@@ -30,21 +45,29 @@ const ResetModal = () => {
 
     // 모달 닫기
     closeResetModal();
-  }, [clearSession, queryClient, closeResetModal]);
+  }, [clearSession, queryClient, closeResetModal, onClose, onReset, previewMode]);
 
-  if (!isResetModalOpen) return null;
+  if (!shouldShow) return null;
 
   return (
-    <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[1000]">
+    <div
+      className={`${embeddedPreview ? 'absolute' : 'fixed'} inset-0 z-[1000] flex items-center justify-center bg-[rgba(1,1,1,0.6)]`}
+    >
       <div className="relative w-[440px] h-[586.46px] bg-white rounded-[24px] p-[30px] box-border border border-[#EEF0F4] shadow-[0_18px_40px_rgba(15,23,42,0.16)]">
-        <CancelIcon onClick={closeResetModal} />
+        <CancelIcon onClick={handleClose} />
 
         {/* 헤더 */}
         <div className="absolute left-[30px] top-[17px] w-[105px] h-[42px] flex items-center">
-          <div className="w-[29px] h-[42px] flex justify-center items-center">
-            <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
-          </div>
-          <span className="ml-[9px] text-card-title font-strong text-[#FF084A]">ARENA</span>
+          {!hideBrandSymbol ? (
+            <div className="w-[29px] h-[42px] flex justify-center items-center">
+              <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
+            </div>
+          ) : null}
+          <span
+            className={`${hideBrandSymbol ? '' : 'ml-[9px]'} text-card-title font-strong text-[#FF084A]`}
+          >
+            ARENA
+          </span>
         </div>
 
         {/* 아이콘 */}

@@ -17,6 +17,8 @@ import {
   TutorialJudgeSuccessInteractivePreview,
   TutorialPreviewCenterPanel,
   TutorialPreviewLeftPanel,
+  TutorialResetModalPreview,
+  TutorialSubmitModalPreview,
 } from './TutorialChallengePlayPreview';
 import { TUTORIALS } from './TutorialList';
 
@@ -65,17 +67,18 @@ const tutorialTabs = {
     { key: 'overview', label: '전체 화면' },
     { key: 'challenge-info', label: '챌린지 정보' },
     { key: 'chat', label: '채팅 영역' },
-    { key: 'tokens', label: '사용 토큰' },
   ],
   8: [
     { key: 'goals', label: '학습 목표' },
     { key: 'chat', label: '채팅 영역' },
+    { key: 'reset', label: '새 대화 시작' },
     { key: 'tokens', label: '토큰 확인' },
     { key: 'score', label: '점수 계산' },
     { key: 'practice', label: '직접 해보기' },
   ],
   9: [
     { key: 'goals', label: '학습 목표' },
+    { key: 'submit', label: '제출 확인' },
     { key: 'result', label: '실패 모달' },
     { key: 'practice', label: '직접 제출하기' },
   ],
@@ -91,15 +94,16 @@ const tutorialTabSummaries = {
     overview: '챌린지 Play 화면의 전체 구조와 정보·채팅 영역의 배치를 확인합니다.',
     'challenge-info': '문제 설명과 목표, 성공·실패 조건을 읽는 방법을 익힙니다.',
     chat: '프롬프트 입력창과 전송·제출 버튼의 역할을 구분합니다.',
-    tokens: '사용 토큰 카드의 위치와 토큰을 확인하는 흐름을 살펴봅니다.',
   },
   8: {
     chat: 'AI와 대화를 시작하고 응답을 바탕으로 다음 프롬프트를 작성합니다.',
+    reset: '진행 중인 대화를 초기화하고 새로운 시도를 시작하는 방법을 확인합니다.',
     tokens: '대화가 늘어날 때 사용 토큰이 어떻게 달라지는지 확인합니다.',
     score: '사용 토큰이 최종 점수에 반영되는 방식을 예시로 알아봅니다.',
     practice: '프롬프트를 직접 입력하며 채팅과 토큰 변화를 함께 연습합니다.',
   },
   9: {
+    submit: '현재 대화를 Judge 평가에 제출하기 전 확인해야 할 내용을 살펴봅니다.',
     result: '실패 모달의 판정과 Judge 피드백을 읽는 방법을 살펴봅니다.',
     practice: '응답을 직접 제출하고 실패 결과가 표시되는 전체 흐름을 연습합니다.',
   },
@@ -264,7 +268,9 @@ function PanelPreviewSection({
   const showSteps = title.includes('직접');
   const preview = (
     <div className="no-scrollbar overflow-x-auto rounded-[16px] bg-[#E2E5E9] p-6">
-      <div className={`h-[660px] ${width}`}>{children}</div>
+      <div className={`h-[660px] overflow-hidden ${width}`}>
+        <div className="h-[116.28%] w-[116.28%] origin-top-left scale-[0.86]">{children}</div>
+      </div>
     </div>
   );
   const description = (
@@ -316,9 +322,9 @@ function ChallengePanelPreviews({ activeTab }) {
       {activeTab === 'challenge-info' ? (
         <PanelPreviewSection
           title="챌린지 정보 영역"
-          intro="챌린지 정보 영역은 문제를 풀기 전에 기준을 확인하는 공간입니다. 설명, 목표, 성공조건, 실패조건을 차례로 읽으며 어떤 응답을 만들어야 하는지 파악할 수 있습니다."
+          intro="챌린지 정보 영역에는 문제의 배경부터 판정 기준까지 한곳에 정리되어 있습니다. 대화를 시작하기 전에 각 탭을 읽으면 AI에게 무엇을 요청하고, 어떤 응답을 만들어야 하는지 빠르게 파악할 수 있습니다."
           items={[
-            '프리뷰의 탭을 직접 눌러 문제의 배경과 최종 목표, 반드시 만족해야 할 조건과 피해야 할 조건을 비교해보세요.',
+            '설명과 목표로 문제의 방향을 잡고, 성공조건과 실패조건을 제출 전 체크리스트로 활용해보세요. 아래 프리뷰의 탭을 직접 눌러 내용을 비교할 수 있습니다.',
             '탭은 설명, 목표, 성공조건, 실패조건으로 나뉩니다. 아래 프리뷰에서 탭을 직접 눌러 각 내용을 확인할 수 있습니다.',
             '목표 탭은 AI에게서 어떤 결과를 받아내야 하는지 알려줍니다. 프롬프트를 작성할 때는 이 목표 문장을 계속 기준점으로 삼아야 합니다.',
             '성공조건과 실패조건은 제출 전 체크리스트 역할을 합니다. AI가 그럴듯하게 답해도 성공조건에 필요한 핵심 내용이 없으면 실패할 수 있습니다.',
@@ -364,39 +370,11 @@ function ChallengePanelPreviews({ activeTab }) {
             '구성요소 튜토리얼에서는 프롬프트를 잘 쓰는 법보다 화면 구조를 익히는 데 집중합니다.',
             '새로운 대화 시작은 현재 대화 흐름을 초기화하는 버튼이므로 실제 챌린지에서는 신중하게 사용해야 합니다.',
           ]}
-          nextAction="채팅 영역에서 대화를 만들었다면, 챌린지 정보 영역 하단의 사용 토큰 카드가 어떻게 바뀌는지 확인합니다."
+          nextAction="채팅 영역의 구성까지 확인했다면, 다음 튜토리얼에서 메시지를 직접 보내며 대화 흐름을 연습합니다."
           width="min-w-[640px]"
           stacked
         >
           <TutorialPreviewCenterPanel />
-        </PanelPreviewSection>
-      ) : null}
-
-      {activeTab === 'tokens' ? (
-        <PanelPreviewSection
-          title="사용 토큰 표시"
-          intro="사용한 토큰은 챌린지 정보 영역 하단에 표시됩니다. 대화를 진행하면서 문제 조건과 현재 사용량을 같은 패널에서 함께 확인할 수 있습니다."
-          items={[
-            '대화를 시작하기 전에는 0으로 표시되고, 메시지와 AI 응답이 쌓이면 계산된 사용량이 반영됩니다.',
-            '채팅을 시작하기 전에는 0으로 보이고, 메시지를 보내고 응답을 받으면 서버에서 계산된 사용량이 반영됩니다.',
-            '토큰은 점수 효율을 보는 기준입니다. 같은 성공 결과라면 더 적은 토큰으로 목표를 달성한 시도가 더 좋은 풀이가 될 수 있습니다.',
-            '제출 결과는 별도 모달로 확인합니다. 전송은 대화이고, 제출하기는 Judge 평가를 요청하는 행동입니다.',
-          ]}
-          steps={[
-            '아래 프리뷰에서 정보 패널 하단의 사용한 토큰 카드를 찾아봅니다.',
-            '탭을 바꿔도 토큰 카드가 같은 위치에 남아 있는지 눌러보며 확인합니다.',
-            '토큰 숫자가 높아졌을 때 어떤 식으로 프롬프트를 줄일 수 있을지 생각해봅니다.',
-            '실패와 성공 판정은 이후 튜토리얼에서 제출 모달 흐름으로 직접 확인합니다.',
-          ]}
-          cautions={[
-            '토큰 숫자만 보고 제출 여부를 판단하지 말고, 채팅 응답이 실제로 성공조건을 만족하는지도 함께 확인해야 합니다.',
-            '토큰을 아끼려고 너무 짧게만 쓰면 목표 조건을 놓칠 수 있습니다.',
-            '구성요소 단계에서는 점수 계산을 외우기보다, 사용 토큰 카드의 위치를 익히면 됩니다.',
-          ]}
-          nextAction="사용 토큰 카드의 위치를 익혔다면, 다음 튜토리얼에서 실제로 채팅을 입력하고 토큰 변화를 확인합니다."
-          width="min-w-[340px]"
-        >
-          <TutorialPreviewLeftPanel tokenUsed={184} />
         </PanelPreviewSection>
       ) : null}
     </>
@@ -450,6 +428,19 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
           stacked
         >
           <TutorialPreviewCenterPanel messages={CHAT_TOKEN_MESSAGES} />
+        </PanelPreviewSection>
+      ) : null}
+
+      {activeTab === 'reset' ? (
+        <PanelPreviewSection
+          title="새 대화 시작"
+          intro="새로운 대화 시작 버튼을 누르면 현재 대화를 초기화할지 확인하는 모달이 표시됩니다. 확인하면 작성 중인 입력과 지금까지의 메시지가 사라지고 처음부터 다시 시도하게 됩니다."
+          items={[
+            '이 탭은 모달의 구조를 확인하는 프리뷰이므로 버튼을 눌러도 실제 튜토리얼 대화는 초기화되지 않습니다.',
+          ]}
+          width="min-w-[520px]"
+        >
+          <TutorialResetModalPreview />
         </PanelPreviewSection>
       ) : null}
 
@@ -558,6 +549,19 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
           </div>
           <TutorialGoalRoadmap tutorialId={9} onTabChange={onTabChange} />
         </section>
+      ) : null}
+
+      {activeTab === 'submit' ? (
+        <PanelPreviewSection
+          title="제출 확인"
+          intro="제출하기 버튼을 누르면 현재 대화를 Judge 평가에 전달할지 확인하는 모달이 표시됩니다. 제출하면 3개의 Judge AI가 대화 전체를 읽고 성공 여부를 판단합니다."
+          items={[
+            '제출 후에는 일정 시간 다시 제출할 수 없으므로, 목표와 성공조건을 만족했는지 먼저 확인하세요.',
+          ]}
+          width="min-w-[520px]"
+        >
+          <TutorialSubmitModalPreview />
+        </PanelPreviewSection>
       ) : null}
 
       {activeTab === 'result' ? (
@@ -737,9 +741,7 @@ function ChallengeElementGuide({ activeTab, onTabChange }) {
               </p>
             </div>
           </div>
-          <div className="overflow-hidden rounded-[16px] bg-[#E2E5E9] p-6">
-            <ChallengePlayPreview />
-          </div>
+          <ChallengePlayPreview />
         </section>
       ) : null}
       <ChallengePanelPreviews activeTab={activeTab} />

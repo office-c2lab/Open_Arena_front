@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import ArenaIcon from '@/assets/icons/Arena.svg';
 import SendIcon from '@/assets/icons/sendBtn.svg';
 import ResetIcon from '@/assets/icons/reset.svg';
 import ChallengeInfoPanel from '@/pages/Challenge/components/ChallengeInfoPanel';
@@ -7,6 +6,8 @@ import ChatMessages from '@/pages/Challenge/components/ChatArea/ChatMessages';
 import ChatInput from '@/pages/Challenge/components/ChatArea/ChatInput';
 import ChatControls from '@/pages/Challenge/components/ChatArea/ChatControls';
 import FailedModal from '@/pages/Challenge/ChallengeModal/FailedModal';
+import ResetModal from '@/pages/Challenge/ChallengeModal/ResetModal';
+import SubmitModal from '@/pages/Challenge/ChallengeModal/SubmitMoadl';
 import SuccessModal from '@/pages/Challenge/ChallengeModal/SuccesModal';
 import ArenaJudgeLoader from '@/components/Loading/ArenaJudgeLoader';
 import { failedPanelsData } from '@/pages/Challenge/data/challengeModalData';
@@ -23,19 +24,22 @@ const PREVIEW_CONTENT = {
   description: {
     title: '설명',
     content:
-      '챌린지는 문제 정보를 읽고, AI와 대화하고, 조건을 만족했다고 판단되면 제출하는 흐름으로 진행됩니다.',
+      'AI와 대화하며 주어진 목표를 달성하는 챌린지입니다. 먼저 문제의 배경과 제한 사항을 확인하고, 조건에 맞는 응답을 얻을 수 있도록 프롬프트를 구성해보세요.',
   },
   goal: {
     title: '목표',
-    content: '문제에서 요구하는 목표 응답을 AI와의 대화를 통해 만들어내는 것입니다.',
+    content:
+      'AI와의 대화를 통해 문제에서 요구하는 핵심 응답을 얻어내는 것이 목표입니다. 한 번에 해결되지 않으면 이전 응답을 바탕으로 요청을 더 구체화해보세요.',
   },
   success: {
     title: '성공조건',
-    content: '제출한 대화가 문제의 목표와 성공 조건을 충족하면 성공으로 판정됩니다.',
+    content:
+      '제출한 대화에 목표 달성에 필요한 핵심 내용이 포함되어야 합니다. 응답이 자연스러운지만 보지 말고, 요구된 조건을 빠짐없이 충족했는지 확인하세요.',
   },
   failure: {
     title: '실패조건',
-    content: '목표 응답이 부족하거나, 성공 조건에 필요한 내용이 빠져 있으면 실패로 판정됩니다.',
+    content:
+      '목표와 관련 없는 답변이거나 성공조건의 핵심 내용이 빠지면 실패로 판정됩니다. 제출 전에 현재 응답을 조건과 다시 비교해보세요.',
   },
 };
 
@@ -47,7 +51,7 @@ function estimateTutorialTokenUsage(messages, draft = '') {
 
 function createTutorialAssistantReply(prompt) {
   const shortPrompt = prompt.length > 38 ? `${prompt.slice(0, 38)}...` : prompt;
-  return `입력한 프롬프트 "${shortPrompt}"를 기준으로 응답을 생성했습니다. 이제 오른쪽 패널에서 토큰 사용량이 늘어난 것을 확인해보세요.`;
+  return `입력한 프롬프트 "${shortPrompt}"를 기준으로 응답을 생성했습니다. 이제 왼쪽 패널 하단에서 토큰 사용량이 늘어난 것을 확인해보세요.`;
 }
 
 function createTutorialFailureReply(prompt) {
@@ -126,7 +130,6 @@ export function TutorialPreviewCenterPanel({ messages = [], initialInput = '' })
           messages={messages}
           isLoading={false}
           isInitialState={isInitialState}
-          ArenaIcon={ArenaIcon}
           chatEndRef={null}
         />
 
@@ -150,6 +153,36 @@ export function TutorialPreviewCenterPanel({ messages = [], initialInput = '' })
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function TutorialResetModalPreview() {
+  return (
+    <div className="relative h-full min-w-[520px] overflow-hidden rounded-[24px]">
+      <ResetModal
+        isOpen
+        onClose={() => {}}
+        onReset={() => {}}
+        previewMode
+        embeddedPreview
+        hideBrandSymbol
+      />
+    </div>
+  );
+}
+
+export function TutorialSubmitModalPreview() {
+  return (
+    <div className="relative h-full min-w-[520px] overflow-hidden rounded-[24px]">
+      <SubmitModal
+        isOpen
+        onClose={() => {}}
+        onSubmit={() => {}}
+        previewMode
+        embeddedPreview
+        hideBrandSymbol
+      />
     </div>
   );
 }
@@ -231,7 +264,6 @@ export function TutorialChatTokenInteractivePreview() {
               messages={messages}
               isLoading={false}
               isInitialState={messages.length === 0}
-              ArenaIcon={ArenaIcon}
               chatEndRef={null}
             />
 
@@ -376,7 +408,6 @@ export function TutorialJudgeFailureInteractivePreview() {
             messages={messages}
             isLoading={false}
             isInitialState={messages.length === 0}
-            ArenaIcon={ArenaIcon}
             chatEndRef={null}
           />
 
@@ -536,7 +567,6 @@ export function TutorialJudgeSuccessInteractivePreview() {
             messages={messages}
             isLoading={false}
             isInitialState={messages.length === 0}
-            ArenaIcon={ArenaIcon}
             chatEndRef={null}
           />
 
@@ -585,12 +615,6 @@ export function TutorialJudgeSuccessInteractivePreview() {
 export default function TutorialChallengePlayPreview() {
   return (
     <div className="relative flex h-full min-w-[1120px] w-full gap-6 overflow-hidden bg-[#E2E5E9] p-6">
-      <div
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
-        aria-hidden="true"
-      >
-        <img src={ArenaIcon} alt="" className="h-[168px] w-auto opacity-[0.12] grayscale" />
-      </div>
       <TutorialPreviewLeftPanel />
       <TutorialPreviewCenterPanel />
     </div>

@@ -17,7 +17,15 @@ const CancelIcon = ({ onClick }) => (
   </div>
 );
 
-const SubmitModal = ({ setProgress }) => {
+const SubmitModal = ({
+  setProgress = () => {},
+  isOpen = false,
+  onClose = () => {},
+  onSubmit = () => {},
+  previewMode = false,
+  embeddedPreview = false,
+  hideBrandSymbol = false,
+}) => {
   const [cooldown, setCooldown] = useState(0);
   const isSubmitModalOpen = useModalStore(state => state.isSubmitModalOpen);
   const {
@@ -30,9 +38,17 @@ const SubmitModal = ({ setProgress }) => {
     setChallengeRewardPoints,
   } = useModalStore();
   const { sessionId } = useSessionStore();
+  const shouldShow = previewMode ? isOpen : isSubmitModalOpen;
+  const handleClose = previewMode ? onClose : closeSubmitModal;
 
   // ✅ 제출 로직
   const submitForJudgement = useCallback(async () => {
+    if (previewMode) {
+      onSubmit();
+      onClose();
+      return;
+    }
+
     if (!sessionId) {
       toast.error('❌ 제출할 세션 정보가 없습니다.');
       return closeSubmitModal();
@@ -160,33 +176,45 @@ const SubmitModal = ({ setProgress }) => {
     setChallengeResults,
     setChallengeRewardPoints,
     setProgress,
+    onClose,
+    onSubmit,
+    previewMode,
   ]);
 
-  if (!isSubmitModalOpen) return null;
+  if (!shouldShow) return null;
 
   return (
-    <div className="fixed inset-0 bg-[rgba(1,1,1,0.6)] flex justify-center items-center z-[9999]">
+    <div
+      className={`${embeddedPreview ? 'absolute' : 'fixed'} inset-0 z-[9999] flex items-center justify-center bg-[rgba(1,1,1,0.6)]`}
+    >
       <div className="relative w-[440px] h-[586.46px] bg-white rounded-[24px] box-border border border-[#EEF0F4] shadow-[0_18px_40px_rgba(15,23,42,0.16)]">
-        <CancelIcon onClick={closeSubmitModal} />
+        <CancelIcon onClick={handleClose} />
 
         {/* 로고 */}
         <div className="absolute left-[30px] top-[17px] w-[105px] h-[42px] flex items-center">
-          <div className="w-[29px] h-[42px] flex justify-center items-center">
-            <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
-          </div>
-          <span className="ml-[9px] text-card-title font-strong text-[#FF084A]">ARENA</span>
+          {!hideBrandSymbol ? (
+            <div className="w-[29px] h-[42px] flex justify-center items-center">
+              <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
+            </div>
+          ) : null}
+          <span
+            className={`${hideBrandSymbol ? '' : 'ml-[9px]'} text-card-title font-strong text-[#FF084A]`}
+          >
+            ARENA
+          </span>
         </div>
 
         {/* 중앙 아이콘 */}
-        <div className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[148px] h-[218px] flex justify-center items-center">
-          <img src={ArenaSvg} alt="제출 아이콘" className="w-full h-full opacity-30" />
-        </div>
+        {!hideBrandSymbol ? (
+          <div className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[148px] h-[218px] flex justify-center items-center">
+            <img src={ArenaSvg} alt="제출 아이콘" className="w-full h-full opacity-30" />
+          </div>
+        ) : null}
 
         {/* 안내문 */}
         <div className="absolute w-[380px] left-[30px] top-[340px] text-center text-card-title font-medium text-[#0F172A] m-0 whitespace-pre-wrap">
-          <p>제출하면 3개의 JUDGE AI가 결과를 판단합니다.</p>
-          <p>대화 기록은 우측 화면에서 확인할 수 있습니다.</p>
-          <p>제출 후에는 약 30초간 다시 제출할 수 없습니다.</p>
+          <p>제출 시 3개의 JUDGE AI가 판정합니다.</p>
+<p>제출 후 30초간 다시 제출할 수 없습니다.</p>
         </div>
 
         {/* 제출 버튼 */}
@@ -201,7 +229,7 @@ const SubmitModal = ({ setProgress }) => {
                 ? 'bg-[#D9DADB] text-[#515151] cursor-not-allowed'
                 : 'bg-[#FF4854] shadow-[0_3px_8px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]'
             }`}
-          disabled={!sessionId || cooldown > 0}
+          disabled={previewMode ? false : !sessionId || cooldown > 0}
         >
           <span className="text-card-title font-strong text-white">
             {cooldown > 0 ? `재시도 ${cooldown}s` : '제출하기'}
