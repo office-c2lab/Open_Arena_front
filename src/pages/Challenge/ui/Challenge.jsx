@@ -424,15 +424,15 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
               <button
                 type="button"
                 onClick={() => onSessionOpen(session.id, status)}
-                className="group grid min-h-[148px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_84px_28px] items-center gap-7 px-8 py-6 text-left transition-colors hover:bg-[#FAFBFC] sm:grid-cols-[minmax(0,1fr)_96px_32px] sm:px-10"
+                className="group grid min-h-[132px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_84px_28px] items-center gap-6 px-6 py-5 text-left transition-colors hover:bg-[#FAFBFC] sm:grid-cols-[minmax(0,1fr)_96px_32px] sm:px-8"
                 aria-label={`${statusLabel} 도전 기록 플레이 화면으로 이동`}
               >
                 <div className="min-w-0">
                   <p className="truncate text-card-title font-bold text-[#202832]">{title}</p>
-                  <p className="mt-3 truncate text-body-lg font-medium text-[#66717E]">
+                  <p className="mt-2 truncate text-body-lg font-medium text-[#66717E]">
                     {description}
                   </p>
-                  <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-body font-strong text-[#66717E]">
+                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-body font-strong text-[#66717E]">
                     <span>
                       사용토큰{' '}
                       <em className="ml-1 not-italic text-[#303843]">

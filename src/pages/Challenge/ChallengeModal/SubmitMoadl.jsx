@@ -25,6 +25,7 @@ const SubmitModal = ({
   previewMode = false,
   embeddedPreview = false,
   hideBrandSymbol = false,
+  hideHeaderSymbol = false,
 }) => {
   const [cooldown, setCooldown] = useState(0);
   const isSubmitModalOpen = useModalStore(state => state.isSubmitModalOpen);
@@ -40,6 +41,7 @@ const SubmitModal = ({
   const { sessionId } = useSessionStore();
   const shouldShow = previewMode ? isOpen : isSubmitModalOpen;
   const handleClose = previewMode ? onClose : closeSubmitModal;
+  const showHeaderSymbol = !hideBrandSymbol && !hideHeaderSymbol;
 
   // ✅ 제출 로직
   const submitForJudgement = useCallback(async () => {
@@ -192,13 +194,13 @@ const SubmitModal = ({
 
         {/* 로고 */}
         <div className="absolute left-[30px] top-[17px] w-[105px] h-[42px] flex items-center">
-          {!hideBrandSymbol ? (
+          {showHeaderSymbol ? (
             <div className="w-[29px] h-[42px] flex justify-center items-center">
               <img src={ArenaSvg} alt="ARENA 로고" className="w-full h-full" />
             </div>
           ) : null}
           <span
-            className={`${hideBrandSymbol ? '' : 'ml-[9px]'} text-card-title font-strong text-[#FF084A]`}
+            className={`${showHeaderSymbol ? 'ml-[9px]' : ''} text-card-title font-strong text-[#FF084A]`}
           >
             ARENA
           </span>

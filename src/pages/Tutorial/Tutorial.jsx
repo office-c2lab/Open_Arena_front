@@ -11,6 +11,7 @@ import {
   SuccessJudgeModelPreview,
 } from '@/pages/LandingPage/JudgeModelPreviews';
 import { SectionTitle } from '@/pages/LandingPage/LandingPage.primitives';
+import TokenInfoCard from '@/pages/Challenge/components/TokenInfoCard';
 import {
   TutorialChatTokenInteractivePreview,
   TutorialJudgeFailureInteractivePreview,
@@ -65,7 +66,8 @@ const tutorialTabs = {
   7: [
     { key: 'goals', label: '학습 목표' },
     { key: 'overview', label: '전체 화면' },
-    { key: 'challenge-info', label: '챌린지 정보' },
+    { key: 'challenge-overview', label: '챌린지 개요' },
+    { key: 'challenge-history', label: '도전기록' },
     { key: 'chat', label: '채팅 영역' },
   ],
   8: [
@@ -92,7 +94,8 @@ const tutorialTabs = {
 const tutorialTabSummaries = {
   7: {
     overview: '챌린지 Play 화면의 전체 구조와 정보·채팅 영역의 배치를 확인합니다.',
-    'challenge-info': '문제 설명과 목표, 성공·실패 조건을 읽는 방법을 익힙니다.',
+    'challenge-overview': '챌린지 설명과 도전목표, 성공·실패 조건을 확인합니다.',
+    'challenge-history': '이전 시도의 제출 상태와 판정 결과를 확인하는 방법을 익힙니다.',
     chat: '프롬프트 입력창과 전송·제출 버튼의 역할을 구분합니다.',
   },
   8: {
@@ -233,19 +236,18 @@ function ChallengePlayPreview() {
   );
 }
 
-function SectionDescription({ intro, items = [], steps = [], showSteps = false }) {
+function SectionDescription({ items = [], steps = [], showSteps = false }) {
   const supportingCopy = items[0];
   const visibleSteps = steps.slice(0, 3);
 
   return (
-    <div className="mt-4 space-y-4">
-      <p className="text-body-lg font-strong text-[#344050]">{intro}</p>
+    <div>
       {!showSteps && supportingCopy ? (
-        <p className="text-body font-strong text-[#66717E]">{supportingCopy}</p>
+        <p className="max-w-lg text-body text-[#57534e] sm:text-body-lg">{supportingCopy}</p>
       ) : null}
       {showSteps && visibleSteps.length ? (
-        <div className="mt-6">
-          <ol className="list-decimal space-y-3 pl-5 text-body font-strong text-[#4A5565]">
+        <div>
+          <ol className="max-w-lg list-decimal space-y-3 pl-5 text-body text-[#57534e] sm:text-body-lg">
             {visibleSteps.map(step => (
               <li key={step}>{step}</li>
             ))}
@@ -263,23 +265,27 @@ function PanelPreviewSection({
   steps,
   children,
   width = 'w-full',
+  height = 'h-[660px]',
   stacked = false,
 }) {
   const showSteps = title.includes('직접');
   const preview = (
-    <div className="no-scrollbar overflow-x-auto rounded-[16px] bg-[#E2E5E9] p-6">
-      <div className={`h-[660px] overflow-hidden ${width}`}>
+    <div
+      className={`no-scrollbar max-w-full overflow-x-auto rounded-[16px] bg-[#E2E5E9] p-6 ${
+        stacked ? 'w-full' : 'w-fit'
+      }`}
+    >
+      <div className={`${height} overflow-hidden ${width}`}>
         <div className="h-[116.28%] w-[116.28%] origin-top-left scale-[0.86]">{children}</div>
       </div>
     </div>
   );
   const description = (
-    <div className={stacked ? 'max-w-[860px]' : 'py-2 lg:sticky lg:top-8'}>
-      <span className="text-label font-bold uppercase tracking-[0.18em] text-[#FF4854]">
-        Component guide
-      </span>
-      <h2 className="mt-3 text-page-title font-bold text-[#202832]">{title}</h2>
-      <SectionDescription intro={intro} items={items} steps={steps} showSteps={showSteps} />
+    <div className={`${stacked ? 'max-w-[860px]' : 'py-2 lg:sticky lg:top-8'} flex flex-col gap-6`}>
+      <div className="max-w-xl space-y-4">
+        <SectionTitle eyebrow="" title={title} desc={intro} />
+      </div>
+      <SectionDescription items={items} steps={steps} showSteps={showSteps} />
     </div>
   );
 
@@ -319,32 +325,52 @@ const CHAT_TOKEN_MESSAGES = [
 function ChallengePanelPreviews({ activeTab }) {
   return (
     <>
-      {activeTab === 'challenge-info' ? (
+      {activeTab === 'challenge-overview' ? (
         <PanelPreviewSection
-          title="챌린지 정보 영역"
-          intro="챌린지 정보 영역에는 문제의 배경부터 판정 기준까지 한곳에 정리되어 있습니다. 대화를 시작하기 전에 각 탭을 읽으면 AI에게 무엇을 요청하고, 어떤 응답을 만들어야 하는지 빠르게 파악할 수 있습니다."
+          title="챌린지 개요"
+          intro="챌린지 개요에는 문제를 시작하기 전에 알아야 할 정보가 정리되어 있습니다. 챌린지 설명과 도전목표를 읽고, 성공조건과 실패조건을 비교하면 대화의 방향을 빠르게 잡을 수 있습니다."
           items={[
-            '설명과 목표로 문제의 방향을 잡고, 성공조건과 실패조건을 제출 전 체크리스트로 활용해보세요. 아래 프리뷰의 탭을 직접 눌러 내용을 비교할 수 있습니다.',
-            '탭은 설명, 목표, 성공조건, 실패조건으로 나뉩니다. 아래 프리뷰에서 탭을 직접 눌러 각 내용을 확인할 수 있습니다.',
-            '목표 탭은 AI에게서 어떤 결과를 받아내야 하는지 알려줍니다. 프롬프트를 작성할 때는 이 목표 문장을 계속 기준점으로 삼아야 합니다.',
+            '위에서 아래로 내용을 읽은 뒤 성공조건을 제출 전 체크리스트로 활용해보세요.',
+            '챌린지 개요에는 챌린지 설명, 도전목표, 성공조건, 실패조건이 순서대로 표시됩니다.',
+            '목표 항목은 AI에게서 어떤 결과를 받아내야 하는지 알려줍니다. 프롬프트를 작성할 때는 이 목표 문장을 계속 기준점으로 삼아야 합니다.',
             '성공조건과 실패조건은 제출 전 체크리스트 역할을 합니다. AI가 그럴듯하게 답해도 성공조건에 필요한 핵심 내용이 없으면 실패할 수 있습니다.',
-            'API형 문제에서는 설명 탭 하단에 API 정보가 함께 표시될 수 있습니다. URL, Method, Header, API Key 같은 값은 외부 요청을 구성할 때 필요한 재료입니다.',
+            'API형 문제에서는 설명 항목 하단에 API 정보가 함께 표시될 수 있습니다. URL, Method, Header, API Key 같은 값은 외부 요청을 구성할 때 필요한 재료입니다.',
           ]}
           steps={[
-            '아래 프리뷰에서 설명 탭을 누르고 문제의 배경과 제한 조건을 읽어봅니다.',
-            '목표 탭을 눌러 이번 문제에서 받아내야 하는 최종 응답을 확인합니다.',
-            '성공조건 탭을 눌러 제출 전에 반드시 포함되어야 할 내용을 찾아봅니다.',
-            '실패조건 탭을 눌러 피해야 할 응답 패턴을 확인한 뒤 다시 설명 탭으로 돌아와봅니다.',
+            '챌린지 개요에서 문제의 배경과 목표를 읽어봅니다.',
+            '성공조건과 실패조건을 비교하며 제출 기준을 확인합니다.',
           ]}
           cautions={[
             '문제 설명만 읽고 바로 대화를 시작하면 성공조건을 놓칠 수 있습니다.',
             'AI가 긴 답변을 했다고 해서 성공은 아닙니다. 성공조건에 필요한 핵심 문장이 있는지 확인해야 합니다.',
             'API 정보는 모든 문제에 항상 필요한 것은 아닙니다. API형 문제일 때만 요청 구성에 사용합니다.',
           ]}
-          nextAction="챌린지 정보 영역을 다 읽었다면, 이제 채팅 영역에서 첫 프롬프트를 작성해 대화를 시작합니다."
+          nextAction="챌린지 개요를 확인했다면, 도전기록에서 이전 시도의 판정 결과를 살펴봅니다."
           width="min-w-[340px]"
         >
-          <TutorialPreviewLeftPanel />
+          <TutorialPreviewLeftPanel initialActiveTab="overview" lockActiveTab />
+        </PanelPreviewSection>
+      ) : null}
+
+      {activeTab === 'challenge-history' ? (
+        <PanelPreviewSection
+          title="도전기록"
+          intro="도전기록에는 지금까지 진행한 대화가 시도 단위로 쌓입니다. 제출 전인 대화와 실패하거나 성공한 시도를 구분해보고, 원하는 기록을 선택해 당시 대화를 다시 확인할 수 있습니다."
+          items={[
+            '최신 시도가 위에 표시되며, 각 기록에서 제출 여부와 판정 결과를 한눈에 확인할 수 있습니다.',
+          ]}
+          steps={[
+            '제출 전, 실패, 성공 상태가 어떻게 구분되는지 확인합니다.',
+            '각 기록에 표시된 시도 번호와 대화 요약을 살펴봅니다.',
+          ]}
+          cautions={[
+            '도전기록을 선택해도 새로운 시도가 만들어지지는 않습니다.',
+            '아직 제출하지 않은 기록에는 성공이나 실패 판정이 표시되지 않습니다.',
+          ]}
+          nextAction="이전 시도의 흐름을 확인했다면, 채팅 영역에서 새로운 프롬프트를 작성해봅니다."
+          width="min-w-[340px]"
+        >
+          <TutorialPreviewLeftPanel initialActiveTab="history" lockActiveTab />
         </PanelPreviewSection>
       ) : null}
 
@@ -467,20 +493,21 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
             '전송은 대화를 이어가는 행동이고, 제출하기는 Judge 평가를 요청하는 행동입니다.',
           ]}
           nextAction="사용 토큰 위치를 확인했다면, 이어서 토큰이 점수에 어떻게 반영되는지 계산 예시를 살펴봅니다."
-          width="min-w-[340px]"
+          width="min-w-[420px]"
+          height="h-[94px]"
         >
-          <TutorialPreviewLeftPanel tokenUsed={184} />
+          <TokenInfoCard problemId="tutorial-problem" tokenUsed={184} />
         </PanelPreviewSection>
       ) : null}
 
       {activeTab === 'score' ? (
         <section className="mt-8 space-y-5 rounded-[18px] border border-[#E5E9EF] bg-white p-8">
-          <div>
-            <h2 className="text-page-title font-bold text-[#202832]">점수 계산 예시</h2>
-            <p className="mt-4 text-body-lg font-strong text-[#344050]">
-              아래 계산은 총 150점, 토큰 기준 3000인 챌린지를 가정한 예시입니다. 먼저 성공 조건을
-              만족한 뒤 토큰 사용량을 줄이면 더 높은 점수를 받을 수 있습니다.
-            </p>
+          <div className="max-w-xl">
+            <SectionTitle
+              eyebrow=""
+              title="점수 계산 예시"
+              desc="아래 계산은 총 150점, 토큰 기준 3000인 챌린지를 가정한 예시입니다. 먼저 성공조건을 만족한 뒤 토큰 사용량을 줄이면 더 높은 점수를 받을 수 있습니다."
+            />
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -565,7 +592,7 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
       ) : null}
 
       {activeTab === 'result' ? (
-        <section className="grid gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-center lg:gap-14">
+        <section className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-12">
           <div className="flex flex-col gap-6 lg:pr-6">
             <div className="max-w-xl space-y-4">
               <SectionTitle
@@ -587,8 +614,8 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
               다음 프롬프트에서 해당 조건을 명확하게 보완해보세요.
             </div>
           </div>
-          <div className="mt-8 rounded-[16px] bg-[#E2E5E9] p-6 lg:mt-12">
-            <FailedJudgeModelPreview bare />
+          <div className="mt-8 lg:mt-12">
+            <FailedJudgeModelPreview surface="gray" />
           </div>
         </section>
       ) : null}
@@ -645,9 +672,9 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
       ) : null}
 
       {activeTab === 'result' ? (
-        <section className="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-center lg:gap-14">
-          <div className="mt-8 rounded-[16px] bg-[#E2E5E9] p-6 lg:mt-12">
-            <SuccessJudgeModelPreview bare />
+        <section className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
+          <div className="mt-8 lg:mt-12">
+            <SuccessJudgeModelPreview surface="gray" />
           </div>
           <div className="flex flex-col gap-6 lg:pl-6">
             <div className="max-w-xl space-y-4">
@@ -725,21 +752,18 @@ function ChallengeElementGuide({ activeTab, onTabChange }) {
       ) : null}
       {activeTab === 'overview' ? (
         <section className="space-y-8">
-          <div className="max-w-[860px]">
-            <span className="text-label font-bold uppercase tracking-[0.18em] text-[#FF4854]">
-              Screen overview
-            </span>
-            <h2 className="mt-3 text-page-title font-bold text-[#202832]">전체 화면</h2>
-            <div className="mt-4 max-w-[760px] space-y-4">
-              <p className="text-body-lg font-strong text-[#344050]">
-                전체 화면은 챌린지의 조건을 확인하고 AI와 대화를 진행하는 작업 공간입니다. 왼쪽에는
-                문제 정보와 사용 토큰이, 오른쪽에는 채팅과 제출 기능이 배치됩니다.
-              </p>
-              <p className="text-body font-strong text-[#66717E]">
-                목표와 성공조건을 먼저 읽은 뒤 대화를 시작하면 전체 풀이 흐름을 놓치지 않을 수
-                있습니다.
-              </p>
+          <div className="flex max-w-[860px] flex-col gap-6">
+            <div className="max-w-xl">
+              <SectionTitle
+                eyebrow=""
+                title="전체 화면"
+                desc="전체 화면은 챌린지의 조건을 확인하고 AI와 대화를 진행하는 작업 공간입니다. 왼쪽에는 문제 정보와 사용 토큰이, 오른쪽에는 채팅과 제출 기능이 배치됩니다."
+              />
             </div>
+            <p className="max-w-lg text-body text-[#57534e] sm:text-body-lg">
+              목표와 성공조건을 먼저 읽은 뒤 대화를 시작하면 전체 풀이 흐름을 놓치지 않을 수
+              있습니다.
+            </p>
           </div>
           <ChallengePlayPreview />
         </section>
@@ -755,10 +779,7 @@ function DefaultLearningGuide({ activeTab }) {
 
   return (
     <section className="rounded-[18px] border border-[#E5E9EF] bg-[#F8FAFC] p-8 shadow-[0_14px_40px_rgba(15,23,42,0.06)] lg:p-10">
-      <span className="text-label font-bold uppercase tracking-[0.18em] text-[#FF4854]">
-        Tutorial guide
-      </span>
-      <h2 className="mt-3 text-page-title font-bold text-[#202832]">{selectedSection.title}</h2>
+      <h2 className="text-page-title font-bold text-[#202832]">{selectedSection.title}</h2>
       <ul className="mt-6 space-y-3 text-body text-[#26313D]">
         {selectedSection.items.slice(0, 3).map(item => (
           <li key={item}>{item}</li>

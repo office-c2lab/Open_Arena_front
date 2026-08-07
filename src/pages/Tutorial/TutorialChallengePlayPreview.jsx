@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SendIcon from '@/assets/icons/sendBtn.svg';
 import ResetIcon from '@/assets/icons/reset.svg';
 import ChallengeInfoPanel from '@/pages/Challenge/components/ChallengeInfoPanel';
@@ -20,28 +20,50 @@ const PREVIEW_HEADER_INFO = {
   score: 100,
 };
 
-const PREVIEW_CONTENT = {
-  description: {
-    title: '설명',
+const PREVIEW_OVERVIEW_SECTIONS = [
+  {
+    id: 'description',
+    title: '챌린지 설명',
     content:
       'AI와 대화하며 주어진 목표를 달성하는 챌린지입니다. 먼저 문제의 배경과 제한 사항을 확인하고, 조건에 맞는 응답을 얻을 수 있도록 프롬프트를 구성해보세요.',
   },
-  goal: {
-    title: '목표',
+  {
+    id: 'goal',
+    title: '도전목표',
     content:
       'AI와의 대화를 통해 문제에서 요구하는 핵심 응답을 얻어내는 것이 목표입니다. 한 번에 해결되지 않으면 이전 응답을 바탕으로 요청을 더 구체화해보세요.',
   },
-  success: {
+  {
+    id: 'success',
     title: '성공조건',
     content:
       '제출한 대화에 목표 달성에 필요한 핵심 내용이 포함되어야 합니다. 응답이 자연스러운지만 보지 말고, 요구된 조건을 빠짐없이 충족했는지 확인하세요.',
   },
-  failure: {
+  {
+    id: 'failure',
     title: '실패조건',
     content:
       '목표와 관련 없는 답변이거나 성공조건의 핵심 내용이 빠지면 실패로 판정됩니다. 제출 전에 현재 응답을 조건과 다시 비교해보세요.',
   },
-};
+];
+
+const PREVIEW_SESSIONS = [
+  {
+    id: 'tutorial-session-current',
+    status: 'unsubmitted',
+    title: '성공조건을 확인하며 대화 중',
+  },
+  {
+    id: 'tutorial-session-failed',
+    status: 'failed',
+    judge_reason: '핵심 성공조건이 응답에 포함되지 않았습니다.',
+  },
+  {
+    id: 'tutorial-session-success',
+    status: 'success',
+    judge_reason: '도전목표와 성공조건을 모두 충족했습니다.',
+  },
+];
 
 function estimateTutorialTokenUsage(messages, draft = '') {
   const textLength =
@@ -93,11 +115,6 @@ export function TutorialPreviewLeftPanel({
 }) {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
 
-  const activeTabContent = useMemo(() => {
-    const tabDesign = TABS.find(tab => tab.id === activeTab) ?? TABS[0];
-    return { ...tabDesign, ...PREVIEW_CONTENT[activeTab] };
-  }, [activeTab]);
-
   const handleTabClick = (event, tabId) => {
     event.preventDefault();
     if (lockActiveTab) return;
@@ -108,7 +125,8 @@ export function TutorialPreviewLeftPanel({
     <ChallengeInfoPanel
       TABS={TABS}
       activeTab={activeTab}
-      activeTabContent={activeTabContent}
+      overviewSections={PREVIEW_OVERVIEW_SECTIONS}
+      sessions={PREVIEW_SESSIONS}
       handleTabClick={handleTabClick}
       CHALLENGE_HEADER_INFO={PREVIEW_HEADER_INFO}
       isLoading={false}
@@ -181,7 +199,7 @@ export function TutorialSubmitModalPreview() {
         onSubmit={() => {}}
         previewMode
         embeddedPreview
-        hideBrandSymbol
+        hideHeaderSymbol
       />
     </div>
   );
