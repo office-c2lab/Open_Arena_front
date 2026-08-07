@@ -1,6 +1,7 @@
 import { Check, Github, KeyRound, Link2, MessageCircle, ShieldAlert, X } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UserIcon from '@/assets/icons/user.svg';
 import { useAuthStore } from '@/stores/authStore';
 
 function InfoRow({ label, children, last = false }) {
@@ -82,7 +83,13 @@ export default function MyPage({ embedded = false }) {
   const logout = useAuthStore(state => state.logout);
   const nickname = teamInfo?.teamname || teamInfo?.username || 'ARENA 유저';
   const email = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
-  const [isEditing, setIsEditing] = useState(false);
+  const savedProfileMessage = teamInfo?.profileMessage || '';
+  const savedProfileImage = teamInfo?.profileImage || null;
+  const profileImageInputRef = useRef(null);
+  const [isEditingProfileImage, setIsEditingProfileImage] = useState(false);
+  const [isEditingNickname, setIsEditingNickname] = useState(false);
+  const [isEditingProfileMessage, setIsEditingProfileMessage] = useState(false);
+  const [draftProfileImage, setDraftProfileImage] = useState(savedProfileImage);
   const [activeModal, setActiveModal] = useState(null);
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -94,6 +101,7 @@ export default function MyPage({ embedded = false }) {
   const [linkedApps, setLinkedApps] = useState([]);
   const [profile, setProfile] = useState({
     nickname,
+    profileMessage: savedProfileMessage,
     year: '2001',
     month: '3',
     day: '7',
@@ -104,8 +112,6 @@ export default function MyPage({ embedded = false }) {
   });
   const inputClass =
     'h-8 w-full rounded-[3px] border border-[#DDE3EA] bg-white px-3 text-label font-strong text-[#3D4754] outline-none focus:border-[#FF4854]';
-  const disabledInputClass =
-    'h-8 w-full rounded-[3px] border border-[#DDE3EA] bg-[#F4F6F8] px-3 text-label font-strong text-[#A0A8B3] outline-none';
   const updateProfile = (key, value) => setProfile(current => ({ ...current, [key]: value }));
   const closeModal = () => {
     setActiveModal(null);
@@ -113,13 +119,49 @@ export default function MyPage({ embedded = false }) {
     setPasswordForm({ currentPassword: '', newPassword: '', newPasswordConfirm: '' });
     setDeleteConfirmText('');
   };
-  const handleSave = () => {
-    login({ ...teamInfo, teamname: profile.nickname, username: profile.nickname });
-    setIsEditing(false);
+  const handleNicknameSave = () => {
+    login({
+      ...teamInfo,
+      teamname: profile.nickname,
+      username: profile.nickname,
+    });
+    setIsEditingNickname(false);
   };
-  const handleCancel = () => {
+  const handleNicknameCancel = () => {
     setProfile(current => ({ ...current, nickname }));
-    setIsEditing(false);
+    setIsEditingNickname(false);
+  };
+  const handleProfileMessageSave = () => {
+    const nextProfileMessage = profile.profileMessage.trim();
+    login({ ...teamInfo, profileMessage: nextProfileMessage });
+    setProfile(current => ({ ...current, profileMessage: nextProfileMessage }));
+    setIsEditingProfileMessage(false);
+  };
+  const handleProfileMessageCancel = () => {
+    setProfile(current => ({ ...current, profileMessage: savedProfileMessage }));
+    setIsEditingProfileMessage(false);
+  };
+  const handleProfileImageChange = event => {
+    const [file] = event.target.files || [];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      window.alert('프로필 이미지는 3MB 이하로 선택해 주세요.');
+      event.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => setDraftProfileImage(reader.result);
+    reader.readAsDataURL(file);
+    event.target.value = '';
+  };
+  const handleProfileImageSave = () => {
+    login({ ...teamInfo, profileImage: draftProfileImage });
+    setIsEditingProfileImage(false);
+  };
+  const handleProfileImageCancel = () => {
+    setDraftProfileImage(savedProfileImage);
+    setIsEditingProfileImage(false);
   };
   const handlePasswordSubmit = () => {
     const { currentPassword, newPassword, newPasswordConfirm } = passwordForm;
@@ -194,9 +236,82 @@ export default function MyPage({ embedded = false }) {
       <h1 className="text-section-title font-bold text-[#151A21]">기본정보</h1>
 
       <InfoSection title="공개정보">
+        <InfoRow label="프로필 사진">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <div
+                className={`flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full ${
+                  draftProfileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854]'
+                }`}
+              >
+                <img
+                  src={draftProfileImage || UserIcon}
+                  alt="프로필 이미지 미리보기"
+                  className={draftProfileImage ? 'h-full w-full object-cover' : 'h-6 w-6'}
+                />
+              </div>
+              <div className="min-w-0">
+                {isEditingProfileImage ? (
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <button
+                      type="button"
+                      onClick={() => profileImageInputRef.current?.click()}
+                      className="cursor-pointer text-body font-strong text-[#FF4854]"
+                    >
+                      이미지 선택
+                    </button>
+                    {draftProfileImage ? (
+                      <button
+                        type="button"
+                        onClick={() => setDraftProfileImage(null)}
+                        className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                      >
+                        이미지 삭제
+                      </button>
+                    ) : null}
+                    <p className="w-full text-caption font-strong text-[#8A93A5]">최대 3MB</p>
+                  </div>
+                ) : (
+                  <span className="text-[#8A93A5]">
+                    {savedProfileImage ? '프로필 사진이 설정되어 있습니다.' : '기본 이미지'}
+                  </span>
+                )}
+              </div>
+              <input
+                ref={profileImageInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleProfileImageChange}
+                className="hidden"
+              />
+            </div>
+            <div className="flex shrink-0 items-center gap-3">
+              {isEditingProfileImage ? (
+                <button
+                  type="button"
+                  onClick={handleProfileImageCancel}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                >
+                  취소
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={
+                  isEditingProfileImage
+                    ? handleProfileImageSave
+                    : () => setIsEditingProfileImage(true)
+                }
+                className="cursor-pointer text-body font-strong text-[#FF4854]"
+              >
+                {isEditingProfileImage ? '저장' : '편집'}
+              </button>
+            </div>
+          </div>
+        </InfoRow>
         <InfoRow label="닉네임">
           <div className="flex items-start justify-between gap-4">
-            {isEditing ? (
+            {isEditingNickname ? (
               <div className="min-w-0 flex-1">
                 <input
                   value={profile.nickname}
@@ -211,10 +326,10 @@ export default function MyPage({ embedded = false }) {
               <span className="min-w-0 flex-1 truncate">{nickname}</span>
             )}
             <div className="flex shrink-0 items-center gap-3">
-              {isEditing ? (
+              {isEditingNickname ? (
                 <button
                   type="button"
-                  onClick={handleCancel}
+                  onClick={handleNicknameCancel}
                   className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
                 >
                   취소
@@ -222,10 +337,59 @@ export default function MyPage({ embedded = false }) {
               ) : null}
               <button
                 type="button"
-                onClick={isEditing ? handleSave : () => setIsEditing(true)}
+                onClick={isEditingNickname ? handleNicknameSave : () => setIsEditingNickname(true)}
                 className="cursor-pointer text-body font-strong text-[#FF4854]"
               >
-                {isEditing ? '저장' : '편집'}
+                {isEditingNickname ? '저장' : '편집'}
+              </button>
+            </div>
+          </div>
+        </InfoRow>
+        <InfoRow label="프로필 메시지" last>
+          <div className="flex items-start justify-between gap-4">
+            {isEditingProfileMessage ? (
+              <div className="min-w-0 flex-1">
+                <textarea
+                  value={profile.profileMessage}
+                  maxLength={100}
+                  rows={2}
+                  placeholder="나를 소개하는 프로필 메시지를 입력해 주세요."
+                  onChange={event => updateProfile('profileMessage', event.target.value)}
+                  className="block min-h-16 w-full resize-none rounded-[3px] border border-[#DDE3EA] bg-white px-3 py-2 text-label font-strong leading-5 text-[#3D4754] outline-none focus:border-[#FF4854]"
+                />
+                <p className="mt-1 text-right text-caption font-strong text-[#8A93A5]">
+                  {profile.profileMessage.length}/100
+                </p>
+              </div>
+            ) : (
+              <span
+                className={`min-w-0 flex-1 whitespace-pre-wrap break-words ${
+                  savedProfileMessage ? '' : 'text-[#8A93A5]'
+                }`}
+              >
+                {savedProfileMessage || '설정된 프로필 메시지가 없습니다.'}
+              </span>
+            )}
+            <div className="flex shrink-0 items-center gap-3">
+              {isEditingProfileMessage ? (
+                <button
+                  type="button"
+                  onClick={handleProfileMessageCancel}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                >
+                  취소
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={
+                  isEditingProfileMessage
+                    ? handleProfileMessageSave
+                    : () => setIsEditingProfileMessage(true)
+                }
+                className="cursor-pointer text-body font-strong text-[#FF4854]"
+              >
+                {isEditingProfileMessage ? '저장' : '편집'}
               </button>
             </div>
           </div>
@@ -262,24 +426,10 @@ export default function MyPage({ embedded = false }) {
           </div>
         </InfoRow>
         <InfoRow label="이메일">
-          {isEditing ? (
-            <div>
-              <div className="flex gap-3">
-                <input disabled value={email} className={disabledInputClass} />
-                <button type="button" className="shrink-0 text-label font-strong text-[#FF4854]">
-                  인증하기
-                </button>
-              </div>
-              <p className="mt-1 text-caption font-strong text-[#8A93A5]">
-                이메일 변경을 위해 이메일 인증이 필요합니다.
-              </p>
-            </div>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 text-[#8A93A5]">
-              {email}
-              <Check className="h-4 w-4 text-[#FF4854]" strokeWidth={3} />
-            </span>
-          )}
+          <span className="inline-flex items-center gap-1.5 text-[#8A93A5]">
+            {email}
+            <Check className="h-4 w-4 text-[#FF4854]" strokeWidth={3} />
+          </span>
         </InfoRow>
         <InfoRow label="비밀번호" last>
           <div className="flex items-center justify-between gap-3 text-[#8A93A5]">

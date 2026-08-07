@@ -934,6 +934,7 @@ function DashboardProfileSummaryCard() {
   const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
   const profileImage = teamInfo?.profileImage || UserIcon;
   const hasProfileImage = Boolean(teamInfo?.profileImage);
+  const profileMessage = teamInfo?.profileMessage?.trim();
 
   return (
     <section
@@ -964,10 +965,14 @@ function DashboardProfileSummaryCard() {
           </div>
         </div>
 
-        <p className="mt-6 text-body-lg font-bold text-[#7B8491]">
-          꾸준함이 경험이 됩니다.
-          <br />
-          지금의 흐름을 유지해보세요!
+        <p className="mt-6 whitespace-pre-wrap break-words text-body-lg font-bold leading-7 text-[#7B8491]">
+          {profileMessage || (
+            <>
+              꾸준함이 경험이 됩니다.
+              <br />
+              지금의 흐름을 유지해보세요!
+            </>
+          )}
         </p>
       </div>
 
