@@ -38,12 +38,12 @@ export function SectionTitle({ eyebrow, title, desc, align = 'left' }) {
       <h2 className="text-balance text-section-title font-strong tracking-tight text-[#171717] sm:text-page-title">
         {title}
       </h2>
-      {desc ? <p className="text-pretty text-body text-[#57534e] sm:text-body-lg">{desc}</p> : null}
+      {desc ? <p className="text-pretty text-body-lg font-medium text-[#4D5968]">{desc}</p> : null}
     </div>
   );
 }
 
-export function GradientCard({ children, className, hoverGlow = true }) {
+export function GradientCard({ children, className, contentClassName, hoverGlow = true }) {
   return (
     <div
       className={cn(
@@ -61,7 +61,7 @@ export function GradientCard({ children, className, hoverGlow = true }) {
             'radial-gradient(circle at 30% 20%, rgba(255,72,84,0.16), rgba(255,199,204,0.12) 40%, rgba(0,0,0,0) 70%)',
         }}
       />
-      <div className="relative">{children}</div>
+      <div className={cn('relative', contentClassName)}>{children}</div>
     </div>
   );
 }

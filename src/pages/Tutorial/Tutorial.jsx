@@ -135,7 +135,7 @@ function TutorialGoalRoadmap({ tutorialId, onTabChange }) {
             </span>
             <span className="min-w-0">
               <strong className="block text-body-lg font-bold text-[#202832]">{tab.label}</strong>
-              <span className="mt-1 block text-body font-medium text-[#66717E]">
+              <span className="mt-1 block text-body-lg font-medium text-[#4D5968]">
                 {tutorialTabSummaries[tutorialId]?.[tab.key]}
               </span>
             </span>
@@ -236,6 +236,10 @@ function ChallengePlayPreview() {
   );
 }
 
+function TutorialBodyText({ children }) {
+  return <span className="text-body-lg font-medium text-[#4D5968]">{children}</span>;
+}
+
 function SectionDescription({ items = [], steps = [], showSteps = false }) {
   const supportingCopy = items[0];
   const visibleSteps = steps.slice(0, 3);
@@ -243,11 +247,11 @@ function SectionDescription({ items = [], steps = [], showSteps = false }) {
   return (
     <div>
       {!showSteps && supportingCopy ? (
-        <p className="max-w-lg text-body text-[#57534e] sm:text-body-lg">{supportingCopy}</p>
+        <p className="max-w-lg text-body-lg font-medium text-[#4D5968]">{supportingCopy}</p>
       ) : null}
       {showSteps && visibleSteps.length ? (
         <div>
-          <ol className="max-w-lg list-decimal space-y-3 pl-5 text-body text-[#57534e] sm:text-body-lg">
+          <ol className="max-w-lg list-decimal space-y-3 pl-5 text-body-lg font-medium text-[#4D5968]">
             {visibleSteps.map(step => (
               <li key={step}>{step}</li>
             ))}
@@ -283,7 +287,11 @@ function PanelPreviewSection({
   const description = (
     <div className={`${stacked ? 'max-w-[860px]' : 'py-2 lg:sticky lg:top-8'} flex flex-col gap-6`}>
       <div className="max-w-xl space-y-4">
-        <SectionTitle eyebrow="" title={title} desc={intro} />
+        <SectionTitle
+          eyebrow=""
+          title={title}
+          desc={<TutorialBodyText>{intro}</TutorialBodyText>}
+        />
       </div>
       <SectionDescription items={items} steps={steps} showSteps={showSteps} />
     </div>
@@ -328,9 +336,21 @@ function ChallengePanelPreviews({ activeTab }) {
       {activeTab === 'challenge-overview' ? (
         <PanelPreviewSection
           title="챌린지 개요"
-          intro="챌린지 개요에는 문제를 시작하기 전에 알아야 할 정보가 정리되어 있습니다. 챌린지 설명과 도전목표를 읽고, 성공조건과 실패조건을 비교하면 대화의 방향을 빠르게 잡을 수 있습니다."
+          intro={
+            <>
+              챌린지 개요에는 문제를 시작하기 전에 알아야 할 정보가 정리되어 있습니다.
+              <br />
+              챌린지 설명과 도전목표를 읽고, 성공조건과 실패조건을 비교하면 대화의 방향을 빠르게
+              잡을 수 있습니다.
+            </>
+          }
           items={[
-            '위에서 아래로 내용을 읽은 뒤 성공조건을 제출 전 체크리스트로 활용해보세요.',
+            <React.Fragment key="challenge-overview-copy">
+              위에서 아래로 문제의 배경과 목표를 먼저 읽고, 성공조건과 실패조건을 서로 비교해보세요.
+              <br />
+              확인한 조건은 대화의 방향을 정하고 제출 여부를 판단하는 체크리스트로 활용할 수
+              있습니다.
+            </React.Fragment>,
             '챌린지 개요에는 챌린지 설명, 도전목표, 성공조건, 실패조건이 순서대로 표시됩니다.',
             '목표 항목은 AI에게서 어떤 결과를 받아내야 하는지 알려줍니다. 프롬프트를 작성할 때는 이 목표 문장을 계속 기준점으로 삼아야 합니다.',
             '성공조건과 실패조건은 제출 전 체크리스트 역할을 합니다. AI가 그럴듯하게 답해도 성공조건에 필요한 핵심 내용이 없으면 실패할 수 있습니다.',
@@ -355,9 +375,22 @@ function ChallengePanelPreviews({ activeTab }) {
       {activeTab === 'challenge-history' ? (
         <PanelPreviewSection
           title="도전기록"
-          intro="도전기록에는 지금까지 진행한 대화가 시도 단위로 쌓입니다. 제출 전인 대화와 실패하거나 성공한 시도를 구분해보고, 원하는 기록을 선택해 당시 대화를 다시 확인할 수 있습니다."
+          intro={
+            <>
+              도전기록에는 지금까지 진행한 대화가 시도 단위로 쌓입니다.
+              <br />
+              제출 전인 대화와 실패하거나 성공한 시도를 구분하고, 원하는 기록을 선택해 당시 대화를
+              다시 확인할 수 있습니다.
+            </>
+          }
           items={[
-            '최신 시도가 위에 표시되며, 각 기록에서 제출 여부와 판정 결과를 한눈에 확인할 수 있습니다.',
+            <React.Fragment key="challenge-history-copy">
+              최신 시도는 목록 위쪽에 표시되며 각 기록에서 제출 전·실패·성공 상태를 구분할 수
+              있습니다.
+              <br />
+              기록을 선택하면 당시 대화와 판정 근거를 다시 살펴보고 다음 시도의 개선점으로 활용할 수
+              있습니다.
+            </React.Fragment>,
           ]}
           steps={[
             '제출 전, 실패, 성공 상태가 어떻게 구분되는지 확인합니다.',
@@ -377,9 +410,20 @@ function ChallengePanelPreviews({ activeTab }) {
       {activeTab === 'chat' ? (
         <PanelPreviewSection
           title="채팅 영역"
-          intro="채팅 영역은 프롬프트를 입력하고 AI 응답을 확인하는 작업 공간입니다. 입력창과 전송 버튼, 새 대화 시작과 제출 버튼이 어떤 역할을 하는지 먼저 살펴봅니다."
+          intro={
+            <>
+              채팅 영역은 프롬프트를 입력하고 AI 응답을 확인하는 작업 공간입니다.
+              <br />
+              입력창과 전송 버튼, 새 대화 시작과 제출 버튼이 어떤 역할을 하는지 먼저 살펴봅니다.
+            </>
+          }
           items={[
-            '전송은 AI와 대화를 이어가는 동작이고, 제출은 현재 대화로 Judge 평가를 요청하는 동작입니다.',
+            <React.Fragment key="challenge-chat-copy">
+              전송은 작성한 프롬프트를 AI에게 보내 대화를 이어가는 동작이고, 제출은 현재까지의
+              대화를 Judge 평가에 전달하는 동작입니다.
+              <br />두 버튼의 역할과 사용하는 시점을 구분해두면 실수 없이 챌린지를 진행할 수
+              있습니다.
+            </React.Fragment>,
             '화면 아래에는 프롬프트를 작성하는 입력창이 있습니다. 실제 입력 방법과 토큰 변화는 다음 튜토리얼에서 더 자세히 다룹니다.',
             '대화가 시작되면 사용자 메시지와 AI 응답이 채팅 영역에 순서대로 쌓입니다.',
             '입력창 아래에는 새로운 대화 시작 버튼과 제출하기 버튼이 있습니다. 하나는 대화를 다시 시작하는 버튼이고, 하나는 판정을 요청하는 버튼입니다.',
@@ -413,14 +457,16 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
       {activeTab === 'goals' ? (
         <section>
           <h2 className="text-page-title font-bold text-[#202832]">학습 목표</h2>
-          <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-strong text-[#344050]">
+          <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-medium text-[#4D5968]">
             <p>
-              프롬프트를 입력하고 AI 응답을 확인하며 대화를 이어가는 기본 흐름을 익힙니다. 전송과
-              제출의 차이를 이해하고, 상황에 맞게 대화를 다시 시작하는 방법도 살펴봅니다.
+              프롬프트를 입력하고 AI 응답을 확인하며 대화를 이어가는 기본 흐름을 익힙니다.
+              <br />
+              전송과 제출의 차이를 이해하고, 상황에 맞게 대화를 다시 시작하는 방법도 살펴봅니다.
             </p>
             <p>
-              대화가 길어질 때 사용 토큰이 어떻게 달라지는지 확인하고, 성공 가능성과 토큰 효율을
-              함께 고려하는 감각을 익힙니다.
+              대화가 길어질 때 사용 토큰이 어떻게 달라지는지 확인하고,
+              <br />
+              성공 가능성과 토큰 효율을 함께 고려하는 감각을 익힙니다.
             </p>
           </div>
           <TutorialGoalRoadmap tutorialId={8} onTabChange={onTabChange} />
@@ -430,9 +476,21 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
       {activeTab === 'chat' ? (
         <PanelPreviewSection
           title="채팅 영역"
-          intro="채팅 영역에는 사용자 메시지와 AI 응답이 시간 순서대로 쌓입니다. 예시 대화를 보며 응답을 읽고 다음 프롬프트를 보완하는 흐름을 살펴봅니다."
+          intro={
+            <>
+              채팅 영역에는 사용자 메시지와 AI 응답이 시간 순서대로 쌓입니다.
+              <br />
+              예시 대화를 보며 응답을 읽고 다음 프롬프트를 보완하는 흐름을 살펴봅니다.
+            </>
+          }
           items={[
-            '이 탭은 채팅 구조를 확인하는 예시 화면입니다. 실제 전송과 토큰 변화는 직접 해보기 탭에서 연습할 수 있습니다.',
+            <React.Fragment key="chat-token-chat-copy">
+              사용자 메시지를 보낸 뒤에는 AI 응답에서 목표에 가까운 내용과 빠진 조건을 나누어
+              확인해보세요.
+              <br />
+              부족한 부분만 다음 프롬프트로 구체화하면 불필요한 반복을 줄이면서 대화를 이어갈 수
+              있습니다.
+            </React.Fragment>,
             'Shift + Enter를 사용하면 메시지를 전송하지 않고 줄바꿈할 수 있습니다. 조건을 여러 줄로 정리하거나 요청을 단계별로 나눠 쓸 때 유용합니다.',
             '대화 영역에는 사용자 메시지와 AI 응답이 시간 순서대로 표시됩니다. 이전 응답에서 부족한 부분을 찾고 다음 입력에서 보완하는 방식으로 진행합니다.',
             '새로운 대화 시작은 현재 흐름을 버리고 처음부터 다시 시도할 때 사용합니다. 접근법을 크게 바꾸고 싶을 때 선택하면 됩니다.',
@@ -460,9 +518,20 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
       {activeTab === 'reset' ? (
         <PanelPreviewSection
           title="새 대화 시작"
-          intro="새로운 대화 시작 버튼을 누르면 현재 대화를 초기화할지 확인하는 모달이 표시됩니다. 확인하면 작성 중인 입력과 지금까지의 메시지가 사라지고 처음부터 다시 시도하게 됩니다."
+          intro={
+            <>
+              새로운 대화 시작 버튼을 누르면 현재 대화를 초기화할지 확인하는 모달이 표시됩니다.
+              <br />
+              확인하면 작성 중인 입력과 지금까지의 메시지가 사라지고 처음부터 다시 시도하게 됩니다.
+            </>
+          }
           items={[
-            '이 탭은 모달의 구조를 확인하는 프리뷰이므로 버튼을 눌러도 실제 튜토리얼 대화는 초기화되지 않습니다.',
+            <React.Fragment key="reset-copy">
+              새 대화를 시작하기 전에는 현재 응답에서 다시 활용할 내용이 없는지 먼저 확인해보세요.
+              <br />
+              초기화를 확정하면 진행 중인 대화 맥락을 이어갈 수 없으므로, 기존 접근을 버리고
+              처음부터 시도할 때 사용하는 것이 좋습니다.
+            </React.Fragment>,
           ]}
           width="min-w-[520px]"
         >
@@ -473,9 +542,21 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
       {activeTab === 'tokens' ? (
         <PanelPreviewSection
           title="사용 토큰 확인"
-          intro="사용 토큰은 사용자 입력과 AI 응답에 사용된 양을 보여줍니다. 대화가 길어질수록 값이 늘어나므로, 응답의 품질과 토큰 효율을 함께 확인해야 합니다."
+          intro={
+            <>
+              튜토리얼의 사용 토큰은 전송된 사용자 메시지의 양을 보여줍니다.
+              <br />
+              프롬프트를 여러 번 보내거나 더 길게 작성할수록 값이 늘어나므로, 목표 달성과 토큰
+              효율을 함께 확인해야 합니다.
+            </>
+          }
           items={[
-            '실제 챌린지에서는 서버가 계산한 값이 왼쪽 정보 패널 하단에 반영됩니다.',
+            <React.Fragment key="token-copy">
+              작성 중인 문장과 AI 응답은 튜토리얼 토큰에 포함되지 않고, 전송을 완료한 사용자
+              메시지만 누적됩니다.
+              <br />
+              값은 왼쪽 정보 패널 하단의 토큰 카드에서 확인할 수 있습니다.
+            </React.Fragment>,
             '첫 대화를 시작한 뒤에는 채팅 응답을 읽고, 왼쪽 하단의 토큰 숫자가 갱신되는 위치를 함께 확인합니다.',
             '토큰 숫자는 효율을 보는 기준입니다. 같은 성공 결과라면 더 적은 토큰으로 목표를 달성한 시도가 더 좋은 풀이가 될 수 있습니다.',
             '제출 전에는 토큰 숫자만 보지 말고, 응답이 목표와 성공조건을 만족하는지도 함께 확인해야 합니다.',
@@ -483,7 +564,7 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
           ]}
           steps={[
             '채팅 영역에서 메시지를 한 번 보낸 뒤 사용한 토큰 숫자를 확인합니다.',
-            'AI 응답이 길어질수록 토큰이 함께 늘어난다는 점을 관찰합니다.',
+            '사용자 메시지를 추가로 전송할수록 토큰이 함께 늘어난다는 점을 관찰합니다.',
             '토큰 카드가 챌린지 정보 영역 하단에 있다는 점을 기억합니다.',
             '다음 프롬프트를 작성할 때 불필요한 반복을 줄여 토큰 사용을 관리합니다.',
           ]}
@@ -506,8 +587,20 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
             <SectionTitle
               eyebrow=""
               title="점수 계산 예시"
-              desc="아래 계산은 총 150점, 토큰 기준 3000인 챌린지를 가정한 예시입니다. 먼저 성공조건을 만족한 뒤 토큰 사용량을 줄이면 더 높은 점수를 받을 수 있습니다."
+              desc={
+                <TutorialBodyText>
+                  아래 계산은 총 150점, 토큰 기준 3000인 챌린지를 가정한 예시입니다.
+                  <br />
+                  먼저 성공조건을 만족한 뒤 토큰 사용량을 줄이면 더 높은 점수를 받을 수 있습니다.
+                </TutorialBodyText>
+              }
             />
+            <p className="mt-6 text-body-lg font-medium text-[#4D5968]">
+              성공한 시도는 기본 점수에 토큰 효율 점수가 더해집니다.
+              <br />
+              같은 결과를 얻었다면 사용 토큰이 적을수록 높은 점수를 받을 수 있으므로, 조건을
+              빠뜨리지 않는 범위에서 프롬프트를 간결하게 다듬어보세요.
+            </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -530,9 +623,16 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
       {activeTab === 'practice' ? (
         <PanelPreviewSection
           title="직접 입력해보기"
-          intro="프리뷰에 프롬프트를 직접 입력하고 AI 응답을 받아보세요. 사용자 메시지를 전송할 때마다 왼쪽 정보 패널의 토큰 숫자가 어떻게 달라지는지 함께 확인할 수 있습니다."
+          intro={
+            <>
+              프리뷰에 프롬프트를 직접 입력하고 AI 응답을 받아보세요.
+              <br />
+              사용자 메시지를 전송할 때마다 왼쪽 정보 패널의 토큰 숫자가 어떻게 달라지는지 함께
+              확인할 수 있습니다.
+            </>
+          }
           items={[
-            '입력창에 작성 중인 문장은 토큰 숫자에 반영되지 않으며, 전송한 사용자 메시지만 반영됩니다.',
+            '입력창에 작성 중인 문장은 토큰 숫자에 반영되지 않으며, 전송을 완료한 사용자 메시지만 누적됩니다. 짧은 메시지와 긴 메시지를 차례로 보내며 토큰 증가 폭이 어떻게 달라지는지 비교해보세요.',
             '전송 버튼을 누르면 사용자 메시지가 토큰 숫자에 누적되고 AI 예시 응답이 채팅 영역에 표시됩니다.',
             '새로운 대화 시작 버튼을 누르면 튜토리얼 프리뷰의 채팅과 토큰 숫자가 다시 초기 상태로 돌아갑니다.',
             '이 프리뷰는 토큰 흐름을 익히기 위한 프론트 계산 예시입니다. 실제 챌린지에서는 서버에서 계산된 토큰 사용량이 표시됩니다.',
@@ -564,14 +664,16 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
       {activeTab === 'goals' ? (
         <section>
           <h2 className="text-page-title font-bold text-[#202832]">학습 목표</h2>
-          <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-strong text-[#344050]">
+          <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-medium text-[#4D5968]">
             <p>
-              제출한 응답이 실패로 판정되는 과정과 실패 모달의 구성을 살펴봅니다. 여러 Judge Model의
-              판단에서 반복되는 피드백을 찾는 방법을 익힙니다.
+              제출한 응답이 실패로 판정되는 과정과 실패 모달의 구성을 살펴봅니다.
+              <br />
+              여러 Judge Model의 판단에서 반복되는 피드백을 찾는 방법을 익힙니다.
             </p>
             <p>
-              실패를 단순한 종료 상태가 아닌 다음 프롬프트를 개선하는 근거로 활용하고, 부족했던
-              조건을 다음 시도에 반영하는 흐름을 연습합니다.
+              실패를 단순한 종료 상태가 아닌 다음 프롬프트를 개선하는 근거로 활용하고,
+              <br />
+              부족했던 조건을 다음 시도에 반영하는 흐름을 연습합니다.
             </p>
           </div>
           <TutorialGoalRoadmap tutorialId={9} onTabChange={onTabChange} />
@@ -581,9 +683,21 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
       {activeTab === 'submit' ? (
         <PanelPreviewSection
           title="제출 확인"
-          intro="제출하기 버튼을 누르면 현재 대화를 Judge 평가에 전달할지 확인하는 모달이 표시됩니다. 제출하면 3개의 Judge AI가 대화 전체를 읽고 성공 여부를 판단합니다."
+          intro={
+            <>
+              제출하기 버튼을 누르면 현재 대화를 Judge 평가에 전달할지 확인하는 모달이 표시됩니다.
+              <br />
+              제출하면 3개의 Judge AI가 대화 전체를 읽고 성공 여부를 판단합니다.
+            </>
+          }
           items={[
-            '제출 후에는 일정 시간 다시 제출할 수 없으므로, 목표와 성공조건을 만족했는지 먼저 확인하세요.',
+            <React.Fragment key="submit-copy">
+              제출 전에는 AI의 마지막 응답만 보지 말고 현재 대화 전체가 목표와 성공조건을 만족하는지
+              확인하세요.
+              <br />
+              제출 후에는 일정 시간 다시 평가를 요청할 수 없으므로, 빠진 조건이 있다면 먼저 대화를
+              보완하는 것이 좋습니다.
+            </React.Fragment>,
           ]}
           width="min-w-[520px]"
         >
@@ -599,17 +713,17 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
                 eyebrow=""
                 title="실패 판정은 어떻게 보이나요?"
                 desc={
-                  <>
+                  <TutorialBodyText>
                     실패 모달은 제출한 대화가 문제의 목표와 <br />
                     성공조건을 충분히 만족하지 못했을 때 표시됩니다.
                     <br />
                     각 Judge Model의 판정과 설명을 함께 보여줘서 <br />
                     어떤 조건이 부족했는지 확인할 수 있습니다.
-                  </>
+                  </TutorialBodyText>
                 }
               />
             </div>
-            <div className="max-w-lg text-body text-[#57534e] sm:text-body-lg">
+            <div className="max-w-lg text-body-lg font-medium text-[#4D5968]">
               여러 Judge가 반복해서 지적한 내용을 먼저 찾고, <br />
               다음 프롬프트에서 해당 조건을 명확하게 보완해보세요.
             </div>
@@ -623,7 +737,12 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
       {activeTab === 'practice' ? (
         <PanelPreviewSection
           title="직접 제출해보기"
-          intro="프롬프트를 보내 AI 응답을 받은 뒤 현재 대화를 제출해보세요. 이 실습은 실패 결과의 흐름을 익히기 위해 제출 후 항상 실패 모달을 표시합니다."
+          intro={
+            <>
+              프롬프트를 보내 AI 응답을 받은 뒤 현재 대화를 제출해보세요.
+              <br />이 실습은 실패 결과의 흐름을 익히기 위해 제출 후 항상 실패 모달을 표시합니다.
+            </>
+          }
           items={[
             '입력창에 프롬프트를 작성하고 전송하면 1초 동안 응답 생성중 상태가 표시됩니다.',
             'AI 예시 응답이 나타난 뒤 제출하기 버튼이 활성화됩니다.',
@@ -657,14 +776,16 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
       {activeTab === 'goals' ? (
         <section>
           <h2 className="text-page-title font-bold text-[#202832]">학습 목표</h2>
-          <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-strong text-[#344050]">
+          <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-medium text-[#4D5968]">
             <p>
-              제출한 응답이 Judge Model의 평가를 통과해 성공으로 판정되는 흐름을 살펴봅니다. 성공
-              모달에 표시되는 결과와 이후 선택할 수 있는 행동을 확인합니다.
+              제출한 응답이 Judge Model의 평가를 통과해 성공으로 판정되는 흐름을 살펴봅니다.
+              <br />
+              성공 모달에 표시되는 결과와 이후 선택할 수 있는 행동을 확인합니다.
             </p>
             <p>
-              성공 여부뿐 아니라 사용 토큰과 점수까지 함께 확인하고, 같은 성공 결과를 더 효율적으로
-              만드는 방법을 생각해봅니다.
+              성공 여부뿐 아니라 사용 토큰과 점수까지 함께 확인하고,
+              <br />
+              같은 성공 결과를 더 효율적으로 만드는 방법을 생각해봅니다.
             </p>
           </div>
           <TutorialGoalRoadmap tutorialId={10} onTabChange={onTabChange} />
@@ -682,17 +803,17 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
                 eyebrow=""
                 title="성공 판정은 어떻게 보이나요?"
                 desc={
-                  <>
+                  <TutorialBodyText>
                     성공 모달은 제출한 대화가 문제의 목표와 <br />
                     성공조건을 충족했을 때 표시됩니다.
                     <br />
                     3개의 Judge Model 중 2개 이상이 성공으로 판단하면 <br />
                     최종 성공 결과를 확인할 수 있습니다.
-                  </>
+                  </TutorialBodyText>
                 }
               />
             </div>
-            <div className="max-w-lg text-body text-[#57534e] sm:text-body-lg">
+            <div className="max-w-lg text-body-lg font-medium text-[#4D5968]">
               성공 후에는 사용 토큰과 점수를 함께 확인하고, <br />더 적은 토큰으로 같은 결과를 만들
               수 있는지 돌아보세요.
             </div>
@@ -703,7 +824,12 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
       {activeTab === 'practice' ? (
         <PanelPreviewSection
           title="직접 제출해보기"
-          intro="프롬프트를 보내 AI 응답을 받은 뒤 현재 대화를 제출해보세요. 이 실습은 성공 결과의 흐름을 익히기 위해 제출 후 항상 성공 모달을 표시합니다."
+          intro={
+            <>
+              프롬프트를 보내 AI 응답을 받은 뒤 현재 대화를 제출해보세요.
+              <br />이 실습은 성공 결과의 흐름을 익히기 위해 제출 후 항상 성공 모달을 표시합니다.
+            </>
+          }
           items={[
             '입력창에 프롬프트를 작성하고 전송하면 1초 동안 응답 생성중 상태가 표시됩니다.',
             'AI 예시 응답이 나타난 뒤 제출하기 버튼이 활성화됩니다.',
@@ -737,14 +863,14 @@ function ChallengeElementGuide({ activeTab, onTabChange }) {
       {activeTab === 'goals' ? (
         <section>
           <h2 className="text-page-title font-bold text-[#202832]">학습 목표</h2>
-          <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-strong text-[#344050]">
+          <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-medium text-[#4D5968]">
             <p>
-              챌린지 화면을 이루는 주요 영역과 각 구성요소의 역할을 익힙니다. 문제 정보를 확인하는
-              곳과 AI에게 프롬프트를 입력하는 곳을 구분해 살펴봅니다.
+              챌린지 화면을 이루는 주요 영역과 각 구성요소의 역할을 익힙니다. <br />
+              문제 정보를 확인하는 곳과 AI에게 프롬프트를 입력하는 곳을 구분해 살펴봅니다.
             </p>
             <p>
-              목표와 성공조건을 읽고 대화를 시작한 뒤, 사용 토큰을 확인하고 결과를 제출하는 전체
-              흐름을 이해합니다.
+              목표와 성공조건을 읽고 대화를 시작한 뒤, <br />
+              사용 토큰을 확인하고 결과를 제출하는 전체 흐름을 이해합니다.
             </p>
           </div>
           <TutorialGoalRoadmap tutorialId={7} onTabChange={onTabChange} />
@@ -757,12 +883,20 @@ function ChallengeElementGuide({ activeTab, onTabChange }) {
               <SectionTitle
                 eyebrow=""
                 title="전체 화면"
-                desc="전체 화면은 챌린지의 조건을 확인하고 AI와 대화를 진행하는 작업 공간입니다. 왼쪽에는 문제 정보와 사용 토큰이, 오른쪽에는 채팅과 제출 기능이 배치됩니다."
+                desc={
+                  <TutorialBodyText>
+                    전체 화면은 챌린지의 조건을 확인하고 AI와 대화를 진행하는 작업 공간입니다.
+                    <br />
+                    왼쪽에는 문제 정보와 사용 토큰이, 오른쪽에는 채팅과 제출 기능이 배치됩니다.
+                  </TutorialBodyText>
+                }
               />
             </div>
-            <p className="max-w-lg text-body text-[#57534e] sm:text-body-lg">
-              목표와 성공조건을 먼저 읽은 뒤 대화를 시작하면 전체 풀이 흐름을 놓치지 않을 수
-              있습니다.
+            <p className="max-w-lg text-body-lg font-medium text-[#4D5968]">
+              목표와 성공조건을 먼저 읽은 뒤 대화를 시작하면 <br />
+              전체 풀이 흐름을 놓치지 않을 수 있습니다. <br />
+              대화 중에는 왼쪽에서 조건과 토큰을 다시 확인하고, <br />
+              오른쪽에서 응답을 보완한 뒤 제출하는 순서로 진행해보세요.
             </p>
           </div>
           <ChallengePlayPreview />
@@ -780,7 +914,7 @@ function DefaultLearningGuide({ activeTab }) {
   return (
     <section className="rounded-[18px] border border-[#E5E9EF] bg-[#F8FAFC] p-8 shadow-[0_14px_40px_rgba(15,23,42,0.06)] lg:p-10">
       <h2 className="text-page-title font-bold text-[#202832]">{selectedSection.title}</h2>
-      <ul className="mt-6 space-y-3 text-body text-[#26313D]">
+      <ul className="mt-6 space-y-3 text-body-lg font-medium text-[#4D5968]">
         {selectedSection.items.slice(0, 3).map(item => (
           <li key={item}>{item}</li>
         ))}

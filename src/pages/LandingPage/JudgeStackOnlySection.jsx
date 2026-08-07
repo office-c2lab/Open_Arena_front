@@ -136,7 +136,7 @@ export default function JudgeStackOnlySection() {
                 />
               </motion.div>
               <motion.div
-                className="max-w-lg text-body text-[#57534e] sm:text-body-lg"
+                className="max-w-lg text-body-lg font-medium text-[#4D5968]"
                 {...SECTION_COPY_REVEAL}
               >
                 단순히 결과만 보여주는 대신, <br />
@@ -165,7 +165,7 @@ export default function JudgeStackOnlySection() {
                 />
               </motion.div>
               <motion.div
-                className="max-w-lg text-body text-[#57534e] sm:text-body-lg"
+                className="max-w-lg text-body-lg font-medium text-[#4D5968]"
                 {...SECTION_COPY_REVEAL}
               >
                 실패 판정은 어떤 기준으로 막혔는지, <br />
@@ -199,7 +199,7 @@ export default function JudgeStackOnlySection() {
                 />
               </motion.div>
               <motion.div
-                className="max-w-lg text-body text-[#57534e] sm:text-body-lg"
+                className="max-w-lg text-body-lg font-medium text-[#4D5968]"
                 {...SECTION_COPY_REVEAL}
               >
                 사용자는 단순히 성공 여부만 확인하는 데 그치지 않고, <br />

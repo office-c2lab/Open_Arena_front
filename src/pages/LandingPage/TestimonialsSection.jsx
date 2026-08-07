@@ -209,6 +209,7 @@ export default function TestimonialsSection() {
               <div key={item.key}>
                 <GradientCard
                   className="h-full rounded-[28px] border-[#ece7e1] p-4 shadow-[0_18px_40px_rgba(34,24,18,0.06)] sm:p-5"
+                  contentClassName="h-full"
                   hoverGlow={false}
                 >
                   <div className="flex h-full flex-col">
@@ -230,7 +231,11 @@ export default function TestimonialsSection() {
                     </div>
 
                     <div className="pb-2 pt-5">
-                      <div className="text-page-title font-strong tracking-tight text-[#171717] sm:text-page-title">
+                      <div
+                        className={`font-strong tracking-tight text-[#171717] ${
+                          item.key === 'apc' ? 'text-section-title' : 'text-page-title'
+                        }`}
+                      >
                         {item.title}
                       </div>
                     </div>
@@ -275,7 +280,7 @@ export default function TestimonialsSection() {
               <div className="text-section-title font-strong tracking-tight text-[#171717]">
                 {selectedArchiveItem.title}
               </div>
-              <p className="mt-2 text-body text-[#57534e] sm:text-body-lg">
+              <p className="mt-2 text-body-lg font-medium text-[#4D5968]">
                 {selectedArchiveItem.description}
               </p>
             </div>

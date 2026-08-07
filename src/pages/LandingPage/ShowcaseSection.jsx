@@ -148,7 +148,7 @@ export default function ShowcaseSection() {
           </motion.div>
 
           <motion.div
-            className="max-w-3xl text-body text-[#57534e] sm:text-body-lg"
+            className="max-w-3xl text-body-lg font-medium text-[#4D5968]"
             {...SECTION_COPY_REVEAL}
           >
             시즌은 일정 주기로 새롭게 운영되며 새로운 문제가 출제되고, <br />

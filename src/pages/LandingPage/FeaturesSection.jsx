@@ -32,7 +32,7 @@ export default function FeaturesSection() {
             </motion.div>
 
             <motion.div
-              className="max-w-lg text-body text-[#57534e] sm:text-body-lg"
+              className="max-w-lg text-body-lg font-medium text-[#4D5968]"
               {...SECTION_COPY_REVEAL}
             ></motion.div>
 

@@ -7,7 +7,7 @@ import { cn, SectionTitle, SECTION_TITLE_REVEAL } from './LandingPage.primitives
 const FAQ_ITEMS = [
   {
     q: '누가 ARENA에 참여할 수 있나요?',
-    a: 'AI 안전성에 관심 있는 누구나 참여할 수 있습니다.\n연구자, 개발자, 학생 등 다양한 참가자가 ARENA에 참여할 수 있습니다.',
+    a: 'AI 보안에 관심 있는 누구나 참여할 수 있습니다.\n연구자, 개발자, 학생 등 다양한 참가자가 ARENA에 참여할 수 있습니다.',
   },
   {
     q: 'ARENA에서는 무엇을 하나요?',
@@ -18,8 +18,8 @@ const FAQ_ITEMS = [
     a: 'ARENA는 3개의 Judge Model을 활용해 자동 평가를 수행합니다.\n사용자와 AI 모델 간의 대화를 분석하여 공격 성공 여부와 안전성 문제를 판단합니다.',
   },
   {
-    q: 'ARENA는 왜 Red Teaming을 사용하나요?',
-    a: 'Red Teaming은 AI 모델의 취약점을 다양한 공격 시나리오로 점검하는 방식입니다.\nARENA는 이를 통해 모델의 안전성과 대응 능력을 검증합니다.',
+    q: ' AI 모델에 Red Teaming이 필요한 이유는 무엇인가요?',
+    a: 'AI 모델은 일반적인 테스트만으로는 발견하기 어려운 취약점과 예상치 못한 위험 행동을 보일 수 있습니다.\nRed Teaming은 실제 공격 상황을 가정해 이러한 문제를 사전에 발견하고 모델의 안전성을 검증하기 위해 필요합니다.\nARENA에서는 이를 통해 모델의 안전성과 공격에 대한 대응 능력을 검증합니다.',
   },
   {
     q: '시즌과 대회의 차이는 무엇인가요?',
