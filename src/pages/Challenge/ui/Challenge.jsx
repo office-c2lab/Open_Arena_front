@@ -442,9 +442,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
                     <span className="h-4 w-px bg-[#D8DDE4]" aria-hidden="true" />
                     <span>
                       획득포인트{' '}
-                      <em className="ml-1 not-italic text-[#FF4854]">
-                        {points.toLocaleString()}P
-                      </em>
+                      <em className="ml-1 not-italic text-[#FF4854]">{points.toLocaleString()}P</em>
                     </span>
                     <span className="h-4 w-px bg-[#D8DDE4]" aria-hidden="true" />
                     <span>
@@ -470,7 +468,6 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
           );
         })}
       </ul>
-
     </section>
   );
 }
@@ -541,9 +538,7 @@ export default function Challenge() {
             {challenge.title}
           </h1>
 
-          <h4 className="mt-4 text-body-lg font-bold text-[#202832]">
-            {challengeOverview.title}
-          </h4>
+          <h4 className="mt-4 text-body-lg font-bold text-[#202832]">{challengeOverview.title}</h4>
 
           <div className="mt-6 flex w-fit max-w-full flex-wrap items-center divide-x divide-[#D8DDE4] text-body-lg text-[#2E3338]">
             <span className="whitespace-nowrap pr-4 font-strong">
@@ -588,7 +583,6 @@ export default function Challenge() {
             </button>
           </div>
         </div>
-
       </section>
 
       <div className="mt-8 border-b border-[#DDE3EA]">

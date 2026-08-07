@@ -216,7 +216,7 @@ const SubmitModal = ({
         {/* 안내문 */}
         <div className="absolute w-[380px] left-[30px] top-[340px] text-center text-card-title font-medium text-[#0F172A] m-0 whitespace-pre-wrap">
           <p>제출 시 3개의 JUDGE AI가 판정합니다.</p>
-<p>제출 후 30초간 다시 제출할 수 없습니다.</p>
+          <p>제출 후 30초간 다시 제출할 수 없습니다.</p>
         </div>
 
         {/* 제출 버튼 */}

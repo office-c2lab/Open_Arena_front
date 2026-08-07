@@ -16,8 +16,7 @@ export default function PublicLayout() {
     }
 
     const updateHeaderVisibility = event => {
-      const eventTargetScrollTop =
-        event?.target instanceof Element ? event.target.scrollTop : 0;
+      const eventTargetScrollTop = event?.target instanceof Element ? event.target.scrollTop : 0;
       const scrollTop = Math.max(
         window.scrollY,
         document.scrollingElement?.scrollTop ?? 0,

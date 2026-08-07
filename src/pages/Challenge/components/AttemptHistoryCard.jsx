@@ -15,17 +15,15 @@ const CARD_ACTIVE_SHADOW = 'inset 0 1px 0 rgba(255,255,255,0.72), 0 8px 20px rgb
 
 export function AttemptStatusBadge({ isSubmitted, isSuccess, className = '', size = 'compact' }) {
   const resultText = isSubmitted ? (isSuccess ? '성공' : '실패') : '미제출';
-  const resultBgColor = isSubmitted
-    ? isSuccess
-      ? COLOR_GREEN
-      : COLOR_RED
-    : COLOR_NOT_SUBMITTED;
+  const resultBgColor = isSubmitted ? (isSuccess ? COLOR_GREEN : COLOR_RED) : COLOR_NOT_SUBMITTED;
   const isLarge = size === 'large';
 
   return (
     <span
       className={`flex items-center justify-center transition-colors duration-200 ${
-        isLarge ? 'h-10 min-w-[84px] rounded-full px-5' : 'h-[28px] min-w-[72px] rounded-[10px] px-4'
+        isLarge
+          ? 'h-10 min-w-[84px] rounded-full px-5'
+          : 'h-[28px] min-w-[72px] rounded-[10px] px-4'
       } ${className}`}
       style={{
         background: resultBgColor,

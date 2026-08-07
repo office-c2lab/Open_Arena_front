@@ -65,10 +65,13 @@ const PREVIEW_SESSIONS = [
   },
 ];
 
-function estimateTutorialTokenUsage(messages, draft = '') {
-  const textLength =
-    messages.reduce((total, message) => total + (message.content?.length ?? 0), 0) + draft.length;
-  return Math.ceil(textLength / 2.4) + messages.length * 8;
+function estimateTutorialTokenUsage(messages) {
+  const userMessages = messages.filter(message => message.role === 'user');
+  const textLength = userMessages.reduce(
+    (total, message) => total + (message.content?.length ?? 0),
+    0
+  );
+  return Math.ceil(textLength / 2.4) + userMessages.length * 8;
 }
 
 function createTutorialAssistantReply(prompt) {
@@ -210,7 +213,7 @@ export function TutorialChatTokenInteractivePreview() {
   const [messages, setMessages] = useState([]);
   const responseTimerRef = useRef(null);
   const isGenerating = messages.some(message => message.isTyping);
-  const tokenUsed = estimateTutorialTokenUsage(messages, inputValue);
+  const tokenUsed = estimateTutorialTokenUsage(messages);
 
   const handleSend = () => {
     const trimmedInput = inputValue.trim();

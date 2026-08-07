@@ -132,8 +132,7 @@ export const articles = [
     date: '2026-07-19',
     title: 'LLM은 어떻게 지시를 이해하나요?',
     visualTitle: 'LLM INSTRUCTIONS',
-    summary:
-      '시스템 지시, 사용자 입력, 대화 기록이 모델의 응답에 어떤 영향을 주는지 알아봅니다.',
+    summary: '시스템 지시, 사용자 입력, 대화 기록이 모델의 응답에 어떤 영향을 주는지 알아봅니다.',
     category: 'LLM Basics',
     readTime: '7분',
     sections: [
@@ -217,8 +216,7 @@ export const articles = [
     date: '2026-07-18',
     title: '토큰과 컨텍스트란 무엇인가요?',
     visualTitle: 'TOKENS & CONTEXT',
-    summary:
-      'LLM이 텍스트를 처리하는 단위와 대화 기록이 응답에 미치는 영향을 알아봅니다.',
+    summary: 'LLM이 텍스트를 처리하는 단위와 대화 기록이 응답에 미치는 영향을 알아봅니다.',
     category: 'LLM Basics',
     readTime: '7분',
     sections: [
@@ -613,8 +611,7 @@ export const articles = [
     date: '2026-07-14',
     title: 'AI 보안 평가는 어떻게 이루어지나요?',
     visualTitle: 'AI EVALUATION',
-    summary:
-      'AI의 응답을 규칙, 사람, LLM Judge로 평가하는 방법과 각 방식의 한계를 알아봅니다.',
+    summary: 'AI의 응답을 규칙, 사람, LLM Judge로 평가하는 방법과 각 방식의 한계를 알아봅니다.',
     category: 'Evaluation',
     readTime: '8분',
     notice: {
@@ -633,10 +630,7 @@ export const articles = [
         paragraphs: [
           '특정 문자열, 형식, 코드, 키워드가 응답에 포함되었는지를 프로그램으로 확인하는 방식입니다. 결과가 명확하고 빠르지만, 의미가 같은 다른 표현이나 문맥을 판단하기 어렵습니다.',
         ],
-        bullets: [
-          '장점: 빠르고 결과가 일관됨',
-          '한계: 표현 변형, 암시, 문맥을 놓칠 수 있음',
-        ],
+        bullets: ['장점: 빠르고 결과가 일관됨', '한계: 표현 변형, 암시, 문맥을 놓칠 수 있음'],
       },
       {
         title: '사람 평가',
@@ -859,9 +853,7 @@ function EducationQuiz({ quiz }) {
     <section className="bg-white" aria-labelledby="education-quiz-question">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <p className="text-page-title font-bold uppercase tracking-[0.18em] ">
-            Quiz
-          </p>
+          <p className="text-page-title font-bold uppercase tracking-[0.18em] ">Quiz</p>
           <p className="text-body font-strong text-[#7B8491]">
             문제 풀이를 통해 제대로 학습했는지 확인해보세요.
           </p>
@@ -869,9 +861,7 @@ function EducationQuiz({ quiz }) {
       </div>
 
       <div className="mt-7 rounded-[16px] bg-[#F7F8FA] px-5 py-6 sm:px-7 sm:py-7">
-        <p className="text-label font-bold uppercase tracking-[0.16em] text-[#8A93A5]">
-          Question
-        </p>
+        <p className="text-label font-bold uppercase tracking-[0.16em] text-[#8A93A5]">Question</p>
         <h2
           id="education-quiz-question"
           className="mt-3 text-card-title font-bold text-[#202832] sm:text-section-title"
@@ -961,13 +951,13 @@ function EducationQuiz({ quiz }) {
             ) : (
               <XCircle className="h-6 w-6 shrink-0 text-[#FF4854]" />
             )}
-            <p className={`text-body-lg font-bold ${isCorrect ? 'text-[#14875F]' : 'text-[#D93642]'}`}>
+            <p
+              className={`text-body-lg font-bold ${isCorrect ? 'text-[#14875F]' : 'text-[#D93642]'}`}
+            >
               {isCorrect ? '정답입니다!' : '아쉽지만 정답을 다시 확인해보세요.'}
             </p>
           </div>
-          <p className="mt-3 text-body font-medium text-[#596575]">
-            {quiz.explanation}
-          </p>
+          <p className="mt-3 text-body font-medium text-[#596575]">{quiz.explanation}</p>
         </div>
       ) : null}
     </section>
@@ -1009,9 +999,7 @@ function EducationDetail({ article }) {
           {article.notice ? (
             <aside className="rounded-[14px] bg-[#F7F8FA] px-5 py-5 sm:px-6">
               <h2 className="text-body-lg font-bold text-[#202832]">{article.notice.title}</h2>
-              <p className="mt-3 text-body-lg font-medium text-[#4D5968]">
-                {article.notice.body}
-              </p>
+              <p className="mt-3 text-body-lg font-medium text-[#4D5968]">{article.notice.body}</p>
             </aside>
           ) : null}
 
@@ -1044,9 +1032,7 @@ function EducationDetail({ article }) {
               ) : null}
               {section.example ? (
                 <div className="mt-6 rounded-[14px] bg-[#F7F8FA] px-5 py-5 sm:px-6">
-                  <h3 className="text-body-lg font-bold text-[#202832]">
-                    {section.example.title}
-                  </h3>
+                  <h3 className="text-body-lg font-bold text-[#202832]">{section.example.title}</h3>
                   <div className="mt-3 space-y-2 text-body-lg font-medium text-[#4D5968]">
                     {section.example.lines.map(line => (
                       <p key={line}>{line}</p>
@@ -1101,9 +1087,7 @@ function EducationDetail({ article }) {
                     ))}
                   </div>
                 ) : (
-                  <p className="mt-5 text-body-lg font-medium text-[#4D5968]">
-                    {section.closing}
-                  </p>
+                  <p className="mt-5 text-body-lg font-medium text-[#4D5968]">{section.closing}</p>
                 )
               ) : null}
             </section>
@@ -1119,9 +1103,7 @@ function EducationDetail({ article }) {
             <h2 className="text-section-title font-bold text-[#151A21]">다음 학습</h2>
             {nextArticle ? (
               <>
-                <h3 className="mt-3 text-body-lg font-bold text-[#202832]">
-                  {nextArticle.title}
-                </h3>
+                <h3 className="mt-3 text-body-lg font-bold text-[#202832]">{nextArticle.title}</h3>
                 <p className="mt-2 text-body-lg font-medium text-[#4D5968]">
                   {nextArticle.summary}
                 </p>

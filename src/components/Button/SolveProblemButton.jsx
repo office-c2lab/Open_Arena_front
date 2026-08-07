@@ -13,11 +13,7 @@ const SolveProblemButton = ({ children = '문제풀기', onClick, className = ''
   const baseClasses = 'btn btn-primary btn-md btn-block';
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`${baseClasses} ${className}`.trim()}
-    >
+    <button type="button" onClick={onClick} className={`${baseClasses} ${className}`.trim()}>
       {children}
     </button>
   );
