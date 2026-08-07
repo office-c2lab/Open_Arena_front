@@ -927,7 +927,6 @@ export default function Tutorial() {
   const navigate = useNavigate();
   const { tutorialId } = useParams();
   const tutorial = TUTORIALS.find(item => item.id === Number(tutorialId)) ?? TUTORIALS[0];
-  const tutorialStep = TUTORIALS.findIndex(item => item.id === tutorial.id) + 1;
   const tabs =
     tutorialTabs[tutorial.id] ??
     learningSections.map((section, index) => ({
@@ -967,21 +966,7 @@ export default function Tutorial() {
         <div className="pt-1">
           <h1 className="text-page-title font-bold text-black">{tutorial.title}</h1>
           <p className="mt-3 text-body-lg font-strong text-[#66717E]">{tutorial.subtitle}</p>
-          <div className="mt-6 flex w-fit items-center divide-x divide-[#D8DDE4] text-body text-[#2E3338]">
-            <span className="whitespace-nowrap pr-4 font-strong">
-              <em className="not-italic text-[#FF4854]">Step {tutorialStep}</em>
-            </span>
-            <span className="whitespace-nowrap px-4 font-strong">
-              <em className="not-italic text-[#2E3338]">{tutorial.title}</em>
-            </span>
-            <span className="whitespace-nowrap px-4 font-medium">{tutorial.price}</span>
-            <span className="whitespace-nowrap pl-4">
-              <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-label font-strong text-white">
-                Tutorial
-              </span>
-            </span>
-          </div>
-          <p className="mt-8 text-body text-[#3D4754]">{tutorial.description}</p>
+          <p className="mt-6 text-body text-[#3D4754]">{tutorial.description}</p>
           <p className="mt-2 text-body font-strong text-[#FF4854]">{tutorial.goal}</p>
         </div>
       </section>

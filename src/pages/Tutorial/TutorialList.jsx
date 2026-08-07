@@ -27,7 +27,7 @@ export const TUTORIALS = [
     averageTokens: '0',
     description:
       '문제 설명, 목표, 대화 영역, 제출 버튼, 시도 기록 등 챌린지를 진행할 때 보는 기본 화면 요소를 살펴봅니다.',
-    goal: '챌린지 화면의 각 구성요소가 어떤 역할을 하는지 이해하는 것.',
+    goal: '챌린지 화면의 각 구성요소가 어떤 역할을 하는지 이해하는 것이 목표입니다.',
     myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
   },
   {
@@ -47,7 +47,7 @@ export const TUTORIALS = [
     averageTokens: '320',
     description:
       '채팅 입력, AI 응답, 대화 재시도, 토큰 소모량을 확인하며 효율적으로 대화하는 흐름을 연습합니다.',
-    goal: 'AI와 한 번 이상 대화하고, 사용한 토큰이 어디에 표시되는지 확인하는 것.',
+    goal: 'AI와 한 번 이상 대화하고, 사용한 토큰이 어디에 표시되는지 확인하는 것이 목표입니다.',
     myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
   },
   {
@@ -67,7 +67,7 @@ export const TUTORIALS = [
     averageTokens: '680',
     description:
       '목표 조건을 충족하지 못한 응답을 제출해보고, 저지 실패 사유와 다음 시도에 반영할 점을 확인합니다.',
-    goal: '실패 판정이 나는 이유를 확인하고, 실패 기록을 읽는 방법을 익히는 것.',
+    goal: '실패 판정이 나는 이유를 확인하고, 실패 기록을 읽는 방법을 익히는 것이 목표입니다.',
     myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
   },
   {
@@ -87,7 +87,7 @@ export const TUTORIALS = [
     averageTokens: '920',
     description:
       '문제 목표와 성공 조건을 비교하며 AI 응답을 제출하고, 성공 판정과 점수 반영 방식을 확인합니다.',
-    goal: '성공 조건을 만족하는 응답을 제출해 저지 성공 흐름을 경험하는 것.',
+    goal: '성공 조건을 만족하는 응답을 제출해 저지 성공 흐름을 경험하는 것이 목표입니다.',
     myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
   },
   {
@@ -107,7 +107,7 @@ export const TUTORIALS = [
     averageTokens: '1,240',
     description:
       '문제 목표를 읽고, AI와 대화하고, 제출 결과를 확인하는 전체 과정을 실제 챌린지처럼 연습합니다.',
-    goal: '최소한의 시도와 토큰으로 목표 조건을 만족하는 응답을 받아내는 것.',
+    goal: '최소한의 시도와 토큰으로 목표 조건을 만족하는 응답을 받아내는 것이 목표입니다.',
     myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
   },
 ];
@@ -134,7 +134,6 @@ function TutorialPreview({ tutorial }) {
 function TutorialCard({ tutorial, onClick }) {
   if (tutorial.id >= 7) {
     const isPracticeTutorial = tutorial.id === 11;
-    const tutorialStep = TUTORIALS.findIndex(item => item.id === tutorial.id) + 1;
     const cardImage =
       tutorial.id === 7
         ? TutorialElementCardImage
@@ -161,39 +160,11 @@ function TutorialCard({ tutorial, onClick }) {
         <div className="flex flex-1 flex-col p-5">
           <h2 className="text-card-title font-bold text-[#151A21]">{tutorial.title}</h2>
           <p className="mt-2 text-body font-strong text-[#66717E]">{tutorial.subtitle}</p>
-          <div className="mt-5 grid grid-cols-[1fr_1.65fr_0.65fr_0.9fr] divide-x divide-[#D8DDE4] text-label text-[#2E3338]">
-            <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
-              {isPracticeTutorial ? (
-                <>
-                  성공{' '}
-                  <em className="ml-1 not-italic text-[#FF4854]">{tutorial.successfulUsers}</em> 명
-                </>
-              ) : (
-                <em className="not-italic text-[#FF4854]">Step {tutorialStep}</em>
-              )}
-            </span>
-            <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
-              {isPracticeTutorial ? (
-                <>
-                  평균 <em className="mx-1 not-italic text-[#FF4854]">{tutorial.averageTokens}</em>{' '}
-                  토큰
-                </>
-              ) : (
-                <em className="not-italic text-[#2E3338]">{tutorial.title}</em>
-              )}
-            </span>
-            <span className="flex items-center justify-center whitespace-nowrap px-1 font-medium">
-              {tutorial.price}
-            </span>
-            <span className="flex items-center justify-center px-1">
-              <span className="rounded-[4px] bg-[#3F454C] px-2 py-1 text-label font-strong text-white">
-                Tutorial
-              </span>
-            </span>
+          <div className="mt-auto pt-5">
+            <button type="button" className="btn btn-primary btn-lg btn-block">
+              {isPracticeTutorial ? '문제풀기' : '튜토리얼 진행하기'}
+            </button>
           </div>
-          <button type="button" className="btn btn-primary btn-lg btn-block mt-5">
-            {isPracticeTutorial ? '문제풀기' : '튜토리얼 진행하기'}
-          </button>
         </div>
       </article>
     );
