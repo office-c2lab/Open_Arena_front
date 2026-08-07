@@ -2,6 +2,7 @@ import { Check, Github, KeyRound, Link2, MessageCircle, ShieldAlert, X } from 'l
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserIcon from '@/assets/icons/user.svg';
+import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { useAuthStore } from '@/stores/authStore';
 
 function InfoRow({ label, children, last = false }) {
@@ -85,11 +86,20 @@ export default function MyPage({ embedded = false }) {
   const email = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
   const savedProfileMessage = teamInfo?.profileMessage || '';
   const savedProfileImage = teamInfo?.profileImage || null;
+  const savedProfileBackgroundImage = teamInfo?.profileBackgroundImage || null;
+  const savedProfileTextTheme = teamInfo?.profileTextTheme === 'white' ? 'white' : 'black';
   const profileImageInputRef = useRef(null);
+  const profileBackgroundInputRef = useRef(null);
   const [isEditingProfileImage, setIsEditingProfileImage] = useState(false);
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [isEditingProfileMessage, setIsEditingProfileMessage] = useState(false);
+  const [isEditingProfileBackground, setIsEditingProfileBackground] = useState(false);
+  const [isEditingProfileTextTheme, setIsEditingProfileTextTheme] = useState(false);
   const [draftProfileImage, setDraftProfileImage] = useState(savedProfileImage);
+  const [draftProfileBackgroundImage, setDraftProfileBackgroundImage] = useState(
+    savedProfileBackgroundImage
+  );
+  const [draftProfileTextTheme, setDraftProfileTextTheme] = useState(savedProfileTextTheme);
   const [activeModal, setActiveModal] = useState(null);
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -162,6 +172,36 @@ export default function MyPage({ embedded = false }) {
   const handleProfileImageCancel = () => {
     setDraftProfileImage(savedProfileImage);
     setIsEditingProfileImage(false);
+  };
+  const handleProfileBackgroundChange = event => {
+    const [file] = event.target.files || [];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      window.alert('배경 이미지는 3MB 이하로 선택해 주세요.');
+      event.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => setDraftProfileBackgroundImage(reader.result);
+    reader.readAsDataURL(file);
+    event.target.value = '';
+  };
+  const handleProfileBackgroundSave = () => {
+    login({ ...teamInfo, profileBackgroundImage: draftProfileBackgroundImage });
+    setIsEditingProfileBackground(false);
+  };
+  const handleProfileBackgroundCancel = () => {
+    setDraftProfileBackgroundImage(savedProfileBackgroundImage);
+    setIsEditingProfileBackground(false);
+  };
+  const handleProfileTextThemeSave = () => {
+    login({ ...teamInfo, profileTextTheme: draftProfileTextTheme });
+    setIsEditingProfileTextTheme(false);
+  };
+  const handleProfileTextThemeCancel = () => {
+    setDraftProfileTextTheme(savedProfileTextTheme);
+    setIsEditingProfileTextTheme(false);
   };
   const handlePasswordSubmit = () => {
     const { currentPassword, newPassword, newPasswordConfirm } = passwordForm;
@@ -305,6 +345,155 @@ export default function MyPage({ embedded = false }) {
                 className="cursor-pointer text-body font-strong text-[#FF4854]"
               >
                 {isEditingProfileImage ? '저장' : '편집'}
+              </button>
+            </div>
+          </div>
+        </InfoRow>
+        <InfoRow label="프로필 배경">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <img
+                src={draftProfileBackgroundImage || HomeMyBgImage}
+                alt="내 정보 카드 배경 미리보기"
+                className="h-14 w-24 shrink-0 rounded-[6px] border border-[#E3E6EB] object-cover"
+              />
+              <div className="min-w-0">
+                {isEditingProfileBackground ? (
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <button
+                      type="button"
+                      onClick={() => profileBackgroundInputRef.current?.click()}
+                      className="cursor-pointer text-body font-strong text-[#FF4854]"
+                    >
+                      이미지 선택
+                    </button>
+                    {draftProfileBackgroundImage ? (
+                      <button
+                        type="button"
+                        onClick={() => setDraftProfileBackgroundImage(null)}
+                        className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                      >
+                        기본 배경 사용
+                      </button>
+                    ) : null}
+                    <p className="w-full text-caption font-strong text-[#8A93A5]">
+                      JPG, PNG 등 이미지 파일 · 최대 3MB
+                    </p>
+                  </div>
+                ) : (
+                  <span className="text-[#8A93A5]">
+                    {savedProfileBackgroundImage
+                      ? '사용자 배경이 설정되어 있습니다.'
+                      : '기본 배경을 사용 중입니다.'}
+                  </span>
+                )}
+              </div>
+              <input
+                ref={profileBackgroundInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleProfileBackgroundChange}
+                className="hidden"
+              />
+            </div>
+            <div className="flex shrink-0 items-center gap-3">
+              {isEditingProfileBackground ? (
+                <button
+                  type="button"
+                  onClick={handleProfileBackgroundCancel}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                >
+                  취소
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={
+                  isEditingProfileBackground
+                    ? handleProfileBackgroundSave
+                    : () => setIsEditingProfileBackground(true)
+                }
+                className="cursor-pointer text-body font-strong text-[#FF4854]"
+              >
+                {isEditingProfileBackground ? '저장' : '편집'}
+              </button>
+            </div>
+          </div>
+        </InfoRow>
+        <InfoRow label="글자 테마">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              {isEditingProfileTextTheme ? (
+                <div
+                  className="inline-flex rounded-[6px] border border-[#DDE3EA] bg-[#F4F6F8] p-1"
+                  role="radiogroup"
+                  aria-label="내 정보 카드 글자 테마"
+                >
+                  {[
+                    { value: 'black', label: '블랙', previewClass: 'bg-[#202832]' },
+                    { value: 'white', label: '화이트', previewClass: 'border bg-white' },
+                  ].map(theme => {
+                    const isSelected = draftProfileTextTheme === theme.value;
+
+                    return (
+                      <button
+                        key={theme.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={isSelected}
+                        onClick={() => setDraftProfileTextTheme(theme.value)}
+                        className={`flex h-8 cursor-pointer items-center gap-2 rounded-[4px] px-3 text-label font-bold transition ${
+                          isSelected
+                            ? 'bg-white text-[#202832] shadow-[0_1px_4px_rgba(15,23,42,0.12)]'
+                            : 'text-[#7B8491] hover:text-[#202832]'
+                        }`}
+                      >
+                        <span
+                          className={`h-3.5 w-3.5 rounded-full ${theme.previewClass}`}
+                          aria-hidden="true"
+                        />
+                        {theme.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <span
+                    className={`h-3.5 w-3.5 rounded-full ${
+                      savedProfileTextTheme === 'white'
+                        ? 'border border-[#DDE3EA] bg-white'
+                        : 'bg-[#202832]'
+                    }`}
+                    aria-hidden="true"
+                  />
+                  {savedProfileTextTheme === 'white' ? '화이트' : '블랙'}
+                </span>
+              )}
+              <p className="mt-1 text-caption font-strong text-[#8A93A5]">
+                내 정보 카드의 글자색을 선택합니다.
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-3">
+              {isEditingProfileTextTheme ? (
+                <button
+                  type="button"
+                  onClick={handleProfileTextThemeCancel}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                >
+                  취소
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={
+                  isEditingProfileTextTheme
+                    ? handleProfileTextThemeSave
+                    : () => setIsEditingProfileTextTheme(true)
+                }
+                className="cursor-pointer text-body font-strong text-[#FF4854]"
+              >
+                {isEditingProfileTextTheme ? '저장' : '편집'}
               </button>
             </div>
           </div>

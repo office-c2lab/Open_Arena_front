@@ -4,13 +4,13 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { useNavigate } from 'react-router-dom';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import UserIcon from '@/assets/icons/user.svg';
+import DashboardProfileSummaryCard from '@/components/Profile/DashboardProfileSummaryCard';
 import { useAuthStore } from '@/stores/authStore';
 import ArenaBannerImage from '@/assets/images/banner.svg';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
-import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { articles as educationArticles } from '@/pages/Education/Education';
 import { PATHS as challengePaths, PathCard } from '@/pages/Kategorie/Kategorie';
 import { TUTORIALS } from '@/pages/Tutorial/TutorialList';
@@ -82,13 +82,6 @@ const timeBlocks = Array.from({ length: 8 }, (_, index) => {
     label: `${String(startHour).padStart(2, '0')}:00-${String(startHour + 3).padStart(2, '0')}:00`,
   };
 });
-
-const dashboardSummaryStats = [
-  { label: '현재 순위', value: '24위', subText: '전체 참가자 기준', tone: 'rank' },
-  { label: '해결한 문제', value: '2문제', subText: '전체 6문제 중', tone: 'solved' },
-  { label: '보유 포인트', value: '188점', subText: '이번 주 기준', tone: 'points' },
-  { label: '다음 순위까지', value: '12점', subText: '23위 추월까지', tone: 'rank-gap' },
-];
 
 const recentAttemptProblemIds = [3, 2, 1];
 
@@ -925,75 +918,6 @@ function ChallengeActivityHeatmap() {
       </div>
       <RecommendedChallengeSection />
     </section>
-  );
-}
-
-function DashboardProfileSummaryCard() {
-  const teamInfo = useAuthStore(state => state.teamInfo);
-  const displayName = teamInfo?.teamname || teamInfo?.username || 'ARENA 유저';
-  const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
-  const profileImage = teamInfo?.profileImage || UserIcon;
-  const hasProfileImage = Boolean(teamInfo?.profileImage);
-  const profileMessage = teamInfo?.profileMessage?.trim();
-
-  return (
-    <section
-      className="relative flex min-h-[286px] w-full flex-col justify-between overflow-hidden rounded-[10px] border border-[#E3E8EF] bg-[#FFF8F9] px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.06)] sm:px-6 lg:flex-1"
-      style={{
-        backgroundImage: `url(${HomeMyBgImage})`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-      }}
-    >
-      <div className="relative z-10 max-w-[390px]">
-        <div className="mt-5 flex items-start gap-3">
-          <div
-            className={`flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-full ${
-              hasProfileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854]'
-            }`}
-          >
-            <img
-              src={profileImage}
-              alt=""
-              className={hasProfileImage ? 'h-full w-full object-cover' : 'h-9 w-9'}
-              aria-hidden="true"
-            />
-          </div>
-          <div className="min-w-0">
-            <h2 className="truncate text-page-title font-bold text-[#202832]">{displayName}</h2>
-            <p className="mt-2 truncate text-body font-strong text-[#7B8491]">{displayEmail}</p>
-          </div>
-        </div>
-
-        <p className="mt-6 whitespace-pre-wrap break-words text-body-lg font-bold leading-7 text-[#7B8491]">
-          {profileMessage || (
-            <>
-              꾸준함이 경험이 됩니다.
-              <br />
-              지금의 흐름을 유지해보세요!
-            </>
-          )}
-        </p>
-      </div>
-
-      <div className="relative z-10 mt-6 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
-        {dashboardSummaryStats.map(stat => (
-          <DashboardProfileStatCard key={stat.label} stat={stat} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function DashboardProfileStatCard({ stat }) {
-  return (
-    <div className="min-h-[104px] rounded-[8px] border border-white/70 bg-white/72 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.76),0_12px_26px_rgba(15,23,42,0.06)] backdrop-blur-md">
-      <p className="text-label font-bold text-[#7B8491]">{stat.label}</p>
-      <strong className="mt-4 block text-section-title font-bold text-[#202832]">
-        {stat.value}
-      </strong>
-      <p className="mt-2 truncate text-caption font-strong text-[#9AA3AF]">{stat.subText}</p>
-    </div>
   );
 }
 
