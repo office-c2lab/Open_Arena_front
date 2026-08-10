@@ -61,6 +61,7 @@ export default function AdminUserManagementPage() {
   const [keyword, setKeyword] = useState('');
   const [actionError, setActionError] = useState('');
   const [membershipFilter, setMembershipFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [membershipOverrides, setMembershipOverrides] = useState({});
   const [tokenLimitOverrides, setTokenLimitOverrides] = useState({});
   const [challengeLimitOverrides, setChallengeLimitOverrides] = useState({});
@@ -88,26 +89,27 @@ export default function AdminUserManagementPage() {
   const getCurrentSubmissionLimit = user =>
     submissionLimitOverrides[getUserId(user)] ?? getSubmissionLimit(user);
 
-  const filteredUsers = useMemo(() => {
-    const normalizedKeyword = keyword.trim().toLowerCase();
-    return users.filter(user => {
-      if (membershipFilter !== 'all' && getCurrentMembership(user) !== membershipFilter) {
-        return false;
-      }
-      if (!normalizedKeyword) return true;
+  const normalizedKeyword = keyword.trim().toLowerCase();
+  const filteredUsers = users.filter(user => {
+    if (membershipFilter !== 'all' && getCurrentMembership(user) !== membershipFilter) {
+      return false;
+    }
+    if (statusFilter !== 'all' && getCurrentIsActive(user) !== (statusFilter === 'active')) {
+      return false;
+    }
+    if (!normalizedKeyword) return true;
 
-      const searchableText = [
-        getDisplayName(user),
-        getLoginId(user),
-        getEmail(user),
-        String(getUserId(user) ?? ''),
-      ]
-        .join(' ')
-        .toLowerCase();
+    const searchableText = [
+      getDisplayName(user),
+      getLoginId(user),
+      getEmail(user),
+      String(getUserId(user) ?? ''),
+    ]
+      .join(' ')
+      .toLowerCase();
 
-      return searchableText.includes(normalizedKeyword);
-    });
-  }, [keyword, users, membershipFilter, membershipOverrides]);
+    return searchableText.includes(normalizedKeyword);
+  });
 
   const freeCount = users.filter(user => getCurrentMembership(user) === 'free').length;
   const paidCount = users.filter(user => getCurrentMembership(user) === 'paid').length;
@@ -310,6 +312,36 @@ export default function AdminUserManagementPage() {
                       className={`rounded-md px-3 text-label font-strong whitespace-nowrap cursor-pointer transition ${
                         membershipFilter === filter.value
                           ? 'bg-[#FF4854] text-white'
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div
+                  className="flex h-11 rounded-lg border border-white/10 bg-[#1A0B15] p-1"
+                  role="group"
+                  aria-label="사용자 활성 상태 필터"
+                >
+                  {[
+                    { value: 'all', label: '전체' },
+                    { value: 'active', label: '활성' },
+                    { value: 'inactive', label: '비활성' },
+                  ].map(filter => (
+                    <button
+                      key={filter.value}
+                      type="button"
+                      onClick={() => setStatusFilter(filter.value)}
+                      aria-pressed={statusFilter === filter.value}
+                      className={`cursor-pointer whitespace-nowrap rounded-md px-3 text-label font-strong transition ${
+                        statusFilter === filter.value
+                          ? filter.value === 'active'
+                            ? 'bg-emerald-500 text-white'
+                            : filter.value === 'inactive'
+                              ? 'bg-gray-600 text-white'
+                              : 'bg-[#FF4854] text-white'
                           : 'text-gray-400 hover:text-white'
                       }`}
                     >
