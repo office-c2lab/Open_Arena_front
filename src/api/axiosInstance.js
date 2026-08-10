@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { API_BASE_URL, CSRF_COOKIE_NAME } from './config';
+import { ADMIN_CSRF_COOKIE_NAME, API_BASE_URL, USER_CSRF_COOKIE_NAME } from './config';
 import { ApiError } from './errors';
 
 const readCookie = name => {
@@ -25,7 +25,11 @@ api.interceptors.request.use(config => {
   const method = config.method?.toLowerCase();
 
   if (method && !['get', 'head', 'options'].includes(method)) {
-    const csrfToken = readCookie(CSRF_COOKIE_NAME);
+    const requestPath = String(config.url || '');
+    const cookieName = requestPath.startsWith('/admin/')
+      ? ADMIN_CSRF_COOKIE_NAME
+      : USER_CSRF_COOKIE_NAME;
+    const csrfToken = readCookie(cookieName);
 
     if (csrfToken && !config.headers.has('X-CSRF-Token')) {
       config.headers.set('X-CSRF-Token', csrfToken);

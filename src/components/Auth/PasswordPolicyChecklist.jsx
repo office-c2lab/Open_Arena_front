@@ -6,7 +6,6 @@ export default function PasswordPolicyChecklist({ password }) {
   const policy = getPasswordPolicyState(password);
   const items = [
     ['8자 이상', policy.hasValidLength],
-    ['영문 1자 이상', policy.hasLetter],
     ['숫자 1자 이상', policy.hasNumber],
     ['특수문자 1자 이상', policy.hasSpecialCharacter],
   ];

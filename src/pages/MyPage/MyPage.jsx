@@ -1,12 +1,14 @@
-import { Check, Github, KeyRound, Link2, MessageCircle, ShieldAlert, X } from 'lucide-react';
+import { Check, Github, Link2, MessageCircle, ShieldAlert, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { changeNickname, changePassword, withdrawAccount } from '@/api/accountApi';
 import UserIcon from '@/assets/icons/user.svg';
 import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { useAuthStore } from '@/stores/authStore';
 import { appToast } from '@/components/Toast/appToast';
 import PasswordPolicyChecklist from '@/components/Auth/PasswordPolicyChecklist';
-import { isPasswordValid, PASSWORD_POLICY_MESSAGE } from '@/utils/passwordPolicy';
+import { isPasswordValid, PASSWORD_POLICY_MESSAGE, sanitizePassword } from '@/utils/passwordPolicy';
+import { isNicknameValid, NICKNAME_POLICY_MESSAGE, sanitizeNickname } from '@/utils/nicknamePolicy';
 
 function InfoRow({ label, children, last = false }) {
   return (
@@ -79,6 +81,7 @@ function Field({ label, children, hint }) {
 
 const modalInputClass =
   'h-10 w-full rounded-[6px] border border-[#DDE3EA] bg-white px-3 text-body font-strong text-[#3D4754] outline-none transition focus:border-[#FF4854]';
+const WITHDRAW_CONFIRMATION = '회원탈퇴';
 
 export default function MyPage({ embedded = false }) {
   const navigate = useNavigate();
@@ -91,6 +94,16 @@ export default function MyPage({ embedded = false }) {
   const savedProfileImage = teamInfo?.profileImage || null;
   const savedProfileBackgroundImage = teamInfo?.profileBackgroundImage || null;
   const savedProfileTextTheme = teamInfo?.profileTextTheme === 'white' ? 'white' : 'black';
+  const nicknameAvailableAt = teamInfo?.nickname_change_available_at;
+  const nicknameAvailableAtMs = nicknameAvailableAt ? Date.parse(nicknameAvailableAt) : NaN;
+  const canChangeNickname =
+    Number.isNaN(nicknameAvailableAtMs) || nicknameAvailableAtMs <= Date.now();
+  const nicknameAvailableLabel = canChangeNickname
+    ? null
+    : new Intl.DateTimeFormat('ko-KR', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }).format(nicknameAvailableAtMs);
   const profileImageInputRef = useRef(null);
   const profileBackgroundInputRef = useRef(null);
   const [isEditingProfileImage, setIsEditingProfileImage] = useState(false);
@@ -110,7 +123,11 @@ export default function MyPage({ embedded = false }) {
     newPasswordConfirm: '',
   });
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [withdrawPassword, setWithdrawPassword] = useState('');
   const [modalMessage, setModalMessage] = useState('');
+  const [isChangingNickname, setIsChangingNickname] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [linkedApps, setLinkedApps] = useState([]);
   const [profile, setProfile] = useState({
     nickname,
@@ -131,14 +148,28 @@ export default function MyPage({ embedded = false }) {
     setModalMessage('');
     setPasswordForm({ currentPassword: '', newPassword: '', newPasswordConfirm: '' });
     setDeleteConfirmText('');
+    setWithdrawPassword('');
   };
-  const handleNicknameSave = () => {
-    login({
-      ...teamInfo,
-      teamname: profile.nickname,
-      username: profile.nickname,
-    });
-    setIsEditingNickname(false);
+  const handleNicknameSave = async () => {
+    const nextNickname = profile.nickname.trim();
+
+    if (!isNicknameValid(nextNickname)) {
+      appToast.info(NICKNAME_POLICY_MESSAGE);
+      return;
+    }
+
+    setIsChangingNickname(true);
+    try {
+      const user = await changeNickname(nextNickname);
+      login({ ...teamInfo, ...user });
+      setProfile(current => ({ ...current, nickname: user.nickname }));
+      setIsEditingNickname(false);
+      appToast.success('닉네임이 변경되었습니다.');
+    } catch (error) {
+      appToast.error(error.message);
+    } finally {
+      setIsChangingNickname(false);
+    }
   };
   const handleNicknameCancel = () => {
     setProfile(current => ({ ...current, nickname }));
@@ -206,7 +237,7 @@ export default function MyPage({ embedded = false }) {
     setDraftProfileTextTheme(savedProfileTextTheme);
     setIsEditingProfileTextTheme(false);
   };
-  const handlePasswordSubmit = () => {
+  const handlePasswordSubmit = async () => {
     const { currentPassword, newPassword, newPasswordConfirm } = passwordForm;
 
     if (!currentPassword || !newPassword || !newPasswordConfirm) {
@@ -229,18 +260,46 @@ export default function MyPage({ embedded = false }) {
       return;
     }
 
-    setModalMessage('목업 환경에서 비밀번호 변경이 완료된 것으로 처리했습니다.');
-    setPasswordForm({ currentPassword: '', newPassword: '', newPasswordConfirm: '' });
+    setIsChangingPassword(true);
+    setModalMessage('');
+    try {
+      const result = await changePassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+        new_password_confirm: newPasswordConfirm,
+      });
+      appToast.success(result?.message || '비밀번호가 변경되었습니다.');
+      closeModal();
+    } catch (error) {
+      setModalMessage(error.message);
+    } finally {
+      setIsChangingPassword(false);
+    }
   };
-  const handleDeleteAccount = () => {
-    if (deleteConfirmText !== '탈퇴') {
-      setModalMessage('정확히 "탈퇴"를 입력해야 회원 탈퇴를 진행할 수 있습니다.');
+  const handleDeleteAccount = async () => {
+    if (!withdrawPassword) {
+      setModalMessage('현재 비밀번호를 입력해 주세요.');
       return;
     }
 
-    logout();
-    closeModal();
-    navigate('/login');
+    if (deleteConfirmText !== WITHDRAW_CONFIRMATION) {
+      setModalMessage(`정확히 "${WITHDRAW_CONFIRMATION}"를 입력해 주세요.`);
+      return;
+    }
+
+    setIsWithdrawing(true);
+    setModalMessage('');
+    try {
+      await withdrawAccount({ password: withdrawPassword, confirmation: deleteConfirmText });
+      logout();
+      closeModal();
+      appToast.success('회원 탈퇴가 완료되었습니다.');
+      navigate('/login', { replace: true });
+    } catch (error) {
+      setModalMessage(error.message);
+    } finally {
+      setIsWithdrawing(false);
+    }
   };
   const toggleExternalApp = appId => {
     setLinkedApps(current =>
@@ -507,11 +566,15 @@ export default function MyPage({ embedded = false }) {
               <div className="min-w-0 flex-1">
                 <input
                   value={profile.nickname}
-                  onChange={event => updateProfile('nickname', event.target.value)}
+                  minLength={2}
+                  maxLength={8}
+                  onChange={event =>
+                    updateProfile('nickname', sanitizeNickname(event.target.value))
+                  }
                   className={inputClass}
                 />
                 <p className="mt-1 text-caption font-strong text-[#8A93A5]">
-                  수정하면 7일 후에 다시 변경할 수 있습니다.
+                  한글, 영문, 숫자, 밑줄 2~8자 · 수정하면 7일 후 다시 변경할 수 있습니다.
                 </p>
               </div>
             ) : (
@@ -530,9 +593,16 @@ export default function MyPage({ embedded = false }) {
               <button
                 type="button"
                 onClick={isEditingNickname ? handleNicknameSave : () => setIsEditingNickname(true)}
-                className="cursor-pointer text-body font-strong text-[#FF4854]"
+                disabled={isChangingNickname || (!isEditingNickname && !canChangeNickname)}
+                className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
               >
-                {isEditingNickname ? '저장' : '편집'}
+                {isChangingNickname
+                  ? '저장 중...'
+                  : isEditingNickname
+                    ? '저장'
+                    : nicknameAvailableLabel
+                      ? `${nicknameAvailableLabel} 이후 변경 가능`
+                      : '편집'}
               </button>
             </div>
           </div>
@@ -589,6 +659,11 @@ export default function MyPage({ embedded = false }) {
       </InfoSection>
 
       <InfoSection title="계정 관리">
+        <InfoRow label="회원 등급">
+          <span className="text-[#8A93A5]">
+            {teamInfo?.membershipLabel || teamInfo?.membership || '무료 회원'}
+          </span>
+        </InfoRow>
         <InfoRow label="계정연동">
           <div className="flex flex-wrap items-center justify-between gap-3 text-[#8A93A5]">
             <span className="flex items-center gap-2">
@@ -625,7 +700,7 @@ export default function MyPage({ embedded = false }) {
         </InfoRow>
         <InfoRow label="비밀번호" last>
           <div className="flex items-center justify-between gap-3 text-[#8A93A5]">
-            <span>5일 전에 마지막으로 변경</span>
+            <span>현재 비밀번호 확인 후 변경할 수 있습니다.</span>
             <button
               type="button"
               onClick={() => setActiveModal('password')}
@@ -652,10 +727,6 @@ export default function MyPage({ embedded = false }) {
           onClose={closeModal}
         >
           <div className="space-y-4">
-            <div className="flex items-center gap-3 rounded-[8px] bg-[#FFF7F8] px-4 py-3 text-body font-strong text-[#D83A45]">
-              <KeyRound className="h-5 w-5 shrink-0" />
-              목업 환경에서는 입력값 검증 후 화면에서만 변경 완료로 처리됩니다.
-            </div>
             <Field label="현재 비밀번호">
               <input
                 type="password"
@@ -674,7 +745,10 @@ export default function MyPage({ embedded = false }) {
                 autoComplete="new-password"
                 value={passwordForm.newPassword}
                 onChange={event =>
-                  setPasswordForm(current => ({ ...current, newPassword: event.target.value }))
+                  setPasswordForm(current => ({
+                    ...current,
+                    newPassword: sanitizePassword(event.target.value),
+                  }))
                 }
                 className={modalInputClass}
               />
@@ -690,14 +764,14 @@ export default function MyPage({ embedded = false }) {
                 onChange={event =>
                   setPasswordForm(current => ({
                     ...current,
-                    newPasswordConfirm: event.target.value,
+                    newPasswordConfirm: sanitizePassword(event.target.value),
                   }))
                 }
                 className={modalInputClass}
               />
             </Field>
             {modalMessage ? (
-              <p className="rounded-[6px] bg-[#F4F6F8] px-3 py-2 text-label font-strong text-[#596575]">
+              <p className="rounded-[6px] bg-[#FEF2F2] px-3 py-2 text-label font-strong text-[#B91C1C]">
                 {modalMessage}
               </p>
             ) : null}
@@ -708,9 +782,10 @@ export default function MyPage({ embedded = false }) {
               <button
                 type="button"
                 onClick={handlePasswordSubmit}
+                disabled={isChangingPassword}
                 className="btn btn-primary btn-sm"
               >
-                변경하기
+                {isChangingPassword ? '변경 중...' : '변경하기'}
               </button>
             </div>
           </div>
@@ -775,16 +850,26 @@ export default function MyPage({ embedded = false }) {
         >
           <div className="space-y-4">
             <div className="flex items-start gap-3 rounded-[8px] bg-[#FEF2F2] px-4 py-3 text-body font-strong text-[#B91C1C]">
-              <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
-              계속하려면 아래 입력창에 탈퇴라고 입력해 주세요. 목업 환경에서는 확인 후 로그아웃
-              처리됩니다.
+              계속하면 계정과 세션이 비활성화되며 이 작업은 되돌릴 수 없습니다.
             </div>
-            <Field label="확인 문구" hint="정확히 '탈퇴'라고 입력해야 합니다.">
+            <Field label="현재 비밀번호">
+              <input
+                type="password"
+                value={withdrawPassword}
+                onChange={event => setWithdrawPassword(event.target.value)}
+                className={modalInputClass}
+                autoComplete="current-password"
+              />
+            </Field>
+            <Field
+              label="확인 문구"
+              hint={`정확히 '${WITHDRAW_CONFIRMATION}'라고 입력해야 합니다.`}
+            >
               <input
                 value={deleteConfirmText}
                 onChange={event => setDeleteConfirmText(event.target.value)}
                 className={modalInputClass}
-                placeholder="탈퇴"
+                placeholder={WITHDRAW_CONFIRMATION}
               />
             </Field>
             {modalMessage ? (
@@ -799,9 +884,10 @@ export default function MyPage({ embedded = false }) {
               <button
                 type="button"
                 onClick={handleDeleteAccount}
+                disabled={isWithdrawing}
                 className="btn btn-primary btn-sm bg-[#DC2626] hover:bg-[#B91C1C]"
               >
-                탈퇴하기
+                {isWithdrawing ? '탈퇴 처리 중...' : '탈퇴하기'}
               </button>
             </div>
           </div>

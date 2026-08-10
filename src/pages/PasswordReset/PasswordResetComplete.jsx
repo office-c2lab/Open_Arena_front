@@ -5,7 +5,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { completePasswordReset } from '@/api/auth';
 import { appToast } from '@/components/Toast/appToast';
 import PasswordPolicyChecklist from '@/components/Auth/PasswordPolicyChecklist';
-import { isPasswordValid, PASSWORD_POLICY_MESSAGE } from '@/utils/passwordPolicy';
+import { isPasswordValid, PASSWORD_POLICY_MESSAGE, sanitizePassword } from '@/utils/passwordPolicy';
 
 export default function PasswordResetComplete() {
   const navigate = useNavigate();
@@ -87,7 +87,7 @@ export default function PasswordResetComplete() {
                 maxLength={128}
                 autoComplete="new-password"
                 value={newPassword}
-                onChange={event => setNewPassword(event.target.value)}
+                onChange={event => setNewPassword(sanitizePassword(event.target.value))}
                 className="border-b border-[#D9DADB] bg-transparent pb-2 font-strong outline-none focus:border-[#6B6B6B]"
               />
               <PasswordPolicyChecklist password={newPassword} />
@@ -100,7 +100,7 @@ export default function PasswordResetComplete() {
                 maxLength={128}
                 autoComplete="new-password"
                 value={newPasswordConfirm}
-                onChange={event => setNewPasswordConfirm(event.target.value)}
+                onChange={event => setNewPasswordConfirm(sanitizePassword(event.target.value))}
                 className="border-b border-[#D9DADB] bg-transparent pb-2 font-strong outline-none focus:border-[#6B6B6B]"
               />
               {newPasswordConfirm ? (

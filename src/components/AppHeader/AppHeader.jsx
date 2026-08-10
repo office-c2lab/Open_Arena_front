@@ -1,10 +1,12 @@
 import { LogOut, Menu, X } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 import ArenaLogo from '@/assets/icons/Arena.svg';
 import ArenaTextLogo from '@/assets/icons/ArenaText.svg';
 import UserIcon from '@/assets/icons/user.svg';
+import { getChallengeStats, getTodayUsage } from '@/api/accountApi';
 import { logoutApi } from '@/api/auth';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -17,6 +19,10 @@ const navItems = [
 ];
 
 const isNavItemActive = (item, pathname) => item.match.some(path => pathname.startsWith(path));
+const formatNumber = value => Number(value ?? 0).toLocaleString('ko-KR');
+
+const getUsageText = metric =>
+  metric ? `${formatNumber(metric.used)} / ${formatNumber(metric.effective_limit)}` : '-';
 
 export default function AppHeader({ isHidden = false }) {
   const location = useLocation();
@@ -29,10 +35,27 @@ export default function AppHeader({ isHidden = false }) {
     teamInfo?.teamname || teamInfo?.username || teamInfo?.login_id || 'ARENA 유저';
   const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
   const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
-  const isPaidMember = teamInfo?.membershipType === 'paid';
-  const profileStats = teamInfo?.profileStats || {};
+  const membership = String(teamInfo?.membershipType || teamInfo?.membership || '').toLowerCase();
+  const isPaidMember = ['paid', 'premium', 'pro', '유료'].includes(membership);
   const profileImage = teamInfo?.profileImage || UserIcon;
   const hasProfileImage = Boolean(teamInfo?.profileImage);
+  const challengeStatsQuery = useQuery({
+    queryKey: ['account', 'challenge-stats'],
+    queryFn: getChallengeStats,
+    enabled: isLoggedIn && isProfileOpen && isPaidMember,
+    staleTime: 30_000,
+  });
+  const todayUsageQuery = useQuery({
+    queryKey: ['account', 'usage', 'today'],
+    queryFn: getTodayUsage,
+    enabled: isLoggedIn && isProfileOpen && !isPaidMember,
+    staleTime: 30_000,
+  });
+  const challengeStats = challengeStatsQuery.data;
+  const todayUsage = todayUsageQuery.data;
+  const problemUnlockUsage = getUsageText(todayUsage?.problem_unlocks);
+  const submissionUsage = getUsageText(todayUsage?.submissions);
+  const tokenUsage = getUsageText(todayUsage?.tokens);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -173,12 +196,19 @@ export default function AppHeader({ isHidden = false }) {
                       계정 설정
                     </Link>
 
-                    {isPaidMember ? (
+                    {(isPaidMember ? challengeStatsQuery : todayUsageQuery).isError ? (
+                      <div className="mt-4 rounded-[4px] border border-[#F2C8CC] bg-[#FFF7F8] px-4 py-3 text-center text-body font-medium text-[#D83A45]">
+                        프로필 정보를 불러오지 못했습니다.
+                      </div>
+                    ) : isPaidMember ? (
                       <>
+                        <p className="mt-4 text-label font-strong text-[#76787a]">챌린지 현황</p>
                         <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
                           성공한 챌린지{' '}
                           <span className="font-strong text-[#1ec186]">
-                            {profileStats.solvedChallenges || 0} 개
+                            {challengeStats
+                              ? `${formatNumber(challengeStats.successful_challenges)}개`
+                              : '-'}
                           </span>
                         </div>
 
@@ -186,29 +216,38 @@ export default function AppHeader({ isHidden = false }) {
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
                             랭킹{' '}
                             <span className="font-strong text-[#FFB155]">
-                              {profileStats.rank || '-'} 위
+                              {challengeStats?.rank == null
+                                ? '-'
+                                : `${formatNumber(challengeStats.rank)}위`}
                             </span>
                           </div>
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                            총 포인트{' '}
+                            총 성공{' '}
                             <span className="font-strong text-[#A8AAFF]">
-                              {profileStats.totalPoints ?? 188}점
+                              {challengeStats
+                                ? `${formatNumber(challengeStats.total_successes)}회`
+                                : '-'}
                             </span>
                           </div>
                         </div>
                       </>
                     ) : (
                       <>
+                        <p className="mt-4 text-label font-strong text-[#76787a]">
+                          오늘 무료 사용량
+                        </p>
                         <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
-                          무료 도전 횟수 <span className="font-strong text-[#1ec186]">1 / 6</span>
+                          문제 열람{' '}
+                          <span className="font-strong text-[#1ec186]">{problemUnlockUsage}</span>
                         </div>
 
                         <div className="mt-3 grid grid-cols-2 gap-2">
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                            무료 제출 <span className="font-strong text-[#A8AAFF]">2/10</span>
+                            답안 제출{' '}
+                            <span className="font-strong text-[#A8AAFF]">{submissionUsage}</span>
                           </div>
                           <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                            무료 토큰 <span className="font-strong text-[#FFB155]">1000</span>
+                            AI 토큰 <span className="font-strong text-[#FFB155]">{tokenUsage}</span>
                           </div>
                         </div>
                       </>

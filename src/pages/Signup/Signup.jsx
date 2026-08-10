@@ -12,7 +12,8 @@ import {
 } from '@/api/auth';
 import { appToast } from '@/components/Toast/appToast';
 import PasswordPolicyChecklist from '@/components/Auth/PasswordPolicyChecklist';
-import { isPasswordValid, PASSWORD_POLICY_MESSAGE } from '@/utils/passwordPolicy';
+import { isPasswordValid, PASSWORD_POLICY_MESSAGE, sanitizePassword } from '@/utils/passwordPolicy';
+import { isNicknameValid, NICKNAME_POLICY_MESSAGE, sanitizeNickname } from '@/utils/nicknamePolicy';
 import ArenaSymbol from '@/assets/icons/Arena.svg';
 import BackBtn from '@/assets/icons/backbtn.svg';
 
@@ -143,6 +144,11 @@ export default function Signup() {
 
   const handleChange = e => {
     const { name, value } = e.target;
+    const nextValue = ['password', 'passwordConfirm'].includes(name)
+      ? sanitizePassword(value)
+      : name === 'nickname'
+        ? sanitizeNickname(value)
+        : value;
 
     if (name === 'email') {
       setEmailChallengeId(null);
@@ -157,7 +163,7 @@ export default function Signup() {
 
     setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: nextValue,
     }));
   };
 
@@ -241,6 +247,11 @@ export default function Signup() {
 
     if (!nickname || !email || !password || !passwordConfirm) {
       appToast.info('회원 정보를 모두 입력해 주세요.');
+      return;
+    }
+
+    if (!isNicknameValid(nickname)) {
+      appToast.info(NICKNAME_POLICY_MESSAGE);
       return;
     }
 
@@ -401,6 +412,8 @@ export default function Signup() {
                 type="text"
                 className={inputFieldStyle}
                 placeholder="띄어쓰기 없이 2~8자 입력"
+                minLength={2}
+                maxLength={8}
                 value={formData.nickname}
                 onChange={handleChange}
               />
