@@ -65,17 +65,26 @@ export const logoutApi = async () => {
   await api.post('/auth/logout');
 };
 
-export const adminLogin = async payload => ({
-  id: 'local-admin',
-  username: payload?.username || 'local-admin',
+const normalizeAdmin = admin => ({
+  ...admin,
+  username: admin.username ?? admin.nickname,
+  login_id: admin.username ?? admin.email,
 });
 
-export const adminLogoutApi = async () => ({ ok: true });
-
 export const getAdminMe = async () => {
-  throw new Error('Backend admin auth is not connected yet.');
+  const { data } = await api.get('/admin/account/me');
+  return normalizeAdmin(data);
 };
 
-export const adminRefreshToken = async () => {
-  throw new Error('Backend admin auth is not connected yet.');
+export const adminLogin = async credentials => {
+  await api.post('/admin/auth/login', {
+    username: credentials.username,
+    password: credentials.password,
+  });
+
+  return getAdminMe();
+};
+
+export const adminLogoutApi = async () => {
+  await api.post('/admin/auth/logout');
 };

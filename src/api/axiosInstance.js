@@ -23,9 +23,10 @@ const api = axios.create({
 
 api.interceptors.request.use(config => {
   const method = config.method?.toLowerCase();
+  const requestPath = String(config.url || '');
+  const isAdminLogin = requestPath === '/admin/auth/login';
 
-  if (method && !['get', 'head', 'options'].includes(method)) {
-    const requestPath = String(config.url || '');
+  if (method && !['get', 'head', 'options'].includes(method) && !isAdminLogin) {
     const cookieName = requestPath.startsWith('/admin/')
       ? ADMIN_CSRF_COOKIE_NAME
       : USER_CSRF_COOKIE_NAME;

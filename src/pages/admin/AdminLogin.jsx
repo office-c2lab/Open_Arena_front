@@ -1,6 +1,6 @@
 // src/pages/admin/AdminLogin.jsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackBtn from '@/assets/icons/backbtn.svg';
 import { useMutation } from '@tanstack/react-query';
@@ -13,6 +13,14 @@ export default function AdminLogin() {
 
   // ⭐ 관리자 상태 저장 함수 (store)
   const setAdminLoggedIn = useAuthStore(state => state.adminLoginState);
+  const isAdminLoggedIn = useAuthStore(state => state.isAdminLoggedIn);
+  const isAdminAuthInitialized = useAuthStore(state => state.isAdminAuthInitialized);
+
+  useEffect(() => {
+    if (isAdminAuthInitialized && isAdminLoggedIn) {
+      navigate('/admin/problems', { replace: true });
+    }
+  }, [isAdminAuthInitialized, isAdminLoggedIn, navigate]);
 
   const [formData, setFormData] = useState({
     username: '',
@@ -29,18 +37,17 @@ export default function AdminLogin() {
 
   const mutation = useMutation({
     mutationFn: adminLogin,
-    onSuccess: () => {
-      // ⭐ Zustand에 관리자 로그인 상태 저장
-      setAdminLoggedIn({ username: formData.username });
-
+    onSuccess: admin => {
+      setAdminLoggedIn(admin);
       navigate('/admin/problems');
     },
-    onError: () => {
-      appToast.error('로그인 실패: 관리자 계정을 확인하세요.');
+    onError: error => {
+      appToast.error(error.message || '로그인 실패: 관리자 계정을 확인하세요.');
     },
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = event => {
+    event?.preventDefault();
     if (!formData.username || !formData.password) {
       appToast.info('아이디와 비밀번호를 입력하세요.');
       return;
@@ -50,7 +57,10 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen flex justify-center items-center">
-      <div className="max-w-[675px] w-full bg-white rounded-[16px] shadow-xl flex flex-col">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-[675px] w-full bg-white rounded-[16px] shadow-xl flex flex-col"
+      >
         {/* Header */}
         <header className="px-8 pt-8 pb-4 border-b border-[#D9DADB] rounded-t-[16px]">
           <div className="flex items-center">
@@ -83,6 +93,7 @@ export default function AdminLogin() {
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="아이디"
+                autoComplete="username"
               />
             </div>
 
@@ -97,6 +108,7 @@ export default function AdminLogin() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="비밀번호"
+                autoComplete="current-password"
               />
             </div>
           </div>
@@ -105,13 +117,14 @@ export default function AdminLogin() {
         {/* Footer */}
         <footer className="px-8 pt-4 pb-8">
           <button
-            onClick={handleSubmit}
-            className="w-full h-[58px] bg-[#FF4854] text-white rounded-[16px]"
+            type="submit"
+            disabled={mutation.isPending}
+            className="w-full h-[58px] bg-[#FF4854] text-white rounded-[16px] disabled:opacity-60"
           >
-            관리자 로그인
+            {mutation.isPending ? '로그인 중...' : '관리자 로그인'}
           </button>
         </footer>
-      </div>
+      </form>
     </div>
   );
 }

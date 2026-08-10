@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MoreVertical, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
+import { adminLogoutApi } from '@/api/auth';
+import { appToast } from '@/components/Toast/appToast';
 
 export default function FloatingMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,9 +29,14 @@ export default function FloatingMenu() {
     setIsOpen(false);
 
     if (btn.isLogout) {
-      // 🔥 로그아웃 처리
-      await adminLogout();
-      navigate('/admin/login');
+      try {
+        await adminLogoutApi();
+      } catch (error) {
+        appToast.error(error.message || '관리자 로그아웃 요청에 실패했습니다.');
+      } finally {
+        adminLogout();
+        navigate('/admin/login');
+      }
       return;
     }
 
@@ -46,7 +53,7 @@ export default function FloatingMenu() {
             const isLogout = btn.isLogout;
 
             return (
-              <motion.button
+              <Motion.button
                 key={btn.label}
                 initial={{ opacity: 0, y: 0 }}
                 animate={{ opacity: 1, y: -(reversedIndex + 1) * gap }}
@@ -75,13 +82,13 @@ export default function FloatingMenu() {
               >
                 {/* 로그아웃 아이콘 */}
                 {btn.isLogout ? <LogOut size={20} color="#D80027" /> : btn.label}
-              </motion.button>
+              </Motion.button>
             );
           })}
       </AnimatePresence>
 
       {/* 🔥 메인 토글 버튼 */}
-      <motion.button
+      <Motion.button
         onClick={() => setIsOpen(prev => !prev)}
         whileHover={{
           scale: 1.1,
@@ -91,7 +98,7 @@ export default function FloatingMenu() {
         className="relative w-[60px] h-[60px] rounded-full bg-[#FF4854] flex items-center justify-center cursor-pointer shadow-[0_0_10px_rgba(255,72,84,0.4)] transition-all"
       >
         <MoreVertical size={26} color="#fff" />
-      </motion.button>
+      </Motion.button>
     </div>
   );
 }

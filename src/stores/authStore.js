@@ -33,6 +33,7 @@ export const useAuthStore = create(
       //---------------------------------------------------
       adminInfo: null,
       isAdminLoggedIn: false,
+      isAdminAuthInitialized: false,
 
       adminLoginState: admin =>
         set({
@@ -43,6 +44,8 @@ export const useAuthStore = create(
       adminLogout: () => set({ adminInfo: null, isAdminLoggedIn: false }),
 
       setAdminLoggedOut: () => set({ adminInfo: null, isAdminLoggedIn: false }),
+
+      setAdminAuthInitialized: isAdminAuthInitialized => set({ isAdminAuthInitialized }),
 
       //---------------------------------------------------
       // ⭐ 공통 초기화
@@ -58,10 +61,7 @@ export const useAuthStore = create(
     {
       name: 'auth-storage',
       getStorage: () => localStorage,
-      partialize: state => ({
-        adminInfo: state.adminInfo,
-        isAdminLoggedIn: state.isAdminLoggedIn,
-      }),
+      partialize: () => ({}),
     }
   )
 );

@@ -44,7 +44,7 @@ export default function DashboardProfileSummaryCard({ profile, summaryStats }) {
 
   return (
     <section
-      className="relative flex min-h-[286px] w-full flex-col justify-between overflow-hidden rounded-[10px] border border-[#E3E8EF] bg-[#FFF8F9] px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.06)] sm:px-6 lg:flex-1"
+      className="relative isolate flex min-h-[286px] w-full flex-col justify-between overflow-hidden rounded-[10px] border border-[#E3E8EF] bg-[#FFF8F9] px-5 py-4 shadow-[0_4px_18px_rgba(18,24,40,0.06)] sm:px-6 lg:flex-1"
       style={{
         backgroundImage: `url(${profileBackgroundImage})`,
         backgroundPosition: 'center',
