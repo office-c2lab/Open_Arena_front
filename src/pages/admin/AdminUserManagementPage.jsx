@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { RefreshCw, Save, Search, X } from 'lucide-react';
+import DashboardProfileSummaryCard from '@/components/Profile/DashboardProfileSummaryCard';
 import { useAdminTeamActions, useAdminTeams } from '@/hooks/useAdminTeams';
 
 const getUserId = user => user.id ?? user.user_id ?? user.team_id;
@@ -560,6 +561,37 @@ function UserDetailModal({
   onResetPassword,
 }) {
   const userId = getUserId(user);
+  const userRank = user.rank ?? user.ranking;
+  const profilePreview = {
+    ...user,
+    teamname: getDisplayName(user),
+    email: getEmail(user),
+    membershipType: membership,
+    membershipLabel: membership === 'paid' ? '유료 회원' : '무료 회원',
+  };
+  const profileSummaryStats = [
+    {
+      label: '현재 순위',
+      value: userRank ? `${userRank}위` : '-',
+      subText: '전체 참가자 기준',
+    },
+    {
+      label: '해결한 문제',
+      value: `${getSolvedCount(user)}문제`,
+      subText: '누적 해결 기준',
+    },
+    {
+      label: '보유 포인트',
+      value: `${getScore(user).toLocaleString()}점`,
+      subText: '현재 누적 점수',
+    },
+    {
+      label: '계정 상태',
+      value: isActive ? '활성' : '비활성',
+      subText: membership === 'paid' ? '유료 회원' : '무료 회원',
+    },
+  ];
+
   return (
     <div
       className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/65 p-5"
@@ -572,7 +604,7 @@ function UserDetailModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="user-detail-title"
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#10050F] text-white shadow-2xl"
+        className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-white/10 bg-[#10050F] text-white shadow-2xl"
       >
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#10050F] px-6 py-5">
           <div>
@@ -595,6 +627,16 @@ function UserDetailModal({
         </div>
 
         <div className="p-6 space-y-6">
+          <div>
+            <h3 className="font-strong text-white">사용자 내 정보</h3>
+            <div className="mt-3 w-full max-w-[796px]">
+              <DashboardProfileSummaryCard
+                profile={profilePreview}
+                summaryStats={profileSummaryStats}
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
             <DetailItem label="닉네임" value={getDisplayName(user)} />
             <DetailItem label="이메일" value={getEmail(user)} />

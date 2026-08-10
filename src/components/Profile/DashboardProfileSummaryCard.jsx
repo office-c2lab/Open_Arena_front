@@ -3,28 +3,44 @@ import UserIcon from '@/assets/icons/user.svg';
 import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { useAuthStore } from '@/stores/authStore';
 
-const dashboardSummaryStats = [
+const defaultDashboardSummaryStats = [
   { label: '현재 순위', value: '24위', subText: '전체 참가자 기준' },
   { label: '해결한 문제', value: '2문제', subText: '전체 6문제 중' },
   { label: '보유 포인트', value: '188점', subText: '이번 주 기준' },
   { label: '다음 순위까지', value: '12점', subText: '23위 추월까지' },
 ];
 
-export default function DashboardProfileSummaryCard() {
-  const teamInfo = useAuthStore(state => state.teamInfo);
+export default function DashboardProfileSummaryCard({ profile, summaryStats }) {
+  const authenticatedTeamInfo = useAuthStore(state => state.teamInfo);
+  const teamInfo = profile || authenticatedTeamInfo;
   const displayName = teamInfo?.teamname || teamInfo?.username || 'ARENA 유저';
   const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
-  const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
+  const membershipType =
+    teamInfo?.membershipType ||
+    teamInfo?.membership ||
+    teamInfo?.plan ||
+    teamInfo?.member_type ||
+    teamInfo?.subscription_type;
+  const membershipLabel =
+    teamInfo?.membershipLabel ||
+    teamInfo?.membership_label ||
+    (['paid', 'premium', 'pro', '유료'].includes(String(membershipType).toLowerCase())
+      ? '유료 회원'
+      : '무료 회원');
   const joinedAtValue =
     teamInfo?.created_at || teamInfo?.createdAt || teamInfo?.joined_at || teamInfo?.joinedAt;
   const joinedAt = joinedAtValue
     ? String(joinedAtValue).slice(0, 10).replaceAll('-', '.')
     : '2026.07.01';
-  const profileImage = teamInfo?.profileImage || UserIcon;
-  const hasProfileImage = Boolean(teamInfo?.profileImage);
-  const profileMessage = teamInfo?.profileMessage?.trim();
-  const profileBackgroundImage = teamInfo?.profileBackgroundImage || HomeMyBgImage;
-  const usesWhiteProfileText = teamInfo?.profileTextTheme === 'white';
+  const savedProfileImage = teamInfo?.profileImage || teamInfo?.profile_image;
+  const profileImage = savedProfileImage || UserIcon;
+  const hasProfileImage = Boolean(savedProfileImage);
+  const profileMessage = (teamInfo?.profileMessage || teamInfo?.profile_message)?.trim();
+  const profileBackgroundImage =
+    teamInfo?.profileBackgroundImage || teamInfo?.profile_background_image || HomeMyBgImage;
+  const profileTextTheme = teamInfo?.profileTextTheme || teamInfo?.profile_text_theme;
+  const usesWhiteProfileText = profileTextTheme === 'white';
+  const displayedSummaryStats = summaryStats || defaultDashboardSummaryStats;
 
   return (
     <section
@@ -96,7 +112,7 @@ export default function DashboardProfileSummaryCard() {
       </div>
 
       <div className="relative z-10 mt-6 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
-        {dashboardSummaryStats.map(stat => (
+        {displayedSummaryStats.map(stat => (
           <DashboardProfileStatCard key={stat.label} stat={stat} />
         ))}
       </div>
