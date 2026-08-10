@@ -234,12 +234,24 @@ headers: {
 | 오늘 무료 사용량 | `GET /account/usage/today` | 열람·제출·토큰의 `used`, `base_limit`, `additional_limit`, `effective_limit`, `remaining` 표시 |
 | 챌린지 통계 | `GET /account/challenge-stats` | 성공 문제 수, 총 성공 횟수, 현재 순위 |
 | 닉네임 변경 | `PATCH /account/nickname` | 일반 회원 CSRF 필요, 변경 후 7일 제한 |
+| 프로필 사진 등록·변경 | `PUT /account/profile-image` | 유료 전용, `multipart/form-data`의 `image`, CSRF 필요 |
+| 프로필 사진 삭제 | `DELETE /account/profile-image` | 유료 전용, CSRF 필요 |
+| 배경 등록·변경 | `PUT /account/profile-background` | 유료 전용, `multipart/form-data`의 `image`, CSRF 필요 |
+| 배경 삭제 | `DELETE /account/profile-background` | 유료 전용, CSRF 필요 |
 | 비밀번호 변경 | `PATCH /account/password` | 현재 비밀번호와 새 비밀번호 2회 |
 | 회원 탈퇴 | `POST /account/withdraw` | 비밀번호와 확인 문구, 성공 후 쿠키 제거 |
 
 유료 회원은 사용량 응답의 `unlimited: true`를 기준으로 무제한 UI를 표시한다.
-프로필 사진과 배경 이미지는 현재 백엔드 API가 없으므로 목업 상태로 두고 별도 기능으로
-추가해야 한다.
+`GET /account/me`와 `GET /dashboard`의 `profile_image_url`,
+`profile_background_url`을 이미지 주소로 사용한다. 값이 `null`이면 기본 이미지를
+표시한다. 반환 URL은 상대 경로이며 조회에도 회원 세션 쿠키가 필요하다.
+
+프로필 사진과 배경은 JPEG·PNG·WebP 최대 3 MiB다. 서버가 각각
+512×512와 최대 1920×1080 WebP로 변환한다. 파일 input의 필드명은 `image`다.
+무료 회원 요청은 `403 PAID_MEMBERSHIP_REQUIRED`, 잘못된 형식은
+`400 UNSUPPORTED_MEDIA_TYPE` 또는 `400 INVALID_MEDIA_FILE`, 크기 초과는
+`413 MEDIA_FILE_TOO_LARGE`로 처리한다. 유료에서 무료로 전환되면 두 URL은 즉시
+`null`이 되고 기존 파일은 복구되지 않는다.
 
 ### 3.6 카테고리·문제 목록 `/kategorie`
 
@@ -495,7 +507,7 @@ Swagger의 `ProblemCreateRequest`, `ProblemUpdateRequest`를 따른다.
 - 비활성 문제는 회원 화면에 노출하지 않는다.
 - 관리자 화면은 일반 회원 쿠키가 아닌 관리자 전용 쿠키와 CSRF를 사용한다.
 - 로그아웃·탈퇴 후 보호 화면에 다시 접근할 수 없다.
-- 프로필 사진·배경은 API 미구현 상태임을 전제로 연동 범위에서 제외한다.
+- 유료 회원만 프로필 사진·배경을 변경할 수 있고 무료 전환 시 기본 이미지로 돌아간다.
 
 ## 7. 백엔드 구현 범위 참고
 
@@ -503,7 +515,6 @@ Swagger의 `ProblemCreateRequest`, `ProblemUpdateRequest`를 따른다.
 구현되어 있다. 다음 항목은 현재 연동 대상이 아니다.
 
 - 학습 자료 API: 프론트엔드 정적 구현
-- 프로필 사진·배경 업로드 API: 추후 구현
 - 관리자 홈 전용 통합 요약 API: 관리자 화면 확정 후 필요 시 구현
 
 요청·응답의 전체 필드, enum과 validation 범위는 Swagger/OpenAPI를 최종 기준으로

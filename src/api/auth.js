@@ -12,6 +12,8 @@ export const normalizeUser = user => ({
   teamname: user.nickname,
   membershipType: user.membership,
   membershipLabel: membershipLabels[user.membership] || user.membership,
+  profileImage: user.profile_image_url || null,
+  profileBackgroundImage: user.profile_background_url || null,
 });
 
 export const getLegalDocuments = async () => {

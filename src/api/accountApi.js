@@ -11,6 +11,27 @@ export const getChallengeStats = async () => {
   return data;
 };
 
+const uploadProfileMedia = async (path, image) => {
+  const formData = new FormData();
+  formData.append('image', image);
+
+  const { data } = await api.put(path, formData);
+  return data;
+};
+
+export const uploadProfileImage = image => uploadProfileMedia('/account/profile-image', image);
+
+export const deleteProfileImage = async () => {
+  await api.delete('/account/profile-image');
+};
+
+export const uploadProfileBackground = image =>
+  uploadProfileMedia('/account/profile-background', image);
+
+export const deleteProfileBackground = async () => {
+  await api.delete('/account/profile-background');
+};
+
 export const changePassword = async payload => {
   const { data } = await api.patch('/account/password', payload);
   return data;

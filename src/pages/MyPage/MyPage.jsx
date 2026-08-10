@@ -1,7 +1,15 @@
-import { Check, Github, Link2, MessageCircle, ShieldAlert, X } from 'lucide-react';
+import { Check, ShieldAlert, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { changeNickname, changePassword, withdrawAccount } from '@/api/accountApi';
+import {
+  changeNickname,
+  changePassword,
+  deleteProfileBackground,
+  deleteProfileImage,
+  uploadProfileBackground,
+  uploadProfileImage,
+  withdrawAccount,
+} from '@/api/accountApi';
 import UserIcon from '@/assets/icons/user.svg';
 import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { useAuthStore } from '@/stores/authStore';
@@ -82,6 +90,27 @@ function Field({ label, children, hint }) {
 const modalInputClass =
   'h-10 w-full rounded-[6px] border border-[#DDE3EA] bg-white px-3 text-body font-strong text-[#3D4754] outline-none transition focus:border-[#FF4854]';
 const WITHDRAW_CONFIRMATION = '회원탈퇴';
+const PROFILE_MEDIA_MAX_BYTES = 3 * 1024 * 1024;
+const PROFILE_MEDIA_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+
+const withCacheBust = url => {
+  if (!url) return null;
+  return `${url}${url.includes('?') ? '&' : '?'}v=${Date.now()}`;
+};
+
+const validateProfileMedia = (file, label) => {
+  if (!PROFILE_MEDIA_TYPES.has(file.type)) {
+    appToast.error(`${label}은 JPEG, PNG, WebP 파일만 사용할 수 있습니다.`);
+    return false;
+  }
+
+  if (file.size > PROFILE_MEDIA_MAX_BYTES) {
+    appToast.error(`${label}은 3MB 이하로 선택해 주세요.`);
+    return false;
+  }
+
+  return true;
+};
 
 export default function MyPage({ embedded = false }) {
   const navigate = useNavigate();
@@ -91,9 +120,12 @@ export default function MyPage({ embedded = false }) {
   const nickname = teamInfo?.teamname || teamInfo?.username || 'ARENA 유저';
   const email = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
   const savedProfileMessage = teamInfo?.profileMessage || '';
-  const savedProfileImage = teamInfo?.profileImage || null;
-  const savedProfileBackgroundImage = teamInfo?.profileBackgroundImage || null;
+  const savedProfileImage = teamInfo?.profileImage || teamInfo?.profile_image_url || null;
+  const savedProfileBackgroundImage =
+    teamInfo?.profileBackgroundImage || teamInfo?.profile_background_url || null;
   const savedProfileTextTheme = teamInfo?.profileTextTheme === 'white' ? 'white' : 'black';
+  const membership = String(teamInfo?.membershipType || teamInfo?.membership || '').toLowerCase();
+  const isPaidMember = ['paid', 'premium', 'pro', '유료'].includes(membership);
   const nicknameAvailableAt = teamInfo?.nickname_change_available_at;
   const nicknameAvailableAtMs = nicknameAvailableAt ? Date.parse(nicknameAvailableAt) : NaN;
   const canChangeNickname =
@@ -112,9 +144,11 @@ export default function MyPage({ embedded = false }) {
   const [isEditingProfileBackground, setIsEditingProfileBackground] = useState(false);
   const [isEditingProfileTextTheme, setIsEditingProfileTextTheme] = useState(false);
   const [draftProfileImage, setDraftProfileImage] = useState(savedProfileImage);
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const [draftProfileBackgroundImage, setDraftProfileBackgroundImage] = useState(
     savedProfileBackgroundImage
   );
+  const [profileBackgroundFile, setProfileBackgroundFile] = useState(null);
   const [draftProfileTextTheme, setDraftProfileTextTheme] = useState(savedProfileTextTheme);
   const [activeModal, setActiveModal] = useState(null);
   const [passwordForm, setPasswordForm] = useState({
@@ -128,7 +162,8 @@ export default function MyPage({ embedded = false }) {
   const [isChangingNickname, setIsChangingNickname] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
-  const [linkedApps, setLinkedApps] = useState([]);
+  const [isSavingProfileImage, setIsSavingProfileImage] = useState(false);
+  const [isSavingProfileBackground, setIsSavingProfileBackground] = useState(false);
   const [profile, setProfile] = useState({
     nickname,
     profileMessage: savedProfileMessage,
@@ -188,45 +223,100 @@ export default function MyPage({ embedded = false }) {
   const handleProfileImageChange = event => {
     const [file] = event.target.files || [];
     if (!file) return;
-    if (file.size > 3 * 1024 * 1024) {
-      appToast.info('프로필 이미지는 3MB 이하로 선택해 주세요.');
+    if (!validateProfileMedia(file, '프로필 이미지')) {
       event.target.value = '';
       return;
     }
 
+    setProfileImageFile(file);
     const reader = new FileReader();
     reader.onload = () => setDraftProfileImage(reader.result);
+    reader.onerror = () => appToast.error('프로필 이미지 미리보기를 만들지 못했습니다.');
     reader.readAsDataURL(file);
     event.target.value = '';
   };
-  const handleProfileImageSave = () => {
-    login({ ...teamInfo, profileImage: draftProfileImage });
-    setIsEditingProfileImage(false);
+  const handleProfileImageSave = async () => {
+    setIsSavingProfileImage(true);
+    try {
+      if (profileImageFile) {
+        const media = await uploadProfileImage(profileImageFile);
+        const nextProfileImage = withCacheBust(media.profile_image_url);
+        login({
+          ...teamInfo,
+          ...media,
+          profileImage: nextProfileImage,
+          profileBackgroundImage:
+            withCacheBust(media.profile_background_url) || teamInfo?.profileBackgroundImage || null,
+        });
+        setDraftProfileImage(nextProfileImage);
+        appToast.success('프로필 사진이 변경되었습니다.');
+      } else if (!draftProfileImage && savedProfileImage) {
+        await deleteProfileImage();
+        login({ ...teamInfo, profile_image_url: null, profileImage: null });
+        setDraftProfileImage(null);
+        appToast.success('프로필 사진이 삭제되었습니다.');
+      }
+
+      setProfileImageFile(null);
+      setIsEditingProfileImage(false);
+    } catch (error) {
+      appToast.error(error.message);
+    } finally {
+      setIsSavingProfileImage(false);
+    }
   };
   const handleProfileImageCancel = () => {
     setDraftProfileImage(savedProfileImage);
+    setProfileImageFile(null);
     setIsEditingProfileImage(false);
   };
   const handleProfileBackgroundChange = event => {
     const [file] = event.target.files || [];
     if (!file) return;
-    if (file.size > 3 * 1024 * 1024) {
-      appToast.info('배경 이미지는 3MB 이하로 선택해 주세요.');
+    if (!validateProfileMedia(file, '프로필 배경')) {
       event.target.value = '';
       return;
     }
 
+    setProfileBackgroundFile(file);
     const reader = new FileReader();
     reader.onload = () => setDraftProfileBackgroundImage(reader.result);
+    reader.onerror = () => appToast.error('프로필 배경 미리보기를 만들지 못했습니다.');
     reader.readAsDataURL(file);
     event.target.value = '';
   };
-  const handleProfileBackgroundSave = () => {
-    login({ ...teamInfo, profileBackgroundImage: draftProfileBackgroundImage });
-    setIsEditingProfileBackground(false);
+  const handleProfileBackgroundSave = async () => {
+    setIsSavingProfileBackground(true);
+    try {
+      if (profileBackgroundFile) {
+        const media = await uploadProfileBackground(profileBackgroundFile);
+        const nextProfileBackground = withCacheBust(media.profile_background_url);
+        login({
+          ...teamInfo,
+          ...media,
+          profileImage: withCacheBust(media.profile_image_url) || teamInfo?.profileImage || null,
+          profileBackgroundImage: nextProfileBackground,
+        });
+        setDraftProfileBackgroundImage(nextProfileBackground);
+        appToast.success('프로필 배경이 변경되었습니다.');
+      } else if (!draftProfileBackgroundImage && savedProfileBackgroundImage) {
+        await deleteProfileBackground();
+        login({ ...teamInfo, profile_background_url: null, profileBackgroundImage: null });
+        setDraftProfileBackgroundImage(null);
+        appToast.success('프로필 배경이 삭제되었습니다.');
+      }
+
+      setProfileBackgroundFile(null);
+      setIsEditingProfileBackground(false);
+    } catch (error) {
+      appToast.error(error.message);
+    } finally {
+      setIsSavingProfileBackground(false);
+    }
   };
   const handleProfileBackgroundCancel = () => {
     setDraftProfileBackgroundImage(savedProfileBackgroundImage);
+    setProfileBackgroundFile(null);
     setIsEditingProfileBackground(false);
   };
   const handleProfileTextThemeSave = () => {
@@ -301,32 +391,6 @@ export default function MyPage({ embedded = false }) {
       setIsWithdrawing(false);
     }
   };
-  const toggleExternalApp = appId => {
-    setLinkedApps(current =>
-      current.includes(appId) ? current.filter(id => id !== appId) : [...current, appId]
-    );
-  };
-  const externalApps = [
-    {
-      id: 'github',
-      name: 'GitHub',
-      description: '개발자 계정과 챌린지 활동을 연결합니다.',
-      icon: Github,
-    },
-    {
-      id: 'google',
-      name: 'Google',
-      description: 'Google 계정 기반 로그인과 알림 연동을 준비합니다.',
-      icon: Check,
-    },
-    {
-      id: 'discord',
-      name: 'Discord',
-      description: '커뮤니티 알림과 챌린지 공지를 받을 수 있게 준비합니다.',
-      icon: MessageCircle,
-    },
-  ];
-
   return (
     <section
       className={
@@ -338,6 +402,11 @@ export default function MyPage({ embedded = false }) {
       <h1 className="text-section-title font-bold text-[#151A21]">기본정보</h1>
 
       <InfoSection title="공개정보">
+        <InfoRow label="회원 등급">
+          <span className="text-[#8A93A5]">
+            {teamInfo?.membershipLabel || teamInfo?.membership || '무료 회원'}
+          </span>
+        </InfoRow>
         <InfoRow label="프로필 사진">
           <div className="flex items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-3">
@@ -358,31 +427,42 @@ export default function MyPage({ embedded = false }) {
                     <button
                       type="button"
                       onClick={() => profileImageInputRef.current?.click()}
-                      className="cursor-pointer text-body font-strong text-[#FF4854]"
+                      disabled={isSavingProfileImage}
+                      className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
                     >
                       이미지 선택
                     </button>
                     {draftProfileImage ? (
                       <button
                         type="button"
-                        onClick={() => setDraftProfileImage(null)}
-                        className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                        onClick={() => {
+                          setDraftProfileImage(null);
+                          setProfileImageFile(null);
+                        }}
+                        disabled={isSavingProfileImage}
+                        className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
                       >
                         이미지 삭제
                       </button>
                     ) : null}
-                    <p className="w-full text-caption font-strong text-[#8A93A5]">최대 3MB</p>
+                    <p className="w-full text-caption font-strong text-[#8A93A5]">
+                      JPEG, PNG, WebP · 최대 3MB
+                    </p>
                   </div>
                 ) : (
                   <span className="text-[#8A93A5]">
-                    {savedProfileImage ? '프로필 사진이 설정되어 있습니다.' : '기본 이미지'}
+                    {!isPaidMember
+                      ? '유료 회원 전용 기능입니다.'
+                      : savedProfileImage
+                        ? '프로필 사진이 설정되어 있습니다.'
+                        : '기본 이미지'}
                   </span>
                 )}
               </div>
               <input
                 ref={profileImageInputRef}
                 type="file"
-                accept="image/*"
+                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                 onChange={handleProfileImageChange}
                 className="hidden"
               />
@@ -392,7 +472,8 @@ export default function MyPage({ embedded = false }) {
                 <button
                   type="button"
                   onClick={handleProfileImageCancel}
-                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                  disabled={isSavingProfileImage}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
                 >
                   취소
                 </button>
@@ -402,11 +483,22 @@ export default function MyPage({ embedded = false }) {
                 onClick={
                   isEditingProfileImage
                     ? handleProfileImageSave
-                    : () => setIsEditingProfileImage(true)
+                    : () => {
+                        setDraftProfileImage(savedProfileImage);
+                        setProfileImageFile(null);
+                        setIsEditingProfileImage(true);
+                      }
                 }
-                className="cursor-pointer text-body font-strong text-[#FF4854]"
+                disabled={!isPaidMember || isSavingProfileImage}
+                className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
               >
-                {isEditingProfileImage ? '저장' : '편집'}
+                {!isPaidMember
+                  ? '유료 전용'
+                  : isSavingProfileImage
+                    ? '저장 중...'
+                    : isEditingProfileImage
+                      ? '저장'
+                      : '편집'}
               </button>
             </div>
           </div>
@@ -425,35 +517,42 @@ export default function MyPage({ embedded = false }) {
                     <button
                       type="button"
                       onClick={() => profileBackgroundInputRef.current?.click()}
-                      className="cursor-pointer text-body font-strong text-[#FF4854]"
+                      disabled={isSavingProfileBackground}
+                      className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
                     >
                       이미지 선택
                     </button>
                     {draftProfileBackgroundImage ? (
                       <button
                         type="button"
-                        onClick={() => setDraftProfileBackgroundImage(null)}
-                        className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                        onClick={() => {
+                          setDraftProfileBackgroundImage(null);
+                          setProfileBackgroundFile(null);
+                        }}
+                        disabled={isSavingProfileBackground}
+                        className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
                       >
                         기본 배경 사용
                       </button>
                     ) : null}
                     <p className="w-full text-caption font-strong text-[#8A93A5]">
-                      JPG, PNG 등 이미지 파일 · 최대 3MB
+                      JPEG, PNG, WebP · 최대 3MB
                     </p>
                   </div>
                 ) : (
                   <span className="text-[#8A93A5]">
-                    {savedProfileBackgroundImage
-                      ? '사용자 배경이 설정되어 있습니다.'
-                      : '기본 배경을 사용 중입니다.'}
+                    {!isPaidMember
+                      ? '유료 회원 전용 기능입니다.'
+                      : savedProfileBackgroundImage
+                        ? '사용자 배경이 설정되어 있습니다.'
+                        : '기본 배경을 사용 중입니다.'}
                   </span>
                 )}
               </div>
               <input
                 ref={profileBackgroundInputRef}
                 type="file"
-                accept="image/*"
+                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                 onChange={handleProfileBackgroundChange}
                 className="hidden"
               />
@@ -463,7 +562,8 @@ export default function MyPage({ embedded = false }) {
                 <button
                   type="button"
                   onClick={handleProfileBackgroundCancel}
-                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                  disabled={isSavingProfileBackground}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
                 >
                   취소
                 </button>
@@ -473,11 +573,22 @@ export default function MyPage({ embedded = false }) {
                 onClick={
                   isEditingProfileBackground
                     ? handleProfileBackgroundSave
-                    : () => setIsEditingProfileBackground(true)
+                    : () => {
+                        setDraftProfileBackgroundImage(savedProfileBackgroundImage);
+                        setProfileBackgroundFile(null);
+                        setIsEditingProfileBackground(true);
+                      }
                 }
-                className="cursor-pointer text-body font-strong text-[#FF4854]"
+                disabled={!isPaidMember || isSavingProfileBackground}
+                className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
               >
-                {isEditingProfileBackground ? '저장' : '편집'}
+                {!isPaidMember
+                  ? '유료 전용'
+                  : isSavingProfileBackground
+                    ? '저장 중...'
+                    : isEditingProfileBackground
+                      ? '저장'
+                      : '편집'}
               </button>
             </div>
           </div>
@@ -659,11 +770,6 @@ export default function MyPage({ embedded = false }) {
       </InfoSection>
 
       <InfoSection title="계정 관리">
-        <InfoRow label="회원 등급">
-          <span className="text-[#8A93A5]">
-            {teamInfo?.membershipLabel || teamInfo?.membership || '무료 회원'}
-          </span>
-        </InfoRow>
         <InfoRow label="계정연동">
           <div className="flex flex-wrap items-center justify-between gap-3 text-[#8A93A5]">
             <span className="flex items-center gap-2">
@@ -673,23 +779,6 @@ export default function MyPage({ embedded = false }) {
               계정이 연동되어 있습니다.
             </span>
             <span>비밀번호 설정 후 연동 해제가 가능합니다.</span>
-          </div>
-        </InfoRow>
-        <InfoRow label="외부 앱 연동">
-          <div className="flex items-center justify-between gap-3 text-[#8A93A5]">
-            <span className="flex items-center gap-2">
-              <Link2 className="h-4 w-4" />
-              {linkedApps.length
-                ? `${linkedApps.length}개 앱이 연동되어 있습니다.`
-                : '연동된 계정이 없습니다.'}
-            </span>
-            <button
-              type="button"
-              onClick={() => setActiveModal('externalApps')}
-              className="cursor-pointer font-strong text-[#FF4854]"
-            >
-              연동하기
-            </button>
           </div>
         </InfoRow>
         <InfoRow label="이메일">
@@ -786,56 +875,6 @@ export default function MyPage({ embedded = false }) {
                 className="btn btn-primary btn-sm"
               >
                 {isChangingPassword ? '변경 중...' : '변경하기'}
-              </button>
-            </div>
-          </div>
-        </AccountModal>
-      ) : null}
-
-      {activeModal === 'externalApps' ? (
-        <AccountModal
-          title="외부 앱 연동"
-          description="연동할 외부 앱을 선택하세요. 현재는 목업으로 화면 상태만 변경됩니다."
-          onClose={closeModal}
-        >
-          <div className="space-y-3">
-            {externalApps.map(app => {
-              const Icon = app.icon;
-              const isLinked = linkedApps.includes(app.id);
-
-              return (
-                <div
-                  key={app.id}
-                  className="flex items-center justify-between gap-4 rounded-[8px] border border-[#E3E6EB] px-4 py-3"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#F4F6F8] text-[#3D4754]">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-body font-bold text-[#151A21]">{app.name}</p>
-                      <p className="mt-1 text-label font-strong text-[#697586]">
-                        {app.description}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => toggleExternalApp(app.id)}
-                    className={`shrink-0 cursor-pointer rounded-[6px] px-3 py-2 text-label font-bold transition ${
-                      isLinked
-                        ? 'bg-[#F4F6F8] text-[#596575] hover:bg-[#E8ECF2]'
-                        : 'bg-[#FF4854] text-white hover:bg-[#E63B47]'
-                    }`}
-                  >
-                    {isLinked ? '해제하기' : '연동하기'}
-                  </button>
-                </div>
-              );
-            })}
-            <div className="flex justify-end pt-2">
-              <button type="button" onClick={closeModal} className="btn btn-primary btn-sm">
-                완료
               </button>
             </div>
           </div>

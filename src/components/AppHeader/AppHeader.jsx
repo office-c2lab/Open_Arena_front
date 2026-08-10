@@ -1,4 +1,4 @@
-import { LogOut, Menu, X } from 'lucide-react';
+import { Bell, CheckCheck, LogOut, Menu, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -23,6 +23,21 @@ const formatNumber = value => Number(value ?? 0).toLocaleString('ko-KR');
 
 const getUsageText = metric =>
   metric ? `${formatNumber(metric.used)} / ${formatNumber(metric.effective_limit)}` : '-';
+const initialNotifications = [];
+
+const formatNotificationTime = value => {
+  if (!value) return '';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+
+  return new Intl.DateTimeFormat('ko-KR', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+};
 
 export default function AppHeader({ isHidden = false }) {
   const location = useLocation();
@@ -30,6 +45,8 @@ export default function AppHeader({ isHidden = false }) {
   const { isLoggedIn, logout, teamInfo } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [notifications, setNotifications] = useState(initialNotifications);
 
   const displayName =
     teamInfo?.teamname || teamInfo?.username || teamInfo?.login_id || 'ARENA 유저';
@@ -56,10 +73,14 @@ export default function AppHeader({ isHidden = false }) {
   const problemUnlockUsage = getUsageText(todayUsage?.problem_unlocks);
   const submissionUsage = getUsageText(todayUsage?.submissions);
   const tokenUsage = getUsageText(todayUsage?.tokens);
+  const unreadNotificationCount = notifications.filter(
+    notification => !notification.is_read
+  ).length;
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsProfileOpen(false);
+    setIsNotificationOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -88,7 +109,30 @@ export default function AppHeader({ isHidden = false }) {
     await logoutApi().catch(() => undefined);
     logout();
     setIsProfileOpen(false);
+    setIsNotificationOpen(false);
     navigate('/login');
+  };
+
+  const handleNotificationToggle = () => {
+    setIsProfileOpen(false);
+    setIsNotificationOpen(current => !current);
+  };
+
+  const handleProfileToggle = () => {
+    setIsNotificationOpen(false);
+    setIsProfileOpen(current => !current);
+  };
+
+  const markNotificationAsRead = notificationId => {
+    setNotifications(current =>
+      current.map(notification =>
+        notification.id === notificationId ? { ...notification, is_read: true } : notification
+      )
+    );
+  };
+
+  const markAllNotificationsAsRead = () => {
+    setNotifications(current => current.map(notification => ({ ...notification, is_read: true })));
   };
 
   return (
@@ -137,154 +181,259 @@ export default function AppHeader({ isHidden = false }) {
 
         <div className="ml-auto flex items-center gap-5">
           {isLoggedIn ? (
-            <div className="relative">
-              <button
-                type="button"
-                aria-label="프로필 메뉴"
-                aria-expanded={isProfileOpen}
-                onClick={() => setIsProfileOpen(current => !current)}
-                className={`flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full shadow-[0_3px_10px_rgba(255,72,84,0.18)] transition hover:-translate-y-0.5 ${hasProfileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854] hover:bg-[#FF4854]/90'}`}
-              >
-                <img
-                  src={profileImage}
-                  alt=""
-                  className={hasProfileImage ? 'h-full w-full object-cover' : 'h-6 w-6'}
-                  aria-hidden="true"
-                />
-              </button>
+            <>
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-label={
+                    unreadNotificationCount ? `알림 ${unreadNotificationCount}개 읽지 않음` : '알림'
+                  }
+                  aria-expanded={isNotificationOpen}
+                  onClick={handleNotificationToggle}
+                  className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#FF4854] text-white shadow-[0_3px_10px_rgba(255,72,84,0.18)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
+                >
+                  <Bell className="h-6 w-6" strokeWidth={2} />
+                  {unreadNotificationCount ? (
+                    <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-[#FF4854] bg-white px-1 text-[10px] font-bold leading-none text-[#FF4854]">
+                      {unreadNotificationCount > 9 ? '9+' : unreadNotificationCount}
+                    </span>
+                  ) : null}
+                </button>
 
-              {isProfileOpen ? (
-                <>
-                  <button
-                    type="button"
-                    aria-label="프로필 메뉴 닫기"
-                    className="fixed inset-0 z-[75] cursor-default"
-                    onClick={() => setIsProfileOpen(false)}
-                  />
-                  <div className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[326px] rounded-[8px] border border-[#ece7e1] bg-white p-4 shadow-[0_16px_36px_rgba(15,23,42,0.12)]">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F2F4F6]">
-                        {hasProfileImage ? (
-                          <img
-                            src={profileImage}
-                            alt=""
-                            className="h-full w-full object-cover"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF4854]">
-                            <img src={UserIcon} alt="" className="h-6 w-6" aria-hidden="true" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="truncate text-card-title font-strong text-[#303030]">
-                            {displayName}
-                          </div>
-                          <div className="shrink-0 text-label font-strong text-[#FF4854]">
-                            {membershipLabel}
-                          </div>
-                        </div>
-                        <div className="truncate text-body font-medium text-[#76787a]">
-                          {displayEmail}
-                        </div>
-                      </div>
-                    </div>
-
-                    <Link to="/settings" className="btn btn-primary btn-md btn-block mt-4">
-                      계정 설정
-                    </Link>
-
-                    {(isPaidMember ? challengeStatsQuery : todayUsageQuery).isError ? (
-                      <div className="mt-4 rounded-[4px] border border-[#F2C8CC] bg-[#FFF7F8] px-4 py-3 text-center text-body font-medium text-[#D83A45]">
-                        프로필 정보를 불러오지 못했습니다.
-                      </div>
-                    ) : isPaidMember ? (
-                      <>
-                        <p className="mt-4 text-label font-strong text-[#76787a]">챌린지 현황</p>
-                        <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
-                          성공한 챌린지{' '}
-                          <span className="font-strong text-[#1ec186]">
-                            {challengeStats
-                              ? `${formatNumber(challengeStats.successful_challenges)}개`
-                              : '-'}
-                          </span>
-                        </div>
-
-                        <div className="mt-3 grid grid-cols-2 gap-2">
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                            랭킹{' '}
-                            <span className="font-strong text-[#FFB155]">
-                              {challengeStats?.rank == null
-                                ? '-'
-                                : `${formatNumber(challengeStats.rank)}위`}
+                {isNotificationOpen ? (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="알림 창 닫기"
+                      className="fixed inset-0 z-[75] cursor-default"
+                      onClick={() => setIsNotificationOpen(false)}
+                    />
+                    <section
+                      className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[min(360px,calc(100vw-24px))] overflow-hidden rounded-[10px] border border-[#E3E6EB] bg-white shadow-[0_18px_44px_rgba(15,23,42,0.16)]"
+                      aria-label="알림 목록"
+                    >
+                      <div className="flex items-center justify-between border-b border-[#ECEFF3] px-4 py-3.5">
+                        <div className="flex items-center gap-2">
+                          <h2 className="text-card-title font-bold text-[#202832]">알림</h2>
+                          {unreadNotificationCount ? (
+                            <span className="rounded-full bg-[#FFF0F1] px-2 py-0.5 text-caption font-bold text-[#FF4854]">
+                              {unreadNotificationCount}
                             </span>
+                          ) : null}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={markAllNotificationsAsRead}
+                          disabled={!unreadNotificationCount}
+                          className="flex cursor-pointer items-center gap-1.5 text-label font-bold text-[#FF4854] disabled:cursor-default disabled:text-[#B7BDC7]"
+                        >
+                          <CheckCheck className="h-4 w-4" />
+                          모두 읽음
+                        </button>
+                      </div>
+
+                      {notifications.length ? (
+                        <div className="max-h-[420px] overflow-y-auto" role="list">
+                          {notifications.map(notification => (
+                            <button
+                              key={notification.id}
+                              type="button"
+                              role="listitem"
+                              onClick={() => markNotificationAsRead(notification.id)}
+                              className={`flex w-full cursor-pointer gap-3 border-b border-[#F0F2F5] px-4 py-4 text-left transition last:border-b-0 hover:bg-[#F8F9FA] ${
+                                notification.is_read ? 'bg-white' : 'bg-[#FFF9F9]'
+                              }`}
+                            >
+                              <span
+                                className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${
+                                  notification.is_read ? 'bg-[#D5D9E0]' : 'bg-[#FF4854]'
+                                }`}
+                                aria-hidden="true"
+                              />
+                              <span className="min-w-0 flex-1">
+                                <strong className="block truncate text-body font-bold text-[#303740]">
+                                  {notification.title}
+                                </strong>
+                                {notification.message ? (
+                                  <span className="mt-1 line-clamp-2 block text-label font-strong leading-5 text-[#697586]">
+                                    {notification.message}
+                                  </span>
+                                ) : null}
+                                <span className="mt-2 block text-caption font-strong text-[#9AA3AF]">
+                                  {formatNotificationTime(notification.created_at)}
+                                </span>
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex min-h-[220px] flex-col items-center justify-center px-6 py-10 text-center">
+                          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F4F6F8] text-[#A0A8B3]">
+                            <Bell className="h-6 w-6" />
+                          </span>
+                          <p className="mt-4 text-body font-bold text-[#596575]">
+                            새로운 알림이 없습니다.
+                          </p>
+                          <p className="mt-1.5 text-label font-strong text-[#9AA3AF]">
+                            새로운 소식이 도착하면 여기에 표시됩니다.
+                          </p>
+                        </div>
+                      )}
+                    </section>
+                  </>
+                ) : null}
+              </div>
+
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-label="프로필 메뉴"
+                  aria-expanded={isProfileOpen}
+                  onClick={handleProfileToggle}
+                  className={`flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full shadow-[0_3px_10px_rgba(255,72,84,0.18)] transition hover:-translate-y-0.5 ${hasProfileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854] hover:bg-[#FF4854]/90'}`}
+                >
+                  <img
+                    src={profileImage}
+                    alt=""
+                    className={hasProfileImage ? 'h-full w-full object-cover' : 'h-6 w-6'}
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {isProfileOpen ? (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="프로필 메뉴 닫기"
+                      className="fixed inset-0 z-[75] cursor-default"
+                      onClick={() => setIsProfileOpen(false)}
+                    />
+                    <div className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[326px] rounded-[8px] border border-[#ece7e1] bg-white p-4 shadow-[0_16px_36px_rgba(15,23,42,0.12)]">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F2F4F6]">
+                          {hasProfileImage ? (
+                            <img
+                              src={profileImage}
+                              alt=""
+                              className="h-full w-full object-cover"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF4854]">
+                              <img src={UserIcon} alt="" className="h-6 w-6" aria-hidden="true" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="truncate text-card-title font-strong text-[#303030]">
+                              {displayName}
+                            </div>
+                            <div className="shrink-0 text-label font-strong text-[#FF4854]">
+                              {membershipLabel}
+                            </div>
                           </div>
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                            총 성공{' '}
-                            <span className="font-strong text-[#A8AAFF]">
+                          <div className="truncate text-body font-medium text-[#76787a]">
+                            {displayEmail}
+                          </div>
+                        </div>
+                      </div>
+
+                      <Link to="/settings" className="btn btn-primary btn-md btn-block mt-4">
+                        계정 설정
+                      </Link>
+
+                      {(isPaidMember ? challengeStatsQuery : todayUsageQuery).isError ? (
+                        <div className="mt-4 rounded-[4px] border border-[#F2C8CC] bg-[#FFF7F8] px-4 py-3 text-center text-body font-medium text-[#D83A45]">
+                          프로필 정보를 불러오지 못했습니다.
+                        </div>
+                      ) : isPaidMember ? (
+                        <>
+                          <p className="mt-4 text-label font-strong text-[#76787a]">챌린지 현황</p>
+                          <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
+                            성공한 챌린지{' '}
+                            <span className="font-strong text-[#1ec186]">
                               {challengeStats
-                                ? `${formatNumber(challengeStats.total_successes)}회`
+                                ? `${formatNumber(challengeStats.successful_challenges)}개`
                                 : '-'}
                             </span>
                           </div>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <p className="mt-4 text-label font-strong text-[#76787a]">
-                          오늘 무료 사용량
-                        </p>
-                        <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
-                          문제 열람{' '}
-                          <span className="font-strong text-[#1ec186]">{problemUnlockUsage}</span>
-                        </div>
 
-                        <div className="mt-3 grid grid-cols-2 gap-2">
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                            답안 제출{' '}
-                            <span className="font-strong text-[#A8AAFF]">{submissionUsage}</span>
+                          <div className="mt-3 grid grid-cols-2 gap-2">
+                            <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
+                              랭킹{' '}
+                              <span className="font-strong text-[#FFB155]">
+                                {challengeStats?.rank == null
+                                  ? '-'
+                                  : `${formatNumber(challengeStats.rank)}위`}
+                              </span>
+                            </div>
+                            <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
+                              총 성공{' '}
+                              <span className="font-strong text-[#A8AAFF]">
+                                {challengeStats
+                                  ? `${formatNumber(challengeStats.total_successes)}회`
+                                  : '-'}
+                              </span>
+                            </div>
                           </div>
-                          <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                            AI 토큰 <span className="font-strong text-[#FFB155]">{tokenUsage}</span>
+                        </>
+                      ) : (
+                        <>
+                          <p className="mt-4 text-label font-strong text-[#76787a]">
+                            오늘 무료 사용량
+                          </p>
+                          <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
+                            문제 열람{' '}
+                            <span className="font-strong text-[#1ec186]">{problemUnlockUsage}</span>
                           </div>
-                        </div>
-                      </>
-                    )}
 
-                    <nav
-                      className="mt-4 border-t border-[#ece7e1] pt-3"
-                      aria-label="프로필 정책 링크"
-                    >
-                      <Link
-                        to="/terms"
-                        className="flex rounded-[4px] px-2 py-2 text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
-                      >
-                        이용약관
-                      </Link>
-                      <Link
-                        to="/privacy"
-                        className="flex rounded-[4px] px-2 py-2 text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
-                      >
-                        개인정보 수집 및 이용
-                      </Link>
-                    </nav>
+                          <div className="mt-3 grid grid-cols-2 gap-2">
+                            <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
+                              답안 제출{' '}
+                              <span className="font-strong text-[#A8AAFF]">{submissionUsage}</span>
+                            </div>
+                            <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
+                              AI 토큰{' '}
+                              <span className="font-strong text-[#FFB155]">{tokenUsage}</span>
+                            </div>
+                          </div>
+                        </>
+                      )}
 
-                    <div className="mt-2 flex flex-col gap-1">
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="flex cursor-pointer items-center gap-3 rounded-[4px] px-2 py-2 text-left text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                      <nav
+                        className="mt-4 border-t border-[#ece7e1] pt-3"
+                        aria-label="프로필 정책 링크"
                       >
-                        <LogOut className="h-5 w-5 text-[#AAACB0]" />
-                        로그아웃
-                      </button>
+                        <Link
+                          to="/terms"
+                          className="flex rounded-[4px] px-2 py-2 text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                        >
+                          이용약관
+                        </Link>
+                        <Link
+                          to="/privacy"
+                          className="flex rounded-[4px] px-2 py-2 text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                        >
+                          개인정보 수집 및 이용
+                        </Link>
+                      </nav>
+
+                      <div className="mt-2 flex flex-col gap-1">
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="flex cursor-pointer items-center gap-3 rounded-[4px] px-2 py-2 text-left text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
+                        >
+                          <LogOut className="h-5 w-5 text-[#AAACB0]" />
+                          로그아웃
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </>
-              ) : null}
-            </div>
+                  </>
+                ) : null}
+              </div>
+            </>
           ) : (
             <button type="button" onClick={handleAuthClick} className="btn btn-primary btn-md">
               로그인
