@@ -1,23 +1,43 @@
-const emptyResponse = {
-  data: [],
-  status: 200,
-  statusText: 'OK',
-  headers: {},
-  config: {},
+import axios from 'axios';
+
+import { API_BASE_URL, CSRF_COOKIE_NAME } from './config';
+import { ApiError } from './errors';
+
+const readCookie = name => {
+  if (typeof document === 'undefined') return null;
+
+  const prefix = `${encodeURIComponent(name)}=`;
+  const cookie = document.cookie.split('; ').find(item => item.startsWith(prefix));
+
+  return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : null;
 };
 
-const resolveEmpty = async () => emptyResponse;
-
-const api = Object.assign(resolveEmpty, {
-  get: resolveEmpty,
-  post: resolveEmpty,
-  put: resolveEmpty,
-  patch: resolveEmpty,
-  delete: resolveEmpty,
-  interceptors: {
-    request: { use: () => 0, eject: () => {} },
-    response: { use: () => 0, eject: () => {} },
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+  timeout: 15_000,
+  headers: {
+    Accept: 'application/json',
   },
 });
+
+api.interceptors.request.use(config => {
+  const method = config.method?.toLowerCase();
+
+  if (method && !['get', 'head', 'options'].includes(method)) {
+    const csrfToken = readCookie(CSRF_COOKIE_NAME);
+
+    if (csrfToken && !config.headers.has('X-CSRF-Token')) {
+      config.headers.set('X-CSRF-Token', csrfToken);
+    }
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  response => response,
+  error => Promise.reject(ApiError.from(error))
+);
 
 export default api;

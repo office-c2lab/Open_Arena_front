@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import UserIcon from '@/assets/icons/user.svg';
 import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { useAuthStore } from '@/stores/authStore';
+import { appToast } from '@/components/Toast/appToast';
+import PasswordPolicyChecklist from '@/components/Auth/PasswordPolicyChecklist';
+import { isPasswordValid, PASSWORD_POLICY_MESSAGE } from '@/utils/passwordPolicy';
 
 function InfoRow({ label, children, last = false }) {
   return (
@@ -155,7 +158,7 @@ export default function MyPage({ embedded = false }) {
     const [file] = event.target.files || [];
     if (!file) return;
     if (file.size > 3 * 1024 * 1024) {
-      window.alert('프로필 이미지는 3MB 이하로 선택해 주세요.');
+      appToast.info('프로필 이미지는 3MB 이하로 선택해 주세요.');
       event.target.value = '';
       return;
     }
@@ -177,7 +180,7 @@ export default function MyPage({ embedded = false }) {
     const [file] = event.target.files || [];
     if (!file) return;
     if (file.size > 3 * 1024 * 1024) {
-      window.alert('배경 이미지는 3MB 이하로 선택해 주세요.');
+      appToast.info('배경 이미지는 3MB 이하로 선택해 주세요.');
       event.target.value = '';
       return;
     }
@@ -211,8 +214,8 @@ export default function MyPage({ embedded = false }) {
       return;
     }
 
-    if (newPassword.length < 8) {
-      setModalMessage('새 비밀번호는 8자 이상이어야 합니다.');
+    if (!isPasswordValid(newPassword)) {
+      setModalMessage(PASSWORD_POLICY_MESSAGE);
       return;
     }
 
@@ -663,19 +666,26 @@ export default function MyPage({ embedded = false }) {
                 className={modalInputClass}
               />
             </Field>
-            <Field label="새 비밀번호" hint="8자 이상으로 입력해 주세요.">
+            <Field label="새 비밀번호">
               <input
                 type="password"
+                minLength={10}
+                maxLength={128}
+                autoComplete="new-password"
                 value={passwordForm.newPassword}
                 onChange={event =>
                   setPasswordForm(current => ({ ...current, newPassword: event.target.value }))
                 }
                 className={modalInputClass}
               />
+              <PasswordPolicyChecklist password={passwordForm.newPassword} />
             </Field>
             <Field label="새 비밀번호 확인">
               <input
                 type="password"
+                minLength={10}
+                maxLength={128}
+                autoComplete="new-password"
                 value={passwordForm.newPasswordConfirm}
                 onChange={event =>
                   setPasswordForm(current => ({

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { logoutApi } from '@/api/auth';
 import { useAuthStore } from '@/stores/authStore';
 
 export default function BottomLinkItem({ item, isCollapsed }) {
@@ -11,6 +12,7 @@ export default function BottomLinkItem({ item, isCollapsed }) {
   const handleClick = async e => {
     if (item.label === '로그아웃') {
       e.preventDefault(); // 기본 이동 막기
+      await logoutApi().catch(() => undefined);
       logout();
       navigate('/login');
       return;

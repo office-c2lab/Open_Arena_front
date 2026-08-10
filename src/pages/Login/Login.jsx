@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff } from 'lucide-react';
 import { login } from '@/api/auth';
+import { appToast } from '@/components/Toast/appToast';
 import { useAuthStore } from '@/stores/authStore';
 
 export default function Login() {
@@ -14,16 +15,17 @@ export default function Login() {
   const PasswordRevealIcon = isPasswordVisible ? EyeOff : Eye;
 
   const [formData, setFormData] = useState({
-    login_id: '',
+    email: '',
     password: '',
+    remember_me: false,
   });
 
   //  formData 변경 핸들러
   const handleChange = e => {
-    const { id, value } = e.target;
+    const { name, type, checked, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [id === 'id-input' ? 'login_id' : 'password']: value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -34,16 +36,15 @@ export default function Login() {
       loginToStore(data); //스토어에 저장
       navigate('/dashboard');
     },
-    onError: () => {
-      const errorMessage = '로그인 실패: 이메일/비번을 확인해주세요.';
-      alert(errorMessage);
+    onError: error => {
+      appToast.error(error.message || '로그인에 실패했습니다.');
     },
   });
 
   //  로그인 제출
   const handleSubmit = useCallback(() => {
-    if (!formData.login_id || !formData.password) {
-      alert('이메일과 비밀번호를 입력해 주세요.');
+    if (!formData.email || !formData.password) {
+      appToast.info('이메일과 비밀번호를 입력해 주세요.');
       return;
     }
     loginMutation.mutate(formData);
@@ -95,10 +96,11 @@ export default function Login() {
               </label>
               <input
                 id="id-input"
-                type="text"
+                name="email"
+                type="email"
                 className={inputFieldStyle}
                 placeholder="이메일"
-                value={formData.login_id}
+                value={formData.email}
                 onChange={handleChange}
               />
             </div>
@@ -111,6 +113,7 @@ export default function Login() {
               <div className="relative">
                 <input
                   id="pw-input"
+                  name="password"
                   type={isPasswordVisible ? 'text' : 'password'}
                   className={`${inputFieldStyle} pr-10`}
                   placeholder="비밀번호"
@@ -127,6 +130,25 @@ export default function Login() {
                   <PasswordRevealIcon className="h-5 w-5" strokeWidth={2} />
                 </button>
               </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-4">
+              <label className="flex cursor-pointer items-center gap-2 text-body font-medium text-[#6B6B6B]">
+                <input
+                  name="remember_me"
+                  type="checkbox"
+                  checked={formData.remember_me}
+                  onChange={handleChange}
+                  className="h-5 w-5 accent-[#FF4854]"
+                />
+                로그인 상태 유지
+              </label>
+              <Link
+                to="/password-reset"
+                className="text-body font-medium text-[#6B6B6B] underline underline-offset-2 hover:text-[#FF4854]"
+              >
+                비밀번호 찾기
+              </Link>
             </div>
           </form>
         </main>

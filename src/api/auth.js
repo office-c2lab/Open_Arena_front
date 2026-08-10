@@ -1,42 +1,66 @@
-// src/api/auth.js
-// 임시 프론트 인증: 실제 인증 API가 연결되면 이 목업을 교체합니다.
-export const MOCK_MEMBERSHIP = Object.freeze({
-  1111: { type: 'free', label: '무료 회원', nickname: '백종현' },
-  2222: {
-    type: 'paid',
-    label: '유료 회원',
-    nickname: '유동석',
-    profileStats: { solvedChallenges: 7, totalSuccesses: 18, totalPoints: 188, rank: 24 },
-  },
+import api from './axiosInstance';
+
+const membershipLabels = {
+  free: '무료 회원',
+  paid: '유료 회원',
+};
+
+export const normalizeUser = user => ({
+  ...user,
+  login_id: user.email,
+  username: user.nickname,
+  teamname: user.nickname,
+  membershipType: user.membership,
+  membershipLabel: membershipLabels[user.membership] || user.membership,
 });
 
-export const login = async credentials => {
-  const loginId = credentials?.login_id?.trim() || credentials?.username?.trim();
-  const membership = MOCK_MEMBERSHIP[credentials?.password];
-
-  if (!loginId || !membership) {
-    throw new Error('Invalid mock credentials');
-  }
-
-  return {
-    id: `local-${membership.type}-${loginId}`,
-    login_id: loginId,
-    username: membership.nickname,
-    teamname: membership.nickname,
-    membershipType: membership.type,
-    membershipLabel: membership.label,
-    profileStats: membership.profileStats,
-  };
+export const getLegalDocuments = async () => {
+  const { data } = await api.get('/auth/legal-documents');
+  return data;
 };
 
-export const logoutApi = async () => ({ ok: true });
+export const requestEmailVerification = async email => {
+  const { data } = await api.post('/auth/email-verifications', { email });
+  return data;
+};
+
+export const confirmEmailVerification = async ({ challengeId, code }) => {
+  const { data } = await api.post(`/auth/email-verifications/${challengeId}/confirm`, { code });
+  return data;
+};
+
+export const register = async payload => {
+  const { data } = await api.post('/auth/register', payload);
+  return normalizeUser(data);
+};
+
+export const requestPasswordReset = async email => {
+  const { data } = await api.post('/auth/password-reset-requests', { email });
+  return data;
+};
+
+export const completePasswordReset = async payload => {
+  const { data } = await api.post('/auth/password-resets', payload);
+  return data;
+};
 
 export const getMe = async () => {
-  throw new Error('Backend auth is disabled.');
+  const { data } = await api.get('/account/me');
+  return normalizeUser(data);
 };
 
-export const refreshToken = async () => {
-  throw new Error('Backend auth is disabled.');
+export const login = async credentials => {
+  await api.post('/auth/login', {
+    email: credentials.email,
+    password: credentials.password,
+    remember_me: Boolean(credentials.remember_me),
+  });
+
+  return getMe();
+};
+
+export const logoutApi = async () => {
+  await api.post('/auth/logout');
 };
 
 export const adminLogin = async payload => ({
@@ -47,9 +71,9 @@ export const adminLogin = async payload => ({
 export const adminLogoutApi = async () => ({ ok: true });
 
 export const getAdminMe = async () => {
-  throw new Error('Backend auth is disabled.');
+  throw new Error('Backend admin auth is not connected yet.');
 };
 
 export const adminRefreshToken = async () => {
-  throw new Error('Backend auth is disabled.');
+  throw new Error('Backend admin auth is not connected yet.');
 };

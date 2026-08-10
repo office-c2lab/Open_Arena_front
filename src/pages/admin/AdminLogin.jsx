@@ -6,6 +6,7 @@ import BackBtn from '@/assets/icons/backbtn.svg';
 import { useMutation } from '@tanstack/react-query';
 import { adminLogin } from '@/api/auth';
 import { useAuthStore } from '@/stores/authStore';
+import { appToast } from '@/components/Toast/appToast';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -35,13 +36,13 @@ export default function AdminLogin() {
       navigate('/admin/problems');
     },
     onError: () => {
-      alert('로그인 실패: 관리자 계정을 확인하세요.');
+      appToast.error('로그인 실패: 관리자 계정을 확인하세요.');
     },
   });
 
   const handleSubmit = () => {
     if (!formData.username || !formData.password) {
-      alert('아이디와 비밀번호를 입력하세요.');
+      appToast.info('아이디와 비밀번호를 입력하세요.');
       return;
     }
     mutation.mutate(formData);

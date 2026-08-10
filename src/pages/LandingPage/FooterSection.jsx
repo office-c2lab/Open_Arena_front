@@ -41,7 +41,7 @@ export default function FooterSection() {
               |
             </span>
             <Link to="/privacy" className="transition hover:text-[#FF4854]">
-              개인정보처리방침
+              개인정보 수집 및 이용
             </Link>
           </nav>
 

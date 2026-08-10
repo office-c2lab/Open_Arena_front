@@ -9,6 +9,7 @@ import {
   markSessionFail,
   markSessionSuccess,
 } from '@/api/adminJudgeReviewApi';
+import { appToast } from '@/components/Toast/appToast';
 
 // 팀 목록
 export const useJudgeTeams = () =>
@@ -71,7 +72,7 @@ export const useMarkSessionFail = sessionId => {
         message = '처리가 완료되었습니다.';
       }
 
-      alert(message);
+      appToast.success(message);
 
       // invalidate
       queryClient.invalidateQueries(['judgeSessions']);
@@ -79,7 +80,7 @@ export const useMarkSessionFail = sessionId => {
     },
 
     onError: err => {
-      alert('실패 처리 중 오류 발생:\n' + (err.response?.data?.detail ?? err.message));
+      appToast.error('실패 처리 중 오류 발생:\n' + (err.response?.data?.detail ?? err.message));
     },
   });
 };
@@ -104,7 +105,7 @@ export const useMarkSessionSuccess = sessionId => {
         message = '성공 처리되었습니다.';
       }
 
-      alert(message);
+      appToast.success(message);
 
       // invalidate refresh
       queryClient.invalidateQueries(['judgeSessions']);
@@ -112,7 +113,7 @@ export const useMarkSessionSuccess = sessionId => {
     },
 
     onError: err => {
-      alert('성공 처리 중 오류 발생:\n' + (err.response?.data?.detail ?? err.message));
+      appToast.error('성공 처리 중 오류 발생:\n' + (err.response?.data?.detail ?? err.message));
     },
   });
 };

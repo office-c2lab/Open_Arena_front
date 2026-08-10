@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCreateProblem } from '@/hooks/useCreateProblem';
+import { appToast } from '@/components/Toast/appToast';
 
 export default function AdminProblemCreatePage() {
   const { mutateAsync: createProblem, isPending } = useCreateProblem();
@@ -33,9 +34,9 @@ export default function AdminProblemCreatePage() {
   const handleSubmit = async () => {
     try {
       await createProblem(form);
-      alert('문제가 성공적으로 생성되었습니다!');
+      appToast.success('문제가 성공적으로 생성되었습니다.');
     } catch (err) {
-      alert('문제 생성 실패');
+      appToast.error('문제 생성에 실패했습니다.');
       console.error(err);
     }
   };

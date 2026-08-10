@@ -1,4 +1,7 @@
-import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { Link, useParams } from 'react-router-dom';
+
+import { getLegalDocuments } from '@/api/auth';
 
 const termsSections = [
   [
@@ -35,7 +38,7 @@ const termsSections = [
   ],
   [
     '제9조(이용 제한 및 회원 탈퇴)',
-    '회원이 관계 법령 또는 본 약관을 위반하거나 서비스 운영을 방해한 경우 회사는 사전 안내 후 서비스 이용을 제한하거나 계정을 정지할 수 있습니다. 긴급한 보안 문제나 중대한 부정 이용이 확인된 경우에는 우선 조치 후 안내할 수 있습니다.\n\n회원은 언제든지 탈퇴를 요청할 수 있으며, 탈퇴 후 개인정보는 개인정보처리방침에 따라 처리됩니다.',
+    '회원이 관계 법령 또는 본 약관을 위반하거나 서비스 운영을 방해한 경우 회사는 사전 안내 후 서비스 이용을 제한하거나 계정을 정지할 수 있습니다. 긴급한 보안 문제나 중대한 부정 이용이 확인된 경우에는 우선 조치 후 안내할 수 있습니다.\n\n회원은 언제든지 탈퇴를 요청할 수 있으며, 탈퇴 후 개인정보는 개인정보 수집 및 이용에 따라 처리됩니다.',
   ],
   [
     '제10조(책임의 제한)',
@@ -94,14 +97,14 @@ const privacySections = [
   ],
   [
     '11. 쿠키 및 자동 수집 정보',
-    '① 쿠키를 사용하는 것에 대한 안내\n\n가. 쿠키란?\n회사는 이용자에게 개별 맞춤화된 서비스를 제공하기 위해 이용 정보를 저장하고 수시로 불러오는 쿠키(Cookie)를 사용할 수 있습니다. 쿠키는 웹사이트 접속 시 이용자의 브라우저에 생성되는 작은 텍스트 파일입니다.\n\n나. 쿠키의 사용 목적\n쿠키는 이용자가 웹사이트를 설정한 방식대로 편리하게 이용하도록 돕고, 방문 기록 및 이용 형태를 분석하여 서비스와 이용 환경을 개선하는 데 활용될 수 있습니다.\n\n다. 쿠키 수집 거부\n이용자는 브라우저 설정을 통해 모든 쿠키를 허용하거나, 저장 시마다 확인하거나, 저장을 거부할 수 있습니다. 다만 쿠키 저장을 거부하면 로그인 등 일부 서비스 이용에 어려움이 있을 수 있습니다. 구체적인 방법은 각 브라우저의 도움말을 참고해 주세요.\n\n② 수집 도구에 관한 안내\n\n회사는 서비스 이용 형태를 분석하고 서비스 품질을 개선하기 위해 쿠키 또는 유사 기술을 활용하는 웹 분석 도구를 사용할 수 있습니다. Google Analytics, 네이버 애널리틱스 및 PostHog의 사용 여부는 예정 또는 확인 필요 상태이며, 실제 도입 시 수집 항목·이전 국가·보유 기간을 본 처리방침에 업데이트합니다.\n\n이용자는 브라우저 설정에서 쿠키 저장을 거부하여 데이터 수집을 제한할 수 있습니다. 다만 이 경우 로그인 등 일부 서비스 이용이 제한될 수 있습니다. 각 도구의 개인정보 처리 내용은 Google Analytics 데이터 개인정보 보호 및 보안, 네이버 개인정보처리방침 및 PostHog Privacy Policy에서 확인할 수 있습니다.',
+    '① 쿠키를 사용하는 것에 대한 안내\n\n가. 쿠키란?\n회사는 이용자에게 개별 맞춤화된 서비스를 제공하기 위해 이용 정보를 저장하고 수시로 불러오는 쿠키(Cookie)를 사용할 수 있습니다. 쿠키는 웹사이트 접속 시 이용자의 브라우저에 생성되는 작은 텍스트 파일입니다.\n\n나. 쿠키의 사용 목적\n쿠키는 이용자가 웹사이트를 설정한 방식대로 편리하게 이용하도록 돕고, 방문 기록 및 이용 형태를 분석하여 서비스와 이용 환경을 개선하는 데 활용될 수 있습니다.\n\n다. 쿠키 수집 거부\n이용자는 브라우저 설정을 통해 모든 쿠키를 허용하거나, 저장 시마다 확인하거나, 저장을 거부할 수 있습니다. 다만 쿠키 저장을 거부하면 로그인 등 일부 서비스 이용에 어려움이 있을 수 있습니다. 구체적인 방법은 각 브라우저의 도움말을 참고해 주세요.\n\n② 수집 도구에 관한 안내\n\n회사는 서비스 이용 형태를 분석하고 서비스 품질을 개선하기 위해 쿠키 또는 유사 기술을 활용하는 웹 분석 도구를 사용할 수 있습니다. Google Analytics, 네이버 애널리틱스 및 PostHog의 사용 여부는 예정 또는 확인 필요 상태이며, 실제 도입 시 수집 항목·이전 국가·보유 기간을 본 처리방침에 업데이트합니다.\n\n이용자는 브라우저 설정에서 쿠키 저장을 거부하여 데이터 수집을 제한할 수 있습니다. 다만 이 경우 로그인 등 일부 서비스 이용이 제한될 수 있습니다. 각 도구의 개인정보 처리 내용은 Google Analytics 데이터 개인정보 보호 및 보안, 네이버 개인정보 수집 및 이용 및 PostHog Privacy Policy에서 확인할 수 있습니다.',
   ],
   [
     '12. 개인정보 보호책임자 및 문의처',
     '개인정보 보호 담당 부서: 씨투랩 C2Lab\n이메일: info@aictl.kr\n전화: 02-6956-7950\n주소: 서울 구로구 디지털로31길 20 에이스테크노타워5차 3층 310호\n\n개인정보 침해 신고·상담: 개인정보침해신고센터(국번 없이 118), 개인정보분쟁조정위원회(1833-6972)',
   ],
   [
-    '13. 개인정보처리방침의 변경 및 시행일',
+    '13. 개인정보 수집 및 이용의 변경 및 시행일',
     '본 처리방침은 법령, 서비스 또는 내부 정책의 변경에 따라 수정될 수 있습니다. 중요한 변경 사항은 시행 전에 서비스 내 공지 등의 방법으로 안내하며, 이전 처리방침은 요청 시 확인할 수 있도록 관리합니다.\n\n본 처리방침은 2026년 7월 21일부터 시행합니다.',
   ],
 ];
@@ -109,14 +112,43 @@ const privacySections = [
 const documentMap = {
   terms: { title: '이용약관', description: 'ARENA 서비스 이용약관', sections: termsSections },
   privacy: {
-    title: '개인정보처리방침',
-    description: 'ARENA 개인정보처리방침',
+    title: '개인정보 수집 및 이용',
+    description: 'ARENA 개인정보 수집 및 이용',
     sections: privacySections,
   },
 };
 
 export default function Legal({ type }) {
-  const document = documentMap[type];
+  const { documentType } = useParams();
+  const selectedType = type || documentType;
+  const legalDocumentsQuery = useQuery({
+    queryKey: ['auth', 'legal-documents'],
+    queryFn: getLegalDocuments,
+    staleTime: 1000 * 60 * 10,
+  });
+  const serverDocument = legalDocumentsQuery.data?.find(
+    document => document.document_type === selectedType
+  );
+  const fallbackDocument = documentMap[selectedType] || {
+    title: '약관',
+    description: 'ARENA 서비스 약관',
+    sections: [['약관 안내', '약관 내용을 불러오지 못했습니다.']],
+  };
+  const usesFrontendDocument = selectedType === 'terms' || selectedType === 'privacy';
+  const document =
+    !usesFrontendDocument && serverDocument
+      ? {
+          title: serverDocument.title,
+          description: `${serverDocument.title} (v${serverDocument.version})`,
+          sections: [[serverDocument.title, serverDocument.body]],
+        }
+      : fallbackDocument;
+  const effectiveDate =
+    !usesFrontendDocument && serverDocument?.effective_at
+      ? new Intl.DateTimeFormat('ko-KR', { dateStyle: 'long' }).format(
+          new Date(serverDocument.effective_at)
+        )
+      : '2026년 7월 21일';
 
   return (
     <div className="bg-white px-[10px] py-14">
@@ -125,7 +157,7 @@ export default function Legal({ type }) {
           <p className="text-body-lg font-strong text-[#FF4854]">ARENA POLICY</p>
           <h1 className="mt-3 text-page-title font-strong text-[#2D3035]">{document.title}</h1>
           <p className="mt-3 text-body-lg font-medium text-[#6B6B6B]">{document.description}</p>
-          <p className="mt-5 text-body font-medium text-[#8A93A5]">시행일: 2026년 7월 21일</p>
+          <p className="mt-5 text-body font-medium text-[#8A93A5]">시행일: {effectiveDate}</p>
         </div>
         <div className="mt-10 grid gap-10 lg:grid-cols-[300px_minmax(0,1fr)]">
           <aside className="lg:sticky lg:top-24 lg:self-start">
@@ -166,11 +198,17 @@ export default function Legal({ type }) {
           </article>
         </div>
         <div className="mt-10 flex flex-wrap gap-x-4 gap-y-2 border-t border-[#E5E7EB] pt-6 text-body font-medium">
-          <Link to="/terms" className={type === 'terms' ? 'text-[#FF4854]' : 'text-[#6B6B6B]'}>
+          <Link
+            to="/terms"
+            className={selectedType === 'terms' ? 'text-[#FF4854]' : 'text-[#6B6B6B]'}
+          >
             이용약관
           </Link>
-          <Link to="/privacy" className={type === 'privacy' ? 'text-[#FF4854]' : 'text-[#6B6B6B]'}>
-            개인정보처리방침
+          <Link
+            to="/privacy"
+            className={selectedType === 'privacy' ? 'text-[#FF4854]' : 'text-[#6B6B6B]'}
+          >
+            개인정보 수집 및 이용
           </Link>
         </div>
       </div>

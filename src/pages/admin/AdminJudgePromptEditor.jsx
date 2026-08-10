@@ -3,6 +3,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useAdminProblemsQuery } from '@/hooks/useAdminProblemsQuery';
 import { useJudgePromptQuery, useJudgePromptMutation } from '@/hooks/useAdminJudgePrompt';
+import { appToast } from '@/components/Toast/appToast';
 
 export default function AdminJudgePromptPage() {
   const [selectedProblemId, setSelectedProblemId] = useState(null);
@@ -42,7 +43,7 @@ export default function AdminJudgePromptPage() {
   // 🔹 프롬프트 수정 (성공시 alert)
   const { mutate: savePrompt, isPending: isSaving } = useJudgePromptMutation(selectedProblemId, {
     onSuccess: () => {
-      alert('수정되었습니다.');
+      appToast.success('수정되었습니다.');
     },
   });
 

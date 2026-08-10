@@ -1,6 +1,7 @@
 // src/pages/AdminProblems/ProblemEditModal.jsx
 import React, { useState } from 'react';
 import { useAdminProblemActions } from '@/hooks/useAdminProblemActions';
+import { appToast } from '@/components/Toast/appToast';
 
 export default function ProblemEditModal({ problem, onClose }) {
   const { updateProblem, deleteProblem, isUpdating, isDeleting } = useAdminProblemActions();
@@ -17,14 +18,14 @@ export default function ProblemEditModal({ problem, onClose }) {
 
   const handleUpdate = async () => {
     await updateProblem({ id: problem.id, payload: form });
-    alert('문제가 수정되었습니다!');
+    appToast.success('문제가 수정되었습니다.');
     onClose();
   };
 
   const handleDelete = async () => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     await deleteProblem(problem.id);
-    alert('문제가 삭제되었습니다!');
+    appToast.success('문제가 삭제되었습니다.');
     onClose();
   };
 

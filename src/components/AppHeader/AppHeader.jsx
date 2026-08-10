@@ -5,6 +5,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import ArenaLogo from '@/assets/icons/Arena.svg';
 import ArenaTextLogo from '@/assets/icons/ArenaText.svg';
 import UserIcon from '@/assets/icons/user.svg';
+import { logoutApi } from '@/api/auth';
 import { useAuthStore } from '@/stores/authStore';
 
 const navItems = [
@@ -49,8 +50,9 @@ export default function AppHeader({ isHidden = false }) {
     };
   }, [isMobileMenuOpen]);
 
-  const handleAuthClick = () => {
+  const handleAuthClick = async () => {
     if (isLoggedIn) {
+      await logoutApi().catch(() => undefined);
       logout();
       navigate('/login');
       return;
@@ -59,7 +61,8 @@ export default function AppHeader({ isHidden = false }) {
     navigate('/login');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logoutApi().catch(() => undefined);
     logout();
     setIsProfileOpen(false);
     navigate('/login');
@@ -225,7 +228,7 @@ export default function AppHeader({ isHidden = false }) {
                         to="/privacy"
                         className="flex rounded-[4px] px-2 py-2 text-body font-medium text-[#76787a] transition hover:bg-[#F7F8F8] hover:text-[#303030]"
                       >
-                        개인정보처리방침
+                        개인정보 수집 및 이용
                       </Link>
                     </nav>
 

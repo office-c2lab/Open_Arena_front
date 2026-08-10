@@ -23,16 +23,10 @@ createRoot(document.getElementById('root')).render(
       <App />
 
       <Toaster
-        position="top-center"
+        position="top-right"
         reverseOrder={false}
-        toastOptions={{
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-            fontSize: '14px',
-          },
-        }}
+        gutter={12}
+        containerStyle={{ top: 80, right: 20, zIndex: 10000, pointerEvents: 'none' }}
       />
     </BrowserRouter>
   </QueryClientProvider>

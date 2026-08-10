@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { RefreshCw, Save, Search, X } from 'lucide-react';
 import DashboardProfileSummaryCard from '@/components/Profile/DashboardProfileSummaryCard';
+import { appToast } from '@/components/Toast/appToast';
 import { useAdminTeamActions, useAdminTeams } from '@/hooks/useAdminTeams';
 
 const getUserId = user => user.id ?? user.user_id ?? user.team_id;
@@ -140,7 +141,7 @@ export default function AdminUserManagementPage() {
     setActionError('');
     try {
       await resetPassword({ teamId: userId });
-      window.alert(`${getDisplayName(user)} 비밀번호가 초기화되었습니다.`);
+      appToast.success(`${getDisplayName(user)} 비밀번호가 초기화되었습니다.`);
     } catch (error) {
       setActionError(
         error.response?.data?.detail ?? error.message ?? '비밀번호 초기화에 실패했습니다.'

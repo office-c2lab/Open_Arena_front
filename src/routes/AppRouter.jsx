@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import AdminGuard from './AdminGuard';
+import LoginRedirect from './LoginRedirect';
+import ProtectedRoute from './ProtectedRoute';
 
 // Layouts
 import DefaultLayout from '../ui/DefaultLayout';
@@ -13,6 +15,8 @@ import LeaderboardLayout from '../ui/LeaderboardLayout'; // ✅ 추가
 import Login from '../pages/Login/Login';
 import LandingPage from '../pages/LandingPage/LandingPage';
 import Signup from '../pages/Signup/Signup';
+import PasswordResetRequest from '../pages/PasswordReset/PasswordResetRequest';
+import PasswordResetComplete from '../pages/PasswordReset/PasswordResetComplete';
 import Legal from '../pages/Legal/Legal';
 import AdminLogin from '../pages/admin/AdminLogin';
 import Dashboard from '../pages/Dashboard/Dashboard';
@@ -42,10 +46,31 @@ export default function AppRouter() {
       {/* 공개 페이지 */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="/login"
+          element={
+            <LoginRedirect>
+              <Login />
+            </LoginRedirect>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <LoginRedirect>
+              <Signup />
+            </LoginRedirect>
+          }
+        />
+        <Route path="/password-reset" element={<PasswordResetRequest />} />
+        <Route path="/password-reset/complete" element={<PasswordResetComplete />} />
+        <Route path="/password-reset/confirm" element={<PasswordResetComplete />} />
+        <Route path="/reset-password" element={<PasswordResetComplete />} />
+        <Route path="/reset-password/complete" element={<PasswordResetComplete />} />
+        <Route path="/auth/password-reset/complete" element={<PasswordResetComplete />} />
         <Route path="/terms" element={<Legal type="terms" />} />
         <Route path="/privacy" element={<Legal type="privacy" />} />
+        <Route path="/legal/:documentType" element={<Legal />} />
       </Route>
       <Route path="/admin" element={<Navigate to="/admin/problems" replace />} />
 
@@ -90,7 +115,13 @@ export default function AppRouter() {
       {/* ---------------------------  
           🔥 DefaultLayout 보호 구역
          --------------------------- */}
-      <Route element={<DefaultLayout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <DefaultLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mypage" element={<Navigate to="/settings" replace />} />
         <Route path="/settings" element={<MyPage />} />
@@ -106,7 +137,13 @@ export default function AppRouter() {
       {/* ---------------------------
           🔥 Challenge 보호 Layout
          --------------------------- */}
-      <Route element={<ChallengeLayout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <ChallengeLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/challenge/:problemId/play" element={<ChallengePlay />} />
         <Route path="/challenge/:problemId" element={<Challenge />} />
       </Route>

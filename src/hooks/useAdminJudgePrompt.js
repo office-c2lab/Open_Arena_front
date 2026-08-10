@@ -1,6 +1,7 @@
 // src/hooks/useAdminJudgePrompt.js
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchJudgePrompt, updateJudgePrompt } from '@/api/adminJudgeApi';
+import { appToast } from '@/components/Toast/appToast';
 
 /* =========================================================
    🔹 Judge 프롬프트 조회 훅
@@ -29,12 +30,12 @@ export const useJudgePromptMutation = problemId => {
       queryClient.invalidateQueries(['judgePrompt', problemId]);
 
       // 🔥 성공 알림
-      alert('수정되었습니다.');
+      appToast.success('수정되었습니다.');
     },
 
     // 실패 시 실행
     onError: () => {
-      alert('수정에 실패했습니다. 다시 시도해주세요.');
+      appToast.error('수정에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };

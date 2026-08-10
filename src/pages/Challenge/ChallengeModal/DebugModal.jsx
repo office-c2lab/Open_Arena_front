@@ -1,6 +1,7 @@
 // src/components/modals/DebugModal.jsx (경로 가정)
 
 import React, { useCallback, useState } from 'react';
+import { appToast } from '@/components/Toast/appToast';
 // 💡 Zustand 스토어 임포트
 import useModalStore from '@/stores/useModalStore';
 
@@ -57,13 +58,13 @@ const DebugModal = () => {
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy text: ', err);
-      alert('디버그 정보 복사에 실패했습니다.');
+      appToast.error('디버그 정보 복사에 실패했습니다.');
     }
   }, []);
 
   // '도움 요청' 버튼 클릭 핸들러
   const handleHelpRequest = useCallback(() => {
-    alert('도움 요청 기능을 구현해야 합니다.');
+    appToast.info('도움 요청 기능은 준비 중입니다.');
     // closeDebugModal(); // 도움 요청 후 모달을 닫고 싶다면 이 주석을 해제하세요.
   }, []);
 

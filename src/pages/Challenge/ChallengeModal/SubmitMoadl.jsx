@@ -6,7 +6,7 @@ import { localJudgeResult } from '@/api/localMockData';
 import { successPanelsData, failedPanelsData } from '../data/challengeModalData';
 import CancelSvg from '@/assets/icons/cancel.svg';
 import ArenaSvg from '@/assets/icons/Arena.svg';
-import toast from 'react-hot-toast'; // ✅ 토스트 추가
+import { appToast } from '@/components/Toast/appToast';
 
 const CancelIcon = ({ onClick }) => (
   <div
@@ -52,15 +52,12 @@ const SubmitModal = ({
     }
 
     if (!sessionId) {
-      toast.error('❌ 제출할 세션 정보가 없습니다.');
+      appToast.error('제출할 세션 정보가 없습니다.');
       return closeSubmitModal();
     }
 
     if (cooldown > 0) {
-      toast(`⏳ ${cooldown}초 후에 다시 시도해주세요.`, {
-        icon: '⏳',
-        style: { background: '#333', color: '#fff' },
-      });
+      appToast.info(`${cooldown}초 후에 다시 시도해 주세요.`);
       return;
     }
 
@@ -140,14 +137,8 @@ const SubmitModal = ({
         const retryAfter = err.response?.data?.detail?.retry_after_sec || 15;
         const message = err.response?.data?.detail?.message;
 
-        toast.error(`${message}\n(${retryAfter}초 후 재시도 가능)`, {
-          icon: '🚫',
+        appToast.error(`${message}\n(${retryAfter}초 후 재시도 가능)`, {
           duration: 7000,
-          style: {
-            background: '#222',
-            color: '#fff',
-            whiteSpace: 'pre-line', // ✅ 줄바꿈 적용
-          },
         });
 
         setCooldown(retryAfter);
@@ -155,7 +146,7 @@ const SubmitModal = ({
           setCooldown(prev => {
             if (prev <= 1) {
               clearInterval(countdown);
-              toast.success('✅ 다시 제출할 수 있습니다!');
+              appToast.success('다시 제출할 수 있습니다.');
               return 0;
             }
             return prev - 1;
@@ -165,7 +156,7 @@ const SubmitModal = ({
       }
 
       openFailedModal();
-      toast.error(`❌ 제출 실패: ${err.message}`);
+      appToast.error(`제출 실패: ${err.message}`);
     }
   }, [
     sessionId,

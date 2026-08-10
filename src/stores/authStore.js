@@ -10,6 +10,7 @@ export const useAuthStore = create(
       //---------------------------------------------------
       teamInfo: null,
       isLoggedIn: false,
+      isAuthInitialized: false,
 
       login: team =>
         set({
@@ -24,6 +25,8 @@ export const useAuthStore = create(
       logout: () => set({ teamInfo: null, isLoggedIn: false }),
 
       setUserLoggedOut: () => set({ teamInfo: null, isLoggedIn: false }),
+
+      setAuthInitialized: isAuthInitialized => set({ isAuthInitialized }),
 
       //---------------------------------------------------
       // ⭐ 관리자
@@ -55,6 +58,10 @@ export const useAuthStore = create(
     {
       name: 'auth-storage',
       getStorage: () => localStorage,
+      partialize: state => ({
+        adminInfo: state.adminInfo,
+        isAdminLoggedIn: state.isAdminLoggedIn,
+      }),
     }
   )
 );

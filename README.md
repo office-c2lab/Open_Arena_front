@@ -1,3 +1,19 @@
+# Open Arena Frontend
+
+## API setup
+
+Copy `.env.example` to `.env` when local overrides are needed. The shared API client uses
+`/api/v1` by default and the Vite dev server proxies `/api` requests to the backend.
+
+- API client: `src/api/axiosInstance.js`
+- API configuration: `src/api/config.js`
+- Normalized error: `src/api/errors.js`
+- Connection checks: `src/api/systemApi.js`
+
+Authentication uses HTTP-only session cookies. Mutating requests automatically copy the readable
+CSRF cookie to the `X-CSRF-Token` header. Feature API modules still use local mock data and can be
+migrated one at a time.
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

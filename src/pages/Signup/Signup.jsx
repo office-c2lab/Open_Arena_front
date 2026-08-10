@@ -1,10 +1,44 @@
 // src/pages/Signup/Signup.jsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import {
+  confirmEmailVerification,
+  getLegalDocuments,
+  register,
+  requestEmailVerification,
+} from '@/api/auth';
+import { appToast } from '@/components/Toast/appToast';
+import PasswordPolicyChecklist from '@/components/Auth/PasswordPolicyChecklist';
+import { isPasswordValid, PASSWORD_POLICY_MESSAGE } from '@/utils/passwordPolicy';
 import ArenaSymbol from '@/assets/icons/Arena.svg';
 import BackBtn from '@/assets/icons/backbtn.svg';
+
+const fallbackLegalDocuments = [
+  {
+    id: 'fallback-terms',
+    document_type: 'terms',
+    title: '이용약관에 동의합니다.',
+    is_required: true,
+  },
+  {
+    id: 'fallback-privacy',
+    document_type: 'privacy',
+    title: '개인정보 수집 및 이용에 동의합니다.',
+    is_required: true,
+  },
+];
+
+const EMAIL_VERIFICATION_SECONDS = 5 * 60;
+const EMAIL_RESEND_FALLBACK_SECONDS = 60;
+
+const formatRemainingTime = totalSeconds => {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+};
 
 /* 이전 인라인 약관 내용은 /terms 및 /privacy 상세 페이지로 이동했습니다.
   terms: {
@@ -38,7 +72,7 @@ import BackBtn from '@/assets/icons/backbtn.svg';
       {
         heading: '제6조(회원 탈퇴)',
         content:
-          '회원은 언제든지 서비스에서 회원 탈퇴를 요청할 수 있습니다. 회원 탈퇴가 완료되면 관계 법령에 따라 보관해야 하는 정보를 제외한 회원의 개인정보는 개인정보처리방침에 따라 처리됩니다.',
+          '회원은 언제든지 서비스에서 회원 탈퇴를 요청할 수 있습니다. 회원 탈퇴가 완료되면 관계 법령에 따라 보관해야 하는 정보를 제외한 회원의 개인정보는 개인정보 수집 및 이용에 따라 처리됩니다.',
       },
       {
         heading: '제7조(책임의 제한)',
@@ -89,15 +123,19 @@ export default function Signup() {
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [showVerificationCode, setShowVerificationCode] = useState(false);
   const [isSignupComplete, setIsSignupComplete] = useState(false);
-  const [agreements, setAgreements] = useState({
-    terms: false,
-    privacy: false,
-  });
+  const [agreements, setAgreements] = useState({});
+  const [isOver14, setIsOver14] = useState(false);
+  const [emailChallengeId, setEmailChallengeId] = useState(null);
+  const [verificationProof, setVerificationProof] = useState(null);
+  const [verificationExpiresAt, setVerificationExpiresAt] = useState(null);
+  const [verificationSecondsLeft, setVerificationSecondsLeft] = useState(0);
+  const [resendAvailableAt, setResendAvailableAt] = useState(null);
+  const [resendSecondsLeft, setResendSecondsLeft] = useState(0);
   const PasswordRevealIcon = showPassword ? EyeOff : Eye;
   const PasswordConfirmRevealIcon = showPasswordConfirm ? EyeOff : Eye;
   const [formData, setFormData] = useState({
     nickname: '',
-    login_id: '',
+    email: '',
     emailVerificationCode: '',
     password: '',
     passwordConfirm: '',
@@ -106,49 +144,169 @@ export default function Signup() {
   const handleChange = e => {
     const { name, value } = e.target;
 
+    if (name === 'email') {
+      setEmailChallengeId(null);
+      setVerificationProof(null);
+      setVerificationExpiresAt(null);
+      setVerificationSecondsLeft(0);
+      setResendAvailableAt(null);
+      setResendSecondsLeft(0);
+      setShowVerificationCode(false);
+      setFormData(prev => ({ ...prev, emailVerificationCode: '' }));
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = () => {
-    const { nickname, login_id, password, passwordConfirm } = formData;
+  const legalDocumentsQuery = useQuery({
+    queryKey: ['auth', 'legal-documents'],
+    queryFn: getLegalDocuments,
+    staleTime: 1000 * 60 * 10,
+  });
 
-    if (!nickname || !login_id || !password || !passwordConfirm) {
-      alert('회원 정보를 모두 입력해 주세요.');
+  const legalDocuments = legalDocumentsQuery.data || [];
+  const displayedLegalDocuments =
+    legalDocuments.length > 0 ? legalDocuments : fallbackLegalDocuments;
+  const requiredDocuments = displayedLegalDocuments.filter(document => document.is_required);
+
+  useEffect(() => {
+    if (!verificationExpiresAt || verificationProof) return undefined;
+
+    const updateRemainingTime = () => {
+      const secondsLeft = Math.max(0, Math.ceil((verificationExpiresAt - Date.now()) / 1000));
+      setVerificationSecondsLeft(secondsLeft);
+      if (secondsLeft === 0) window.clearInterval(timerId);
+    };
+
+    const timerId = window.setInterval(updateRemainingTime, 1000);
+    updateRemainingTime();
+
+    return () => window.clearInterval(timerId);
+  }, [verificationExpiresAt, verificationProof]);
+
+  useEffect(() => {
+    if (!resendAvailableAt) return undefined;
+
+    const updateResendTime = () => {
+      const secondsLeft = Math.max(0, Math.ceil((resendAvailableAt - Date.now()) / 1000));
+      setResendSecondsLeft(secondsLeft);
+      if (secondsLeft === 0) window.clearInterval(timerId);
+    };
+
+    const timerId = window.setInterval(updateResendTime, 1000);
+    updateResendTime();
+
+    return () => window.clearInterval(timerId);
+  }, [resendAvailableAt]);
+
+  const emailVerificationMutation = useMutation({
+    mutationFn: requestEmailVerification,
+    onSuccess: data => {
+      setEmailChallengeId(data.challenge_id);
+      setVerificationProof(null);
+      setVerificationExpiresAt(Date.now() + EMAIL_VERIFICATION_SECONDS * 1000);
+      setVerificationSecondsLeft(EMAIL_VERIFICATION_SECONDS);
+      const serverResendAvailableAt = Date.parse(data.resend_available_at);
+      const nextResendAvailableAt = Number.isNaN(serverResendAvailableAt)
+        ? Date.now() + EMAIL_RESEND_FALLBACK_SECONDS * 1000
+        : serverResendAvailableAt;
+      setResendAvailableAt(nextResendAvailableAt);
+      setResendSecondsLeft(Math.max(0, Math.ceil((nextResendAvailableAt - Date.now()) / 1000)));
+      setShowVerificationCode(true);
+      appToast.success('인증번호를 이메일로 발송했습니다.');
+    },
+    onError: error => appToast.error(error.message),
+  });
+
+  const confirmVerificationMutation = useMutation({
+    mutationFn: confirmEmailVerification,
+    onSuccess: data => {
+      setVerificationProof(data.verification_proof);
+      appToast.success('이메일 인증이 완료되었습니다.');
+    },
+    onError: error => appToast.error(error.message),
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: register,
+    onSuccess: () => setIsSignupComplete(true),
+    onError: error => appToast.error(error.message),
+  });
+
+  const handleSubmit = () => {
+    const { nickname, email, password, passwordConfirm } = formData;
+
+    if (!nickname || !email || !password || !passwordConfirm) {
+      appToast.info('회원 정보를 모두 입력해 주세요.');
       return;
     }
 
     if (password !== passwordConfirm) {
-      alert('비밀번호가 일치하지 않습니다.');
+      appToast.info('비밀번호가 일치하지 않습니다.');
       return;
     }
 
-    if (!agreements.terms || !agreements.privacy) {
-      alert('필수 약관에 모두 동의해 주세요.');
+    if (!isPasswordValid(password)) {
+      appToast.info(PASSWORD_POLICY_MESSAGE);
       return;
     }
 
-    setIsSignupComplete(true);
+    if (!verificationProof || !emailChallengeId) {
+      appToast.info('이메일 인증을 완료해 주세요.');
+      return;
+    }
+
+    if (requiredDocuments.some(document => !agreements[document.id])) {
+      appToast.info('필수 약관에 모두 동의해 주세요.');
+      return;
+    }
+
+    if (legalDocuments.length === 0) {
+      appToast.error('약관은 확인되었지만 서버 약관 ID가 준비되지 않았습니다.');
+      return;
+    }
+
+    if (!isOver14) {
+      appToast.info('만 14세 이상임을 확인해 주세요.');
+      return;
+    }
+
+    registerMutation.mutate({
+      email,
+      nickname,
+      password,
+      password_confirm: passwordConfirm,
+      verification_challenge_id: emailChallengeId,
+      verification_proof: verificationProof,
+      consent_document_ids: legalDocuments
+        .filter(document => agreements[document.id])
+        .map(document => document.id),
+      is_over_14: isOver14,
+    });
   };
 
   const handleEmailVerification = () => {
-    if (!formData.login_id) {
-      alert('이메일 주소를 먼저 입력해 주세요.');
+    if (!formData.email) {
+      appToast.info('이메일 주소를 먼저 입력해 주세요.');
       return;
     }
 
-    setShowVerificationCode(true);
+    emailVerificationMutation.mutate(formData.email);
   };
 
   const handleVerificationCodeConfirm = () => {
-    if (!formData.emailVerificationCode) {
-      alert('인증번호를 입력해 주세요.');
+    if (!/^\d{6}$/.test(formData.emailVerificationCode)) {
+      appToast.info('인증번호 6자리를 입력해 주세요.');
       return;
     }
 
-    alert('이메일 인증 확인 API 연결이 필요합니다.');
+    confirmVerificationMutation.mutate({
+      challengeId: emailChallengeId,
+      code: formData.emailVerificationCode,
+    });
   };
 
   const handleAgreementChange = e => {
@@ -194,17 +352,15 @@ export default function Signup() {
           </div>
 
           <p className="mt-8 text-body-lg font-strong text-[#3D4754]">
-            관리자 승인 후 <span className="text-[#FF4854]">유료 회원</span>으로 전환됩니다.
-            <br />
-            승인 완료 시 서비스를 이용할 수 있습니다.
+            가입한 이메일과 비밀번호로 로그인해 주세요.
           </p>
 
           <button
             type="button"
-            onClick={() => navigate('/kategorie')}
+            onClick={() => navigate('/login')}
             className="mt-8 w-full h-[58px] rounded-[16px] bg-[#FF4854] text-white text-card-title font-strong shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] cursor-pointer"
           >
-            ARENA 시작하기
+            로그인하기
           </button>
         </section>
       </div>
@@ -257,19 +413,26 @@ export default function Signup() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                 <input
                   id="signup-id-input"
-                  name="login_id"
+                  name="email"
                   type="email"
                   className={inputFieldStyle}
                   placeholder="이메일 주소 입력"
-                  value={formData.login_id}
+                  value={formData.email}
                   onChange={handleChange}
                 />
                 <button
                   type="button"
                   onClick={handleEmailVerification}
+                  disabled={emailVerificationMutation.isPending || resendSecondsLeft > 0}
                   className="btn btn-primary btn-lg shrink-0"
                 >
-                  이메일 인증
+                  {emailVerificationMutation.isPending
+                    ? '발송 중...'
+                    : resendSecondsLeft > 0
+                      ? `재전송 ${formatRemainingTime(resendSecondsLeft)}`
+                      : showVerificationCode
+                        ? '인증번호 재전송'
+                        : '이메일 인증'}
                 </button>
               </div>
               {showVerificationCode && (
@@ -283,6 +446,7 @@ export default function Signup() {
                       name="emailVerificationCode"
                       type="text"
                       inputMode="numeric"
+                      maxLength={6}
                       className={inputFieldStyle}
                       placeholder="인증번호 입력"
                       value={formData.emailVerificationCode}
@@ -291,14 +455,38 @@ export default function Signup() {
                     <button
                       type="button"
                       onClick={handleVerificationCodeConfirm}
+                      disabled={
+                        confirmVerificationMutation.isPending ||
+                        Boolean(verificationProof) ||
+                        verificationSecondsLeft === 0
+                      }
                       className="btn btn-primary btn-lg shrink-0"
                     >
-                      인증번호 확인
+                      {verificationProof
+                        ? '인증 완료'
+                        : confirmVerificationMutation.isPending
+                          ? '확인 중...'
+                          : '인증번호 확인'}
                     </button>
                   </div>
-                  <p className="mt-2 text-label font-medium text-[#FF4854]">
-                    이메일로 발송된 인증번호를 입력해 주세요.
-                  </p>
+                  <div className="mt-2 flex items-center justify-between gap-3 text-label font-medium">
+                    <p
+                      className={
+                        verificationSecondsLeft === 0 ? 'text-[#D92D3A]' : 'text-[#FF4854]'
+                      }
+                    >
+                      {verificationProof
+                        ? '이메일 인증이 완료되었습니다.'
+                        : verificationSecondsLeft === 0
+                          ? '인증 시간이 만료되었습니다. 인증번호를 재전송해 주세요.'
+                          : '이메일로 발송된 인증번호를 입력해 주세요.'}
+                    </p>
+                    {!verificationProof && verificationSecondsLeft > 0 ? (
+                      <span className="shrink-0 font-strong tabular-nums text-[#D92D3A]">
+                        남은 시간 {formatRemainingTime(verificationSecondsLeft)}
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
               )}
             </div>
@@ -314,6 +502,9 @@ export default function Signup() {
                   type={showPassword ? 'text' : 'password'}
                   className={`${inputFieldStyle} pr-10`}
                   placeholder="비밀번호"
+                  minLength={10}
+                  maxLength={128}
+                  autoComplete="new-password"
                   value={formData.password}
                   onChange={handleChange}
                 />
@@ -327,6 +518,7 @@ export default function Signup() {
                   <PasswordRevealIcon className="h-5 w-5" strokeWidth={2} />
                 </button>
               </div>
+              <PasswordPolicyChecklist password={formData.password} />
             </div>
 
             <div className="flex flex-col">
@@ -340,6 +532,9 @@ export default function Signup() {
                   type={showPasswordConfirm ? 'text' : 'password'}
                   className={`${inputFieldStyle} pr-10`}
                   placeholder="비밀번호 확인"
+                  minLength={10}
+                  maxLength={128}
+                  autoComplete="new-password"
                   value={formData.passwordConfirm}
                   onChange={handleChange}
                 />
@@ -353,58 +548,71 @@ export default function Signup() {
                   <PasswordConfirmRevealIcon className="h-5 w-5" strokeWidth={2} />
                 </button>
               </div>
+              {formData.passwordConfirm ? (
+                <p
+                  className={`mt-2 text-label font-medium ${
+                    formData.password === formData.passwordConfirm
+                      ? 'text-[#169B62]'
+                      : 'text-[#D92D3A]'
+                  }`}
+                >
+                  {formData.password === formData.passwordConfirm
+                    ? '비밀번호가 일치합니다.'
+                    : '비밀번호가 일치하지 않습니다.'}
+                </p>
+              ) : null}
             </div>
 
             <fieldset className="flex flex-col gap-5 border-0 p-0">
               <legend className="sr-only">필수 약관 동의</legend>
-              <div className="flex min-h-8 items-center gap-3">
-                <input
-                  id="terms-agreement"
-                  name="terms"
-                  type="checkbox"
-                  checked={agreements.terms}
-                  onChange={handleAgreementChange}
-                  className="h-6 w-6 shrink-0 cursor-pointer accent-[#FF4854]"
-                />
-                <label
-                  htmlFor="terms-agreement"
-                  className="text-card-title cursor-pointer font-medium text-[#6B6B6B]"
-                >
-                  <span className="font-strong">[필수]</span> 이용약관에 동의합니다.
-                </label>
-                <a
-                  href="/terms"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-auto shrink-0 text-body-lg font-medium text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
-                >
-                  자세히 보기 &gt;
-                </a>
-              </div>
+              {legalDocumentsQuery.isLoading ? (
+                <p className="text-body font-medium text-[#6B6B6B]">약관을 불러오는 중입니다.</p>
+              ) : (
+                displayedLegalDocuments.map(document => (
+                  <div key={document.id} className="flex min-h-8 items-center gap-3">
+                    <input
+                      id={`agreement-${document.id}`}
+                      name={document.id}
+                      type="checkbox"
+                      checked={Boolean(agreements[document.id])}
+                      onChange={handleAgreementChange}
+                      className="h-6 w-6 shrink-0 cursor-pointer accent-[#FF4854]"
+                    />
+                    <label
+                      htmlFor={`agreement-${document.id}`}
+                      className="text-card-title cursor-pointer font-medium text-[#6B6B6B]"
+                    >
+                      <span className="font-strong">
+                        [{document.is_required ? '필수' : '선택'}]
+                      </span>{' '}
+                      {document.title}
+                    </label>
+                    <a
+                      href={`/legal/${document.document_type}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="ml-auto shrink-0 text-body-lg font-medium text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
+                    >
+                      자세히 보기 &gt;
+                    </a>
+                  </div>
+                ))
+              )}
 
               <div className="flex min-h-8 items-center gap-3">
                 <input
-                  id="privacy-agreement"
-                  name="privacy"
+                  id="age-agreement"
                   type="checkbox"
-                  checked={agreements.privacy}
-                  onChange={handleAgreementChange}
+                  checked={isOver14}
+                  onChange={event => setIsOver14(event.target.checked)}
                   className="h-6 w-6 shrink-0 cursor-pointer accent-[#FF4854]"
                 />
                 <label
-                  htmlFor="privacy-agreement"
+                  htmlFor="age-agreement"
                   className="text-card-title cursor-pointer font-medium text-[#6B6B6B]"
                 >
-                  <span className="font-strong">[필수]</span> 개인정보 수집 및 이용에 동의합니다.
+                  <span className="font-strong">[필수]</span> 만 14세 이상입니다.
                 </label>
-                <a
-                  href="/privacy"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-auto shrink-0 text-body-lg font-medium text-[#6B6B6B] underline underline-offset-2 transition hover:text-[#FF4854]"
-                >
-                  자세히 보기 &gt;
-                </a>
               </div>
             </fieldset>
           </form>
@@ -418,9 +626,10 @@ export default function Signup() {
           <button
             type="button"
             onClick={handleSubmit}
+            disabled={registerMutation.isPending || legalDocumentsQuery.isLoading}
             className="btn btn-primary btn-cta btn-block"
           >
-            회원가입
+            {registerMutation.isPending ? '가입 중...' : '회원가입'}
           </button>
         </footer>
       </div>
