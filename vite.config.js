@@ -20,7 +20,11 @@ export default defineConfig(({ mode }) => {
       proxy: {
         '/api': {
           target: env.VITE_API_PROXY_TARGET || 'http://3.34.62.133',
-          changeOrigin: true,
+          // 배포 Nginx의 `proxy_set_header Host $host`와 동일하게 프론트 Host를 유지한다.
+          // Origin은 로컬인데 Host만 백엔드 IP로 바뀌면 CSRF 검증이 실패할 수 있다.
+          changeOrigin: false,
+          // 백엔드가 Domain을 명시하더라도 개발 origin에 쿠키가 저장되도록 한다.
+          cookieDomainRewrite: '',
         },
       },
     },
