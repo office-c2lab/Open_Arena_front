@@ -502,7 +502,7 @@ export default function Signup() {
                   type={showPassword ? 'text' : 'password'}
                   className={`${inputFieldStyle} pr-10`}
                   placeholder="비밀번호"
-                  minLength={10}
+                  minLength={8}
                   maxLength={128}
                   autoComplete="new-password"
                   value={formData.password}
@@ -532,7 +532,7 @@ export default function Signup() {
                   type={showPasswordConfirm ? 'text' : 'password'}
                   className={`${inputFieldStyle} pr-10`}
                   placeholder="비밀번호 확인"
-                  minLength={10}
+                  minLength={8}
                   maxLength={128}
                   autoComplete="new-password"
                   value={formData.passwordConfirm}

@@ -83,7 +83,7 @@ export default function PasswordResetComplete() {
               새 비밀번호
               <input
                 type="password"
-                minLength={10}
+                minLength={8}
                 maxLength={128}
                 autoComplete="new-password"
                 value={newPassword}
@@ -96,7 +96,7 @@ export default function PasswordResetComplete() {
               새 비밀번호 확인
               <input
                 type="password"
-                minLength={10}
+                minLength={8}
                 maxLength={128}
                 autoComplete="new-password"
                 value={newPasswordConfirm}

@@ -669,7 +669,7 @@ export default function MyPage({ embedded = false }) {
             <Field label="새 비밀번호">
               <input
                 type="password"
-                minLength={10}
+                minLength={8}
                 maxLength={128}
                 autoComplete="new-password"
                 value={passwordForm.newPassword}
@@ -683,7 +683,7 @@ export default function MyPage({ embedded = false }) {
             <Field label="새 비밀번호 확인">
               <input
                 type="password"
-                minLength={10}
+                minLength={8}
                 maxLength={128}
                 autoComplete="new-password"
                 value={passwordForm.newPasswordConfirm}

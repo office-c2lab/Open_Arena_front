@@ -14,6 +14,9 @@ Authentication uses HTTP-only session cookies. Mutating requests automatically c
 CSRF cookie to the `X-CSRF-Token` header. Feature API modules still use local mock data and can be
 migrated one at a time.
 
+For an Nginx deployment, add `deploy/nginx-api-proxy.conf` inside the frontend `server` block.
+Without this `/api/*` proxy, POST requests are handled by the static file server and return 405.
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
