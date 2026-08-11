@@ -31,6 +31,7 @@ import Challenge from '../pages/Challenge/ui/Challenge';
 import ChallengePlay from '../pages/Challenge/ui/ChallengePlay';
 import ChatTestPage from '../pages/ChatTestPage';
 import NotFound from '../pages/NotFound/NotFound';
+import PublicProfile from '../pages/Profile/PublicProfile';
 
 import Leaderboard from '../pages/Leaderboard/ArenaMockPage';
 import AdminProblemPage from '../pages/admin/AdminProblemPage';
@@ -132,6 +133,7 @@ export default function AppRouter() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mypage" element={<Navigate to="/settings" replace />} />
         <Route path="/settings" element={<MyPage />} />
+        <Route path="/profile/:userId" element={<PublicProfile />} />
         <Route path="/education" element={<Education />} />
         <Route path="/education/:articleId" element={<Education />} />
         <Route path="/tutorial" element={<TutorialList />} />

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ChevronLeft,
   ChevronRight,
@@ -12,6 +13,7 @@ import medalGold from '@/assets/icons/medal_gold.svg';
 import medalSilver from '@/assets/icons/medal_silver.svg';
 import UserIcon from '@/assets/icons/user.svg';
 import { useLeaderboardQuery, useLeaderboardSearchQuery } from '@/hooks/useLeaderboardQuery';
+import { useAuthStore } from '@/stores/authStore';
 
 const MEDAL_ICON_MAP = { 1: medalGold, 2: medalSilver, 3: medalBronze };
 const ROWS_PER_PAGE = 30;
@@ -32,15 +34,17 @@ const formatSolvedAt = value => {
 };
 
 const presentLeaderboardEntry = entry => ({
+  userId: entry.user_id,
   rank: entry.rank,
   name: entry.nickname,
+  profileImage: entry.profile_image_url,
   score: entry.total_score,
   challenges: entry.solved_count,
   tokens: entry.minimum_success_prompt_tokens,
   lastSolvedAt: entry.last_solved_at,
 });
 
-function Avatar({ size = 'md' }) {
+function Avatar({ size = 'md', src }) {
   const sizeClass = {
     md: 'h-12 w-12',
     lg: 'h-[112px] w-[112px]',
@@ -51,9 +55,9 @@ function Avatar({ size = 'md' }) {
       className={`${sizeClass} flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FF4854] shadow-[0_8px_20px_rgba(255,72,84,0.22)]`}
     >
       <img
-        src={UserIcon}
+        src={src || UserIcon}
         alt=""
-        className={size === 'lg' ? 'h-14 w-14' : 'h-7 w-7'}
+        className={src ? 'h-full w-full object-cover' : size === 'lg' ? 'h-14 w-14' : 'h-7 w-7'}
         aria-hidden="true"
       />
     </div>
@@ -81,7 +85,7 @@ function StatPair({ value, label }) {
   );
 }
 
-function TopRankCard({ row, isCurrentUser }) {
+function TopRankCard({ row, isCurrentUser, onOpenProfile }) {
   const toneClass =
     row.rank === 1
       ? 'border-[#FFB51F]/55 bg-[radial-gradient(circle_at_50%_0%,rgba(255,199,43,0.36)_0%,rgba(255,237,176,0.30)_42%,rgba(255,255,255,0.68)_82%)] shadow-[0_18px_38px_rgba(255,181,31,0.18)]'
@@ -90,11 +94,13 @@ function TopRankCard({ row, isCurrentUser }) {
         : 'border-[#D08A52]/50 bg-[radial-gradient(circle_at_50%_0%,rgba(208,138,82,0.24)_0%,rgba(255,248,243,0.72)_62%,rgba(255,255,255,0.62)_100%)] shadow-[0_14px_30px_rgba(173,103,40,0.12)]';
 
   return (
-    <article
-      className={`relative flex min-h-[320px] flex-col items-center overflow-hidden rounded-[30px] border px-8 pb-8 pt-10 backdrop-blur-xl md:h-[400px] ${toneClass}`}
+    <button
+      type="button"
+      onClick={() => onOpenProfile(row)}
+      className={`relative flex min-h-[320px] w-full cursor-pointer flex-col items-center overflow-hidden rounded-[30px] border px-8 pb-8 pt-10 text-left backdrop-blur-xl transition duration-200 hover:-translate-y-1 hover:shadow-[0_22px_46px_rgba(15,23,42,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/40 md:h-[400px] ${toneClass}`}
     >
       <RankMedal rank={row.rank} />
-      <Avatar size="lg" />
+      <Avatar size="lg" src={row.profileImage} />
       <div className="mt-6 flex max-w-full items-center justify-center gap-2">
         <h2 className="truncate text-center text-card-title font-bold text-[#111827]">
           {row.name}
@@ -111,19 +117,24 @@ function TopRankCard({ row, isCurrentUser }) {
         <StatPair value={`${formatNumber(row.challenges)}개`} label="성공 챌린지" />
         <StatPair value={formatNumber(row.tokens)} label="최소 성공 토큰" />
       </div>
-    </article>
+    </button>
   );
 }
 
-function TableAvatar() {
+function TableAvatar({ src }) {
   return (
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FF4854] shadow-[0_3px_10px_rgba(255,72,84,0.18)]">
-      <img src={UserIcon} alt="" className="h-5 w-5" aria-hidden="true" />
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FF4854] shadow-[0_3px_10px_rgba(255,72,84,0.18)]">
+      <img
+        src={src || UserIcon}
+        alt=""
+        className={src ? 'h-full w-full object-cover' : 'h-5 w-5'}
+        aria-hidden="true"
+      />
     </div>
   );
 }
 
-function LeaderboardRow({ row, isCurrentUser }) {
+function LeaderboardRow({ row, isCurrentUser, onOpenProfile }) {
   return (
     <tr
       className={`h-[58px] text-body font-strong text-[#344050] ${isCurrentUser ? 'bg-[#FFF7F8]' : ''}`}
@@ -138,15 +149,19 @@ function LeaderboardRow({ row, isCurrentUser }) {
         </div>
       </td>
       <td className="min-w-[230px]">
-        <div className="flex items-center gap-4">
-          <TableAvatar />
-          <span className="font-strong">{row.name}</span>
+        <button
+          type="button"
+          onClick={() => onOpenProfile(row)}
+          className="group flex cursor-pointer items-center gap-4 rounded-[8px] pr-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/35"
+        >
+          <TableAvatar src={row.profileImage} />
+          <span className="font-strong transition group-hover:text-[#FF4854]">{row.name}</span>
           {isCurrentUser ? (
             <span className="rounded-full bg-[#F52F45] px-2 py-0.5 text-caption font-bold text-white">
               나
             </span>
           ) : null}
-        </div>
+        </button>
       </td>
       <td className="w-[160px] font-bold text-[#F52F45]">{formatNumber(row.score)}</td>
       <td className="w-[150px] text-center">{formatNumber(row.challenges)}</td>
@@ -171,6 +186,8 @@ function LeaderboardState({ children, error = false }) {
 }
 
 export default function Leaderboard() {
+  const navigate = useNavigate();
+  const currentUser = useAuthStore(state => state.teamInfo);
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -224,6 +241,15 @@ export default function Leaderboard() {
     setCurrentPage(Math.min(Math.max(page, 1), totalPages));
   };
 
+  const handleOpenProfile = row => {
+    if (!row.userId) return;
+
+    const currentUserId = currentUser?.id ?? currentUser?.user_id;
+    navigate(
+      currentUserId && row.userId === currentUserId ? '/dashboard' : `/profile/${row.userId}`
+    );
+  };
+
   return (
     <div className="relative left-1/2 min-h-screen w-screen -translate-x-1/2 bg-white pb-10 pt-12">
       <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-10">
@@ -256,7 +282,12 @@ export default function Leaderboard() {
         ) : topRows.length ? (
           <section className="grid items-end gap-5 md:grid-cols-3">
             {topRows.map(row => (
-              <TopRankCard key={row.rank} row={row} isCurrentUser={row.rank === currentUserRank} />
+              <TopRankCard
+                key={row.userId || row.rank}
+                row={row}
+                isCurrentUser={row.rank === currentUserRank}
+                onOpenProfile={handleOpenProfile}
+              />
             ))}
           </section>
         ) : (
@@ -320,9 +351,10 @@ export default function Leaderboard() {
                 <tbody>
                   {rows.map(row => (
                     <LeaderboardRow
-                      key={`${row.rank}-${row.name}`}
+                      key={row.userId || `${row.rank}-${row.name}`}
                       row={row}
                       isCurrentUser={row.rank === currentUserRank}
+                      onOpenProfile={handleOpenProfile}
                     />
                   ))}
                 </tbody>

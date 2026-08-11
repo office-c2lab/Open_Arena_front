@@ -39,15 +39,22 @@ function getAttemptStatus(status) {
   return 'unsubmitted';
 }
 
-function SolverAvatar() {
+function SolverAvatar({ src }) {
   return (
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FF4854] shadow-[0_3px_10px_rgba(255,72,84,0.18)]">
-      <img src={UserIcon} alt="" className="h-5 w-5" aria-hidden="true" />
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FF4854] shadow-[0_3px_10px_rgba(255,72,84,0.18)]">
+      <img
+        src={src || UserIcon}
+        alt=""
+        className={src ? 'h-full w-full object-cover' : 'h-5 w-5'}
+        aria-hidden="true"
+      />
     </div>
   );
 }
 
 function ChallengeSolverList({ ranking, isLoading, error }) {
+  const navigate = useNavigate();
+  const currentUser = useAuthStore(state => state.teamInfo);
   const myRankRef = useRef(null);
   const [isMyRankFocused, setIsMyRankFocused] = useState(false);
   const solvers = ranking?.items ?? [];
@@ -65,6 +72,17 @@ function ChallengeSolverList({ ranking, isLoading, error }) {
     }
     setIsMyRankFocused(true);
     myRankRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const handleOpenProfile = solver => {
+    if (!solver.user_id) return;
+
+    const currentUserId = currentUser?.id ?? currentUser?.user_id;
+    navigate(
+      currentUserId && solver.user_id === currentUserId
+        ? '/dashboard'
+        : `/profile/${solver.user_id}`
+    );
   };
 
   if (isLoading) {
@@ -143,17 +161,23 @@ function ChallengeSolverList({ ranking, isLoading, error }) {
                     </div>
                   </td>
                   <td className="min-w-[230px]">
-                    <div className="flex items-center gap-4">
-                      <SolverAvatar />
+                    <button
+                      type="button"
+                      onClick={() => handleOpenProfile(solver)}
+                      className="group flex cursor-pointer items-center gap-4 rounded-[8px] pr-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/35"
+                    >
+                      <SolverAvatar src={solver.profile_image_url} />
                       <div className="flex min-w-0 items-center gap-2">
-                        <span className="truncate font-strong">{solver.nickname}</span>
+                        <span className="truncate font-strong transition group-hover:text-[#FF4854]">
+                          {solver.nickname}
+                        </span>
                         {isMe ? (
                           <span className="shrink-0 rounded-[4px] bg-[#FF4854] px-1.5 py-0.5 text-caption font-bold text-white">
                             나
                           </span>
                         ) : null}
                       </div>
-                    </div>
+                    </button>
                   </td>
                   <td className="w-[190px] font-bold">{solver.prompt_tokens.toLocaleString()}</td>
                   <td className="w-[190px] text-center font-bold text-[#FF4854]">

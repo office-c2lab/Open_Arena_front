@@ -10,10 +10,11 @@ const defaultDashboardSummaryStats = [
   { label: '다음 순위까지', value: '12점', subText: '23위 추월까지' },
 ];
 
-export default function DashboardProfileSummaryCard({ profile, summaryStats }) {
+export default function DashboardProfileSummaryCard({ profile, summaryStats, showEmail = true }) {
   const authenticatedTeamInfo = useAuthStore(state => state.teamInfo);
   const teamInfo = profile || authenticatedTeamInfo;
-  const displayName = teamInfo?.teamname || teamInfo?.username || 'ARENA 유저';
+  const displayName =
+    teamInfo?.teamname || teamInfo?.username || teamInfo?.nickname || 'ARENA 유저';
   const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
   const membershipType =
     teamInfo?.membershipType ||
@@ -32,13 +33,18 @@ export default function DashboardProfileSummaryCard({ profile, summaryStats }) {
   const joinedAt = joinedAtValue
     ? String(joinedAtValue).slice(0, 10).replaceAll('-', '.')
     : '2026.07.01';
-  const savedProfileImage = teamInfo?.profileImage || teamInfo?.profile_image;
+  const savedProfileImage =
+    teamInfo?.profileImage || teamInfo?.profile_image || teamInfo?.profile_image_url;
   const profileImage = savedProfileImage || UserIcon;
   const hasProfileImage = Boolean(savedProfileImage);
   const profileMessage = (teamInfo?.profileMessage || teamInfo?.profile_message)?.trim();
   const profileBackgroundImage =
-    teamInfo?.profileBackgroundImage || teamInfo?.profile_background_image || HomeMyBgImage;
-  const profileTextTheme = teamInfo?.profileTextTheme || teamInfo?.profile_text_theme;
+    teamInfo?.profileBackgroundImage ||
+    teamInfo?.profile_background_image ||
+    teamInfo?.profile_background_url ||
+    HomeMyBgImage;
+  const profileTextTheme =
+    teamInfo?.profileTextTheme || teamInfo?.profile_text_theme || teamInfo?.theme;
   const usesWhiteProfileText = profileTextTheme === 'white';
   const displayedSummaryStats = summaryStats || defaultDashboardSummaryStats;
 
@@ -78,13 +84,15 @@ export default function DashboardProfileSummaryCard({ profile, summaryStats }) {
                 {membershipLabel}
               </span>
             </div>
-            <p
-              className={`mt-2 truncate text-body font-strong ${
-                usesWhiteProfileText ? 'text-white/80' : 'text-[#7B8491]'
-              }`}
-            >
-              {displayEmail}
-            </p>
+            {showEmail ? (
+              <p
+                className={`mt-2 truncate text-body font-strong ${
+                  usesWhiteProfileText ? 'text-white/80' : 'text-[#7B8491]'
+                }`}
+              >
+                {displayEmail}
+              </p>
+            ) : null}
             <p
               className={`mt-1.5 flex items-center gap-1.5 text-label font-strong ${
                 usesWhiteProfileText ? 'text-white/80' : 'text-[#7B8491]'
