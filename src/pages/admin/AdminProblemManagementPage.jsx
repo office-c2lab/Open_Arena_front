@@ -30,7 +30,7 @@ export default function AdminProblemManagementPage() {
   const total = problemsQuery.data?.total ?? 0;
 
   return (
-    <div className="mx-auto w-full max-w-6xl text-white">
+    <div className="w-full text-white">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center">
         <label className="relative flex-1">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -67,7 +67,7 @@ export default function AdminProblemManagementPage() {
         <State>표시할 문제가 없습니다.</State>
       )}
 
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
         {items.map(problem => (
           <article
             key={problem.id}

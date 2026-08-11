@@ -60,14 +60,74 @@
 }
 
 @layer components {
+  .admin-interactive-scope
+    :where(
+      button:not(:disabled),
+      a[href],
+      select:not(:disabled),
+      input[type='checkbox']:not(:disabled),
+      input[type='radio']:not(:disabled),
+      input[type='file']:not(:disabled),
+      [role='button']:not([aria-disabled='true'])
+    ),
+  .admin-interactive-scope
+    label:has(
+      input[type='checkbox']:not(:disabled),
+      input[type='radio']:not(:disabled),
+      input[type='file']:not(:disabled)
+    ) {
+    cursor: pointer;
+    transition-duration: 160ms;
+  }
+
+  .admin-interactive-scope
+    :where(
+      button:not(:disabled),
+      a[href],
+      select:not(:disabled),
+      input[type='checkbox']:not(:disabled),
+      input[type='radio']:not(:disabled),
+      input[type='file']:not(:disabled),
+      [role='button']:not([aria-disabled='true'])
+    ):hover {
+    filter: brightness(1.08);
+  }
+
+  .admin-interactive-scope
+    :where(
+      button:not(:disabled),
+      a[href],
+      select:not(:disabled),
+      input[type='checkbox']:not(:disabled),
+      input[type='radio']:not(:disabled),
+      input[type='file']:not(:disabled),
+      [role='button']:not([aria-disabled='true'])
+    ):active {
+    filter: brightness(0.96);
+  }
+
+  .admin-interactive-scope
+    :where(
+      button:disabled,
+      select:disabled,
+      input[type='checkbox']:disabled,
+      input[type='radio']:disabled,
+      input[type='file']:disabled,
+      [aria-disabled='true']
+    ) {
+    cursor: not-allowed;
+  }
+
   .thinking-text {
     animation: thinking-text-shimmer 1.8s ease-in-out infinite;
-    background: linear-gradient(90deg,
-        #222632 0%,
-        #6f7785 38%,
-        #111827 52%,
-        #6f7785 66%,
-        #222632 100%);
+    background: linear-gradient(
+      90deg,
+      #222632 0%,
+      #6f7785 38%,
+      #111827 52%,
+      #6f7785 66%,
+      #222632 100%
+    );
     background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -248,7 +308,6 @@
 }
 
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-
   .glass-subtle,
   .glass-panel {
     background: rgba(255, 255, 255, 0.94);
@@ -260,7 +319,6 @@
 }
 
 @media (max-width: 767px) {
-
   .glass-subtle,
   .glass-panel,
   .glass-overlay {
@@ -269,7 +327,6 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-
   .glass-subtle,
   .glass-panel,
   .glass-overlay {

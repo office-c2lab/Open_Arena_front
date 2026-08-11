@@ -56,7 +56,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
+    <div className="admin-interactive-scope min-h-screen flex justify-center items-center">
       <form
         onSubmit={handleSubmit}
         className="max-w-[675px] w-full bg-white rounded-[16px] shadow-xl flex flex-col"
@@ -64,12 +64,14 @@ export default function AdminLogin() {
         {/* Header */}
         <header className="px-8 pt-8 pb-4 border-b border-[#D9DADB] rounded-t-[16px]">
           <div className="flex items-center">
-            <img
-              src={BackBtn}
-              alt="back"
-              className="w-[10px] h-[18px] cursor-pointer"
+            <button
+              type="button"
               onClick={() => navigate(-1)}
-            />
+              className="flex h-9 w-8 items-center justify-start rounded-md"
+              aria-label="뒤로가기"
+            >
+              <img src={BackBtn} alt="" className="h-[18px] w-[10px]" />
+            </button>
             <h1 className="text-card-title font-medium text-black ml-4">관리자 로그인</h1>
           </div>
         </header>

@@ -7,6 +7,7 @@ import TutorialElementCardImage from '@/assets/images/t1.png';
 import TutorialChatTokenCardImage from '@/assets/images/t2.png';
 import TutorialJudgeFailureCardImage from '@/assets/images/t3.png';
 import TutorialJudgeSuccessCardImage from '@/assets/images/t4.png';
+import { useTutorialProgress } from '@/hooks/useChallenges';
 
 export const TUTORIALS = [
   {
@@ -152,6 +153,23 @@ function TutorialCard({ tutorial, onClick }) {
       >
         <div className="relative h-[180px] overflow-hidden">
           <img src={cardImage} alt={tutorial.title} className="h-full w-full object-cover" />
+          {tutorial.progressStatus ? (
+            <span
+              className={`absolute right-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${
+                tutorial.progressStatus === 'completed'
+                  ? 'text-[#1EC186]'
+                  : tutorial.progressStatus === 'in_progress'
+                    ? 'text-[#FFBC4B]'
+                    : 'text-white'
+              }`}
+            >
+              {tutorial.progressStatus === 'completed'
+                ? '완료'
+                : tutorial.progressStatus === 'in_progress'
+                  ? '진행 중'
+                  : '미도전'}
+            </span>
+          ) : null}
           <div className="absolute inset-0 flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
             <p className="text-body font-strong text-white">{tutorial.description}</p>
             <p className="mt-3 text-body font-bold text-[#FF5A65]">{tutorial.goal}</p>
@@ -239,12 +257,32 @@ export default function TutorialList() {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
+  const progressQuery = useTutorialProgress();
+
+  const tutorialsWithProgress = useMemo(() => {
+    const progressItems = progressQuery.data?.items ?? [];
+
+    return TUTORIALS.map((tutorial, index) => {
+      const normalizedTitle = tutorial.title.replace(/\s/g, '').toLowerCase();
+      const progress =
+        progressItems.find(
+          item => item.title?.replace(/\s/g, '').toLowerCase() === normalizedTitle
+        ) ?? progressItems[index];
+
+      return {
+        ...tutorial,
+        progressStatus: progress?.status,
+        serverProblemId: progress?.problem_id,
+        bestScore: progress?.best_score,
+      };
+    });
+  }, [progressQuery.data?.items]);
 
   const filteredTutorials = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
-    if (!normalizedKeyword) return TUTORIALS;
+    if (!normalizedKeyword) return tutorialsWithProgress;
 
-    return TUTORIALS.filter(tutorial =>
+    return tutorialsWithProgress.filter(tutorial =>
       [
         tutorial.title,
         tutorial.subtitle,
@@ -257,11 +295,18 @@ export default function TutorialList() {
         .toLowerCase()
         .includes(normalizedKeyword)
     );
-  }, [keyword]);
+  }, [keyword, tutorialsWithProgress]);
 
   const handleOpenTutorial = useCallback(
-    tutorialId => {
-      navigate(tutorialId === 11 ? '/challenge/1' : `/tutorial/${tutorialId}`);
+    tutorial => {
+      if (tutorial.id === 11) {
+        navigate(
+          tutorial.serverProblemId ? `/challenge/${tutorial.serverProblemId}` : '/kategorie'
+        );
+        return;
+      }
+
+      navigate(`/tutorial/${tutorial.id}`);
     },
     [navigate]
   );
@@ -334,6 +379,26 @@ export default function TutorialList() {
         </form>
       </div>
 
+      {progressQuery.data ? (
+        <div className="mb-7 rounded-[10px] border border-[#E1E6EB] bg-[#FAFBFC] px-5 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-body-lg font-bold text-[#2E3338]">튜토리얼 진행률</p>
+            <p className="text-body font-strong text-[#66717E]">
+              <em className="not-italic text-[#FF4854]">{progressQuery.data.completed_count}</em>/
+              {progressQuery.data.total_count} 완료
+            </p>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#E8EBEF]">
+            <div
+              className="h-full rounded-full bg-[#FF4854] transition-[width]"
+              style={{
+                width: `${progressQuery.data.total_count ? (progressQuery.data.completed_count / progressQuery.data.total_count) * 100 : 0}%`,
+              }}
+            />
+          </div>
+        </div>
+      ) : null}
+
       <div>
         <section className="min-w-0">
           <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -341,7 +406,7 @@ export default function TutorialList() {
               <TutorialCard
                 key={tutorial.id}
                 tutorial={tutorial}
-                onClick={() => handleOpenTutorial(tutorial.id)}
+                onClick={() => handleOpenTutorial(tutorial)}
               />
             ))}
           </div>

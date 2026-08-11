@@ -1,9 +1,8 @@
-// src/features/challenge/ChallengeModals/SubmitModal.jsx
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useModalStore from '@/stores/useModalStore';
 import { useSessionStore } from '@/stores/useSessionStore';
-import { localJudgeResult } from '@/api/localMockData';
-import { successPanelsData, failedPanelsData } from '../data/challengeModalData';
+import { useJudgeMutation } from '@/hooks/useJudgeMutation';
+import { buildJudgeResultPanels, isPassedSubmission } from '../utils/judgeResultPresentation';
 import CancelSvg from '@/assets/icons/cancel.svg';
 import ArenaSvg from '@/assets/icons/Arena.svg';
 import { appToast } from '@/components/Toast/appToast';
@@ -28,6 +27,10 @@ const SubmitModal = ({
   hideHeaderSymbol = false,
 }) => {
   const [cooldown, setCooldown] = useState(0);
+  const [cooldownSessionId, setCooldownSessionId] = useState(null);
+  const cooldownTimerRef = useRef(null);
+  const requestControllerRef = useRef(null);
+  const judgeMutation = useJudgeMutation();
   const isSubmitModalOpen = useModalStore(state => state.isSubmitModalOpen);
   const {
     closeSubmitModal,
@@ -38,12 +41,38 @@ const SubmitModal = ({
     setChallengeResults,
     setChallengeRewardPoints,
   } = useModalStore();
-  const { sessionId } = useSessionStore();
+  const sessionId = useSessionStore(state => state.sessionId);
+  const setSessionStatus = useSessionStore(state => state.setSessionStatus);
   const shouldShow = previewMode ? isOpen : isSubmitModalOpen;
   const handleClose = previewMode ? onClose : closeSubmitModal;
   const showHeaderSymbol = !hideBrandSymbol && !hideHeaderSymbol;
+  const displayedCooldown = cooldownSessionId === sessionId ? cooldown : 0;
 
-  // ✅ 제출 로직
+  const startCooldown = useCallback((targetSessionId, seconds) => {
+    window.clearInterval(cooldownTimerRef.current);
+    setCooldownSessionId(targetSessionId);
+    setCooldown(seconds);
+
+    cooldownTimerRef.current = window.setInterval(() => {
+      setCooldown(previous => {
+        if (previous <= 1) {
+          window.clearInterval(cooldownTimerRef.current);
+          cooldownTimerRef.current = null;
+          return 0;
+        }
+        return previous - 1;
+      });
+    }, 1_000);
+  }, []);
+
+  useEffect(
+    () => () => {
+      window.clearInterval(cooldownTimerRef.current);
+      requestControllerRef.current?.abort();
+    },
+    []
+  );
+
   const submitForJudgement = useCallback(async () => {
     if (previewMode) {
       onSubmit();
@@ -53,125 +82,88 @@ const SubmitModal = ({
 
     if (!sessionId) {
       appToast.error('제출할 세션 정보가 없습니다.');
-      return closeSubmitModal();
-    }
-
-    if (cooldown > 0) {
-      appToast.info(`${cooldown}초 후에 다시 시도해 주세요.`);
+      closeSubmitModal();
       return;
     }
+
+    if (displayedCooldown > 0) {
+      appToast.info(`${displayedCooldown}초 후에 다시 시도해 주세요.`);
+      return;
+    }
+
+    const controller = new AbortController();
+    requestControllerRef.current = controller;
+    let progressInterval;
 
     try {
       closeSubmitModal();
       openLoadingModal();
       setProgress(0);
 
-      let fake = 0;
-      const interval = setInterval(() => {
-        fake += 0.02;
-        setProgress(Math.min(fake, 0.95));
+      let fakeProgress = 0;
+      progressInterval = window.setInterval(() => {
+        fakeProgress += 0.02;
+        setProgress(Math.min(fakeProgress, 0.95));
       }, 100);
 
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      clearInterval(interval);
-      setProgress(1);
-
-      const resultData = localJudgeResult;
-      closeLoadingModal();
-      // console.group('%c🔍 JUDGE 결과 전체 확인', 'color:#FF4848; font-size:14px;');
-      // console.log('📦 resultData:', resultData);
-      // console.log('📊 개별 모델 결과:', resultData.results);
-      // resultData.results?.forEach((r, i) => {
-      //   console.log(`%c[${i + 1}번 모델 결과]`, 'color:#00A8FF; font-weight:bold; font-size:12px;');
-      //   console.log('모델명(model):', r.model);
-      //   console.log('판정(verdict):', r.verdict);
-      //   console.log('출력(output):', r.output);
-      // });
-      // console.groupEnd();
-
-      const results = (resultData.results || []).map((vote, index) => {
-        const rawVerdict = (vote.verdict || '').toUpperCase();
-
-        // verdict 정규화
-        let normalizedVerdict = 'failed';
-        if (rawVerdict === 'PASSED') normalizedVerdict = 'success';
-        else if (rawVerdict === 'REVIEW') normalizedVerdict = 'review';
-
-        const isSuccess = normalizedVerdict === 'success';
-
-        const baseData = isSuccess
-          ? successPanelsData[index % successPanelsData.length]
-          : failedPanelsData[index % failedPanelsData.length];
-
-        return {
-          status: normalizedVerdict, // ★ success / failed / review 로 통일
-          data: {
-            ...baseData,
-            title: baseData.animalName,
-            modelName: vote.model,
-            description: vote.output || baseData.description,
-          },
-        };
+      const job = await judgeMutation.mutateAsync({
+        sessionId,
+        signal: controller.signal,
+        onAccepted: () => startCooldown(sessionId, 30),
       });
+      const submission = job.submission;
 
-      const rewardPoints =
-        resultData.earned_points ??
-        resultData.points ??
-        resultData.score ??
-        resultData.point ??
-        null;
+      if (!submission) {
+        throw new Error('완료된 판정 결과를 확인하지 못했습니다.');
+      }
 
-      setChallengeResults(results);
-      setChallengeRewardPoints(rewardPoints);
+      setProgress(1);
+      setChallengeResults(buildJudgeResultPanels(submission));
+      setChallengeRewardPoints(submission.score ?? null);
+      if (isPassedSubmission(submission)) {
+        setSessionStatus('success');
+        openSuccessModal();
+      } else {
+        setSessionStatus('fail');
+        openFailedModal();
+      }
+    } catch (error) {
+      if (error.name === 'AbortError') return;
 
-      if (resultData.status === 'success') openSuccessModal();
-      else openFailedModal();
-    } catch (err) {
-      console.error('❌ 제출 실패', err);
       setProgress(0);
-      closeLoadingModal();
-
-      // ✅ 429 (Too Many Requests) 처리
-      if (err.response?.status === 429) {
-        const retryAfter = err.response?.data?.detail?.retry_after_sec || 15;
-        const message = err.response?.data?.detail?.message;
-
-        appToast.error(`${message}\n(${retryAfter}초 후 재시도 가능)`, {
-          duration: 7000,
-        });
-
-        setCooldown(retryAfter);
-        const countdown = setInterval(() => {
-          setCooldown(prev => {
-            if (prev <= 1) {
-              clearInterval(countdown);
-              appToast.success('다시 제출할 수 있습니다.');
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
+      if (error.status === 429) {
+        const retryAfter = Number(error.details?.detail?.retry_after_sec) || 30;
+        startCooldown(sessionId, retryAfter);
+        appToast.error(
+          `${error.message || '잠시 후 다시 제출해 주세요.'} (${retryAfter}초 후 재시도 가능)`,
+          { duration: 7000 }
+        );
         return;
       }
 
-      openFailedModal();
-      appToast.error(`제출 실패: ${err.message}`);
+      appToast.error(error.message || 'Judge 제출에 실패했습니다.');
+    } finally {
+      window.clearInterval(progressInterval);
+      requestControllerRef.current = null;
+      closeLoadingModal();
     }
   }, [
-    sessionId,
-    cooldown,
-    closeSubmitModal,
-    openLoadingModal,
     closeLoadingModal,
-    openSuccessModal,
+    closeSubmitModal,
+    displayedCooldown,
+    judgeMutation,
+    onClose,
+    onSubmit,
     openFailedModal,
+    openLoadingModal,
+    openSuccessModal,
+    previewMode,
+    sessionId,
     setChallengeResults,
     setChallengeRewardPoints,
     setProgress,
-    onClose,
-    onSubmit,
-    previewMode,
+    setSessionStatus,
+    startCooldown,
   ]);
 
   if (!shouldShow) return null;
@@ -183,7 +175,6 @@ const SubmitModal = ({
       <div className="relative w-[440px] h-[586.46px] bg-white rounded-[24px] box-border border border-[#EEF0F4] shadow-[0_18px_40px_rgba(15,23,42,0.16)]">
         <CancelIcon onClick={handleClose} />
 
-        {/* 로고 */}
         <div className="absolute left-[30px] top-[17px] w-[105px] h-[42px] flex items-center">
           {showHeaderSymbol ? (
             <div className="w-[29px] h-[42px] flex justify-center items-center">
@@ -197,35 +188,37 @@ const SubmitModal = ({
           </span>
         </div>
 
-        {/* 중앙 아이콘 */}
         {!hideBrandSymbol ? (
           <div className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[148px] h-[218px] flex justify-center items-center">
             <img src={ArenaSvg} alt="제출 아이콘" className="w-full h-full opacity-30" />
           </div>
         ) : null}
 
-        {/* 안내문 */}
         <div className="absolute w-[380px] left-[30px] top-[340px] text-center text-card-title font-medium text-[#0F172A] m-0 whitespace-pre-wrap">
           <p>제출 시 3개의 JUDGE AI가 판정합니다.</p>
           <p>제출 후 30초간 다시 제출할 수 없습니다.</p>
         </div>
 
-        {/* 제출 버튼 */}
         <button
           type="button"
           onClick={submitForJudgement}
           className={`absolute w-[380px] h-[60.45px] left-[30px] top-[496.28px]
-            flex justify-center items-center 
-            rounded-[18px] cursor-pointer transition-all duration-200
+            flex justify-center items-center rounded-[18px] transition-all duration-200
             ${
-              cooldown > 0
+              displayedCooldown > 0 || judgeMutation.isPending
                 ? 'bg-[#D9DADB] text-[#515151] cursor-not-allowed'
-                : 'bg-[#FF4854] shadow-[0_3px_8px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]'
+                : 'cursor-pointer bg-[#FF4854] shadow-[0_3px_8px_rgba(255,72,84,0.16)] hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)]'
             }`}
-          disabled={previewMode ? false : !sessionId || cooldown > 0}
+          disabled={
+            previewMode ? false : !sessionId || displayedCooldown > 0 || judgeMutation.isPending
+          }
         >
           <span className="text-card-title font-strong text-white">
-            {cooldown > 0 ? `재시도 ${cooldown}s` : '제출하기'}
+            {judgeMutation.isPending
+              ? '제출 중...'
+              : displayedCooldown > 0
+                ? `재시도 ${displayedCooldown}s`
+                : '제출하기'}
           </span>
         </button>
       </div>

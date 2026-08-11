@@ -27,7 +27,7 @@ export default function AdminOperationsPage() {
   const [tab, setTab] = useState('notices');
 
   return (
-    <div className="mx-auto w-full max-w-7xl p-8 pb-40 text-white">
+    <div className="min-h-screen w-full px-6 py-8 pb-40 text-white xl:px-10 xl:py-10">
       <div className="mb-8 flex justify-center gap-3">
         {[
           ['notices', '공지사항 관리'],

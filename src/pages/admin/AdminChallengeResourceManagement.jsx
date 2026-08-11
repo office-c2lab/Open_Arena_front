@@ -306,7 +306,7 @@ export function ChallengeSetting() {
 
 function ResourceLayout({ title, description, children }) {
   return (
-    <div className="mx-auto w-full max-w-5xl p-6 text-white">
+    <div className="w-full p-6 text-white">
       <h1 className="text-section-title font-bold text-[#FF4854]">{title}</h1>
       <p className="mt-1 text-gray-400">{description}</p>
       <div className="mt-6 space-y-6">{children}</div>

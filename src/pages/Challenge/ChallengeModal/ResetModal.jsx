@@ -25,27 +25,28 @@ const ResetModal = ({
   hideBrandSymbol = false,
 }) => {
   const isResetModalOpen = useModalStore(state => state.isResetModalOpen);
-  const { closeResetModal } = useModalStore();
+  const { closeResetModal, resetChatAction } = useModalStore();
   const { clearSession } = useSessionStore();
   const queryClient = useQueryClient();
   const shouldShow = previewMode ? isOpen : isResetModalOpen;
   const handleClose = previewMode ? onClose : closeResetModal;
 
-  const handleReset = useCallback(() => {
+  const handleReset = useCallback(async () => {
     if (previewMode) {
       onReset();
       onClose();
       return;
     }
 
-    // ✅ 세션 클리어 및 캐시 초기화
+    // 세션 캐시를 비우고 새로운 서버 세션을 생성합니다.
     clearSession();
     queryClient.removeQueries({ queryKey: ['chatMessages'] });
-    queryClient.invalidateQueries(['problemBundle']);
-
-    // 모달 닫기
-    closeResetModal();
-  }, [clearSession, queryClient, closeResetModal, onClose, onReset, previewMode]);
+    try {
+      await resetChatAction();
+    } finally {
+      closeResetModal();
+    }
+  }, [clearSession, queryClient, closeResetModal, onClose, onReset, previewMode, resetChatAction]);
 
   if (!shouldShow) return null;
 

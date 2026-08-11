@@ -1,8 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 
 import { useProblemBundleQuery } from '@/hooks/useProblemBundleQuery';
+import { useChatSessions } from '@/hooks/useChatSessions';
+import { useJudgeSubmissions } from '@/hooks/useJudgeSubmissions';
 import useModalStore from '@/stores/useModalStore';
 import { useAuthStore } from '@/stores/authStore';
 import { TABS } from '../data/challengeData';
@@ -18,6 +20,8 @@ import ResetModal from '../ChallengeModal/ResetModal';
 import SubmitModal from '../ChallengeModal/SubmitMoadl';
 import FailedModal from '../ChallengeModal/FailedModal';
 import SuccessModal from '../ChallengeModal/SuccesModal';
+import { useSessionStore } from '@/stores/useSessionStore';
+import { mergeChatSessionsWithSubmissions } from '@/utils/judgeSessions';
 
 const MotionDiv = motion.div;
 
@@ -25,17 +29,19 @@ export default function ChallengePlay() {
   const navigate = useNavigate();
   const shouldReduceMotion = useReducedMotion();
   const { problemId } = useParams();
-  const currentProblemId = parseInt(problemId, 10) || undefined;
+  const currentProblemId = problemId || undefined;
   const currentTeamId = useAuthStore(state => state.teamInfo?.id) || undefined;
+  const sessionId = useSessionStore(state => state.sessionId);
+  const setSessionId = useSessionStore(state => state.setSessionId);
+  const setSessionStatus = useSessionStore(state => state.setSessionStatus);
+  const hasInitializedSessionRef = useRef(false);
 
   const {
     isDebugModalOpen,
     isResetModalOpen,
-    isSubmitModalOpen,
     isLoadingModalOpen,
     isFailedModalOpen,
     isSuccessModalOpen,
-    setResetChatAction,
     closeLoadingModal,
   } = useModalStore();
 
@@ -48,10 +54,42 @@ export default function ChallengePlay() {
     isError: isProblemError,
     error: problemError,
   } = useProblemBundleQuery(currentProblemId, currentTeamId);
+  const sessionsQuery = useChatSessions(currentProblemId);
+  const submissionsQuery = useJudgeSubmissions(currentProblemId);
+  const mergedSessions = useMemo(
+    () => mergeChatSessionsWithSubmissions(sessionsQuery.data?.items, submissionsQuery.data?.items),
+    [sessionsQuery.data?.items, submissionsQuery.data?.items]
+  );
+
+  useEffect(() => {
+    if (sessionsQuery.isLoading || submissionsQuery.isLoading || hasInitializedSessionRef.current) {
+      return;
+    }
+
+    hasInitializedSessionRef.current = true;
+    const activeSession = mergedSessions.find(session => session.id === sessionId);
+    if (activeSession) {
+      setSessionStatus(activeSession.status === 'failed' ? 'fail' : activeSession.status);
+      return;
+    }
+
+    const latestSession = mergedSessions[0];
+    if (latestSession) {
+      setSessionId(latestSession.id);
+      setSessionStatus(latestSession.status === 'failed' ? 'fail' : latestSession.status);
+    }
+  }, [
+    sessionId,
+    mergedSessions,
+    sessionsQuery.isLoading,
+    submissionsQuery.isLoading,
+    setSessionId,
+    setSessionStatus,
+  ]);
 
   useEffect(() => {
     if (isProblemError) {
-      const status = problemError?.response?.status;
+      const status = problemError?.status;
 
       if (status === 403) {
         navigate('/403', { replace: true });
@@ -69,7 +107,7 @@ export default function ChallengePlay() {
     ? '문제 정보를 불러오는 중입니다...'
     : undefined;
 
-  const { CHALLENGE_HEADER_INFO, overviewSections, SESSIONS_LIST } = useMemo(() => {
+  const { CHALLENGE_HEADER_INFO, overviewSections, SESSIONS_LIST } = (() => {
     if (!problemBundleData?.problem) {
       return {
         CHALLENGE_HEADER_INFO: {
@@ -84,8 +122,6 @@ export default function ChallengePlay() {
         SESSIONS_LIST: [],
       };
     }
-
-    const sessions = problemBundleData.sessions || [];
 
     const headerInfo = {
       title: problem.title,
@@ -104,24 +140,17 @@ export default function ChallengePlay() {
     return {
       CHALLENGE_HEADER_INFO: headerInfo,
       overviewSections: sections,
-      SESSIONS_LIST: sessions,
+      SESSIONS_LIST: mergedSessions,
     };
-  }, [problemBundleData, isProblemBundleLoading]);
+  })();
 
-  const hasSuccessSession = useMemo(() => {
-    return SESSIONS_LIST?.some(s => s.status?.toLowerCase() === 'success');
-  }, [SESSIONS_LIST]);
+  const hasSuccessSession = SESSIONS_LIST?.some(s => s.status?.toLowerCase() === 'success');
+  const activeSession = SESSIONS_LIST.find(session => session.id === sessionId);
 
   const handleTabClick = (e, tabId) => {
     e.preventDefault();
     setActiveTab(tabId);
   };
-
-  const handleResetChat = () => {};
-
-  useMemo(() => {
-    setResetChatAction(handleResetChat);
-  }, [setResetChatAction]);
 
   return (
     <MotionDiv
@@ -143,7 +172,7 @@ export default function ChallengePlay() {
         sessions={SESSIONS_LIST}
         handleTabClick={handleTabClick}
         CHALLENGE_HEADER_INFO={CHALLENGE_HEADER_INFO}
-        isLoading={isProblemBundleLoading}
+        isLoading={isProblemBundleLoading || sessionsQuery.isLoading || submissionsQuery.isLoading}
         problemCode={problemBundleData?.problem?.problem_code}
         problemApiUrl={apiInfo?.url}
         problemApiMethod={apiInfo?.method}
@@ -151,6 +180,7 @@ export default function ChallengePlay() {
         problemApiKey={apiInfo?.api_key}
         problemId={currentProblemId}
         teamId={currentTeamId}
+        tokenUsed={activeSession?.user_prompt_tokens}
       />
 
       <ChatArea
@@ -167,7 +197,7 @@ export default function ChallengePlay() {
 
       {isDebugModalOpen && <DebugModal />}
       {isResetModalOpen && <ResetModal />}
-      {isSubmitModalOpen && <SubmitModal setProgress={setProgress} />}
+      <SubmitModal setProgress={setProgress} />
       {isLoadingModalOpen && (
         <LoadingModal isOpen={isLoadingModalOpen} progress={progress} onClose={closeLoadingModal} />
       )}

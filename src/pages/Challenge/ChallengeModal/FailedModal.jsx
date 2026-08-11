@@ -22,18 +22,17 @@ export default function FailedModal({
   const clearSession = useSessionStore(state => state.clearSession);
 
   // 💡 새로운 대화 시작
-  const handleRestart = useCallback(() => {
+  const handleRestart = useCallback(async () => {
     closeFailedModal();
-    resetChatAction();
-    clearSession();
-    queryClient.invalidateQueries(['problemBundle']);
-  }, [closeFailedModal, resetChatAction, clearSession, queryClient]);
+    await resetChatAction();
+    queryClient.invalidateQueries({ queryKey: ['problemBundle'] });
+  }, [closeFailedModal, resetChatAction, queryClient]);
 
   // 💡 다른 문제 풀기
   const handleContinue = useCallback(() => {
     closeFailedModal();
     clearSession();
-    queryClient.invalidateQueries(['problemBundle']);
+    queryClient.invalidateQueries({ queryKey: ['problemBundle'] });
     navigate('/kategorie');
   }, [closeFailedModal, clearSession, queryClient, navigate]);
 

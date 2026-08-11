@@ -27,7 +27,7 @@ export default function AdminProblemCreatePage() {
   return (
     <form
       onSubmit={submit}
-      className="mx-auto w-full max-w-5xl rounded-2xl border border-white/10 bg-[#0B021C]/70 p-8 text-white shadow-xl"
+      className="w-full rounded-2xl border border-white/10 bg-[#0B021C]/70 p-8 text-white shadow-xl"
     >
       <h1 className="mb-8 text-section-title font-bold text-[#FF4854]">문제 생성</h1>
       <AdminProblemForm form={form} setForm={setForm} />

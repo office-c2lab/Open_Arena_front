@@ -7,7 +7,7 @@ import ArenaLogo from '@/assets/icons/Arena.svg';
 import ArenaTextLogo from '@/assets/icons/ArenaText.svg';
 import UserIcon from '@/assets/icons/user.svg';
 import { getChallengeStats, getTodayUsage } from '@/api/accountApi';
-import { logoutApi } from '@/api/auth';
+import { getMe, logoutApi } from '@/api/auth';
 import { getPublicNotice, getPublicNotices } from '@/api/noticesApi';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -23,7 +23,7 @@ const isNavItemActive = (item, pathname) => item.match.some(path => pathname.sta
 const formatNumber = value => Number(value ?? 0).toLocaleString('ko-KR');
 
 const getUsageText = metric =>
-  metric ? `${formatNumber(metric.used)} / ${formatNumber(metric.effective_limit)}` : '-';
+  metric ? `${formatNumber(metric.used)} / ${formatNumber(metric.base_limit)}` : '-';
 const formatNotificationTime = value => {
   if (!value) return '';
 
@@ -41,20 +41,29 @@ const formatNotificationTime = value => {
 export default function AppHeader({ isHidden = false }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isLoggedIn, logout, teamInfo } = useAuthStore();
+  const { isLoggedIn, login, logout, teamInfo } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [selectedNoticeId, setSelectedNoticeId] = useState(null);
 
+  const accountMeQuery = useQuery({
+    queryKey: ['account', 'me'],
+    queryFn: getMe,
+    enabled: false,
+    staleTime: 0,
+  });
+  const profileInfo = accountMeQuery.data ?? teamInfo;
   const displayName =
-    teamInfo?.teamname || teamInfo?.username || teamInfo?.login_id || 'ARENA 유저';
-  const displayEmail = teamInfo?.login_id || teamInfo?.email || 'arena@example.com';
-  const membershipLabel = teamInfo?.membershipLabel || '무료 회원';
-  const membership = String(teamInfo?.membershipType || teamInfo?.membership || '').toLowerCase();
+    profileInfo?.teamname || profileInfo?.username || profileInfo?.login_id || 'ARENA 유저';
+  const displayEmail = profileInfo?.login_id || profileInfo?.email || 'arena@example.com';
+  const membershipLabel = profileInfo?.membershipLabel || '무료 회원';
+  const membership = String(
+    profileInfo?.membershipType || profileInfo?.membership || ''
+  ).toLowerCase();
   const isPaidMember = ['paid', 'premium', 'pro', '유료'].includes(membership);
-  const profileImage = teamInfo?.profileImage || UserIcon;
-  const hasProfileImage = Boolean(teamInfo?.profileImage);
+  const profileImage = profileInfo?.profileImage || UserIcon;
+  const hasProfileImage = Boolean(profileInfo?.profileImage);
   const noticesQuery = useQuery({
     queryKey: ['publicNotices', { offset: 0, limit: 100 }],
     queryFn: () => getPublicNotices({ offset: 0, limit: 100 }),
@@ -70,14 +79,14 @@ export default function AppHeader({ isHidden = false }) {
   const challengeStatsQuery = useQuery({
     queryKey: ['account', 'challenge-stats'],
     queryFn: getChallengeStats,
-    enabled: isLoggedIn && isProfileOpen && isPaidMember,
-    staleTime: 30_000,
+    enabled: false,
+    staleTime: 0,
   });
   const todayUsageQuery = useQuery({
     queryKey: ['account', 'usage', 'today'],
     queryFn: getTodayUsage,
-    enabled: isLoggedIn && isProfileOpen && !isPaidMember,
-    staleTime: 30_000,
+    enabled: false,
+    staleTime: 0,
   });
   const challengeStats = challengeStatsQuery.data;
   const todayUsage = todayUsageQuery.data;
@@ -85,6 +94,10 @@ export default function AppHeader({ isHidden = false }) {
   const submissionUsage = getUsageText(todayUsage?.submissions);
   const tokenUsage = getUsageText(todayUsage?.tokens);
   const notifications = noticesQuery.data?.items ?? [];
+
+  useEffect(() => {
+    if (accountMeQuery.data) login(accountMeQuery.data);
+  }, [accountMeQuery.data, login]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -131,9 +144,23 @@ export default function AppHeader({ isHidden = false }) {
     });
   };
 
-  const handleProfileToggle = () => {
+  const handleProfileToggle = async () => {
     setIsNotificationOpen(false);
-    setIsProfileOpen(current => !current);
+    if (isProfileOpen) {
+      setIsProfileOpen(false);
+      return;
+    }
+
+    setIsProfileOpen(true);
+    const accountResult = await accountMeQuery.refetch();
+    const latestProfile = accountResult.data ?? profileInfo;
+    const latestMembership = String(
+      latestProfile?.membershipType || latestProfile?.membership || ''
+    ).toLowerCase();
+    const isLatestPaidMember = ['paid', 'premium', 'pro', '유료'].includes(latestMembership);
+
+    if (isLatestPaidMember) await challengeStatsQuery.refetch();
+    else await todayUsageQuery.refetch();
   };
 
   const openNotification = notificationId => {
@@ -369,7 +396,8 @@ export default function AppHeader({ isHidden = false }) {
                         계정 설정
                       </Link>
 
-                      {(isPaidMember ? challengeStatsQuery : todayUsageQuery).isError ? (
+                      {accountMeQuery.isError ||
+                      (isPaidMember ? challengeStatsQuery : todayUsageQuery).isError ? (
                         <div className="mt-4 rounded-[4px] border border-[#F2C8CC] bg-[#FFF7F8] px-4 py-3 text-center text-body font-medium text-[#D83A45]">
                           프로필 정보를 불러오지 못했습니다.
                         </div>

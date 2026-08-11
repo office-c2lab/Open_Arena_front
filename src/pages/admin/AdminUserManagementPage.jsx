@@ -238,7 +238,7 @@ export default function AdminUserManagementPage() {
 
   return (
     <div className="min-h-screen w-full p-10 pb-40 text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+      <div className="flex w-full flex-col gap-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <h1 className="text-page-title font-strong text-[#FF4854]">사용자 관리</h1>
           <button

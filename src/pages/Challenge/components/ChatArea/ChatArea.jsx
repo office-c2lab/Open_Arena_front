@@ -1,11 +1,12 @@
 // src/features/Challenge/components/ChatArea/ChatArea.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useModalStore from '@/stores/useModalStore';
 import { useChatSession } from '@/hooks/useChatSession';
 import { useChatMessages } from '@/hooks/useChatMessages';
+import { useJudgeSubmission } from '@/hooks/useJudgeSubmissions';
 import { useSessionStore } from '@/stores/useSessionStore';
-import { successPanelsData, failedPanelsData } from '../../data/challengeModalData';
+import { buildJudgeResultPanels, isPassedSubmission } from '../../utils/judgeResultPresentation';
+import { appToast } from '@/components/Toast/appToast';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 import ChatControls from './ChatControls';
@@ -27,22 +28,18 @@ export default function ChatArea({
     openFailedModal,
     setChallengeResults,
     setChallengeRewardPoints,
+    setResetChatAction,
   } = useModalStore();
   const { sessionStatus } = useSessionStore();
-  const queryClient = useQueryClient();
 
   // 세션 훅
   const { sessionId, clearSession, createSessionMutation } = useChatSession(teamId, problemId);
+  const createSessionAsync = createSessionMutation.mutateAsync;
 
   const [inputValue, setInputValue] = useState('');
 
-  const { messages, isMessagesLoading, sendMessageMutation } = useChatMessages(
-    sessionId,
-    teamId,
-    problemId,
-    clearSession,
-    setInputValue
-  );
+  const { messages, isMessagesLoading, messagesError, sendMessageMutation, cancelPendingMessage } =
+    useChatMessages(sessionId, teamId, problemId, clearSession, setInputValue);
 
   const chatEndRef = useRef(null);
   useEffect(() => {
@@ -54,31 +51,19 @@ export default function ChatArea({
     const trimmed = inputValue.trim();
     if (!trimmed || sendMessageMutation.isPending) return;
 
-    // ⭐ 세션이 없으면 새로 만들고 메시지 전송
-    if (!sessionId) {
-      const newSession = await createSessionMutation.mutateAsync('');
-      const newSessionId = newSession?.id ?? newSession;
+    try {
+      if (!sessionId) {
+        const newSession = await createSessionMutation.mutateAsync('');
+        const newSessionId = newSession?.id ?? newSession;
 
-      if (newSessionId) {
-        // 문제 다시 불러오기
-        queryClient.invalidateQueries(['problemBundle', problemId, teamId]);
-
-        // 첫 메시지 전송
-        await sendMessageMutation.mutateAsync({ content: trimmed, sessionId: newSessionId });
-
-        // 🔥 토큰 사용량 즉시 갱신
-        queryClient.invalidateQueries(['tokenUsage']);
+        if (newSessionId) {
+          await sendMessageMutation.mutateAsync({ content: trimmed, sessionId: newSessionId });
+        }
+      } else {
+        await sendMessageMutation.mutateAsync(trimmed);
       }
-    }
-
-    // ⭐ 기존 세션이 있을 때
-    else {
-      sendMessageMutation.mutate(trimmed, {
-        onSuccess: () => {
-          // 🔥 토큰 사용량 즉시 갱신
-          queryClient.invalidateQueries(['tokenUsage']);
-        },
-      });
+    } catch {
+      // 각 mutation의 onError에서 사용자 메시지를 표시합니다.
     }
   };
 
@@ -90,6 +75,9 @@ export default function ChatArea({
     normalizedSessionStatus === 'fail' ||
     normalizedSessionStatus === 'failed';
   const activeSession = sessions.find(session => session.id === sessionId);
+  const submissionDetailQuery = useJudgeSubmission(activeSession?.submission_id, {
+    enabled: Boolean(activeSession?.submission_id),
+  });
 
   const handleViewJudgeResult = () => {
     if (!hasJudgeResult) {
@@ -97,25 +85,16 @@ export default function ChatArea({
       return;
     }
 
-    const isSuccess = normalizedSessionStatus === 'success';
-    const basePanels = isSuccess ? successPanelsData : failedPanelsData;
-    const judgeReason = activeSession?.judge_reason;
+    const submission = submissionDetailQuery.data ?? activeSession?.submission;
+    if (!submission) {
+      appToast.info('판정 상세 결과를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
+      return;
+    }
 
-    setChallengeResults(
-      basePanels.map((panel, index) => ({
-        status: isSuccess ? 'success' : 'failed',
-        data: {
-          ...panel,
-          title: panel.animalName,
-          description: index === 0 && judgeReason ? judgeReason : panel.description,
-        },
-      }))
-    );
-    setChallengeRewardPoints(
-      activeSession?.earned_points ?? activeSession?.points ?? activeSession?.score ?? null
-    );
+    setChallengeResults(buildJudgeResultPanels(submission));
+    setChallengeRewardPoints(submission.score ?? null);
 
-    if (isSuccess) openSuccessModal();
+    if (isPassedSubmission(submission)) openSuccessModal();
     else openFailedModal();
   };
 
@@ -129,7 +108,20 @@ export default function ChatArea({
     sessionStatus === 'fail';
 
   const isInitialState =
-    !sessionId && displayMessages.length === 0 && !createSessionMutation.isPending;
+    displayMessages.length === 0 &&
+    !isMessagesLoading &&
+    !createSessionMutation.isPending &&
+    !sendMessageMutation.isPending;
+
+  const handleResetChat = useCallback(async () => {
+    cancelPendingMessage();
+    clearSession();
+    await createSessionAsync('');
+  }, [cancelPendingMessage, clearSession, createSessionAsync]);
+
+  useEffect(() => {
+    setResetChatAction(handleResetChat);
+  }, [handleResetChat, setResetChatAction]);
 
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-grow flex-col">
@@ -137,6 +129,7 @@ export default function ChatArea({
         <ChatMessages
           messages={displayMessages}
           isLoading={isMessagesLoading}
+          error={messagesError}
           isInitialState={isInitialState}
           ArenaIcon={ArenaIcon}
           chatEndRef={chatEndRef}

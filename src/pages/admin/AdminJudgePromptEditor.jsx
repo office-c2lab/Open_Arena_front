@@ -84,7 +84,7 @@ export default function AdminJudgePromptEditor() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-10 pb-40 text-white xl:flex-row">
+    <div className="flex min-h-screen w-full flex-col gap-6 px-6 py-8 pb-40 text-white xl:flex-row xl:px-10 xl:py-10">
       <aside className="w-full shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[#0B021C]/70 xl:w-[320px]">
         <div className="border-b border-white/10 p-5">
           <h1 className="text-card-title font-bold text-[#FF4854]">Judge 프롬프트 관리</h1>

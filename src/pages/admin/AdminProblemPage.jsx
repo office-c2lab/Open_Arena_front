@@ -15,7 +15,7 @@ export default function AdminProblemPage() {
   const [activeTab, setActiveTab] = useState('problems');
 
   return (
-    <div className="mx-auto w-full max-w-7xl p-8 pb-40">
+    <div className="min-h-screen w-full px-6 py-8 pb-40 xl:px-10 xl:py-10">
       <div className="mb-8 flex flex-wrap justify-center gap-3">
         {TABS.map(([value, label]) => (
           <button

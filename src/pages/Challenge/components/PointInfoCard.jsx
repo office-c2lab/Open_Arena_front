@@ -4,9 +4,7 @@ import React from 'react';
 import Skeleton from '../../../components/Skeleton/Skeleton';
 import PointSvg from '../../../assets/icons/Point.svg';
 import { useParams } from 'react-router-dom';
-import { useAuthStore } from '@/stores/authStore';
 import { useProblemBundle } from '@/hooks/useProblemBundle';
-import { useProblemBestScore } from '@/hooks/useProblemBestScore'; // ⭐ 추가
 
 const COLOR_BLACK = '#000000';
 
@@ -36,25 +34,15 @@ const PointInfoCardSkeleton = ({ compact = false }) => (
 
 export default function PointInfoCard({ compact = false }) {
   const { problemId } = useParams();
-  const currentProblemId = parseInt(problemId, 10);
-  const teamId = useAuthStore(state => state.teamInfo?.id) || undefined;
+  const currentProblemId = problemId || undefined;
 
   // 문제 기본 점수
-  const { data: problemData, isLoading: isProblemLoading } = useProblemBundle(
-    currentProblemId,
-    teamId
-  );
-
-  // ⭐ 최고 점수(best_score)
-  const { data: bestScoreData, isLoading: isBestLoading } = useProblemBestScore(
-    currentProblemId,
-    teamId
-  );
+  const { data: problemData, isLoading: isProblemLoading } = useProblemBundle(currentProblemId);
 
   const score = problemData?.problem?.score ?? 0;
-  const bestScore = bestScoreData?.best_score ?? 0; // ⭐ 0 또는 실제 점수
+  const bestScore = problemData?.problem?.best_score ?? 0;
 
-  if (isProblemLoading || isBestLoading) return <PointInfoCardSkeleton compact={compact} />;
+  if (isProblemLoading) return <PointInfoCardSkeleton compact={compact} />;
 
   return (
     <div

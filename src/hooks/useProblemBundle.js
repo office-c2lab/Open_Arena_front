@@ -11,7 +11,7 @@ import { fetchProblemBundle } from '@/api/problemApi';
  * @returns {object} React Query 결과 객체
  */
 export const useProblemBundle = (problemId, teamId) => {
-  const isEnabled = problemId > 0;
+  const isEnabled = Boolean(problemId);
 
   return useQuery({
     queryKey: ['problemBundle', problemId, teamId],

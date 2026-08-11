@@ -1,35 +1,82 @@
 import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import {
+  fetchAllJudgeSessions,
+  fetchAllJudgeUsers,
   fetchJudgeMessages,
   fetchJudgeSessions,
   fetchJudgeSubmissions,
+  resolveJudgeSessionFilterIds,
 } from '@/api/adminJudgeReviewApi';
 import { getAdminSubmission, setAdminManualVerdict } from '@/api/adminJudgeApi';
 import { appToast } from '@/components/Toast/appToast';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const PAGE_SIZE = 20;
-const emptyFilters = { userId: '', problemId: '', submissionStatus: '', verdict: '' };
+const emptyFilterInputs = {
+  nickname: '',
+  problemTitle: '',
+  submissionStatus: '',
+  verdict: '',
+};
+const emptyFilters = {
+  nickname: '',
+  problemTitle: '',
+  userId: '',
+  problemId: '',
+  submissionStatus: '',
+  verdict: '',
+};
 
 export default function AdminConversationMockPage() {
   const queryClient = useQueryClient();
-  const [filterInputs, setFilterInputs] = useState(emptyFilters);
+  const [filterInputs, setFilterInputs] = useState(emptyFilterInputs);
   const [filters, setFilters] = useState(emptyFilters);
+  const [isResolvingFilters, setIsResolvingFilters] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedProblemId, setSelectedProblemId] = useState(null);
   const [offset, setOffset] = useState(0);
   const [selectedSessionId, setSelectedSessionId] = useState(null);
   const [selectedSubmissionId, setSelectedSubmissionId] = useState(null);
   const [manualVerdict, setManualVerdict] = useState('passed');
   const [manualReason, setManualReason] = useState('');
 
+  const usersQuery = useQuery({
+    queryKey: ['adminChatReviewUsers', filters.nickname, filters.userId],
+    queryFn: () => fetchAllJudgeUsers({ nickname: filters.nickname }),
+  });
+  const problemSessionsQuery = useQuery({
+    queryKey: [
+      'adminChatSessionProblems',
+      selectedUserId,
+      filters.problemId,
+      filters.submissionStatus,
+      filters.verdict,
+    ],
+    queryFn: () =>
+      fetchAllJudgeSessions({
+        userId: selectedUserId,
+        problemId: filters.problemId,
+        submissionStatus: filters.submissionStatus,
+        verdict: filters.verdict,
+      }),
+    enabled: Boolean(selectedUserId),
+  });
   const sessionParams = useMemo(
-    () => ({ ...filters, offset, limit: PAGE_SIZE }),
-    [filters, offset]
+    () => ({
+      userId: selectedUserId,
+      problemId: selectedProblemId,
+      submissionStatus: filters.submissionStatus,
+      verdict: filters.verdict,
+      offset,
+      limit: PAGE_SIZE,
+    }),
+    [filters.submissionStatus, filters.verdict, offset, selectedProblemId, selectedUserId]
   );
   const sessionsQuery = useQuery({
     queryKey: ['adminChatSessions', sessionParams],
     queryFn: () => fetchJudgeSessions(sessionParams),
-    placeholderData: previous => previous,
+    enabled: Boolean(selectedUserId && selectedProblemId),
   });
   const messagesQuery = useQuery({
     queryKey: ['adminChatMessages', selectedSessionId],
@@ -54,6 +101,7 @@ export default function AdminConversationMockPage() {
           queryKey: ['adminSessionSubmissions', selectedSessionId],
         }),
         queryClient.invalidateQueries({ queryKey: ['adminChatSessions'] }),
+        queryClient.invalidateQueries({ queryKey: ['adminChatSessionProblems'] }),
         queryClient.invalidateQueries({ queryKey: ['adminSubmission', selectedSubmissionId] }),
       ]);
       setManualReason('');
@@ -62,17 +110,59 @@ export default function AdminConversationMockPage() {
     onError: error => appToast.error(error.message),
   });
 
+  const users = useMemo(() => {
+    const items = usersQuery.data ?? [];
+    return filters.userId ? items.filter(user => user.id === filters.userId) : items;
+  }, [filters.userId, usersQuery.data]);
+  const problems = useMemo(() => {
+    const problemMap = new Map();
+    (problemSessionsQuery.data ?? []).forEach(session => {
+      const problem = problemMap.get(session.problem_id);
+      problemMap.set(session.problem_id, {
+        id: session.problem_id,
+        title: session.problem_title,
+        sessionCount: (problem?.sessionCount ?? 0) + 1,
+      });
+    });
+    return [...problemMap.values()].sort((a, b) => a.title.localeCompare(b.title, 'ko-KR'));
+  }, [problemSessionsQuery.data]);
   const sessions = sessionsQuery.data?.items ?? [];
   const total = sessionsQuery.data?.total ?? 0;
   const submissions = submissionsQuery.data?.items ?? [];
   const selectedSubmission = submissionDetailQuery.data;
+  const isRefreshing =
+    usersQuery.isFetching || problemSessionsQuery.isFetching || sessionsQuery.isFetching;
 
-  const submitFilters = event => {
+  const refreshHierarchy = () => {
+    void usersQuery.refetch();
+    if (selectedUserId) void problemSessionsQuery.refetch();
+    if (selectedUserId && selectedProblemId) void sessionsQuery.refetch();
+  };
+
+  const submitFilters = async event => {
     event.preventDefault();
-    setFilters(filterInputs);
-    setOffset(0);
-    setSelectedSessionId(null);
-    setSelectedSubmissionId(null);
+    if (isResolvingFilters) return;
+
+    setIsResolvingFilters(true);
+    try {
+      const resolvedIds = await resolveJudgeSessionFilterIds(filterInputs);
+      setFilters({
+        ...resolvedIds,
+        nickname: filterInputs.nickname.trim(),
+        problemTitle: filterInputs.problemTitle.trim(),
+        submissionStatus: filterInputs.submissionStatus,
+        verdict: filterInputs.verdict,
+      });
+      setSelectedUserId(resolvedIds.userId || null);
+      setSelectedProblemId(resolvedIds.userId ? resolvedIds.problemId || null : null);
+      setOffset(0);
+      setSelectedSessionId(null);
+      setSelectedSubmissionId(null);
+    } catch (error) {
+      appToast.error(error.message || '필터 대상을 찾지 못했습니다.');
+    } finally {
+      setIsResolvingFilters(false);
+    }
   };
 
   const submitManualVerdict = event => {
@@ -86,7 +176,7 @@ export default function AdminConversationMockPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl p-10 pb-40 text-white">
+    <div className="min-h-screen w-full px-6 py-8 pb-40 text-white xl:px-10 xl:py-10">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h1 className="text-page-title font-bold text-[#FF4854]">채팅·판정 열람</h1>
@@ -96,12 +186,11 @@ export default function AdminConversationMockPage() {
         </div>
         <button
           type="button"
-          onClick={() => sessionsQuery.refetch()}
-          disabled={sessionsQuery.isFetching}
+          onClick={refreshHierarchy}
+          disabled={isRefreshing}
           className="flex h-11 items-center gap-2 rounded-lg bg-[#FF4854] px-5 font-bold disabled:opacity-50"
         >
-          <RefreshCw size={17} className={sessionsQuery.isFetching ? 'animate-spin' : ''} />{' '}
-          새로고침
+          <RefreshCw size={17} className={isRefreshing ? 'animate-spin' : ''} /> 새로고침
         </button>
       </div>
 
@@ -110,14 +199,16 @@ export default function AdminConversationMockPage() {
         className="mt-6 grid gap-3 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 md:grid-cols-2 xl:grid-cols-5"
       >
         <FilterInput
-          label="회원 UUID"
-          value={filterInputs.userId}
-          onChange={value => setFilterInputs(current => ({ ...current, userId: value }))}
+          label="닉네임"
+          placeholder="정확한 닉네임 입력"
+          value={filterInputs.nickname}
+          onChange={value => setFilterInputs(current => ({ ...current, nickname: value }))}
         />
         <FilterInput
-          label="문제 UUID"
-          value={filterInputs.problemId}
-          onChange={value => setFilterInputs(current => ({ ...current, problemId: value }))}
+          label="문제 제목"
+          placeholder="정확한 문제 제목 입력"
+          value={filterInputs.problemTitle}
+          onChange={value => setFilterInputs(current => ({ ...current, problemTitle: value }))}
         />
         <FilterSelect
           label="제출 상태"
@@ -145,21 +236,95 @@ export default function AdminConversationMockPage() {
         </FilterSelect>
         <button
           type="submit"
-          className="mt-auto h-11 rounded-lg bg-[#FF4854] px-5 font-bold hover:bg-[#ff3242]"
+          disabled={isResolvingFilters}
+          className="mt-auto h-11 rounded-lg bg-[#FF4854] px-5 font-bold hover:bg-[#ff3242] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          필터 적용
+          {isResolvingFilters ? '대상 찾는 중...' : '필터 적용'}
         </button>
       </form>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[380px_1fr]">
-        <section className="overflow-hidden rounded-xl border border-white/10 bg-[#0B021C]/70">
-          <div className="border-b border-white/10 p-4 font-bold text-[#FF4854]">
-            세션 목록 · {total.toLocaleString()}개
-          </div>
-          {sessionsQuery.isLoading && <State>목록을 불러오는 중...</State>}
+      <div className="mt-6 grid gap-4 lg:grid-cols-3">
+        <ReviewColumn title={`사용자 · ${users.length.toLocaleString()}명`}>
+          {usersQuery.isLoading && <State>사용자를 불러오는 중...</State>}
+          {usersQuery.error && <State error>{usersQuery.error.message}</State>}
+          {users.map(user => (
+            <HierarchyItem
+              key={user.id}
+              active={selectedUserId === user.id}
+              title={user.nickname || '닉네임 없음'}
+              description={user.email || '이메일 없음'}
+              onClick={() => {
+                setSelectedUserId(user.id);
+                setSelectedProblemId(filters.problemId || null);
+                setSelectedSessionId(null);
+                setSelectedSubmissionId(null);
+                setOffset(0);
+              }}
+            />
+          ))}
+          {!usersQuery.isLoading && users.length === 0 && <State>표시할 사용자가 없습니다.</State>}
+        </ReviewColumn>
+
+        <ReviewColumn title={`문제 · ${problems.length.toLocaleString()}개`}>
+          {!selectedUserId && <State>사용자를 먼저 선택해 주세요.</State>}
+          {selectedUserId && problemSessionsQuery.isLoading && (
+            <State>사용자의 문제를 불러오는 중...</State>
+          )}
+          {problemSessionsQuery.error && <State error>{problemSessionsQuery.error.message}</State>}
+          {problems.map(problem => (
+            <HierarchyItem
+              key={problem.id}
+              active={selectedProblemId === problem.id}
+              title={problem.title}
+              description={`세션 ${problem.sessionCount.toLocaleString()}개`}
+              onClick={() => {
+                setSelectedProblemId(problem.id);
+                setSelectedSessionId(null);
+                setSelectedSubmissionId(null);
+                setOffset(0);
+              }}
+            />
+          ))}
+          {selectedUserId && !problemSessionsQuery.isLoading && problems.length === 0 && (
+            <State>필터 조건에 맞는 문제가 없습니다.</State>
+          )}
+        </ReviewColumn>
+
+        <ReviewColumn
+          title={`세션 · ${total.toLocaleString()}개`}
+          footer={
+            total > 0 ? (
+              <div className="flex items-center justify-between text-label">
+                <button
+                  type="button"
+                  disabled={offset === 0}
+                  onClick={() => setOffset(value => Math.max(0, value - PAGE_SIZE))}
+                  className="flex h-8 w-8 items-center justify-center rounded bg-white/10 disabled:opacity-30"
+                  aria-label="이전 세션 페이지"
+                >
+                  <ChevronLeft size={17} />
+                </button>
+                <span>
+                  {Math.floor(offset / PAGE_SIZE) + 1} / {Math.max(1, Math.ceil(total / PAGE_SIZE))}
+                </span>
+                <button
+                  type="button"
+                  disabled={offset + PAGE_SIZE >= total}
+                  onClick={() => setOffset(value => value + PAGE_SIZE)}
+                  className="flex h-8 w-8 items-center justify-center rounded bg-white/10 disabled:opacity-30"
+                  aria-label="다음 세션 페이지"
+                >
+                  <ChevronRight size={17} />
+                </button>
+              </div>
+            ) : null
+          }
+        >
+          {!selectedProblemId && <State>문제를 먼저 선택해 주세요.</State>}
+          {selectedProblemId && sessionsQuery.isLoading && <State>세션을 불러오는 중...</State>}
           {sessionsQuery.error && <State error>{sessionsQuery.error.message}</State>}
-          <div className="max-h-[70vh] overflow-y-auto p-3">
-            {sessions.map(session => (
+          {selectedProblemId &&
+            sessions.map(session => (
               <button
                 key={session.id}
                 type="button"
@@ -170,121 +335,122 @@ export default function AdminConversationMockPage() {
                 className={`mb-2 w-full rounded-lg border p-3 text-left transition ${selectedSessionId === session.id ? 'border-[#FF4854] bg-[#FF4854] text-white' : 'border-white/10 bg-[#10050F]/60 hover:bg-[#1A0B15]'}`}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <strong>{session.nickname || session.email || session.user_id}</strong>
+                  <strong className="truncate">{session.title || '제목 없는 세션'}</strong>
                   {session.verdict && <VerdictBadge verdict={session.verdict} />}
-                </div>
-                <div className="mt-2 text-label opacity-75">{session.problem_title}</div>
-                <div className="mt-1 truncate text-caption opacity-60">
-                  {session.title || session.id}
                 </div>
                 <div className="mt-2 text-caption opacity-60">
                   {new Date(session.updated_at).toLocaleString('ko-KR')}
                 </div>
               </button>
             ))}
-            {!sessionsQuery.isLoading && sessions.length === 0 && (
-              <State>표시할 세션이 없습니다.</State>
-            )}
-          </div>
-          {total > 0 && (
-            <div className="flex items-center justify-between border-t border-white/10 p-3 text-label">
-              <button
-                type="button"
-                disabled={offset === 0}
-                onClick={() => setOffset(value => Math.max(0, value - PAGE_SIZE))}
-                className="flex h-8 w-8 items-center justify-center rounded bg-white/10 disabled:opacity-30"
-              >
-                <ChevronLeft size={17} />
-              </button>
-              <span>
-                {Math.floor(offset / PAGE_SIZE) + 1} / {Math.max(1, Math.ceil(total / PAGE_SIZE))}
-              </span>
-              <button
-                type="button"
-                disabled={offset + PAGE_SIZE >= total}
-                onClick={() => setOffset(value => value + PAGE_SIZE)}
-                className="flex h-8 w-8 items-center justify-center rounded bg-white/10 disabled:opacity-30"
-              >
-                <ChevronRight size={17} />
-              </button>
-            </div>
+          {selectedProblemId && !sessionsQuery.isLoading && sessions.length === 0 && (
+            <State>표시할 세션이 없습니다.</State>
           )}
-        </section>
+        </ReviewColumn>
+      </div>
 
-        <div className="space-y-6">
-          {!selectedSessionId && <State>왼쪽에서 채팅 세션을 선택해 주세요.</State>}
-          {selectedSessionId && (
-            <>
-              <section className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
-                <h2 className="text-card-title font-bold text-[#FF4854]">전체 메시지</h2>
-                {messagesQuery.isLoading && <State>메시지를 불러오는 중...</State>}
-                {messagesQuery.error && <State error>{messagesQuery.error.message}</State>}
-                <div className="mt-4 flex max-h-[65vh] flex-col gap-3 overflow-y-auto pr-2">
-                  {(messagesQuery.data?.items ?? []).map(message => (
-                    <ChatBubble key={message.id} message={message} />
-                  ))}
-                  {!messagesQuery.isLoading && (messagesQuery.data?.items ?? []).length === 0 && (
-                    <State>메시지가 없습니다.</State>
-                  )}
-                </div>
-              </section>
-
-              <section className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
-                <h2 className="text-card-title font-bold text-[#FF4854]">세션 제출 이력</h2>
-                {submissionsQuery.isLoading && <State>제출을 불러오는 중...</State>}
-                {submissionsQuery.error && <State error>{submissionsQuery.error.message}</State>}
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {submissions.map(submission => (
-                    <button
-                      key={submission.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedSubmissionId(submission.id);
-                        setManualVerdict(
-                          ['passed', 'failed'].includes(submission.verdict)
-                            ? submission.verdict
-                            : 'passed'
-                        );
-                        setManualReason('');
-                      }}
-                      className={`rounded-lg border p-4 text-left ${selectedSubmissionId === submission.id ? 'border-[#FF4854] bg-[#2A0B15]' : 'border-white/10 bg-[#10050F]/60'}`}
-                    >
-                      <div className="flex justify-between gap-2">
-                        <strong>{submission.status}</strong>
-                        {submission.verdict && <VerdictBadge verdict={submission.verdict} />}
-                      </div>
-                      <div className="mt-2 truncate text-label text-gray-500">{submission.id}</div>
-                      <div className="mt-2 text-label text-gray-400">
-                        {new Date(submission.submitted_at).toLocaleString('ko-KR')}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-                {!submissionsQuery.isLoading && submissions.length === 0 && (
-                  <State>제출 이력이 없습니다.</State>
+      <div className="mt-6 space-y-6">
+        {!selectedSessionId && <State>위에서 채팅 세션을 선택해 주세요.</State>}
+        {selectedSessionId && (
+          <>
+            <section className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+              <h2 className="text-card-title font-bold text-[#FF4854]">전체 메시지</h2>
+              {messagesQuery.isLoading && <State>메시지를 불러오는 중...</State>}
+              {messagesQuery.error && <State error>{messagesQuery.error.message}</State>}
+              <div className="mt-4 flex max-h-[65vh] flex-col gap-3 overflow-y-auto pr-2">
+                {(messagesQuery.data?.items ?? []).map(message => (
+                  <ChatBubble key={message.id} message={message} />
+                ))}
+                {!messagesQuery.isLoading && (messagesQuery.data?.items ?? []).length === 0 && (
+                  <State>메시지가 없습니다.</State>
                 )}
-              </section>
+              </div>
+            </section>
 
-              {selectedSubmission && (
-                <SubmissionDetail
-                  submission={selectedSubmission}
-                  verdict={manualVerdict}
-                  reason={manualReason}
-                  onVerdictChange={setManualVerdict}
-                  onReasonChange={setManualReason}
-                  onSubmit={submitManualVerdict}
-                  isSaving={verdictMutation.isPending}
-                />
+            <section className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+              <h2 className="text-card-title font-bold text-[#FF4854]">세션 제출 이력</h2>
+              {submissionsQuery.isLoading && <State>제출을 불러오는 중...</State>}
+              {submissionsQuery.error && <State error>{submissionsQuery.error.message}</State>}
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {submissions.map(submission => (
+                  <button
+                    key={submission.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedSubmissionId(submission.id);
+                      setManualVerdict(
+                        ['passed', 'failed'].includes(submission.verdict)
+                          ? submission.verdict
+                          : 'passed'
+                      );
+                      setManualReason('');
+                    }}
+                    className={`rounded-lg border p-4 text-left ${selectedSubmissionId === submission.id ? 'border-[#FF4854] bg-[#2A0B15]' : 'border-white/10 bg-[#10050F]/60'}`}
+                  >
+                    <div className="flex justify-between gap-2">
+                      <strong>{submission.status}</strong>
+                      {submission.verdict && <VerdictBadge verdict={submission.verdict} />}
+                    </div>
+                    <div className="mt-2 truncate text-label text-gray-500">{submission.id}</div>
+                    <div className="mt-2 text-label text-gray-400">
+                      {new Date(submission.submitted_at).toLocaleString('ko-KR')}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              {!submissionsQuery.isLoading && submissions.length === 0 && (
+                <State>제출 이력이 없습니다.</State>
               )}
-              {submissionDetailQuery.isLoading && <State>제출 상세를 불러오는 중...</State>}
-              {submissionDetailQuery.error && (
-                <State error>{submissionDetailQuery.error.message}</State>
-              )}
-            </>
-          )}
-        </div>
+            </section>
+
+            {selectedSubmission && (
+              <SubmissionDetail
+                submission={selectedSubmission}
+                verdict={manualVerdict}
+                reason={manualReason}
+                onVerdictChange={setManualVerdict}
+                onReasonChange={setManualReason}
+                onSubmit={submitManualVerdict}
+                isSaving={verdictMutation.isPending}
+              />
+            )}
+            {submissionDetailQuery.isLoading && <State>제출 상세를 불러오는 중...</State>}
+            {submissionDetailQuery.error && (
+              <State error>{submissionDetailQuery.error.message}</State>
+            )}
+          </>
+        )}
       </div>
     </div>
+  );
+}
+
+function ReviewColumn({ title, children, footer }) {
+  return (
+    <section className="flex h-[calc(100vh-320px)] min-h-[480px] flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0B021C]/70">
+      <div className="shrink-0 border-b border-white/10 p-4 font-bold text-[#FF4854]">{title}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto p-3">{children}</div>
+      {footer ? <div className="shrink-0 border-t border-white/10 p-3">{footer}</div> : null}
+    </section>
+  );
+}
+
+function HierarchyItem({ title, description, active, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`mb-2 w-full rounded-lg border p-3 text-left transition ${
+        active
+          ? 'border-[#FF4854] bg-[#FF4854] text-white'
+          : 'border-white/10 bg-[#10050F]/60 text-gray-200 hover:bg-[#1A0B15]'
+      }`}
+    >
+      <strong className="block truncate">{title}</strong>
+      {description ? (
+        <span className="mt-1 block truncate text-caption opacity-65">{description}</span>
+      ) : null}
+    </button>
   );
 }
 
@@ -375,13 +541,14 @@ function ChatBubble({ message }) {
     </article>
   );
 }
-function FilterInput({ label, value, onChange }) {
+function FilterInput({ label, value, onChange, placeholder }) {
   return (
     <label>
       <span className="text-label text-gray-300">{label}</span>
       <input
         value={value}
         onChange={event => onChange(event.target.value)}
+        placeholder={placeholder}
         className="mt-2 h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] px-3 outline-none focus:border-[#FF4854]"
       />
     </label>

@@ -4,10 +4,21 @@ import ChatBubble from '../ChatBubble';
 export default function ChatMessages({
   messages,
   isLoading,
+  error,
   isInitialState,
   ArenaIcon,
   chatEndRef,
 }) {
+  if (error) {
+    return (
+      <div className="flex min-h-0 flex-1 items-center justify-center p-6 text-center">
+        <p className="rounded-[12px] border border-[#FFD3D7] bg-[#FFF8F8] px-5 py-4 text-body font-strong text-[#D93643]">
+          {error.message || '메시지를 불러오지 못했습니다.'}
+        </p>
+      </div>
+    );
+  }
+
   if (isInitialState) {
     return (
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center text-center p-4">

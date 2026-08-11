@@ -17,11 +17,15 @@ export default function AdminLeaderboardToggle() {
       </span>
 
       {/* Toggle Switch */}
-      <div
-        onClick={() => !isPending && toggle()}
-        className={`relative w-[60px] h-[32px] rounded-full cursor-pointer transition-all flex items-center
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={toggle}
+        aria-pressed={setting}
+        aria-label="리더보드 공개 설정"
+        className={`relative w-[60px] h-[32px] rounded-full transition-all flex items-center
           ${setting ? 'bg-[#e13a47]' : 'bg-gray-300'}
-          ${isPending ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-110'}
+          ${isPending ? 'opacity-50' : 'hover:brightness-110'}
         `}
       >
         <div
@@ -29,7 +33,7 @@ export default function AdminLeaderboardToggle() {
             ${setting ? 'translate-x-[30px]' : 'translate-x-[4px]'}
           `}
         ></div>
-      </div>
+      </button>
 
       {/* 상태 텍스트 */}
       <p className="text-body text-[#616161] whitespace-nowrap">

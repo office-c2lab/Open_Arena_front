@@ -13,7 +13,13 @@ import ProblemImage8 from '@/assets/images/problemimages/p8.png';
 import ProblemImage9 from '@/assets/images/problemimages/p9.png';
 import ProblemImage10 from '@/assets/images/problemimages/p10.png';
 import ProblemImage11 from '@/assets/images/problemimages/p11.png';
-import { useFavoriteProblemsStore } from '@/stores/useFavoriteProblemsStore';
+import { getChallengeDifficultyMeta, getChallengeImage } from '@/utils/challengePresentation';
+import {
+  useChallengeCategories,
+  useChallengeProblems,
+  useChallengeStatus,
+  useFavoriteChallengeProblems,
+} from '@/hooks/useChallenges';
 
 export const PATHS = [
   {
@@ -207,40 +213,23 @@ export const PATHS = [
   },
 ];
 
-const PROBLEM_STATUS_BY_ID = {
-  1: 'untried',
-  2: 'failed',
-  3: 'success',
-  4: 'untried',
-  5: 'failed',
-  6: 'success',
-  7: 'untried',
-  8: 'failed',
-  9: 'success',
-  10: 'untried',
-  11: 'failed',
-};
-
 const problemStatusMeta = {
   success: {
-    label: '성공',
+    label: '해결',
     className: 'text-[#1EC186]',
   },
   failed: {
     label: '실패',
     className: 'text-[#FF4854]',
   },
+  in_progress: {
+    label: '도전 중',
+    className: 'text-[#FFBC4B]',
+  },
   untried: {
     label: '미도전',
     className: 'text-white',
   },
-};
-
-const tagColors = {
-  Beginner: 'border-[#8FE07A] text-[#38A12A]',
-  Easy: 'border-[#9CDE7B] text-[#4FAF2F]',
-  Medium: 'border-[#FFBC4B] text-[#C88400]',
-  Hard: 'border-[#FF7D8A] text-[#FF4854]',
 };
 
 function ProblemStatusBadge({ status = 'untried' }) {
@@ -268,18 +257,21 @@ function PathPreview({ path, status = 'untried', label }) {
           {label}
         </span>
       ) : null}
+      {path.is_favorite ? (
+        <span
+          className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#FF4854] shadow-[0_6px_16px_rgba(0,0,0,0.2)]"
+          aria-label="찜한 문제"
+        >
+          <Heart className="h-5 w-5 fill-current" />
+        </span>
+      ) : null}
       <ProblemStatusBadge status={status} />
     </div>
   );
 }
 
 export function PathCard({ path, onClick, status = 'untried', label }) {
-  const levelClass =
-    path.level === 'Try for Free'
-      ? 'bg-[#D8F9E4] text-[#1BAE5B]'
-      : path.level === 'Starter'
-        ? 'bg-[#3F454C] text-white'
-        : 'bg-[#353B44] text-white';
+  const difficultyMeta = getChallengeDifficultyMeta(path.difficulty);
 
   return (
     <article
@@ -290,22 +282,32 @@ export function PathCard({ path, onClick, status = 'untried', label }) {
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-card-title font-bold text-[#151A21]">{path.title}</h2>
         <p className="mt-2 text-body font-strong text-[#66717E]">
-          {path.category} 실전 보안 챌린지
+          {path.category}
         </p>
         <div className="mt-5 grid grid-cols-[0.85fr_1.35fr_1.35fr_0.8fr] divide-x divide-[#D8DDE4] text-label text-[#2E3338]">
           <span className="flex items-center justify-center whitespace-nowrap pr-1 font-strong">
-            성공 <em className="ml-1 not-italic text-[#FF4854]">{path.reviews}</em>명
+            성공{' '}
+            <em className="ml-1 not-italic text-[#FF4854]">
+              {(path.successfulUsers ?? path.reviews ?? 0).toLocaleString()}
+            </em>
+            명
           </span>
           <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
-            평균 <em className="mx-1 not-italic text-[#FF4854]">1,240</em> 토큰
+            총 성공{' '}
+            <em className="mx-1 not-italic text-[#FF4854]">
+              {(path.totalSuccesses ?? path.reviews ?? 0).toLocaleString()}
+            </em>
+            회
           </span>
           <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
             최대 <em className="mx-1 not-italic text-[#FF4854]">{path.maximumPoints ?? 100}</em>{' '}
             포인트
           </span>
           <span className="flex items-center justify-center pl-1">
-            <span className={`rounded-[4px] px-2 py-1 text-label font-strong ${levelClass}`}>
-              {path.level}
+            <span
+              className={`rounded-[4px] px-2 py-1 text-label font-strong ${difficultyMeta.className}`}
+            >
+              {difficultyMeta.label}
             </span>
           </span>
         </div>
@@ -322,26 +324,77 @@ const ChallengeSection = () => {
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
   const [activeListTab, setActiveListTab] = useState('challenges');
-  const favoriteProblemIds = useFavoriteProblemsStore(state => state.favoriteProblemIds);
+  const [activeCategoryId, setActiveCategoryId] = useState('all');
+  const statusQuery = useChallengeStatus();
+  const categoriesQuery = useChallengeCategories();
+  const problemsQuery = useChallengeProblems();
+  const favoritesQuery = useFavoriteChallengeProblems({ enabled: activeListTab === 'favorites' });
+
+  const categories = categoriesQuery.data?.items ?? [];
+  const serverPaths = useMemo(() => {
+    const difficultyOrder = { easy: 0, normal: 1, hard: 2 };
+    const sourceProblems =
+      activeListTab === 'favorites'
+        ? (favoritesQuery.data?.items ?? [])
+        : (problemsQuery.data?.items ?? []);
+
+    return sourceProblems
+      .map((problem, index) => ({
+        ...problem,
+        image: getChallengeImage(problem.id),
+        category: problem.category?.name ?? '일반',
+        categoryId: problem.category?.id ?? null,
+        tags: [problem.category?.name, problem.difficulty].filter(Boolean),
+        difficulty:
+          problem.difficulty === 'easy'
+            ? 'Easy'
+            : problem.difficulty === 'normal'
+              ? 'Medium'
+              : 'Hard',
+        level:
+          problem.difficulty === 'easy'
+            ? 'Easy'
+            : problem.difficulty === 'normal'
+              ? 'Normal'
+              : 'Hard',
+        maximumPoints: problem.max_score,
+        successfulUsers: problem.successful_user_count,
+        totalSuccesses: problem.total_success_count,
+        status: problem.attempt_status === 'not_started' ? 'untried' : problem.attempt_status,
+        serverOrder: index,
+      }))
+      .sort((a, b) => {
+        const difficultyDifference =
+          (difficultyOrder[a.difficulty.toLowerCase()] ??
+            difficultyOrder[a.difficulty === 'Medium' ? 'normal' : 'hard']) -
+          (difficultyOrder[b.difficulty.toLowerCase()] ??
+            difficultyOrder[b.difficulty === 'Medium' ? 'normal' : 'hard']);
+        return difficultyDifference || a.serverOrder - b.serverOrder;
+      });
+  }, [activeListTab, favoritesQuery.data?.items, problemsQuery.data?.items]);
 
   const filteredPaths = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
 
-    return PATHS.filter(
-      path =>
+    return serverPaths.filter(path => {
+      const matchesCategory = activeCategoryId === 'all' || path.categoryId === activeCategoryId;
+      const matchesKeyword =
         !normalizedKeyword ||
-        [path.title, path.category, path.difficulty, path.tier, ...path.tags]
+        [path.title, path.sub_title, path.category, path.difficulty, ...path.tags]
+          .filter(Boolean)
           .join(' ')
           .toLowerCase()
-          .includes(normalizedKeyword)
-    );
-  }, [keyword]);
+          .includes(normalizedKeyword);
 
-  const tabPaths =
-    activeListTab === 'favorites'
-      ? filteredPaths.filter(path => favoriteProblemIds.includes(path.id))
-      : filteredPaths;
-  const visiblePaths = tabPaths.slice(0, 11);
+      return matchesCategory && matchesKeyword;
+    });
+  }, [activeCategoryId, keyword, serverPaths]);
+
+  const visiblePaths = filteredPaths;
+  const activeProblemsQuery = activeListTab === 'favorites' ? favoritesQuery : problemsQuery;
+  const isLoading =
+    statusQuery.isLoading || categoriesQuery.isLoading || activeProblemsQuery.isLoading;
+  const error = statusQuery.error || categoriesQuery.error || activeProblemsQuery.error;
 
   const handleSearch = useCallback(
     event => {
@@ -434,6 +487,36 @@ const ChallengeSection = () => {
         </form>
       </div>
 
+      {categories.length ? (
+        <div className="mb-7 flex flex-wrap gap-2" aria-label="카테고리 필터">
+          <button
+            type="button"
+            onClick={() => setActiveCategoryId('all')}
+            className={`cursor-pointer rounded-full border px-4 py-2 text-body font-strong transition-colors ${
+              activeCategoryId === 'all'
+                ? 'border-[#FF4854] bg-[#FFF0F1] text-[#FF4854]'
+                : 'border-[#DDE3EA] text-[#66717E] hover:border-[#FF4854] hover:text-[#FF4854]'
+            }`}
+          >
+            전체
+          </button>
+          {categories.map(category => (
+            <button
+              key={category.id}
+              type="button"
+              onClick={() => setActiveCategoryId(category.id)}
+              className={`cursor-pointer rounded-full border px-4 py-2 text-body font-strong transition-colors ${
+                activeCategoryId === category.id
+                  ? 'border-[#FF4854] bg-[#FFF0F1] text-[#FF4854]'
+                  : 'border-[#DDE3EA] text-[#66717E] hover:border-[#FF4854] hover:text-[#FF4854]'
+              }`}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
       <div>
         <section className="min-w-0">
           <div className="mb-5 flex items-center justify-between">
@@ -443,13 +526,35 @@ const ChallengeSection = () => {
             </h1>
           </div>
 
-          {visiblePaths.length > 0 ? (
+          {statusQuery.data?.enabled === false ? (
+            <div className="flex min-h-[260px] flex-col items-center justify-center rounded-[12px] border border-[#E3E8EF] bg-[#FAFBFC] px-6 text-center">
+              <p className="text-card-title font-bold text-[#2E3338]">
+                챌린지 운영이 중지되었습니다.
+              </p>
+              <p className="mt-2 text-body font-medium text-[#8A94A1]">
+                운영이 재개되면 다시 문제에 도전할 수 있습니다.
+              </p>
+            </div>
+          ) : isLoading ? (
+            <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
+              {[0, 1, 2].map(index => (
+                <div key={index} className="h-[390px] animate-pulse rounded-[12px] bg-[#F1F3F5]" />
+              ))}
+            </div>
+          ) : error ? (
+            <div className="flex min-h-[260px] items-center justify-center rounded-[12px] border border-[#FFD3D7] bg-[#FFF8F8] px-6 text-center">
+              <p className="text-body-lg font-strong text-[#D93643]">
+                {error.message || '챌린지 목록을 불러오지 못했습니다.'}
+              </p>
+            </div>
+          ) : visiblePaths.length > 0 ? (
             <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
               {visiblePaths.map(path => (
                 <PathCard
                   key={path.id}
                   path={path}
-                  status={PROBLEM_STATUS_BY_ID[path.id] ?? 'untried'}
+                  status={path.status}
+                  label={path.solved && path.best_score != null ? `최고 ${path.best_score}P` : null}
                   onClick={() => handleSolveProblem(path.id)}
                 />
               ))}

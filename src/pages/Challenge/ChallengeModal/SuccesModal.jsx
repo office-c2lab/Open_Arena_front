@@ -27,17 +27,16 @@ export default function SuccessModal({
 
   const shouldOpen = previewMode ? isOpen : isSuccessModalOpen;
 
-  const handleRestart = useCallback(() => {
+  const handleRestart = useCallback(async () => {
     closeSuccessModal();
-    resetChatAction();
-    clearSession();
-    queryClient.invalidateQueries(['problemBundle']);
-  }, [closeSuccessModal, resetChatAction, clearSession, queryClient]);
+    await resetChatAction();
+    queryClient.invalidateQueries({ queryKey: ['problemBundle'] });
+  }, [closeSuccessModal, resetChatAction, queryClient]);
 
   const handleContinue = useCallback(() => {
     closeSuccessModal();
     clearSession();
-    queryClient.invalidateQueries(['problemBundle']);
+    queryClient.invalidateQueries({ queryKey: ['problemBundle'] });
     navigate('/kategorie');
   }, [closeSuccessModal, clearSession, queryClient, navigate]);
 
