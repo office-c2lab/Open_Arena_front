@@ -938,7 +938,9 @@ function RecentAttemptProblemsCard({ challenge, problem, isProblemLoading }) {
   };
   const path = presentHomeChallenge(challenge, problem);
 
-  return <PathCard path={path} status={path.status} onClick={handleContinue} />;
+  return (
+    <PathCard path={path} status={path.status} badgeLabel="이어서 하기" onClick={handleContinue} />
+  );
 }
 
 const dashboardChallengeStatusMeta = {

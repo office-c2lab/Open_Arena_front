@@ -244,7 +244,7 @@ function ProblemStatusBadge({ status = 'untried' }) {
   );
 }
 
-function PathPreview({ path, status = 'untried' }) {
+function PathPreview({ path, status = 'untried', badgeLabel }) {
   const hasPreviewCopy = path.sub_title || path.sub_description;
 
   return (
@@ -254,6 +254,11 @@ function PathPreview({ path, status = 'untried' }) {
         alt={`${path.title} 챌린지`}
         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
       />
+      {badgeLabel ? (
+        <span className="absolute left-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
+          {badgeLabel}
+        </span>
+      ) : null}
       {path.is_favorite ? (
         <span
           className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#FF4854] shadow-[0_6px_16px_rgba(0,0,0,0.2)]"
@@ -279,7 +284,7 @@ function PathPreview({ path, status = 'untried' }) {
   );
 }
 
-export function PathCard({ path, onClick, status = 'untried' }) {
+export function PathCard({ path, onClick, status = 'untried', badgeLabel }) {
   const difficultyMeta = getChallengeDifficultyMeta(path.difficulty);
   const bestScore = path.best_score ?? 0;
 
@@ -288,7 +293,7 @@ export function PathCard({ path, onClick, status = 'untried' }) {
       className="surface surface-interactive surface-no-hover-border group flex min-w-0 cursor-pointer flex-col overflow-hidden"
       onClick={onClick}
     >
-      <PathPreview path={path} status={status} />
+      <PathPreview path={path} status={status} badgeLabel={badgeLabel} />
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-card-title font-bold text-[#151A21]">{path.title}</h2>
         <p className="mt-2 text-body font-strong text-[#66717E]">{path.category}</p>

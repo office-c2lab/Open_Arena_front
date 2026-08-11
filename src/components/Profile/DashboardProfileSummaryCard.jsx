@@ -122,12 +122,12 @@ export default function DashboardProfileSummaryCard({ profile, summaryStats }) {
 
 function DashboardProfileStatCard({ stat }) {
   return (
-    <div className="min-h-[104px] rounded-[8px] border border-white/70 bg-white/72 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.76),0_12px_26px_rgba(15,23,42,0.06)] backdrop-blur-md">
-      <p className="text-label font-bold text-[#7B8491]">{stat.label}</p>
-      <strong className="mt-4 block text-section-title font-bold text-[#202832]">
+    <div className="min-h-[104px] rounded-[8px] border border-white/95 bg-white/90 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_12px_26px_rgba(15,23,42,0.10)] backdrop-blur-md">
+      <p className="text-label font-bold text-[#3D4754]">{stat.label}</p>
+      <strong className="mt-4 block text-section-title font-bold text-[#111827]">
         {stat.value}
       </strong>
-      <p className="mt-2 truncate text-caption font-strong text-[#9AA3AF]">{stat.subText}</p>
+      <p className="mt-2 truncate text-caption font-bold text-[#596575]">{stat.subText}</p>
     </div>
   );
 }
