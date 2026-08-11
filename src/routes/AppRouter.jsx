@@ -39,6 +39,7 @@ import AdminConversationMockPage from '../pages/admin/AdminConversationMockPage'
 import FourZeroThree from '../pages/NotFound/FourZeroThree'; // ⭐ 403 추가
 import AdminJudgePromptEditor from '../pages/admin/AdminJudgePromptEditor';
 import AdminUserManagementPage from '../pages/admin/AdminUserManagementPage';
+import AdminOperationsPage from '../pages/admin/AdminOperationsPage';
 
 export default function AppRouter() {
   return (
@@ -103,6 +104,7 @@ export default function AppRouter() {
         <Route path="users" element={<AdminConversationMockPage />} />
         <Route path="user-management" element={<AdminUserManagementPage />} />
         <Route path="judge" element={<AdminJudgePromptEditor />} />
+        <Route path="operations" element={<AdminOperationsPage />} />
       </Route>
 
       {/* ---------------------------

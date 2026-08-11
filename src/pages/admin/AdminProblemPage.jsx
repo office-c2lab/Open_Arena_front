@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import AdminProblemCreatePage from './AdminProblemCreatePage';
 import AdminProblemManagementPage from './AdminProblemManagementPage';
-import {
-  CategoryManagement,
-  ChallengeSetting,
-  EndpointManagement,
-} from './AdminChallengeResourceManagement';
+import { CategoryManagement, EndpointManagement } from './AdminChallengeResourceManagement';
 
 const TABS = [
   ['problems', '문제 관리'],
@@ -13,7 +9,6 @@ const TABS = [
   ['categories', '카테고리'],
   ['chat-endpoints', 'Chat 엔드포인트'],
   ['judge-endpoints', 'Judge 엔드포인트'],
-  ['setting', '운영 설정'],
 ];
 
 export default function AdminProblemPage() {
@@ -39,7 +34,6 @@ export default function AdminProblemPage() {
       {activeTab === 'categories' && <CategoryManagement />}
       {activeTab === 'chat-endpoints' && <EndpointManagement kind="chat" />}
       {activeTab === 'judge-endpoints' && <EndpointManagement kind="judge" />}
-      {activeTab === 'setting' && <ChallengeSetting />}
     </div>
   );
 }

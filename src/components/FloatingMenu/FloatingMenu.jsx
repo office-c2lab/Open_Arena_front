@@ -18,6 +18,7 @@ export default function FloatingMenu() {
     { label: '문제관리', path: '/admin/problems', fontSize: '12px' },
     { label: '채팅관리', path: '/admin/users', fontSize: '12px' },
     { label: '저지관리', path: '/admin/judge', fontSize: '12px' },
+    { label: '운영관리', path: '/admin/operations', fontSize: '11px' },
 
     // 🔥 로그아웃 버튼 추가
     { label: '로그아웃', path: '/admin/logout', fontSize: '11px', isLogout: true },
