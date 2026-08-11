@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Heart, RotateCcw, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
@@ -338,7 +338,36 @@ const ChallengeSection = () => {
   const problemsQuery = useChallengeProblems();
   const favoritesQuery = useFavoriteChallengeProblems({ enabled: activeListTab === 'favorites' });
 
-  const categories = categoriesQuery.data?.items ?? [];
+  const nonTutorialCategoryIds = useMemo(
+    () =>
+      new Set(
+        (problemsQuery.data?.items ?? [])
+          .filter(problem => !problem.is_tutorial && problem.category?.id)
+          .map(problem => String(problem.category.id))
+      ),
+    [problemsQuery.data?.items]
+  );
+  const categories = useMemo(
+    () =>
+      (categoriesQuery.data?.items ?? []).filter(category =>
+        nonTutorialCategoryIds.has(String(category.id))
+      ),
+    [categoriesQuery.data?.items, nonTutorialCategoryIds]
+  );
+
+  useEffect(() => {
+    if (
+      activeCategoryId === 'all' ||
+      !problemsQuery.isSuccess ||
+      !categoriesQuery.isSuccess ||
+      categories.some(category => String(category.id) === String(activeCategoryId))
+    ) {
+      return;
+    }
+
+    setActiveCategoryId('all');
+  }, [activeCategoryId, categories, categoriesQuery.isSuccess, problemsQuery.isSuccess]);
+
   const serverPaths = useMemo(() => {
     const difficultyOrder = { easy: 0, normal: 1, hard: 2 };
     const sourceProblems =

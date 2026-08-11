@@ -442,6 +442,9 @@ export default function Challenge() {
   }
 
   const detailError = canFetchProtectedDetail ? problemQuery.error : null;
+  const isTutorialChallenge = Boolean(challenge?.is_tutorial);
+  const listPath = isTutorialChallenge ? '/tutorial' : '/kategorie';
+  const listLabel = isTutorialChallenge ? '튜토리얼 목록으로' : '챌린지 목록으로';
 
   if (problemsQuery.error || detailError || statusQuery.error || !challenge) {
     const error = problemsQuery.error || detailError || statusQuery.error;
@@ -453,10 +456,10 @@ export default function Challenge() {
         <div className="mt-8 w-full max-w-[520px] px-2">
           <button
             type="button"
-            onClick={() => navigate('/kategorie')}
+            onClick={() => navigate(listPath)}
             className="btn btn-primary btn-cta btn-block"
           >
-            챌린지 목록으로
+            {listLabel}
           </button>
         </div>
       </div>
@@ -467,11 +470,11 @@ export default function Challenge() {
     <div className="w-full bg-white pb-16">
       <button
         type="button"
-        onClick={() => navigate('/kategorie')}
+        onClick={() => navigate(listPath)}
         className="mb-10 inline-flex cursor-pointer items-center gap-2 text-body-lg font-strong text-[#4E5968] transition-colors hover:text-[#FF4854]"
       >
         <ArrowLeft className="h-5 w-5" />
-        챌린지 목록으로
+        {listLabel}
       </button>
 
       {statusQuery.data?.enabled === false ? (
