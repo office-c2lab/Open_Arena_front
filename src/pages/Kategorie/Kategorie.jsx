@@ -244,7 +244,7 @@ function ProblemStatusBadge({ status = 'untried' }) {
   );
 }
 
-function PathPreview({ path, status = 'untried', label }) {
+function PathPreview({ path, status = 'untried' }) {
   const hasPreviewCopy = path.sub_title || path.sub_description;
 
   return (
@@ -254,11 +254,6 @@ function PathPreview({ path, status = 'untried', label }) {
         alt={`${path.title} 챌린지`}
         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
       />
-      {label ? (
-        <span className="absolute left-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
-          {label}
-        </span>
-      ) : null}
       {path.is_favorite ? (
         <span
           className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#FF4854] shadow-[0_6px_16px_rgba(0,0,0,0.2)]"
@@ -284,15 +279,16 @@ function PathPreview({ path, status = 'untried', label }) {
   );
 }
 
-export function PathCard({ path, onClick, status = 'untried', label }) {
+export function PathCard({ path, onClick, status = 'untried' }) {
   const difficultyMeta = getChallengeDifficultyMeta(path.difficulty);
+  const bestScore = path.best_score ?? 0;
 
   return (
     <article
       className="surface surface-interactive surface-no-hover-border group flex min-w-0 cursor-pointer flex-col overflow-hidden"
       onClick={onClick}
     >
-      <PathPreview path={path} status={status} label={label} />
+      <PathPreview path={path} status={status} />
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-card-title font-bold text-[#151A21]">{path.title}</h2>
         <p className="mt-2 text-body font-strong text-[#66717E]">{path.category}</p>
@@ -312,8 +308,8 @@ export function PathCard({ path, onClick, status = 'untried', label }) {
             회
           </span>
           <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
-            최대 <em className="mx-1 not-italic text-[#FF4854]">{path.maximumPoints ?? 100}</em>{' '}
-            포인트
+            <em className="mr-1 not-italic text-[#FF4854]">{bestScore.toLocaleString()}</em>
+            포인트 획득
           </span>
           <span className="flex items-center justify-center pl-1">
             <span
@@ -390,7 +386,8 @@ const ChallengeSection = () => {
     const normalizedKeyword = keyword.trim().toLowerCase();
 
     return serverPaths.filter(path => {
-      const matchesCategory = activeCategoryId === 'all' || path.categoryId === activeCategoryId;
+      const matchesCategory =
+        activeCategoryId === 'all' || String(path.categoryId) === String(activeCategoryId);
       const matchesKeyword =
         !normalizedKeyword ||
         [path.title, path.sub_title, path.category, path.difficulty, ...path.tags]
@@ -404,6 +401,15 @@ const ChallengeSection = () => {
   }, [activeCategoryId, keyword, serverPaths]);
 
   const visiblePaths = filteredPaths;
+  const activeCategory =
+    activeCategoryId === 'all'
+      ? null
+      : categories.find(category => String(category.id) === String(activeCategoryId));
+  const listTitle = activeCategory
+    ? `${activeCategory.name} ${activeListTab === 'favorites' ? '찜한 ' : ''}챌린지`
+    : activeListTab === 'favorites'
+      ? '찜한 챌린지'
+      : '전체 챌린지';
   const activeProblemsQuery = activeListTab === 'favorites' ? favoritesQuery : problemsQuery;
   const isLoading =
     statusQuery.isLoading || categoriesQuery.isLoading || activeProblemsQuery.isLoading;
@@ -534,8 +540,7 @@ const ChallengeSection = () => {
         <section className="min-w-0">
           <div className="mb-5 flex items-center justify-between">
             <h1 className="text-body-lg font-strong text-[#2E3338]">
-              {activeListTab === 'favorites' ? '찜한 챌린지' : '전체 챌린지'}{' '}
-              <span className="text-[#FF4854]">{visiblePaths.length}</span>
+              {listTitle} <span className="text-[#FF4854]">{visiblePaths.length}</span>
             </h1>
           </div>
 
@@ -567,7 +572,6 @@ const ChallengeSection = () => {
                   key={path.id}
                   path={path}
                   status={path.status}
-                  label={path.solved && path.best_score != null ? `최고 ${path.best_score}P` : null}
                   onClick={() => handleSolveProblem(path.id)}
                 />
               ))}
