@@ -6,7 +6,6 @@ import {
   fetchJudgeMessages,
   fetchJudgeSessions,
   fetchJudgeSubmissions,
-  resolveJudgeSessionFilterIds,
 } from '@/api/adminJudgeReviewApi';
 import { getAdminSubmission, setAdminManualVerdict } from '@/api/adminJudgeApi';
 import { appToast } from '@/components/Toast/appToast';
@@ -22,8 +21,6 @@ const emptyFilterInputs = {
 const emptyFilters = {
   nickname: '',
   problemTitle: '',
-  userId: '',
-  problemId: '',
   submissionStatus: '',
   verdict: '',
 };
@@ -32,7 +29,6 @@ export default function AdminConversationMockPage() {
   const queryClient = useQueryClient();
   const [filterInputs, setFilterInputs] = useState(emptyFilterInputs);
   const [filters, setFilters] = useState(emptyFilters);
-  const [isResolvingFilters, setIsResolvingFilters] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedProblemId, setSelectedProblemId] = useState(null);
   const [offset, setOffset] = useState(0);
@@ -42,21 +38,19 @@ export default function AdminConversationMockPage() {
   const [manualReason, setManualReason] = useState('');
 
   const usersQuery = useQuery({
-    queryKey: ['adminChatReviewUsers', filters.nickname, filters.userId],
+    queryKey: ['adminChatReviewUsers', filters.nickname],
     queryFn: () => fetchAllJudgeUsers({ nickname: filters.nickname }),
   });
   const problemSessionsQuery = useQuery({
     queryKey: [
       'adminChatSessionProblems',
       selectedUserId,
-      filters.problemId,
       filters.submissionStatus,
       filters.verdict,
     ],
     queryFn: () =>
       fetchAllJudgeSessions({
         userId: selectedUserId,
-        problemId: filters.problemId,
         submissionStatus: filters.submissionStatus,
         verdict: filters.verdict,
       }),
@@ -111,9 +105,13 @@ export default function AdminConversationMockPage() {
   });
 
   const users = useMemo(() => {
-    const items = usersQuery.data ?? [];
-    return filters.userId ? items.filter(user => user.id === filters.userId) : items;
-  }, [filters.userId, usersQuery.data]);
+    const nicknameQuery = filters.nickname.toLocaleLowerCase('ko-KR');
+    return (usersQuery.data ?? []).filter(user =>
+      String(user.nickname || '')
+        .toLocaleLowerCase('ko-KR')
+        .includes(nicknameQuery)
+    );
+  }, [filters.nickname, usersQuery.data]);
   const problems = useMemo(() => {
     const problemMap = new Map();
     (problemSessionsQuery.data ?? []).forEach(session => {
@@ -124,8 +122,11 @@ export default function AdminConversationMockPage() {
         sessionCount: (problem?.sessionCount ?? 0) + 1,
       });
     });
-    return [...problemMap.values()].sort((a, b) => a.title.localeCompare(b.title, 'ko-KR'));
-  }, [problemSessionsQuery.data]);
+    const problemTitleQuery = filters.problemTitle.toLocaleLowerCase('ko-KR');
+    return [...problemMap.values()]
+      .filter(problem => problem.title.toLocaleLowerCase('ko-KR').includes(problemTitleQuery))
+      .sort((a, b) => a.title.localeCompare(b.title, 'ko-KR'));
+  }, [filters.problemTitle, problemSessionsQuery.data]);
   const sessions = sessionsQuery.data?.items ?? [];
   const total = sessionsQuery.data?.total ?? 0;
   const submissions = submissionsQuery.data?.items ?? [];
@@ -139,30 +140,19 @@ export default function AdminConversationMockPage() {
     if (selectedUserId && selectedProblemId) void sessionsQuery.refetch();
   };
 
-  const submitFilters = async event => {
+  const submitFilters = event => {
     event.preventDefault();
-    if (isResolvingFilters) return;
-
-    setIsResolvingFilters(true);
-    try {
-      const resolvedIds = await resolveJudgeSessionFilterIds(filterInputs);
-      setFilters({
-        ...resolvedIds,
-        nickname: filterInputs.nickname.trim(),
-        problemTitle: filterInputs.problemTitle.trim(),
-        submissionStatus: filterInputs.submissionStatus,
-        verdict: filterInputs.verdict,
-      });
-      setSelectedUserId(resolvedIds.userId || null);
-      setSelectedProblemId(resolvedIds.userId ? resolvedIds.problemId || null : null);
-      setOffset(0);
-      setSelectedSessionId(null);
-      setSelectedSubmissionId(null);
-    } catch (error) {
-      appToast.error(error.message || '필터 대상을 찾지 못했습니다.');
-    } finally {
-      setIsResolvingFilters(false);
-    }
+    setFilters({
+      nickname: filterInputs.nickname.trim(),
+      problemTitle: filterInputs.problemTitle.trim(),
+      submissionStatus: filterInputs.submissionStatus,
+      verdict: filterInputs.verdict,
+    });
+    setSelectedUserId(null);
+    setSelectedProblemId(null);
+    setOffset(0);
+    setSelectedSessionId(null);
+    setSelectedSubmissionId(null);
   };
 
   const submitManualVerdict = event => {
@@ -200,13 +190,13 @@ export default function AdminConversationMockPage() {
       >
         <FilterInput
           label="닉네임"
-          placeholder="정확한 닉네임 입력"
+          placeholder="닉네임 일부 입력"
           value={filterInputs.nickname}
           onChange={value => setFilterInputs(current => ({ ...current, nickname: value }))}
         />
         <FilterInput
           label="문제 제목"
-          placeholder="정확한 문제 제목 입력"
+          placeholder="문제 제목 일부 입력"
           value={filterInputs.problemTitle}
           onChange={value => setFilterInputs(current => ({ ...current, problemTitle: value }))}
         />
@@ -236,10 +226,9 @@ export default function AdminConversationMockPage() {
         </FilterSelect>
         <button
           type="submit"
-          disabled={isResolvingFilters}
-          className="mt-auto h-11 rounded-lg bg-[#FF4854] px-5 font-bold hover:bg-[#ff3242] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-auto h-11 rounded-lg bg-[#FF4854] px-5 font-bold hover:bg-[#ff3242]"
         >
-          {isResolvingFilters ? '대상 찾는 중...' : '필터 적용'}
+          필터 적용
         </button>
       </form>
 
@@ -255,7 +244,7 @@ export default function AdminConversationMockPage() {
               description={user.email || '이메일 없음'}
               onClick={() => {
                 setSelectedUserId(user.id);
-                setSelectedProblemId(filters.problemId || null);
+                setSelectedProblemId(null);
                 setSelectedSessionId(null);
                 setSelectedSubmissionId(null);
                 setOffset(0);
