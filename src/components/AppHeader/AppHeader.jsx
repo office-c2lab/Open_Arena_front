@@ -1,4 +1,4 @@
-import { Bell, CheckCheck, LogOut, Menu, X } from 'lucide-react';
+import { Bell, ChevronLeft, LogOut, Menu, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import ArenaTextLogo from '@/assets/icons/ArenaText.svg';
 import UserIcon from '@/assets/icons/user.svg';
 import { getChallengeStats, getTodayUsage } from '@/api/accountApi';
 import { logoutApi } from '@/api/auth';
+import { getPublicNotice, getPublicNotices } from '@/api/noticesApi';
 import { useAuthStore } from '@/stores/authStore';
 
 const navItems = [
@@ -23,8 +24,6 @@ const formatNumber = value => Number(value ?? 0).toLocaleString('ko-KR');
 
 const getUsageText = metric =>
   metric ? `${formatNumber(metric.used)} / ${formatNumber(metric.effective_limit)}` : '-';
-const initialNotifications = [];
-
 const formatNotificationTime = value => {
   if (!value) return '';
 
@@ -46,7 +45,7 @@ export default function AppHeader({ isHidden = false }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [selectedNoticeId, setSelectedNoticeId] = useState(null);
 
   const displayName =
     teamInfo?.teamname || teamInfo?.username || teamInfo?.login_id || 'ARENA 유저';
@@ -56,6 +55,18 @@ export default function AppHeader({ isHidden = false }) {
   const isPaidMember = ['paid', 'premium', 'pro', '유료'].includes(membership);
   const profileImage = teamInfo?.profileImage || UserIcon;
   const hasProfileImage = Boolean(teamInfo?.profileImage);
+  const noticesQuery = useQuery({
+    queryKey: ['publicNotices', { offset: 0, limit: 100 }],
+    queryFn: () => getPublicNotices({ offset: 0, limit: 100 }),
+    enabled: isLoggedIn,
+    staleTime: 60_000,
+  });
+  const noticeDetailQuery = useQuery({
+    queryKey: ['publicNotice', selectedNoticeId],
+    queryFn: () => getPublicNotice(selectedNoticeId),
+    enabled: isLoggedIn && Boolean(selectedNoticeId),
+    staleTime: 60_000,
+  });
   const challengeStatsQuery = useQuery({
     queryKey: ['account', 'challenge-stats'],
     queryFn: getChallengeStats,
@@ -73,14 +84,13 @@ export default function AppHeader({ isHidden = false }) {
   const problemUnlockUsage = getUsageText(todayUsage?.problem_unlocks);
   const submissionUsage = getUsageText(todayUsage?.submissions);
   const tokenUsage = getUsageText(todayUsage?.tokens);
-  const unreadNotificationCount = notifications.filter(
-    notification => !notification.is_read
-  ).length;
+  const notifications = noticesQuery.data?.items ?? [];
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsProfileOpen(false);
     setIsNotificationOpen(false);
+    setSelectedNoticeId(null);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -115,7 +125,10 @@ export default function AppHeader({ isHidden = false }) {
 
   const handleNotificationToggle = () => {
     setIsProfileOpen(false);
-    setIsNotificationOpen(current => !current);
+    setIsNotificationOpen(current => {
+      if (current) setSelectedNoticeId(null);
+      return !current;
+    });
   };
 
   const handleProfileToggle = () => {
@@ -123,16 +136,8 @@ export default function AppHeader({ isHidden = false }) {
     setIsProfileOpen(current => !current);
   };
 
-  const markNotificationAsRead = notificationId => {
-    setNotifications(current =>
-      current.map(notification =>
-        notification.id === notificationId ? { ...notification, is_read: true } : notification
-      )
-    );
-  };
-
-  const markAllNotificationsAsRead = () => {
-    setNotifications(current => current.map(notification => ({ ...notification, is_read: true })));
+  const openNotification = notificationId => {
+    setSelectedNoticeId(notificationId);
   };
 
   return (
@@ -185,19 +190,12 @@ export default function AppHeader({ isHidden = false }) {
               <div className="relative">
                 <button
                   type="button"
-                  aria-label={
-                    unreadNotificationCount ? `알림 ${unreadNotificationCount}개 읽지 않음` : '알림'
-                  }
+                  aria-label="알림"
                   aria-expanded={isNotificationOpen}
                   onClick={handleNotificationToggle}
                   className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#FF4854] text-white shadow-[0_3px_10px_rgba(255,72,84,0.18)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
                 >
                   <Bell className="h-6 w-6" strokeWidth={2} />
-                  {unreadNotificationCount ? (
-                    <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-[#FF4854] bg-white px-1 text-[10px] font-bold leading-none text-[#FF4854]">
-                      {unreadNotificationCount > 9 ? '9+' : unreadNotificationCount}
-                    </span>
-                  ) : null}
                 </button>
 
                 {isNotificationOpen ? (
@@ -206,61 +204,89 @@ export default function AppHeader({ isHidden = false }) {
                       type="button"
                       aria-label="알림 창 닫기"
                       className="fixed inset-0 z-[75] cursor-default"
-                      onClick={() => setIsNotificationOpen(false)}
+                      onClick={() => {
+                        setIsNotificationOpen(false);
+                        setSelectedNoticeId(null);
+                      }}
                     />
                     <section
                       className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[min(360px,calc(100vw-24px))] overflow-hidden rounded-[10px] border border-[#E3E6EB] bg-white shadow-[0_18px_44px_rgba(15,23,42,0.16)]"
-                      aria-label="알림 목록"
+                      aria-label={selectedNoticeId ? '공지사항 상세' : '알림 목록'}
                     >
                       <div className="flex items-center justify-between border-b border-[#ECEFF3] px-4 py-3.5">
                         <div className="flex items-center gap-2">
-                          <h2 className="text-card-title font-bold text-[#202832]">알림</h2>
-                          {unreadNotificationCount ? (
-                            <span className="rounded-full bg-[#FFF0F1] px-2 py-0.5 text-caption font-bold text-[#FF4854]">
-                              {unreadNotificationCount}
-                            </span>
+                          {selectedNoticeId ? (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedNoticeId(null)}
+                              className="flex h-8 w-8 items-center justify-center rounded-full text-[#697586] transition hover:bg-[#F4F6F8] hover:text-[#202832]"
+                              aria-label="알림 목록으로 돌아가기"
+                            >
+                              <ChevronLeft className="h-5 w-5" />
+                            </button>
                           ) : null}
+                          <h2 className="text-card-title font-bold text-[#202832]">
+                            {selectedNoticeId ? '공지사항' : '알림'}
+                          </h2>
                         </div>
-                        <button
-                          type="button"
-                          onClick={markAllNotificationsAsRead}
-                          disabled={!unreadNotificationCount}
-                          className="flex cursor-pointer items-center gap-1.5 text-label font-bold text-[#FF4854] disabled:cursor-default disabled:text-[#B7BDC7]"
-                        >
-                          <CheckCheck className="h-4 w-4" />
-                          모두 읽음
-                        </button>
                       </div>
 
-                      {notifications.length ? (
+                      {selectedNoticeId ? (
+                        <div className="max-h-[520px] overflow-y-auto px-5 py-5">
+                          {noticeDetailQuery.isLoading ? (
+                            <p className="py-12 text-center text-body font-strong text-[#9AA3AF]">
+                              공지사항을 불러오는 중...
+                            </p>
+                          ) : noticeDetailQuery.isError ? (
+                            <p className="rounded-lg bg-[#FFF0F1] px-4 py-4 text-body font-strong text-[#D83A45]">
+                              {noticeDetailQuery.error.message}
+                            </p>
+                          ) : noticeDetailQuery.data ? (
+                            <article>
+                              {noticeDetailQuery.data.is_pinned ? (
+                                <span className="inline-flex rounded-full bg-[#FFF0F1] px-2.5 py-1 text-caption font-bold text-[#FF4854]">
+                                  중요 공지
+                                </span>
+                              ) : null}
+                              <h3 className="mt-3 break-words text-card-title font-bold leading-7 text-[#202832]">
+                                {noticeDetailQuery.data.title}
+                              </h3>
+                              <time className="mt-2 block text-caption font-strong text-[#9AA3AF]">
+                                {formatNotificationTime(noticeDetailQuery.data.published_at)}
+                              </time>
+                              <div className="mt-5 border-t border-[#ECEFF3] pt-5">
+                                <p className="whitespace-pre-wrap break-words text-body font-strong leading-6 text-[#596575]">
+                                  {noticeDetailQuery.data.body}
+                                </p>
+                              </div>
+                            </article>
+                          ) : null}
+                        </div>
+                      ) : noticesQuery.isLoading ? (
+                        <div className="flex min-h-[220px] items-center justify-center text-body font-strong text-[#9AA3AF]">
+                          알림을 불러오는 중...
+                        </div>
+                      ) : noticesQuery.isError ? (
+                        <div className="m-4 rounded-lg bg-[#FFF0F1] px-4 py-4 text-body font-strong text-[#D83A45]">
+                          {noticesQuery.error.message}
+                        </div>
+                      ) : notifications.length ? (
                         <div className="max-h-[420px] overflow-y-auto" role="list">
                           {notifications.map(notification => (
                             <button
                               key={notification.id}
                               type="button"
                               role="listitem"
-                              onClick={() => markNotificationAsRead(notification.id)}
-                              className={`flex w-full cursor-pointer gap-3 border-b border-[#F0F2F5] px-4 py-4 text-left transition last:border-b-0 hover:bg-[#F8F9FA] ${
-                                notification.is_read ? 'bg-white' : 'bg-[#FFF9F9]'
-                              }`}
+                              onClick={() => openNotification(notification.id)}
+                              className="flex w-full cursor-pointer gap-3 border-b border-[#F0F2F5] bg-white px-4 py-4 text-left transition last:border-b-0 hover:bg-[#F8F9FA]"
                             >
-                              <span
-                                className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${
-                                  notification.is_read ? 'bg-[#D5D9E0]' : 'bg-[#FF4854]'
-                                }`}
-                                aria-hidden="true"
-                              />
                               <span className="min-w-0 flex-1">
                                 <strong className="block truncate text-body font-bold text-[#303740]">
+                                  {notification.is_pinned ? '[중요] ' : ''}
                                   {notification.title}
                                 </strong>
-                                {notification.message ? (
-                                  <span className="mt-1 line-clamp-2 block text-label font-strong leading-5 text-[#697586]">
-                                    {notification.message}
-                                  </span>
-                                ) : null}
                                 <span className="mt-2 block text-caption font-strong text-[#9AA3AF]">
-                                  {formatNotificationTime(notification.created_at)}
+                                  {formatNotificationTime(notification.published_at)}
                                 </span>
                               </span>
                             </button>
