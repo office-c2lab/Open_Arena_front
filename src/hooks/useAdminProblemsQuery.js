@@ -1,11 +1,18 @@
-// src/hooks/useAdminProblemsQuery.js
 import { useQuery } from '@tanstack/react-query';
-import { getAdminProblems } from '@/api/adminProblemsApi';
+import { getAdminProblem, getAdminProblems } from '@/api/adminProblemsApi';
 
-export const useAdminProblemsQuery = ({ activeOnly = false } = {}) => {
-  return useQuery({
-    queryKey: ['adminProblems', { activeOnly }],
-    queryFn: () => getAdminProblems({ activeOnly }),
-    staleTime: 1000 * 10, // 옵션: 10초 동안 신선한 데이터로 취급
+export const ADMIN_PROBLEMS_QUERY_KEY = ['adminProblems'];
+
+export const useAdminProblemsQuery = (filters = {}) =>
+  useQuery({
+    queryKey: [...ADMIN_PROBLEMS_QUERY_KEY, filters],
+    queryFn: () => getAdminProblems(filters),
+    placeholderData: previousData => previousData,
   });
-};
+
+export const useAdminProblemQuery = problemId =>
+  useQuery({
+    queryKey: [...ADMIN_PROBLEMS_QUERY_KEY, problemId],
+    queryFn: () => getAdminProblem(problemId),
+    enabled: Boolean(problemId),
+  });

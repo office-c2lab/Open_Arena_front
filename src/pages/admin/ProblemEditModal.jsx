@@ -1,193 +1,254 @@
-// src/pages/AdminProblems/ProblemEditModal.jsx
-import React, { useState } from 'react';
-import { useAdminProblemActions } from '@/hooks/useAdminProblemActions';
+import { useEffect, useState } from 'react';
+import { Trash2, X } from 'lucide-react';
 import { appToast } from '@/components/Toast/appToast';
+import { useAdminProblemActions } from '@/hooks/useAdminProblemActions';
+import { useAdminToggleProblemActive } from '@/hooks/useAdminToggleProblemActive';
+import {
+  useAdminChallengeResourceActions,
+  useProtectedTerms,
+} from '@/hooks/useAdminChallengeResources';
+import { useAdminProblemQuery } from '@/hooks/useAdminProblemsQuery';
+import AdminProblemForm, { formToProblemPayload, problemToForm } from './AdminProblemForm';
 
-export default function ProblemEditModal({ problem, onClose }) {
-  const { updateProblem, deleteProblem, isUpdating, isDeleting } = useAdminProblemActions();
+export default function ProblemEditModal({ problemId, onClose }) {
+  const problemQuery = useAdminProblemQuery(problemId);
+  const termsQuery = useProtectedTerms(problemId);
+  const problemActions = useAdminProblemActions();
+  const stateMutation = useAdminToggleProblemActive();
+  const resourceActions = useAdminChallengeResourceActions();
+  const [form, setForm] = useState(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState('');
+  const [termForm, setTermForm] = useState({ label: '', value: '' });
 
-  const [form, setForm] = useState(problem);
+  useEffect(() => {
+    if (problemQuery.data) setForm(problemToForm(problemQuery.data));
+  }, [problemQuery.data]);
 
-  const handleChange = e => {
-    const { name, value, type } = e.target;
-    setForm(prev => ({
-      ...prev,
-      [name]: type === 'number' ? Number(value) : value,
-    }));
+  const update = async event => {
+    event.preventDefault();
+    if (form.judge_enabled && form.judge_endpoint_ids.length === 0) {
+      appToast.error('Judge endpoint를 하나 이상 선택해 주세요.');
+      return;
+    }
+    try {
+      await problemActions.updateProblem({ id: problemId, payload: formToProblemPayload(form) });
+      appToast.success('문제를 수정했습니다.');
+      onClose();
+    } catch (error) {
+      appToast.error(error.message);
+    }
   };
 
-  const handleUpdate = async () => {
-    await updateProblem({ id: problem.id, payload: form });
-    appToast.success('문제가 수정되었습니다.');
-    onClose();
+  const remove = async () => {
+    if (!deleteConfirmation.trim()) {
+      appToast.error('삭제 확인 문구를 입력해 주세요.');
+      return;
+    }
+    if (!window.confirm('문제와 관련 통계가 함께 제외됩니다. 완전히 삭제할까요?')) return;
+    try {
+      await problemActions.deleteProblem({
+        id: problemId,
+        confirmation: deleteConfirmation.trim(),
+      });
+      appToast.success('문제를 삭제했습니다.');
+      onClose();
+    } catch (error) {
+      appToast.error(error.message);
+    }
   };
 
-  const handleDelete = async () => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-    await deleteProblem(problem.id);
-    appToast.success('문제가 삭제되었습니다.');
-    onClose();
+  const changeState = async () => {
+    const isActive = !problemQuery.data.is_active;
+    if (!window.confirm(`문제를 ${isActive ? '공개' : '비공개'} 상태로 변경할까요?`)) return;
+    try {
+      await stateMutation.mutateAsync({ problemId, isActive });
+      await problemQuery.refetch();
+      appToast.success(`문제를 ${isActive ? '공개' : '비공개'} 상태로 변경했습니다.`);
+    } catch (error) {
+      appToast.error(error.message);
+    }
+  };
+
+  const addTerm = async event => {
+    event.preventDefault();
+    if (!termForm.value.trim()) return;
+    try {
+      await resourceActions.createProtectedTerm({
+        problemId,
+        value: termForm.value.trim(),
+        label: termForm.label.trim(),
+      });
+      setTermForm({ label: '', value: '' });
+      appToast.success('보호 문자열을 추가했습니다.');
+    } catch (error) {
+      appToast.error(error.message);
+    }
+  };
+
+  const removeTerm = async term => {
+    if (!window.confirm(`${term.label || '보호 문자열'} 항목을 삭제할까요?`)) return;
+    try {
+      await resourceActions.deleteProtectedTerm({ problemId, termId: term.id });
+      appToast.success('보호 문자열을 삭제했습니다.');
+    } catch (error) {
+      appToast.error(error.message);
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
-      <div className="w-[700px] max-h-[90vh] overflow-y-auto bg-[#0B021C] text-white p-8 rounded-xl border border-[#FF4854] shadow-xl">
-        <h2 className="text-section-title font-bold text-[#FF4854] mb-6">문제 수정 / 삭제</h2>
-
-        {/*  기본 정보  */}
-        <SectionTitle title="기본 정보" />
-
-        <Input label="문제 제목" name="title" value={form.title} onChange={handleChange} />
-        <Input label="부 제목" name="sub_title" value={form.sub_title} onChange={handleChange} />
-        <Input label="카테고리" name="category" value={form.category} onChange={handleChange} />
-        <Input
-          label="문제 코드"
-          name="problem_code"
-          value={form.problem_code}
-          onChange={handleChange}
-        />
-
-        <Input type="number" label="배점" name="score" value={form.score} onChange={handleChange} />
-
-        {/*  설명 정보  */}
-        <SectionTitle title="설명" />
-
-        <TextArea
-          label="문제 설명"
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-        />
-        <TextArea
-          label="부 설명"
-          name="sub_description"
-          value={form.sub_description}
-          onChange={handleChange}
-        />
-
-        {/*  목표 및 기준  */}
-        <SectionTitle title="목표 및 기준" />
-
-        <TextArea label="목표" name="goal" value={form.goal} onChange={handleChange} />
-        <TextArea
-          label="성공 기준"
-          name="success_criteria"
-          value={form.success_criteria}
-          onChange={handleChange}
-        />
-        <TextArea
-          label="실패 기준"
-          name="failure_criteria"
-          value={form.failure_criteria}
-          onChange={handleChange}
-        />
-
-        {/*  모델 설정  */}
-        <SectionTitle title="모델 설정" />
-
-        <Input label="모델명" name="model_name" value={form.model_name} onChange={handleChange} />
-        <Input
-          label="Temperature"
-          type="number"
-          name="temperature"
-          value={form.temperature}
-          onChange={handleChange}
-        />
-
-        <TextArea
-          label="시스템 프롬프트"
-          name="system_prompt"
-          value={form.system_prompt}
-          onChange={handleChange}
-          className="h-32"
-        />
-
-        <Input
-          label="Chat Endpoint ID"
-          type="number"
-          name="chat_endpoint_id"
-          value={form.chat_endpoint_id}
-          onChange={handleChange}
-        />
-
-        {/* is_active 토글 */}
-        <div className="mt-4 mb-6">
-          <label className="font-strong mr-3">활성 여부</label>
-          <input
-            type="checkbox"
-            checked={form.is_active}
-            onChange={() => setForm(prev => ({ ...prev, is_active: !prev.is_active }))}
-          />
-        </div>
-
-        {/* 버튼 영역 */}
-        <div className="flex justify-between gap-3 mt-8">
+    <div
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-5"
+      onMouseDown={event => event.target === event.currentTarget && onClose()}
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-label="문제 상세 수정"
+        className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-2xl border border-white/10 bg-[#10050F] text-white shadow-2xl"
+      >
+        <header className="sticky top-0 z-50 flex items-center justify-between border-b border-white/10 bg-[#10050F] px-6 py-5">
+          <div>
+            <p className="text-label text-gray-400">문제 상세</p>
+            <h2 className="mt-1 text-section-title font-bold text-[#FF4854]">
+              {problemQuery.data?.title ?? '불러오는 중...'}
+            </h2>
+          </div>
           <button
-            onClick={handleUpdate}
-            disabled={isUpdating}
-            className="flex-1 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition text-card-title font-bold cursor-pointer"
+            type="button"
+            onClick={onClose}
+            className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-white/10"
+            aria-label="닫기"
           >
-            {isUpdating ? '저장 중...' : '수정하기'}
+            <X size={22} />
           </button>
+        </header>
 
-          <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="flex-1 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition text-card-title font-bold cursor-pointer"
-          >
-            {isDeleting ? '삭제 중...' : '삭제하기'}
-          </button>
-        </div>
+        {problemQuery.isLoading && <State>문제 상세를 불러오는 중...</State>}
+        {problemQuery.error && <State error>{problemQuery.error.message}</State>}
+        {problemQuery.data && (
+          <section className="mx-6 mt-6 flex flex-col gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="font-bold text-white">문제 공개 상태</h3>
+              <p className="mt-1 text-label text-gray-400">
+                현재 회원 화면에서 {problemQuery.data.is_active ? '공개 중' : '숨김'} 상태입니다.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={changeState}
+              disabled={stateMutation.isPending}
+              className={`h-11 rounded-lg px-5 font-bold text-white transition disabled:opacity-50 ${problemQuery.data.is_active ? 'bg-gray-600 hover:bg-gray-500' : 'bg-emerald-600 hover:bg-emerald-500'}`}
+            >
+              {problemQuery.data.is_active ? '비공개로 전환' : '공개로 전환'}
+            </button>
+          </section>
+        )}
+        {form && (
+          <form onSubmit={update} className="p-6">
+            <AdminProblemForm form={form} setForm={setForm} />
+            <button
+              type="submit"
+              disabled={problemActions.isUpdating}
+              className="mt-8 h-12 w-full rounded-xl bg-[#FF4854] font-bold hover:bg-[#ff3242] disabled:opacity-50"
+            >
+              {problemActions.isUpdating ? '저장 중...' : '문제 수정 저장'}
+            </button>
+          </form>
+        )}
 
-        <button
-          onClick={onClose}
-          className="mt-4 w-full py-2 bg-gray-500 hover:bg-gray-700 rounded-lg cursor-pointer"
-        >
-          닫기
-        </button>
-      </div>
+        <section className="mx-6 mb-6 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+          <h3 className="text-card-title font-bold text-[#FF4854]">보호 문자열</h3>
+          <p className="mt-1 text-label text-gray-400">
+            등록 후 원문은 관리자에게도 다시 표시되지 않습니다.
+          </p>
+          <form onSubmit={addTerm} className="mt-4 grid gap-3 md:grid-cols-[1fr_2fr_auto]">
+            <input
+              value={termForm.label}
+              onChange={event =>
+                setTermForm(current => ({ ...current, label: event.target.value }))
+              }
+              placeholder="라벨(선택)"
+              className="h-11 rounded-lg border border-white/10 bg-[#1A0B15] px-3 outline-none focus:border-[#FF4854]"
+            />
+            <input
+              value={termForm.value}
+              onChange={event =>
+                setTermForm(current => ({ ...current, value: event.target.value }))
+              }
+              placeholder="보호할 문자열"
+              required
+              className="h-11 rounded-lg border border-white/10 bg-[#1A0B15] px-3 outline-none focus:border-[#FF4854]"
+            />
+            <button
+              type="submit"
+              disabled={resourceActions.isSaving}
+              className="h-11 rounded-lg bg-[#FF4854] px-4 font-bold disabled:opacity-50"
+            >
+              추가
+            </button>
+          </form>
+          {termsQuery.isLoading && <p className="mt-4 text-gray-400">목록을 불러오는 중...</p>}
+          {termsQuery.error && <p className="mt-4 text-red-300">{termsQuery.error.message}</p>}
+          <div className="mt-4 space-y-2">
+            {(termsQuery.data?.items ?? []).map(term => (
+              <div
+                key={term.id}
+                className="flex items-center justify-between rounded-lg border border-white/10 bg-[#1A0B15] p-3"
+              >
+                <div>
+                  <div className="font-bold">{term.label || '라벨 없음'}</div>
+                  <div className="mt-1 text-label text-gray-500">
+                    원문 비공개 · {new Date(term.created_at).toLocaleString('ko-KR')}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeTerm(term)}
+                  className="flex h-9 items-center gap-1 rounded-lg bg-red-600 px-3 font-bold"
+                >
+                  <Trash2 size={15} /> 삭제
+                </button>
+              </div>
+            ))}
+          </div>
+          {!termsQuery.isLoading && (termsQuery.data?.items ?? []).length === 0 && (
+            <p className="mt-4 text-gray-500">등록된 보호 문자열이 없습니다.</p>
+          )}
+        </section>
+
+        <section className="mx-6 mb-8 rounded-xl border border-red-400/30 bg-red-950/20 p-5">
+          <h3 className="font-bold text-red-300">문제 완전 삭제</h3>
+          <p className="mt-1 text-label text-gray-400">
+            통계와 순위에서도 제외됩니다. 백엔드에서 요구하는 삭제 확인 문구를 입력해 주세요.
+          </p>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <input
+              value={deleteConfirmation}
+              onChange={event => setDeleteConfirmation(event.target.value)}
+              placeholder="삭제 확인 문구"
+              className="h-11 flex-1 rounded-lg border border-red-400/30 bg-[#1A0B15] px-3 outline-none focus:border-red-400"
+            />
+            <button
+              type="button"
+              onClick={remove}
+              disabled={problemActions.isDeleting}
+              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-red-600 px-4 font-bold hover:bg-red-500 disabled:opacity-50"
+            >
+              <Trash2 size={17} /> 완전 삭제
+            </button>
+          </div>
+        </section>
+      </section>
     </div>
   );
 }
 
-/*  공용 UI 컴포넌트  */
-
-function SectionTitle({ title }) {
-  return <h3 className="text-card-title font-bold text-[#FF4854] mt-6 mb-3">{title}</h3>;
-}
-
-function Input({ label, name, value, onChange, type = 'text' }) {
+function State({ children, error }) {
   return (
-    <div className="flex flex-col mb-4">
-      <label className="font-strong mb-1">{label}</label>
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="
-          bg-[#1A0B15]/60 border border-[#FF4854]/30 rounded-lg 
-          px-4 py-2 focus:border-[#FF4854] outline-none transition
-        "
-      />
-    </div>
-  );
-}
-
-function TextArea({ label, name, value, onChange, className = '' }) {
-  return (
-    <div className="flex flex-col mb-4">
-      <label className="font-strong mb-1">{label}</label>
-      <textarea
-        name={name}
-        value={value}
-        onChange={onChange}
-        className={`
-          bg-[#1A0B15]/60 border border-[#FF4854]/30 rounded-lg 
-          px-4 py-3 focus:border-[#FF4854] outline-none transition 
-          ${className}
-        `}
-      />
+    <div
+      className={`m-6 rounded-xl border p-8 text-center ${error ? 'border-red-400/30 text-red-300' : 'border-white/10 text-gray-400'}`}
+    >
+      {children}
     </div>
   );
 }

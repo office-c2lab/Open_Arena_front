@@ -1,3 +1,14 @@
-export const fetchJudgePrompt = async () => ({ judge_system_prompt: '' });
+import api from './axiosInstance';
 
-export const updateJudgePrompt = async () => ({ ok: true });
+export const getAdminSubmission = async submissionId => {
+  const { data } = await api.get(`/admin/submissions/${submissionId}`);
+  return data;
+};
+
+export const setAdminManualVerdict = async ({ submissionId, verdict, reason }) => {
+  const { data } = await api.patch(`/admin/submissions/${submissionId}/verdict`, {
+    verdict,
+    reason,
+  });
+  return data;
+};

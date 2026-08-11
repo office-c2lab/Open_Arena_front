@@ -1,365 +1,429 @@
-// src/pages/AdminConversationReview/AdminConversationReviewPage.jsx
-import React, { useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import {
-  useJudgeTeams,
-  useJudgeProblems,
-  useJudgeSessions,
-  useJudgeMessages,
-  useJudgeResult,
-  useMarkSessionFail,
-  useMarkSessionSuccess,
-} from '@/hooks/useAdminJudgeReview';
+  fetchJudgeMessages,
+  fetchJudgeSessions,
+  fetchJudgeSubmissions,
+} from '@/api/adminJudgeReviewApi';
+import { getAdminSubmission, setAdminManualVerdict } from '@/api/adminJudgeApi';
+import { appToast } from '@/components/Toast/appToast';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-export default function AdminConversationReviewPage() {
-  const [teamId, setTeamId] = useState(null);
-  const [problemId, setProblemId] = useState(null);
-  const [sessionId, setSessionId] = useState(null);
-  const [searchInput, setSearchInput] = useState('');
-  const [searchKeyword, setSearchKeyword] = useState('');
+const PAGE_SIZE = 20;
+const emptyFilters = { userId: '', problemId: '', submissionStatus: '', verdict: '' };
 
-  /* ============================================
-     1) 데이터 로드
-  ============================================ */
-  const { data: teams = [] } = useJudgeTeams();
-  const { data: problems = [] } = useJudgeProblems();
-  const { data: sessions = [] } = useJudgeSessions(teamId, problemId);
-  const { data: messages = [] } = useJudgeMessages(sessionId);
-  const { data: judgeResult } = useJudgeResult(sessionId);
+export default function AdminConversationMockPage() {
+  const queryClient = useQueryClient();
+  const [filterInputs, setFilterInputs] = useState(emptyFilters);
+  const [filters, setFilters] = useState(emptyFilters);
+  const [offset, setOffset] = useState(0);
+  const [selectedSessionId, setSelectedSessionId] = useState(null);
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState(null);
+  const [manualVerdict, setManualVerdict] = useState('passed');
+  const [manualReason, setManualReason] = useState('');
 
-  const keyword = searchKeyword.trim().toLowerCase();
-  const filteredTeams = useMemo(() => {
-    if (!keyword) return teams;
+  const sessionParams = useMemo(
+    () => ({ ...filters, offset, limit: PAGE_SIZE }),
+    [filters, offset]
+  );
+  const sessionsQuery = useQuery({
+    queryKey: ['adminChatSessions', sessionParams],
+    queryFn: () => fetchJudgeSessions(sessionParams),
+    placeholderData: previous => previous,
+  });
+  const messagesQuery = useQuery({
+    queryKey: ['adminChatMessages', selectedSessionId],
+    queryFn: () => fetchJudgeMessages(selectedSessionId),
+    enabled: Boolean(selectedSessionId),
+  });
+  const submissionsQuery = useQuery({
+    queryKey: ['adminSessionSubmissions', selectedSessionId],
+    queryFn: () => fetchJudgeSubmissions({ sessionId: selectedSessionId, limit: 100 }),
+    enabled: Boolean(selectedSessionId),
+  });
+  const submissionDetailQuery = useQuery({
+    queryKey: ['adminSubmission', selectedSubmissionId],
+    queryFn: () => getAdminSubmission(selectedSubmissionId),
+    enabled: Boolean(selectedSubmissionId),
+  });
+  const verdictMutation = useMutation({
+    mutationFn: setAdminManualVerdict,
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['adminSessionSubmissions', selectedSessionId],
+        }),
+        queryClient.invalidateQueries({ queryKey: ['adminChatSessions'] }),
+        queryClient.invalidateQueries({ queryKey: ['adminSubmission', selectedSubmissionId] }),
+      ]);
+      setManualReason('');
+      appToast.success('수동 판정을 변경했습니다.');
+    },
+    onError: error => appToast.error(error.message),
+  });
 
-    return teams.filter(team =>
-      [team.id, team.username, team.teamname, team.nickname]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-        .includes(keyword)
-    );
-  }, [keyword, teams]);
-  const filteredProblems = useMemo(() => {
-    if (!keyword) return problems;
+  const sessions = sessionsQuery.data?.items ?? [];
+  const total = sessionsQuery.data?.total ?? 0;
+  const submissions = submissionsQuery.data?.items ?? [];
+  const selectedSubmission = submissionDetailQuery.data;
 
-    return problems.filter(problem =>
-      [problem.id, problem.title, problem.description]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-        .includes(keyword)
-    );
-  }, [keyword, problems]);
-  const filteredSessions = useMemo(() => {
-    if (!keyword) return sessions;
+  const submitFilters = event => {
+    event.preventDefault();
+    setFilters(filterInputs);
+    setOffset(0);
+    setSelectedSessionId(null);
+    setSelectedSubmissionId(null);
+  };
 
-    return sessions.filter(session =>
-      [session.id, session.status, session.judge]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-        .includes(keyword)
-    );
-  }, [keyword, sessions]);
-  const filteredMessages = useMemo(() => {
-    if (!keyword) return messages;
-
-    return messages.filter(message =>
-      [message.id, message.role, message.content]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-        .includes(keyword)
-    );
-  }, [keyword, messages]);
-
-  const handleSearch = () => {
-    setSearchKeyword(searchInput);
+  const submitManualVerdict = event => {
+    event.preventDefault();
+    if (!manualReason.trim() || !selectedSubmissionId) return;
+    verdictMutation.mutate({
+      submissionId: selectedSubmissionId,
+      verdict: manualVerdict,
+      reason: manualReason.trim(),
+    });
   };
 
   return (
-    <div className="w-full p-10 text-white flex flex-col gap-6">
-      <h1 className="text-page-title font-bold text-[#FF4854]">관리자 세션 / 판정 관리 페이지</h1>
-
-      <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-[#0B021C]/70 p-4 sm:flex-row sm:items-center">
-        <label className="relative flex-1">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            value={searchInput}
-            onChange={event => setSearchInput(event.target.value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') handleSearch();
-            }}
-            placeholder="팀, 문제, 세션, 대화 내용 검색"
-            className="h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-10 pr-4 text-white outline-none placeholder:text-gray-500 focus:border-[#FF4854]"
-          />
-        </label>
+    <div className="mx-auto w-full max-w-7xl p-10 pb-40 text-white">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <h1 className="text-page-title font-bold text-[#FF4854]">채팅·판정 열람</h1>
+          <p className="mt-2 text-gray-400">
+            회원 채팅 세션과 전체 메시지, 제출 이력을 조회합니다.
+          </p>
+        </div>
         <button
           type="button"
-          onClick={handleSearch}
-          className="h-11 rounded-lg bg-[#FF4854] px-5 font-bold text-white transition hover:bg-[#ff3242]"
+          onClick={() => sessionsQuery.refetch()}
+          disabled={sessionsQuery.isFetching}
+          className="flex h-11 items-center gap-2 rounded-lg bg-[#FF4854] px-5 font-bold disabled:opacity-50"
         >
-          검색
+          <RefreshCw size={17} className={sessionsQuery.isFetching ? 'animate-spin' : ''} />{' '}
+          새로고침
         </button>
       </div>
 
-      {/* ============================================
-          1) 팀 / 문제 / 세션 목록
-      ============================================ */}
-      <div className="grid grid-cols-3 gap-4">
-        {/* 팀 목록 */}
-        <Column title="팀 목록">
-          {filteredTeams.length === 0 && <Empty>검색 결과가 없습니다.</Empty>}
-          {filteredTeams.map(t => (
-            <Item
-              key={t.id}
-              label={t.username ?? t.teamname ?? `Team ${t.id}`}
-              active={teamId === t.id}
-              onClick={() => {
-                setTeamId(t.id);
-                setProblemId(null);
-                setSessionId(null);
-              }}
-            />
-          ))}
-        </Column>
-
-        {/* 문제 목록 */}
-        <Column title="문제 목록">
-          {problems.length === 0 && <Empty>문제를 불러오는 중...</Empty>}
-          {problems.length > 0 && filteredProblems.length === 0 && (
-            <Empty>검색 결과가 없습니다.</Empty>
-          )}
-          {filteredProblems.map(p => (
-            <Item
-              key={p.id}
-              label={p.title}
-              active={problemId === p.id}
-              onClick={() => {
-                setProblemId(p.id);
-                setSessionId(null);
-              }}
-            />
-          ))}
-        </Column>
-
-        {/* 세션 목록 */}
-        <Column title="세션 목록">
-          {(!teamId || !problemId) && <Empty>팀/문제를 먼저 선택하세요</Empty>}
-
-          {teamId && problemId && filteredSessions.length === 0 && (
-            <Empty>검색 결과가 없습니다.</Empty>
-          )}
-          {filteredSessions.map(s => (
-            <Item
-              key={s.id}
-              label={`세션 #${s.id} (${s.status})`}
-              active={sessionId === s.id}
-              onClick={() => setSessionId(s.id)}
-            />
-          ))}
-        </Column>
-      </div>
-
-      {/* ============================================
-          2) 세션 전체 대화
-      ============================================ */}
-      <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/10 h-[80vh] overflow-y-auto">
-        <h2 className="text-card-title font-bold text-[#FF4854] mb-4">세션 전체 대화</h2>
-
-        {!sessionId && <Empty>세션을 선택하세요</Empty>}
-
-        <div className="flex flex-col gap-3">
-          {sessionId && filteredMessages.length === 0 && <Empty>검색 결과가 없습니다.</Empty>}
-          {filteredMessages.map(m => (
-            <ChatBubble key={m.id} msg={m} />
-          ))}
-        </div>
-      </div>
-
-      {/* ============================================
-          3) Judge 결과 + 강제 성공/실패 버튼
-      ============================================ */}
-      <JudgePanel judgeResult={judgeResult} sessionId={sessionId} />
-    </div>
-  );
-}
-
-/* =======================================================
-      ⭐ 공통 컴포넌트
-======================================================= */
-
-function Column({ title, children }) {
-  return (
-    <div
-      className="
-        flex flex-col 
-        bg-[#0B021C]/70 
-        rounded-xl 
-        p-4 
-        border border-white/10
-        h-[55vh]
-      "
-    >
-      <div className="font-bold text-white mb-3">{title}</div>
-
-      <div
-        className="
-          flex-1 
-          overflow-y-auto 
-          pr-2 
-          scrollbar-thin 
-          scrollbar-thumb-[#FF4854]/40 
-        "
+      <form
+        onSubmit={submitFilters}
+        className="mt-6 grid gap-3 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 md:grid-cols-2 xl:grid-cols-5"
       >
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function Item({ label, active, onClick }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`p-2 rounded-lg cursor-pointer mb-2 border
-      ${
-        active
-          ? 'bg-[#FF4854] text-white border-[#FF4854]'
-          : 'bg-[#10050F]/50 text-gray-200 hover:bg-[#1A0B15] border-white/10'
-      }`}
-    >
-      {label}
-    </div>
-  );
-}
-
-function Empty({ children }) {
-  return <div className="text-gray-400 text-body">{children}</div>;
-}
-
-function ChatBubble({ msg }) {
-  const isUser = msg.role === 'user';
-
-  return (
-    <div
-      className={`max-w-[85%] p-3 rounded-lg 
-        ${isUser ? 'ml-auto bg-[#2A1620]' : 'mr-auto bg-[#16202A]'}`}
-    >
-      <div className="text-label opacity-60 mb-1">{msg.role}</div>
-      <div className="whitespace-pre-wrap">{msg.content}</div>
-    </div>
-  );
-}
-
-/* =======================================================
-      ⭐ Judge 결과 패널 + 성공/실패 버튼
-======================================================= */
-
-function JudgePanel({ judgeResult, sessionId }) {
-  const { mutate: markFail, isPending: failLoading } = useMarkSessionFail(sessionId);
-
-  const { mutate: markSuccess, isPending: successLoading } = useMarkSessionSuccess(sessionId);
-
-  if (!judgeResult) {
-    return (
-      <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/20 text-gray-400">
-        세션을 선택하면 Judge 결과가 표시됩니다.
-      </div>
-    );
-  }
-
-  const { status, judge_reason, results = [] } = judgeResult;
-
-  return (
-    <div className="w-full bg-[#0B021C]/70 rounded-xl p-6 border border-white/20 flex flex-col gap-6">
-      <h2 className="text-card-title font-bold text-[#FF4854] mb-2">Judge 모델 결과</h2>
-
-      {/* 모델별 결과 3컬럼 */}
-      <div className="grid grid-cols-3 gap-4 h-[45vh]">
-        {results.map((r, idx) => (
-          <div
-            key={idx}
-            className="
-              flex flex-col 
-              bg-[#140B20]/70 
-              rounded-xl 
-              p-4 
-              border border-white/10
-              overflow-y-auto 
-              scrollbar-thin 
-              scrollbar-thumb-[#FF4854]/40
-            "
-          >
-            <div className="font-bold text-[#FF4854] text-card-title mb-4">{r.model}</div>
-
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-body opacity-70">판단:</span>
-              <span
-                className={`
-                  px-3 py-1 rounded-full text-white text-body
-                  ${
-                    r.verdict?.toLowerCase() === 'passed'
-                      ? 'bg-green-600'
-                      : r.verdict?.toLowerCase() === 'failed'
-                        ? 'bg-red-600'
-                        : 'bg-gray-600'
-                  }
-                `}
-              >
-                {r.verdict}
-              </span>
-            </div>
-
-            <div className="text-gray-300 whitespace-pre-wrap text-body">{r.output}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* ⭐ 최종 판정 */}
-      <div className="mt-4 p-4 rounded-lg bg-[#1A0B15] border border-white/10">
-        <div className="text-card-title font-bold mb-2">최종 판정</div>
-        <div
-          className={`px-4 py-2 inline-block rounded-full text-white font-bold ${
-            status === 'success' ? 'bg-green-600' : status === 'fail' ? 'bg-red-600' : 'bg-gray-600'
-          }`}
+        <FilterInput
+          label="회원 UUID"
+          value={filterInputs.userId}
+          onChange={value => setFilterInputs(current => ({ ...current, userId: value }))}
+        />
+        <FilterInput
+          label="문제 UUID"
+          value={filterInputs.problemId}
+          onChange={value => setFilterInputs(current => ({ ...current, problemId: value }))}
+        />
+        <FilterSelect
+          label="제출 상태"
+          value={filterInputs.submissionStatus}
+          onChange={value => setFilterInputs(current => ({ ...current, submissionStatus: value }))}
         >
-          {status}
+          <option value="">전체</option>
+          {['pending', 'running', 'completed', 'failed', 'cancelled'].map(value => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </FilterSelect>
+        <FilterSelect
+          label="판정"
+          value={filterInputs.verdict}
+          onChange={value => setFilterInputs(current => ({ ...current, verdict: value }))}
+        >
+          <option value="">전체</option>
+          {['passed', 'failed', 'review'].map(value => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </FilterSelect>
+        <button
+          type="submit"
+          className="mt-auto h-11 rounded-lg bg-[#FF4854] px-5 font-bold hover:bg-[#ff3242]"
+        >
+          필터 적용
+        </button>
+      </form>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[380px_1fr]">
+        <section className="overflow-hidden rounded-xl border border-white/10 bg-[#0B021C]/70">
+          <div className="border-b border-white/10 p-4 font-bold text-[#FF4854]">
+            세션 목록 · {total.toLocaleString()}개
+          </div>
+          {sessionsQuery.isLoading && <State>목록을 불러오는 중...</State>}
+          {sessionsQuery.error && <State error>{sessionsQuery.error.message}</State>}
+          <div className="max-h-[70vh] overflow-y-auto p-3">
+            {sessions.map(session => (
+              <button
+                key={session.id}
+                type="button"
+                onClick={() => {
+                  setSelectedSessionId(session.id);
+                  setSelectedSubmissionId(null);
+                }}
+                className={`mb-2 w-full rounded-lg border p-3 text-left transition ${selectedSessionId === session.id ? 'border-[#FF4854] bg-[#FF4854] text-white' : 'border-white/10 bg-[#10050F]/60 hover:bg-[#1A0B15]'}`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <strong>{session.nickname || session.email || session.user_id}</strong>
+                  {session.verdict && <VerdictBadge verdict={session.verdict} />}
+                </div>
+                <div className="mt-2 text-label opacity-75">{session.problem_title}</div>
+                <div className="mt-1 truncate text-caption opacity-60">
+                  {session.title || session.id}
+                </div>
+                <div className="mt-2 text-caption opacity-60">
+                  {new Date(session.updated_at).toLocaleString('ko-KR')}
+                </div>
+              </button>
+            ))}
+            {!sessionsQuery.isLoading && sessions.length === 0 && (
+              <State>표시할 세션이 없습니다.</State>
+            )}
+          </div>
+          {total > 0 && (
+            <div className="flex items-center justify-between border-t border-white/10 p-3 text-label">
+              <button
+                type="button"
+                disabled={offset === 0}
+                onClick={() => setOffset(value => Math.max(0, value - PAGE_SIZE))}
+                className="flex h-8 w-8 items-center justify-center rounded bg-white/10 disabled:opacity-30"
+              >
+                <ChevronLeft size={17} />
+              </button>
+              <span>
+                {Math.floor(offset / PAGE_SIZE) + 1} / {Math.max(1, Math.ceil(total / PAGE_SIZE))}
+              </span>
+              <button
+                type="button"
+                disabled={offset + PAGE_SIZE >= total}
+                onClick={() => setOffset(value => value + PAGE_SIZE)}
+                className="flex h-8 w-8 items-center justify-center rounded bg-white/10 disabled:opacity-30"
+              >
+                <ChevronRight size={17} />
+              </button>
+            </div>
+          )}
+        </section>
+
+        <div className="space-y-6">
+          {!selectedSessionId && <State>왼쪽에서 채팅 세션을 선택해 주세요.</State>}
+          {selectedSessionId && (
+            <>
+              <section className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+                <h2 className="text-card-title font-bold text-[#FF4854]">전체 메시지</h2>
+                {messagesQuery.isLoading && <State>메시지를 불러오는 중...</State>}
+                {messagesQuery.error && <State error>{messagesQuery.error.message}</State>}
+                <div className="mt-4 flex max-h-[65vh] flex-col gap-3 overflow-y-auto pr-2">
+                  {(messagesQuery.data?.items ?? []).map(message => (
+                    <ChatBubble key={message.id} message={message} />
+                  ))}
+                  {!messagesQuery.isLoading && (messagesQuery.data?.items ?? []).length === 0 && (
+                    <State>메시지가 없습니다.</State>
+                  )}
+                </div>
+              </section>
+
+              <section className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+                <h2 className="text-card-title font-bold text-[#FF4854]">세션 제출 이력</h2>
+                {submissionsQuery.isLoading && <State>제출을 불러오는 중...</State>}
+                {submissionsQuery.error && <State error>{submissionsQuery.error.message}</State>}
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {submissions.map(submission => (
+                    <button
+                      key={submission.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedSubmissionId(submission.id);
+                        setManualVerdict(
+                          ['passed', 'failed'].includes(submission.verdict)
+                            ? submission.verdict
+                            : 'passed'
+                        );
+                        setManualReason('');
+                      }}
+                      className={`rounded-lg border p-4 text-left ${selectedSubmissionId === submission.id ? 'border-[#FF4854] bg-[#2A0B15]' : 'border-white/10 bg-[#10050F]/60'}`}
+                    >
+                      <div className="flex justify-between gap-2">
+                        <strong>{submission.status}</strong>
+                        {submission.verdict && <VerdictBadge verdict={submission.verdict} />}
+                      </div>
+                      <div className="mt-2 truncate text-label text-gray-500">{submission.id}</div>
+                      <div className="mt-2 text-label text-gray-400">
+                        {new Date(submission.submitted_at).toLocaleString('ko-KR')}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                {!submissionsQuery.isLoading && submissions.length === 0 && (
+                  <State>제출 이력이 없습니다.</State>
+                )}
+              </section>
+
+              {selectedSubmission && (
+                <SubmissionDetail
+                  submission={selectedSubmission}
+                  verdict={manualVerdict}
+                  reason={manualReason}
+                  onVerdictChange={setManualVerdict}
+                  onReasonChange={setManualReason}
+                  onSubmit={submitManualVerdict}
+                  isSaving={verdictMutation.isPending}
+                />
+              )}
+              {submissionDetailQuery.isLoading && <State>제출 상세를 불러오는 중...</State>}
+              {submissionDetailQuery.error && (
+                <State error>{submissionDetailQuery.error.message}</State>
+              )}
+            </>
+          )}
         </div>
-
-        <div className="mt-3 text-gray-300 whitespace-pre-wrap">{judge_reason}</div>
       </div>
+    </div>
+  );
+}
 
-      {/* ============================================
-          ⭐ 강제 성공/실패 버튼
-      ============================================ */}
-      {sessionId && (
-        <div className="flex gap-4 mt-4">
-          <button
-            onClick={() => markSuccess()}
-            disabled={successLoading}
-            className="
-              w-48 px-4 py-2 rounded-lg font-bold text-white 
-              bg-green-600 hover:bg-green-700 transition
-              disabled:opacity-40
-            "
-          >
-            {successLoading ? '처리 중...' : '강제 성공 처리'}
-          </button>
-
-          <button
-            onClick={() => markFail()}
-            disabled={failLoading}
-            className="
-              w-48 px-4 py-2 rounded-lg font-bold text-white 
-              bg-red-600 hover:bg-red-700 transition
-              disabled:opacity-40
-            "
-          >
-            {failLoading ? '처리 중...' : '강제 실패 처리'}
-          </button>
+function SubmissionDetail({
+  submission,
+  verdict,
+  reason,
+  onVerdictChange,
+  onReasonChange,
+  onSubmit,
+  isSaving,
+}) {
+  return (
+    <section className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5">
+      <h2 className="text-card-title font-bold text-[#FF4854]">제출 상세·수동 판정</h2>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <Info label="제출 ID" value={submission.id} />
+        <Info label="상태" value={submission.status} />
+        <Info label="점수" value={submission.score ?? '-'} />
+      </div>
+      {submission.manual_reason && (
+        <div className="mt-4 rounded-lg border border-amber-400/20 bg-amber-950/20 p-4">
+          <div className="text-label font-bold text-amber-300">현재 수동 판정 사유</div>
+          <p className="mt-2 whitespace-pre-wrap text-gray-300">{submission.manual_reason}</p>
         </div>
       )}
+      <div className="mt-5 grid gap-3 lg:grid-cols-3">
+        {submission.judgements.map((judge, index) => (
+          <article
+            key={`${judge.model}-${index}`}
+            className="rounded-lg border border-white/10 bg-[#140B20]/70 p-4"
+          >
+            <div className="flex justify-between gap-2">
+              <strong>{judge.model}</strong>
+              <VerdictBadge verdict={judge.verdict} />
+            </div>
+            <p className="mt-3 whitespace-pre-wrap text-body text-gray-300">{judge.reason}</p>
+            <div className="mt-3 text-caption text-gray-500">
+              {judge.latency_ms}ms · {judge.prompt_tokens + judge.completion_tokens} tokens
+            </div>
+          </article>
+        ))}
+      </div>
+      <form onSubmit={onSubmit} className="mt-5 border-t border-white/10 pt-5">
+        <div className="grid gap-3 sm:grid-cols-[160px_1fr]">
+          <select
+            value={verdict}
+            onChange={event => onVerdictChange(event.target.value)}
+            className="h-11 rounded-lg border border-white/10 bg-[#1A0B15] px-3 outline-none"
+          >
+            <option value="passed">통과</option>
+            <option value="failed">실패</option>
+          </select>
+          <textarea
+            value={reason}
+            onChange={event => onReasonChange(event.target.value)}
+            placeholder="수동 판정 사유"
+            required
+            className="h-24 rounded-lg border border-white/10 bg-[#1A0B15] p-3 outline-none focus:border-[#FF4854]"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={isSaving}
+          className="mt-3 h-11 rounded-lg bg-[#FF4854] px-5 font-bold hover:bg-[#ff3242] disabled:opacity-50"
+        >
+          {isSaving ? '저장 중...' : '수동 판정 변경'}
+        </button>
+      </form>
+    </section>
+  );
+}
+
+function ChatBubble({ message }) {
+  const isUser = message.role === 'user';
+  return (
+    <article
+      className={`max-w-[88%] rounded-xl p-4 ${isUser ? 'ml-auto bg-[#2A1620]' : 'mr-auto bg-[#16202A]'}`}
+    >
+      <div className="flex justify-between gap-4 text-label opacity-60">
+        <span>{message.role}</span>
+        <span>{new Date(message.created_at).toLocaleString('ko-KR')}</span>
+      </div>
+      <p className="mt-2 whitespace-pre-wrap break-words">{message.content}</p>
+      <div className="mt-2 text-caption text-gray-500">
+        입력 {message.prompt_tokens} · 출력 {message.completion_tokens}
+      </div>
+    </article>
+  );
+}
+function FilterInput({ label, value, onChange }) {
+  return (
+    <label>
+      <span className="text-label text-gray-300">{label}</span>
+      <input
+        value={value}
+        onChange={event => onChange(event.target.value)}
+        className="mt-2 h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] px-3 outline-none focus:border-[#FF4854]"
+      />
+    </label>
+  );
+}
+function FilterSelect({ label, value, onChange, children }) {
+  return (
+    <label>
+      <span className="text-label text-gray-300">{label}</span>
+      <select
+        value={value}
+        onChange={event => onChange(event.target.value)}
+        className="mt-2 h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] px-3 outline-none focus:border-[#FF4854]"
+      >
+        {children}
+      </select>
+    </label>
+  );
+}
+function VerdictBadge({ verdict }) {
+  return (
+    <span
+      className={`rounded-full px-2 py-1 text-caption font-bold ${verdict === 'passed' ? 'bg-emerald-500/15 text-emerald-300' : verdict === 'failed' ? 'bg-red-500/15 text-red-300' : 'bg-amber-500/15 text-amber-300'}`}
+    >
+      {verdict}
+    </span>
+  );
+}
+function Info({ label, value }) {
+  return (
+    <div>
+      <div className="text-label text-gray-400">{label}</div>
+      <div className="mt-1 break-all font-bold">{value}</div>
+    </div>
+  );
+}
+function State({ children, error }) {
+  return (
+    <div
+      className={`my-4 rounded-lg border p-5 text-center ${error ? 'border-red-400/30 text-red-300' : 'border-white/10 text-gray-400'}`}
+    >
+      {children}
     </div>
   );
 }

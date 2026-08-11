@@ -1,54 +1,45 @@
-import React, { useState } from 'react';
-import AdminProblemToggleList from './AdminProblemToggleList';
+import { useState } from 'react';
 import AdminProblemCreatePage from './AdminProblemCreatePage';
 import AdminProblemManagementPage from './AdminProblemManagementPage';
+import {
+  CategoryManagement,
+  ChallengeSetting,
+  EndpointManagement,
+} from './AdminChallengeResourceManagement';
 
-const TABS = ['문제 활성/비활성', '문제 생성', '문제 수정/삭제'];
+const TABS = [
+  ['problems', '문제 관리'],
+  ['create', '문제 생성'],
+  ['categories', '카테고리'],
+  ['chat-endpoints', 'Chat 엔드포인트'],
+  ['judge-endpoints', 'Judge 엔드포인트'],
+  ['setting', '운영 설정'],
+];
 
 export default function AdminProblemPage() {
-  const [activeTab, setActiveTab] = useState(TABS[0]);
-  const [activeOnly, setActiveOnly] = useState(false);
+  const [activeTab, setActiveTab] = useState('problems');
 
   return (
-    <div className="w-full max-w-6xl mx-auto pt-10">
-      {/*  탭 UI  */}
-      <div className="flex gap-4 mb-10 justify-center">
-        {TABS.map(tab => {
-          const isActive = activeTab === tab;
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`
-                px-6 py-3 rounded-xl font-bold text-body-lg transition-all duration-200
-                border  cursor-pointer
-                ${
-                  isActive
-                    ? 'bg-[#FF4854] text-white border-[#FF4854] shadow-[0_0_15px_rgba(255,72,84,0.8)] scale-[1.05]'
-                    : 'bg-[#1A0B15]/60 text-gray-300 border-gray-600 hover:bg-[#2a0f1f]'
-                }
-              `}
-            >
-              {tab}
-            </button>
-          );
-        })}
+    <div className="mx-auto w-full max-w-7xl p-8 pb-40">
+      <div className="mb-8 flex flex-wrap justify-center gap-3">
+        {TABS.map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setActiveTab(value)}
+            className={`rounded-xl border px-5 py-3 font-bold transition ${activeTab === value ? 'scale-[1.03] border-[#FF4854] bg-[#FF4854] text-white shadow-[0_0_15px_rgba(255,72,84,0.55)]' : 'border-gray-600 bg-[#1A0B15]/60 text-gray-300 hover:bg-[#2a0f1f]'}`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      {/*  탭 내용  */}
-      {activeTab === '문제 활성/비활성' && (
-        <AdminProblemToggleList
-          activeOnly={activeOnly}
-          onActiveOnlyToggle={() => setActiveOnly(prev => !prev)}
-        />
-      )}
-      {activeTab === '문제 생성' && <AdminProblemCreatePage />}
-      {activeTab === '문제 수정/삭제' && (
-        <AdminProblemManagementPage
-          activeOnly={activeOnly}
-          onActiveOnlyToggle={() => setActiveOnly(prev => !prev)}
-        />
-      )}
+      {activeTab === 'problems' && <AdminProblemManagementPage />}
+      {activeTab === 'create' && <AdminProblemCreatePage />}
+      {activeTab === 'categories' && <CategoryManagement />}
+      {activeTab === 'chat-endpoints' && <EndpointManagement kind="chat" />}
+      {activeTab === 'judge-endpoints' && <EndpointManagement kind="judge" />}
+      {activeTab === 'setting' && <ChallengeSetting />}
     </div>
   );
 }

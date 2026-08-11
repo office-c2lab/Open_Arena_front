@@ -1,115 +1,152 @@
-// src/pages/AdminProblems/AdminProblemManagementPage.jsx
-import React, { useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight, RefreshCw, Search } from 'lucide-react';
 import { useAdminProblemsQuery } from '@/hooks/useAdminProblemsQuery';
-import { useAdminToggleProblemActive } from '@/hooks/useAdminToggleProblemActive';
 import ProblemEditModal from './ProblemEditModal';
-import ToggleSwitch from './ToggleSwitch';
 
-export default function AdminProblemManagementPage({ activeOnly = false, onActiveOnlyToggle }) {
-  const { data, isLoading } = useAdminProblemsQuery({ activeOnly });
-  const toggle = useAdminToggleProblemActive();
+const PAGE_SIZE = 20;
 
-  const [editingProblem, setEditingProblem] = useState(null);
+export default function AdminProblemManagementPage() {
   const [searchInput, setSearchInput] = useState('');
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [query, setQuery] = useState('');
+  const [offset, setOffset] = useState(0);
+  const [activeOnly, setActiveOnly] = useState(false);
+  const [editingProblemId, setEditingProblemId] = useState(null);
 
-  const filteredProblems = useMemo(() => {
-    const keyword = searchKeyword.trim().toLowerCase();
-    const problems = Array.isArray(data) ? data : [];
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setQuery(searchInput.trim());
+      setOffset(0);
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [searchInput]);
 
-    if (!keyword) return problems;
-
-    return problems.filter(problem => {
-      const searchableText = [problem.id, problem.title, problem.description]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-
-      return searchableText.includes(keyword);
-    });
-  }, [data, searchKeyword]);
-
-  const handleSearch = () => {
-    setSearchKeyword(searchInput);
-  };
-
-  if (isLoading) return <div className="text-white">로딩 중...</div>;
+  const filters = useMemo(
+    () => ({ query: query || undefined, offset, limit: PAGE_SIZE }),
+    [offset, query]
+  );
+  const problemsQuery = useAdminProblemsQuery(filters);
+  const allItems = problemsQuery.data?.items ?? [];
+  const items = activeOnly ? allItems.filter(problem => problem.is_active) : allItems;
+  const total = problemsQuery.data?.total ?? 0;
 
   return (
-    <div className="p-10 text-white max-w-[1200px] mx-auto">
-      <div className="flex items-center justify-between gap-4 mb-8">
-        <h1 className="text-display-sm font-bold text-[#FF4854]">문제 관리</h1>
-
-        <label className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#0B021C]/70 border border-white/10 text-white cursor-pointer">
-          <ToggleSwitch enabled={activeOnly} onToggle={onActiveOnlyToggle} />
-          <span className="font-bold whitespace-nowrap">활성 문제만 보기</span>
-        </label>
-      </div>
-
-      <div className="mb-6 flex flex-col gap-3 rounded-xl border border-white/10 bg-[#0B021C]/70 p-4 sm:flex-row sm:items-center">
+    <div className="mx-auto w-full max-w-6xl text-white">
+      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center">
         <label className="relative flex-1">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             value={searchInput}
             onChange={event => setSearchInput(event.target.value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') handleSearch();
-            }}
-            placeholder="문제 제목, 설명, ID 검색"
-            className="h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-10 pr-4 text-white outline-none placeholder:text-gray-500 focus:border-[#FF4854]"
+            placeholder="문제 제목·설명·Slug 검색"
+            className="h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-10 pr-4 text-white outline-none focus:border-[#FF4854]"
           />
+        </label>
+        <label className="flex h-11 items-center gap-3 rounded-lg border border-white/10 bg-[#1A0B15] px-4">
+          <input
+            type="checkbox"
+            checked={activeOnly}
+            onChange={event => setActiveOnly(event.target.checked)}
+            className="h-5 w-5 accent-[#FF4854]"
+          />{' '}
+          공개 문제만
         </label>
         <button
           type="button"
-          onClick={handleSearch}
-          className="h-11 rounded-lg bg-[#FF4854] px-5 font-bold text-white transition hover:bg-[#ff3242]"
+          onClick={() => problemsQuery.refetch()}
+          disabled={problemsQuery.isFetching}
+          className="flex h-11 items-center gap-2 rounded-lg bg-[#FF4854] px-4 font-bold disabled:opacity-50"
         >
-          검색
+          <RefreshCw size={17} className={problemsQuery.isFetching ? 'animate-spin' : ''} />{' '}
+          새로고침
         </button>
       </div>
 
-      {/* 문제 카드 리스트 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14">
-        {filteredProblems.map(p => (
-          <div
-            key={p.id}
-            className="p-5 bg-[#0B021C]/70 border border-[#FF4854]/40 rounded-xl shadow-lg"
+      {problemsQuery.isLoading && <State>문제 목록을 불러오는 중...</State>}
+      {problemsQuery.error && <State error>{problemsQuery.error.message}</State>}
+      {!problemsQuery.isLoading && !problemsQuery.error && items.length === 0 && (
+        <State>표시할 문제가 없습니다.</State>
+      )}
+
+      <div className="grid gap-5 md:grid-cols-2">
+        {items.map(problem => (
+          <article
+            key={problem.id}
+            className="rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 shadow-lg"
           >
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-card-title font-bold">{p.title}</h2>
-
-              <button
-                onClick={() => toggle.mutate(p.id)}
-                className={`px-3 py-1 text-body rounded-lg  cursor-pointer ${
-                  p.is_active ? 'bg-green-600' : 'bg-gray-600'
-                }`}
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-card-title font-bold">{problem.title}</h2>
+                <p className="mt-1 text-label text-gray-500">{problem.slug}</p>
+              </div>
+              <span
+                className={`rounded-full px-3 py-1 text-label font-bold ${problem.is_active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-gray-500/15 text-gray-400'}`}
               >
-                {p.is_active ? '활성' : '비활성'}
-              </button>
+                {problem.is_active ? '공개' : '비공개'}
+              </span>
             </div>
-
-            <p className="text-gray-400 text-body mb-4">{p.description?.slice(0, 80)}...</p>
-
+            <p className="mt-4 line-clamp-3 text-body text-gray-400">{problem.description}</p>
+            <div className="mt-4 flex flex-wrap gap-2 text-label text-gray-300">
+              <span className="rounded bg-white/10 px-2 py-1">{problem.difficulty}</span>
+              <span className="rounded bg-white/10 px-2 py-1">
+                {problem.max_score.toLocaleString()}점
+              </span>
+              {problem.is_tutorial && (
+                <span className="rounded bg-[#FFB155]/15 px-2 py-1 text-[#FFD08A]">튜토리얼</span>
+              )}
+            </div>
             <button
-              onClick={() => setEditingProblem(p)}
-              className="w-full py-2 rounded-lg bg-[#FF4854] hover:bg-[#e13a47] transition cursor-pointer"
+              type="button"
+              onClick={() => setEditingProblemId(problem.id)}
+              className="mt-5 h-10 w-full rounded-lg bg-[#FF4854] font-bold transition hover:bg-[#ff3242]"
             >
-              수정 / 삭제
+              상세·수정·보호 문자열
             </button>
-          </div>
+          </article>
         ))}
       </div>
 
-      {filteredProblems.length === 0 && (
-        <div className="mb-14 rounded-xl border border-white/10 bg-[#0B021C]/70 p-10 text-center text-gray-400">
-          검색 결과가 없습니다.
+      {total > 0 && (
+        <div className="mt-6 flex items-center justify-between rounded-xl border border-white/10 bg-[#0B021C]/70 px-5 py-4">
+          <span>
+            {total.toLocaleString()}개 중 {offset + 1}–{Math.min(offset + allItems.length, total)}
+          </span>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              disabled={offset === 0}
+              onClick={() => setOffset(value => Math.max(0, value - PAGE_SIZE))}
+              className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 disabled:opacity-30"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <span>
+              {Math.floor(offset / PAGE_SIZE) + 1} / {Math.max(1, Math.ceil(total / PAGE_SIZE))}
+            </span>
+            <button
+              type="button"
+              disabled={offset + PAGE_SIZE >= total}
+              onClick={() => setOffset(value => value + PAGE_SIZE)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 disabled:opacity-30"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
       )}
 
-      {editingProblem && (
-        <ProblemEditModal problem={editingProblem} onClose={() => setEditingProblem(null)} />
+      {editingProblemId && (
+        <ProblemEditModal problemId={editingProblemId} onClose={() => setEditingProblemId(null)} />
       )}
+    </div>
+  );
+}
+
+function State({ children, error }) {
+  return (
+    <div
+      className={`rounded-xl border p-10 text-center ${error ? 'border-red-400/30 bg-red-950/20 text-red-300' : 'border-white/10 bg-[#0B021C]/70 text-gray-400'}`}
+    >
+      {children}
     </div>
   );
 }

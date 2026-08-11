@@ -6,7 +6,7 @@ export const useAdminToggleProblemActive = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: problemId => toggleAdminProblemActive(problemId),
+    mutationFn: toggleAdminProblemActive,
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminProblems'] });

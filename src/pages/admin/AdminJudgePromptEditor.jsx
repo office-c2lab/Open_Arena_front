@@ -1,164 +1,261 @@
-// src/pages/admin/AdminJudgePromptPage.jsx
-import React, { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
-import { useAdminProblemsQuery } from '@/hooks/useAdminProblemsQuery';
-import { useJudgePromptQuery, useJudgePromptMutation } from '@/hooks/useAdminJudgePrompt';
 import { appToast } from '@/components/Toast/appToast';
+import { useAdminProblemActions } from '@/hooks/useAdminProblemActions';
+import { useAdminProblemQuery, useAdminProblemsQuery } from '@/hooks/useAdminProblemsQuery';
+import { useAdminEndpoints } from '@/hooks/useAdminChallengeResources';
 
-export default function AdminJudgePromptPage() {
-  const [selectedProblemId, setSelectedProblemId] = useState(null);
-  const [promptText, setPromptText] = useState('');
+const emptyJudgeForm = {
+  enabled: false,
+  system_prompt: '',
+  max_attempts: '0',
+  timeout_seconds: '60',
+  judge_endpoint_ids: [],
+};
+
+export default function AdminJudgePromptEditor() {
   const [searchInput, setSearchInput] = useState('');
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [query, setQuery] = useState('');
+  const [selectedProblemId, setSelectedProblemId] = useState(null);
+  const [form, setForm] = useState(emptyJudgeForm);
 
-  // 🔹 문제 전체 목록 가져오기
-  const { data: problems = [], isLoading: problemsLoading } = useAdminProblemsQuery();
-  const filteredProblems = useMemo(() => {
-    const keyword = searchKeyword.trim().toLowerCase();
-    if (!keyword) return problems;
+  const filters = useMemo(() => ({ query: query || undefined, offset: 0, limit: 100 }), [query]);
+  const problemsQuery = useAdminProblemsQuery(filters);
+  const problemQuery = useAdminProblemQuery(selectedProblemId);
+  const judgeEndpointsQuery = useAdminEndpoints('judge');
+  const actions = useAdminProblemActions();
+  const problems = problemsQuery.data?.items ?? [];
+  const judgeEndpoints = judgeEndpointsQuery.data?.items ?? [];
 
-    return problems.filter(problem => {
-      const searchableText = [problem.id, problem.title, problem.description]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
+  useEffect(() => {
+    const setting = problemQuery.data?.judgement_setting;
+    if (!problemQuery.data) return;
+    setForm(
+      setting
+        ? {
+            enabled: true,
+            system_prompt: setting.system_prompt,
+            max_attempts: String(setting.max_attempts),
+            timeout_seconds: String(setting.timeout_seconds),
+            judge_endpoint_ids: setting.judge_endpoint_ids,
+          }
+        : emptyJudgeForm
+    );
+  }, [problemQuery.data]);
 
-      return searchableText.includes(keyword);
+  const toggleEndpoint = endpointId => {
+    setForm(current => {
+      const selected = current.judge_endpoint_ids.includes(endpointId);
+      if (!selected && current.judge_endpoint_ids.length >= 3) return current;
+      return {
+        ...current,
+        judge_endpoint_ids: selected
+          ? current.judge_endpoint_ids.filter(id => id !== endpointId)
+          : [...current.judge_endpoint_ids, endpointId],
+      };
     });
-  }, [problems, searchKeyword]);
-
-  const handleSearch = () => {
-    setSearchKeyword(searchInput);
   };
 
-  // 🔹 현재 선택된 문제의 프롬프트 GET
-  const {
-    data: promptData,
-    isLoading: promptLoading,
-    isError: promptError,
-  } = useJudgePromptQuery(selectedProblemId, {
-    enabled: !!selectedProblemId,
-  });
-
-  // 🔹 프롬프트 수정 (성공시 alert)
-  const { mutate: savePrompt, isPending: isSaving } = useJudgePromptMutation(selectedProblemId, {
-    onSuccess: () => {
-      appToast.success('수정되었습니다.');
-    },
-  });
-
-  // 🔹 선택된 문제의 프롬프트를 textarea에 세팅
-  useEffect(() => {
-    if (promptData?.judge_system_prompt) {
-      setPromptText(promptData.judge_system_prompt);
-    } else {
-      setPromptText('');
+  const save = async event => {
+    event.preventDefault();
+    if (form.enabled && form.judge_endpoint_ids.length === 0) {
+      appToast.error('Judge endpoint를 하나 이상 선택해 주세요.');
+      return;
     }
-  }, [promptData]);
-
-  if (problemsLoading) {
-    return <div className="text-white p-10">문제 목록 로딩 중...</div>;
-  }
+    try {
+      await actions.updateProblem({
+        id: selectedProblemId,
+        payload: {
+          judgement_setting: form.enabled
+            ? {
+                system_prompt: form.system_prompt.trim(),
+                max_attempts: Number(form.max_attempts),
+                timeout_seconds: Number(form.timeout_seconds),
+                judge_endpoint_ids: form.judge_endpoint_ids,
+              }
+            : null,
+        },
+      });
+      await problemQuery.refetch();
+      appToast.success('Judge 프롬프트와 설정을 수정했습니다.');
+    } catch (error) {
+      appToast.error(error.message);
+    }
+  };
 
   return (
-    <div className="w-full p-10 text-white flex gap-6">
-      {/* ========================================
-          🔹 왼쪽 — 문제 리스트
-      ======================================== */}
-      <div className="w-[300px] bg-[#0B021C]/70 border border-white/10 rounded-xl p-5">
-        <h2 className="text-card-title font-bold mb-4">문제 목록</h2>
-
-        <div className="mb-4 flex flex-col gap-3">
-          <label className="relative">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              value={searchInput}
-              onChange={event => setSearchInput(event.target.value)}
-              onKeyDown={event => {
-                if (event.key === 'Enter') handleSearch();
-              }}
-              placeholder="문제 검색"
-              className="h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-10 pr-4 text-white outline-none placeholder:text-gray-500 focus:border-[#FF4854]"
-            />
-          </label>
-          <button
-            type="button"
-            onClick={handleSearch}
-            className="h-11 rounded-lg bg-[#FF4854] px-5 font-bold text-white transition hover:bg-[#ff3242]"
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-10 pb-40 text-white xl:flex-row">
+      <aside className="w-full shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[#0B021C]/70 xl:w-[320px]">
+        <div className="border-b border-white/10 p-5">
+          <h1 className="text-card-title font-bold text-[#FF4854]">Judge 프롬프트 관리</h1>
+          <form
+            onSubmit={event => {
+              event.preventDefault();
+              setQuery(searchInput.trim());
+            }}
+            className="mt-4 flex gap-2"
           >
-            검색
-          </button>
+            <label className="relative min-w-0 flex-1">
+              <Search
+                size={17}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                value={searchInput}
+                onChange={event => setSearchInput(event.target.value)}
+                placeholder="문제 검색"
+                className="h-10 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-9 pr-3 outline-none focus:border-[#FF4854]"
+              />
+            </label>
+            <button type="submit" className="rounded-lg bg-[#FF4854] px-3 font-bold">
+              검색
+            </button>
+          </form>
         </div>
-
-        <div className="flex flex-col gap-2 max-h-[70vh] overflow-y-auto">
-          {filteredProblems.length === 0 && (
-            <div className="rounded-lg border border-white/10 bg-[#10050F]/50 p-4 text-body text-gray-400">
-              검색 결과가 없습니다.
-            </div>
-          )}
-          {filteredProblems.map(problem => (
+        <div className="max-h-[75vh] overflow-y-auto p-3">
+          {problemsQuery.isLoading && <State>문제를 불러오는 중...</State>}
+          {problemsQuery.error && <State error>{problemsQuery.error.message}</State>}
+          {problems.map(problem => (
             <button
               key={problem.id}
+              type="button"
               onClick={() => setSelectedProblemId(problem.id)}
-              className={`
-                text-left p-3 rounded-lg border
-                ${
-                  selectedProblemId === problem.id
-                    ? 'bg-[#FF4854] border-[#FF4854] text-white'
-                    : 'bg-[#10050F]/50 text-gray-200 border-white/10 hover:bg-[#1A0B15]'
-                }
-              `}
+              className={`mb-2 w-full rounded-lg border p-3 text-left transition ${selectedProblemId === problem.id ? 'border-[#FF4854] bg-[#FF4854]' : 'border-white/10 bg-[#10050F]/60 hover:bg-[#1A0B15]'}`}
             >
               <div className="font-bold">{problem.title}</div>
-              <div className="text-label opacity-70">ID: {problem.id}</div>
+              <div className="mt-1 truncate text-label opacity-65">{problem.slug}</div>
+              <div className="mt-2 text-caption opacity-60">
+                {problem.judgement_setting ? 'Judge 설정됨' : 'Judge 미설정'}
+              </div>
             </button>
           ))}
+          {!problemsQuery.isLoading && problems.length === 0 && (
+            <State>표시할 문제가 없습니다.</State>
+          )}
         </div>
-      </div>
+      </aside>
 
-      {/* ========================================
-          🔹 오른쪽 — 프롬프트 에디터
-      ======================================== */}
-      <div className="flex-1 bg-[#0B021C]/70 border border-white/10 rounded-xl p-6">
-        <h2 className="text-card-title font-bold text-[#FF4854] mb-4">Judge 프롬프트 수정</h2>
-
+      <main className="min-w-0 flex-1 rounded-xl border border-white/10 bg-[#0B021C]/70 p-6">
         {!selectedProblemId && (
-          <div className="text-gray-400">문제를 선택하면 Judge 프롬프트를 수정할 수 있습니다.</div>
+          <State>왼쪽에서 문제를 선택하면 Judge 프롬프트를 수정할 수 있습니다.</State>
         )}
+        {problemQuery.isLoading && <State>문제 Judge 설정을 불러오는 중...</State>}
+        {problemQuery.error && <State error>{problemQuery.error.message}</State>}
+        {problemQuery.data && (
+          <form onSubmit={save}>
+            <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-label text-gray-400">{problemQuery.data.slug}</p>
+                <h2 className="mt-1 text-section-title font-bold text-[#FF4854]">
+                  {problemQuery.data.title}
+                </h2>
+              </div>
+              <label className="flex items-center gap-3 rounded-lg bg-[#1A0B15] px-4 py-3">
+                <input
+                  type="checkbox"
+                  checked={form.enabled}
+                  onChange={event =>
+                    setForm(current => ({ ...current, enabled: event.target.checked }))
+                  }
+                  className="h-5 w-5 accent-[#FF4854]"
+                />{' '}
+                Judge 사용
+              </label>
+            </div>
 
-        {selectedProblemId && (
-          <>
-            {/* 로딩 & 에러 */}
-            {promptLoading && <div className="text-white">프롬프트 불러오는 중...</div>}
-            {promptError && <div className="text-red-400">프롬프트 불러오기 실패</div>}
-
-            {/* textarea */}
-            {!promptLoading && (
-              <textarea
-                className="
-                  w-full h-[500px] p-4 text-white bg-[#1A0B15] 
-                  rounded-lg border border-white/20
-                "
-                value={promptText}
-                onChange={e => setPromptText(e.target.value)}
-              />
+            {form.enabled ? (
+              <div className="mt-6 space-y-5">
+                <label className="block">
+                  <span className="text-label text-gray-300">Judge 시스템 프롬프트</span>
+                  <textarea
+                    value={form.system_prompt}
+                    onChange={event =>
+                      setForm(current => ({ ...current, system_prompt: event.target.value }))
+                    }
+                    required
+                    className="mt-2 h-[420px] w-full rounded-xl border border-white/10 bg-[#1A0B15] p-4 font-mono text-body outline-none focus:border-[#FF4854]"
+                  />
+                </label>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <NumberField
+                    label="최대 재시도"
+                    min="0"
+                    max="10"
+                    value={form.max_attempts}
+                    onChange={value => setForm(current => ({ ...current, max_attempts: value }))}
+                  />
+                  <NumberField
+                    label="Timeout(초)"
+                    min="1"
+                    max="600"
+                    value={form.timeout_seconds}
+                    onChange={value => setForm(current => ({ ...current, timeout_seconds: value }))}
+                  />
+                </div>
+                <div>
+                  <div className="text-label text-gray-300">Judge endpoint (1~3개)</div>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {judgeEndpoints.map(endpoint => (
+                      <label
+                        key={endpoint.id}
+                        className="flex items-center gap-3 rounded-lg border border-white/10 bg-[#1A0B15] p-3"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={form.judge_endpoint_ids.includes(endpoint.id)}
+                          onChange={() => toggleEndpoint(endpoint.id)}
+                          className="h-5 w-5 accent-[#FF4854]"
+                        />
+                        <span>
+                          {endpoint.name} · {endpoint.model_alias}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  {judgeEndpointsQuery.error && (
+                    <p className="mt-2 text-red-300">{judgeEndpointsQuery.error.message}</p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <State>Judge 사용을 켜면 프롬프트와 모델 설정을 입력할 수 있습니다.</State>
             )}
 
-            {/* 수정 버튼 */}
             <button
-              onClick={() => savePrompt(promptText)}
-              disabled={isSaving}
-              className="
-                mt-4 px-6 py-3 rounded-lg font-bold text-white
-                bg-[#FF4854] hover:bg-[#ff3242] transition
-                disabled:opacity-50
-              "
+              type="submit"
+              disabled={actions.isUpdating}
+              className="mt-6 h-12 w-full rounded-xl bg-[#FF4854] font-bold hover:bg-[#ff3242] disabled:opacity-50"
             >
-              {isSaving ? '수정 중...' : '수정하기'}
+              {actions.isUpdating ? '저장 중...' : 'Judge 설정 저장'}
             </button>
-          </>
+          </form>
         )}
-      </div>
+      </main>
+    </div>
+  );
+}
+
+function NumberField({ label, value, onChange, ...props }) {
+  return (
+    <label>
+      <span className="text-label text-gray-300">{label}</span>
+      <input
+        type="number"
+        value={value}
+        onChange={event => onChange(event.target.value)}
+        required
+        className="mt-2 h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] px-3 outline-none focus:border-[#FF4854]"
+        {...props}
+      />
+    </label>
+  );
+}
+function State({ children, error }) {
+  return (
+    <div
+      className={`rounded-lg border p-5 text-center ${error ? 'border-red-400/30 text-red-300' : 'border-white/10 text-gray-400'}`}
+    >
+      {children}
     </div>
   );
 }

@@ -8,15 +8,15 @@ export const useAdminProblemActions = () => {
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }) => updateProblem(id, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries(['adminProblems']);
+      queryClient.invalidateQueries({ queryKey: ['adminProblems'] });
     },
   });
 
   // 문제 삭제(DELETE)
   const deleteMutation = useMutation({
-    mutationFn: id => deleteProblem(id),
+    mutationFn: ({ id, confirmation }) => deleteProblem(id, confirmation),
     onSuccess: () => {
-      queryClient.invalidateQueries(['adminProblems']);
+      queryClient.invalidateQueries({ queryKey: ['adminProblems'] });
     },
   });
 
