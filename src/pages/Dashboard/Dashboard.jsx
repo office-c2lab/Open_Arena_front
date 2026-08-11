@@ -7,6 +7,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import UserIcon from '@/assets/icons/user.svg';
 import DashboardProfileSummaryCard from '@/components/Profile/DashboardProfileSummaryCard';
 import { normalizeUser } from '@/api/auth';
+import { useChallengeProblems } from '@/hooks/useChallenges';
 import { useDashboardQuery } from '@/hooks/useTeamDashboardQuery';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionStore } from '@/stores/useSessionStore';
@@ -16,9 +17,9 @@ import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
 import { articles as educationArticles } from '@/pages/Education/Education';
-import { PATHS as challengePaths } from '@/pages/Kategorie/Kategorie';
+import { PATHS as challengePaths, PathCard } from '@/pages/Kategorie/Kategorie';
 import { TUTORIALS } from '@/pages/Tutorial/TutorialList';
-import { getChallengeDifficultyMeta, getChallengeImage } from '@/utils/challengePresentation';
+import { getChallengeImage } from '@/utils/challengePresentation';
 
 const dashboardBanners = [
   {
@@ -776,10 +777,33 @@ function ActivityHeatmapCell({ day, cell, onTooltipShow, onTooltipHide }) {
   );
 }
 
-function ChallengeActivityHeatmap({ dashboard }) {
+const presentHomeChallenge = (summary, problem) => {
+  const problemId = problem?.id ?? summary?.problem_id;
+  const attemptStatus = problem?.attempt_status;
+
+  return {
+    ...summary,
+    ...problem,
+    id: problemId,
+    image: getChallengeImage(problemId),
+    category: problem?.category?.name ?? summary?.category_name ?? '일반',
+    difficulty: problem?.difficulty ?? summary?.difficulty,
+    maximumPoints: problem?.max_score ?? summary?.max_score ?? 0,
+    successfulUsers: problem?.successful_user_count ?? 0,
+    totalSuccesses: problem?.total_success_count ?? 0,
+    best_score: problem?.best_score ?? 0,
+    status: attemptStatus === 'not_started' || !attemptStatus ? 'untried' : attemptStatus,
+  };
+};
+
+function ChallengeActivityHeatmap({ dashboard, challengeProblems, areChallengeProblemsLoading }) {
   const { account, activity, challenge, continue_challenge: continueChallenge } = dashboard;
   const profile = useMemo(() => normalizeUser(account), [account]);
   const { days, totalCount } = useMemo(() => buildActivityHeatmap(activity), [activity]);
+  const challengeProblemById = useMemo(
+    () => new Map(challengeProblems.map(problem => [problem.id, problem])),
+    [challengeProblems]
+  );
   const [activeTooltip, setActiveTooltip] = useState(null);
   const displayedRank =
     challenge.leaderboard_visible && challenge.rank ? `${challenge.rank}위` : '-';
@@ -808,7 +832,11 @@ function ChallengeActivityHeatmap({ dashboard }) {
       <ActivityHeatmapTooltip tooltip={activeTooltip} />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-stretch">
         <DashboardProfileSummaryCard profile={profile} summaryStats={summaryStats} />
-        <RecentAttemptProblemsCard challenge={continueChallenge} />
+        <RecentAttemptProblemsCard
+          challenge={continueChallenge}
+          problem={challengeProblemById.get(continueChallenge?.problem_id)}
+          isProblemLoading={areChallengeProblemsLoading}
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
@@ -868,15 +896,15 @@ function ChallengeActivityHeatmap({ dashboard }) {
       </div>
       <RecommendedChallengeSection
         challenges={dashboard.recommended_challenges}
-        problemStatus={dashboard.problem_status}
-        categories={challenge.categories}
         challengeEnabled={challenge.enabled}
+        challengeProblemById={challengeProblemById}
+        areChallengeProblemsLoading={areChallengeProblemsLoading}
       />
     </section>
   );
 }
 
-function RecentAttemptProblemsCard({ challenge }) {
+function RecentAttemptProblemsCard({ challenge, problem, isProblemLoading }) {
   const navigate = useNavigate();
   const setSessionId = useSessionStore(state => state.setSessionId);
   const setSessionStatus = useSessionStore(state => state.setSessionStatus);
@@ -899,134 +927,100 @@ function RecentAttemptProblemsCard({ challenge }) {
     );
   }
 
+  if (isProblemLoading && !problem) {
+    return <div className="h-[390px] animate-pulse rounded-[10px] bg-[#F1F3F5]" />;
+  }
+
   const handleContinue = () => {
     setSessionId(challenge.chat_session_id);
     setSessionStatus('unsubmitted');
     navigate(`/challenge/${challenge.problem_id}/play`);
   };
-  const difficultyMeta = getChallengeDifficultyMeta(challenge.difficulty);
+  const path = presentHomeChallenge(challenge, problem);
+
+  return <PathCard path={path} status={path.status} onClick={handleContinue} />;
+}
+
+const dashboardChallengeStatusMeta = {
+  success: { label: '성공', className: 'text-[#1EC186]' },
+  failed: { label: '실패', className: 'text-[#FF4854]' },
+  in_progress: { label: '도전 중', className: 'text-[#FFBC4B]' },
+  untried: { label: '미도전', className: 'text-white' },
+};
+
+function DashboardChallengeStatusBadge({ status }) {
+  const meta = dashboardChallengeStatusMeta[status] ?? dashboardChallengeStatusMeta.untried;
 
   return (
-    <button
-      type="button"
-      onClick={handleContinue}
-      className="surface surface-interactive surface-no-hover-border group flex min-h-[286px] cursor-pointer flex-col overflow-hidden text-left"
+    <span
+      className={`absolute right-3 top-3 rounded-[7px] bg-[#171C24]/90 px-2.5 py-1 text-caption font-bold shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${meta.className}`}
     >
-      <div className="relative min-h-[132px] flex-1 overflow-hidden bg-[#0B0D18]">
-        <img
-          src={getChallengeImage(challenge.problem_id)}
-          alt=""
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-          aria-hidden="true"
-        />
-        <span className="absolute left-4 top-4 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold text-white">
-          이어서 도전하기
-        </span>
-      </div>
-      <div className="w-full px-5 py-4">
-        <h2 className="line-clamp-2 text-card-title font-bold text-[#151A21]">{challenge.title}</h2>
-        <div className="mt-3 flex items-center justify-between gap-3 text-label font-strong text-[#66717E]">
-          <span>{challenge.is_tutorial ? '튜토리얼' : '챌린지'}</span>
-          <span className={`rounded-[4px] px-2 py-1 ${difficultyMeta.className}`}>
-            {difficultyMeta.label}
-          </span>
-        </div>
-      </div>
-    </button>
+      {meta.label}
+    </span>
   );
 }
 
-const recommendationReasonLabels = {
-  unsolved_high_score: '고득점 미해결 문제',
-  high_token_usage: '토큰 최적화 추천',
-};
-
-function RecommendedChallengeCard({ challenge, onClick }) {
-  const difficultyMeta = getChallengeDifficultyMeta(challenge.difficulty);
-
+function DashboardChallengeCard({ challenge, onClick }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="surface surface-interactive surface-no-hover-border group flex h-full w-full cursor-pointer flex-col overflow-hidden text-left"
+      className="surface surface-interactive surface-no-hover-border min-w-[220px] cursor-pointer overflow-hidden text-left"
     >
-      <div className="relative h-[150px] overflow-hidden bg-[#0B0D18]">
+      <div className="relative h-[96px] overflow-hidden bg-[#0B0D18]">
         <img
-          src={getChallengeImage(challenge.problem_id)}
-          alt=""
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-          aria-hidden="true"
+          src={challenge.image}
+          alt={`${challenge.title} 챌린지`}
+          className="h-full w-full object-cover"
         />
-        <span className="absolute right-3 top-3 rounded-[7px] bg-[#171C24]/90 px-2.5 py-1 text-caption font-bold text-white">
-          {recommendationReasonLabels[challenge.reason] || '추천 문제'}
-        </span>
+        <DashboardChallengeStatusBadge status={challenge.status} />
       </div>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="line-clamp-2 min-h-[52px] text-card-title font-bold text-[#202832]">
+      <div className="p-4">
+        <h3 className="line-clamp-2 min-h-[44px] text-body-lg font-bold text-[#202832]">
           {challenge.title}
         </h3>
-        <p className="mt-2 text-body font-strong text-[#66717E]">
-          {challenge.category_name || '일반'}
-        </p>
-        <div className="mt-5 flex items-center justify-between gap-3 text-label font-strong text-[#596575]">
-          <span>
-            최대 <em className="not-italic text-[#FF4854]">{challenge.max_score}</em>점
-          </span>
-          {challenge.token_usage == null ? null : (
-            <span>
-              사용 토큰{' '}
-              <em className="not-italic text-[#FF4854]">
-                {challenge.token_usage.toLocaleString()}
-              </em>
-            </span>
-          )}
-          <span className={`rounded-[4px] px-2 py-1 ${difficultyMeta.className}`}>
-            {difficultyMeta.label}
-          </span>
-        </div>
-        <span className="btn btn-primary btn-lg btn-block mt-5">문제 보기</span>
       </div>
     </button>
   );
 }
 
-function RecommendedChallengeSection({ challenges, problemStatus, categories, challengeEnabled }) {
+function RecommendedChallengeSection({
+  challenges,
+  challengeEnabled,
+  challengeProblemById,
+  areChallengeProblemsLoading,
+}) {
   const navigate = useNavigate();
+  const [activeStatusTab, setActiveStatusTab] = useState('all');
+  const displayedChallenges = useMemo(
+    () =>
+      challenges.map(challenge =>
+        presentHomeChallenge(challenge, challengeProblemById.get(challenge.problem_id))
+      ),
+    [challengeProblemById, challenges]
+  );
+  const challengeStatusPaths = useMemo(
+    () =>
+      [...challengeProblemById.values()]
+        .filter(problem => !problem.is_tutorial)
+        .map(problem => presentHomeChallenge(null, problem)),
+    [challengeProblemById]
+  );
+  const visibleChallengeStatusPaths =
+    activeStatusTab === 'all'
+      ? challengeStatusPaths
+      : challengeStatusPaths.filter(challenge => challenge.status === activeStatusTab);
   const [selectedQueueIndex, setSelectedQueueIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'center',
     loop: challenges.length > 1,
     duration: 24,
   });
-  const statusCards = [
-    {
-      key: 'success',
-      label: '성공',
-      value: problemStatus.success_count,
-      colorClass: 'text-[#1EC186]',
-      backgroundClass: 'bg-[#F0FBF7]',
-    },
-    {
-      key: 'failed',
-      label: '실패',
-      value: problemStatus.failed_count,
-      colorClass: 'text-[#FF4854]',
-      backgroundClass: 'bg-[#FFF3F4]',
-    },
-    {
-      key: 'in-progress',
-      label: '도전 중',
-      value: problemStatus.in_progress_count,
-      colorClass: 'text-[#FFB155]',
-      backgroundClass: 'bg-[#FFF9EE]',
-    },
-    {
-      key: 'not-started',
-      label: '미도전',
-      value: problemStatus.not_started_count,
-      colorClass: 'text-[#7B8491]',
-      backgroundClass: 'bg-[#F4F6F8]',
-    },
+  const statusTabs = [
+    { key: 'all', label: '전체' },
+    { key: 'success', label: '성공' },
+    { key: 'failed', label: '실패' },
+    { key: 'untried', label: '미도전' },
   ];
   const queueCount = challenges.length;
   const updateSelectedQueueIndex = useCallback(() => {
@@ -1089,7 +1083,9 @@ function RecommendedChallengeSection({ challenges, problemStatus, categories, ch
           </div>
         </div>
 
-        {challenges.length ? (
+        {areChallengeProblemsLoading && !challengeProblemById.size ? (
+          <div className="mx-auto h-[390px] max-w-[380px] animate-pulse rounded-[10px] bg-[#F1F3F5]" />
+        ) : challenges.length ? (
           <>
             {challenges.length > 1 ? (
               <>
@@ -1114,14 +1110,12 @@ function RecommendedChallengeSection({ challenges, problemStatus, categories, ch
 
             <div className="mx-auto max-w-[1000px] overflow-hidden px-10" ref={emblaRef}>
               <div className="-ml-16 flex items-stretch">
-                {challenges.map(challenge => (
-                  <div
-                    key={challenge.problem_id}
-                    className="min-w-0 shrink-0 grow-0 basis-[444px] pl-16"
-                  >
-                    <RecommendedChallengeCard
-                      challenge={challenge}
-                      onClick={() => navigate(`/challenge/${challenge.problem_id}`)}
+                {displayedChallenges.map(challenge => (
+                  <div key={challenge.id} className="min-w-0 shrink-0 grow-0 basis-[444px] pl-16">
+                    <PathCard
+                      path={challenge}
+                      status={challenge.status}
+                      onClick={() => navigate(`/challenge/${challenge.id}`)}
                     />
                   </div>
                 ))}
@@ -1153,19 +1147,23 @@ function RecommendedChallengeSection({ challenges, problemStatus, categories, ch
 
       <section className="surface px-5 py-6 sm:px-6">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 className="text-card-title font-bold text-[#202832]">챌린지 현황</h2>
-            <p className="mt-2 text-body font-strong text-[#8A93A5]">
-              전체 {problemStatus.total_count.toLocaleString()}개 문제 기준
-            </p>
+          <h2 className="text-card-title font-bold text-[#202832]">챌린지 현황</h2>
+          <div className="flex items-center gap-5 text-body font-bold">
+            {statusTabs.map(tab => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setActiveStatusTab(tab.key)}
+                className={`cursor-pointer border-b-2 pb-2 transition ${
+                  activeStatusTab === tab.key
+                    ? 'border-[#FF4854] text-[#FF4854]'
+                    : 'border-transparent text-[#9AA3AF] hover:text-[#596575]'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
-          <button
-            type="button"
-            onClick={() => navigate('/kategorie')}
-            className="flex cursor-pointer items-center gap-1 text-body font-bold text-[#FF4854] transition hover:text-[#E93643]"
-          >
-            챌린지 목록 <ArrowRight className="h-4 w-4" />
-          </button>
         </div>
 
         {!challengeEnabled ? (
@@ -1174,47 +1172,27 @@ function RecommendedChallengeSection({ challenges, problemStatus, categories, ch
           </div>
         ) : null}
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {statusCards.map(status => (
-            <div key={status.key} className={`rounded-[8px] p-5 ${status.backgroundClass}`}>
-              <p className="text-body font-bold text-[#596575]">{status.label}</p>
-              <strong className={`mt-4 block text-page-title font-bold ${status.colorClass}`}>
-                {status.value.toLocaleString()}개
-              </strong>
-            </div>
-          ))}
-        </div>
-
-        {categories.length ? (
-          <div className="mt-7 border-t border-[#E9ECF1] pt-6">
-            <h3 className="text-body-lg font-bold text-[#202832]">카테고리별 진행률</h3>
-            <div className="mt-4 grid gap-x-7 gap-y-5 md:grid-cols-2">
-              {categories.map(category => {
-                const progress = category.total_count
-                  ? Math.round((category.solved_count / category.total_count) * 100)
-                  : 0;
-
-                return (
-                  <div key={category.category_id || category.category_name}>
-                    <div className="mb-2 flex items-center justify-between gap-3 text-label font-strong">
-                      <span className="truncate text-[#596575]">{category.category_name}</span>
-                      <span className="shrink-0 text-[#202832]">
-                        {category.solved_count.toLocaleString()} /{' '}
-                        {category.total_count.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-[#F0F2F5]">
-                      <div
-                        className="h-full rounded-full bg-[#FF4854] transition-[width] duration-300"
-                        style={{ width: `${Math.min(progress, 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+        {areChallengeProblemsLoading && !challengeProblemById.size ? (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            {[0, 1, 2, 3, 4].map(index => (
+              <div key={index} className="h-[164px] animate-pulse rounded-[10px] bg-[#F1F3F5]" />
+            ))}
           </div>
-        ) : null}
+        ) : visibleChallengeStatusPaths.length ? (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            {visibleChallengeStatusPaths.map(challenge => (
+              <DashboardChallengeCard
+                key={challenge.id}
+                challenge={challenge}
+                onClick={() => navigate(`/challenge/${challenge.id}`)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[8px] bg-[#F7F8FA] px-5 py-10 text-center text-body font-strong text-[#8A93A5]">
+            해당 상태의 챌린지가 없습니다.
+          </div>
+        )}
       </section>
     </div>
   );
@@ -1443,6 +1421,7 @@ export default function Dashboard() {
   const queryClient = useQueryClient();
   const login = useAuthStore(state => state.login);
   const dashboardQuery = useDashboardQuery();
+  const challengeProblemsQuery = useChallengeProblems();
 
   useEffect(() => {
     if (!dashboardQuery.data) return;
@@ -1479,7 +1458,11 @@ export default function Dashboard() {
           </div>
         </section>
       ) : (
-        <ChallengeActivityHeatmap dashboard={dashboardQuery.data} />
+        <ChallengeActivityHeatmap
+          dashboard={dashboardQuery.data}
+          challengeProblems={challengeProblemsQuery.data?.items ?? []}
+          areChallengeProblemsLoading={challengeProblemsQuery.isPending}
+        />
       )}
     </div>
   );
