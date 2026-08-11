@@ -7,6 +7,7 @@ import {
   useAdminChallengeSetting,
   useAdminEndpoints,
 } from '@/hooks/useAdminChallengeResources';
+import { useLeaderboardSetting } from '@/hooks/useLeaderboardSetting';
 
 const categoryInitial = { name: '', slug: '', sort_order: 0, is_active: true };
 const endpointInitial = {
@@ -263,6 +264,7 @@ export function EndpointManagement({ kind }) {
 
 export function ChallengeSetting() {
   const { data, isLoading, error } = useAdminChallengeSetting();
+  const leaderboard = useLeaderboardSetting();
   const actions = useAdminChallengeResourceActions();
 
   const update = async enabled => {
@@ -275,10 +277,20 @@ export function ChallengeSetting() {
     }
   };
 
+  const updateLeaderboard = async enabled => {
+    if (!window.confirm(`순위표를 ${enabled ? '공개' : '비공개'} 상태로 변경할까요?`)) return;
+    try {
+      await leaderboard.toggleAsync(enabled);
+      appToast.success(`순위표를 ${enabled ? '공개' : '비공개'} 상태로 변경했습니다.`);
+    } catch (caughtError) {
+      appToast.error(caughtError.message);
+    }
+  };
+
   return (
     <ResourceLayout
       title="챌린지 운영 설정"
-      description="전체 챌린지 기능을 즉시 켜거나 중지합니다."
+      description="전체 챌린지 기능과 순위표 공개 상태를 관리합니다."
     >
       {isLoading && <State>운영 설정을 불러오는 중...</State>}
       {error && <State error>{error.message}</State>}
@@ -297,6 +309,28 @@ export function ChallengeSetting() {
             className={`h-11 rounded-lg px-5 font-bold text-white transition disabled:opacity-50 ${data.enabled ? 'bg-red-600 hover:bg-red-500' : 'bg-emerald-600 hover:bg-emerald-500'}`}
           >
             {data.enabled ? '전체 중지' : '운영 재개'}
+          </button>
+        </div>
+      )}
+      {leaderboard.isLoading && <State>순위 공개 설정을 불러오는 중...</State>}
+      {leaderboard.isError && <State error>순위 공개 설정을 불러오지 못했습니다.</State>}
+      {!leaderboard.isLoading && !leaderboard.isError && (
+        <div className="flex flex-col gap-5 rounded-xl border border-white/10 bg-[#0B021C]/70 p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-card-title font-bold">순위 공개 설정</div>
+            <div
+              className={`mt-2 font-bold ${leaderboard.setting ? 'text-emerald-300' : 'text-red-300'}`}
+            >
+              {leaderboard.setting ? '공개 중' : '비공개'}
+            </div>
+          </div>
+          <button
+            type="button"
+            disabled={leaderboard.isPending}
+            onClick={() => updateLeaderboard(!leaderboard.setting)}
+            className={`h-11 rounded-lg px-5 font-bold text-white transition disabled:opacity-50 ${leaderboard.setting ? 'bg-red-600 hover:bg-red-500' : 'bg-emerald-600 hover:bg-emerald-500'}`}
+          >
+            {leaderboard.setting ? '순위 비공개' : '순위 공개'}
           </button>
         </div>
       )}

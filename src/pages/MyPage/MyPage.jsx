@@ -6,6 +6,8 @@ import {
   changePassword,
   deleteProfileBackground,
   deleteProfileImage,
+  updateProfileMessage,
+  updateTheme,
   uploadProfileBackground,
   uploadProfileImage,
   withdrawAccount,
@@ -164,6 +166,8 @@ export default function MyPage({ embedded = false }) {
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [isSavingProfileImage, setIsSavingProfileImage] = useState(false);
   const [isSavingProfileBackground, setIsSavingProfileBackground] = useState(false);
+  const [isSavingProfileMessage, setIsSavingProfileMessage] = useState(false);
+  const [isSavingProfileTextTheme, setIsSavingProfileTextTheme] = useState(false);
   const [profile, setProfile] = useState({
     nickname,
     profileMessage: savedProfileMessage,
@@ -210,11 +214,21 @@ export default function MyPage({ embedded = false }) {
     setProfile(current => ({ ...current, nickname }));
     setIsEditingNickname(false);
   };
-  const handleProfileMessageSave = () => {
+  const handleProfileMessageSave = async () => {
     const nextProfileMessage = profile.profileMessage.trim();
-    login({ ...teamInfo, profileMessage: nextProfileMessage });
-    setProfile(current => ({ ...current, profileMessage: nextProfileMessage }));
-    setIsEditingProfileMessage(false);
+
+    setIsSavingProfileMessage(true);
+    try {
+      const user = await updateProfileMessage(nextProfileMessage);
+      login({ ...teamInfo, ...user });
+      setProfile(current => ({ ...current, profileMessage: user.profileMessage }));
+      setIsEditingProfileMessage(false);
+      appToast.success('프로필 메시지가 변경되었습니다.');
+    } catch (error) {
+      appToast.error(error.message);
+    } finally {
+      setIsSavingProfileMessage(false);
+    }
   };
   const handleProfileMessageCancel = () => {
     setProfile(current => ({ ...current, profileMessage: savedProfileMessage }));
@@ -319,9 +333,19 @@ export default function MyPage({ embedded = false }) {
     setProfileBackgroundFile(null);
     setIsEditingProfileBackground(false);
   };
-  const handleProfileTextThemeSave = () => {
-    login({ ...teamInfo, profileTextTheme: draftProfileTextTheme });
-    setIsEditingProfileTextTheme(false);
+  const handleProfileTextThemeSave = async () => {
+    setIsSavingProfileTextTheme(true);
+    try {
+      const user = await updateTheme(draftProfileTextTheme);
+      login({ ...teamInfo, ...user });
+      setDraftProfileTextTheme(user.profileTextTheme);
+      setIsEditingProfileTextTheme(false);
+      appToast.success('글자 테마가 변경되었습니다.');
+    } catch (error) {
+      appToast.error(error.message);
+    } finally {
+      setIsSavingProfileTextTheme(false);
+    }
   };
   const handleProfileTextThemeCancel = () => {
     setDraftProfileTextTheme(savedProfileTextTheme);
@@ -652,7 +676,8 @@ export default function MyPage({ embedded = false }) {
                 <button
                   type="button"
                   onClick={handleProfileTextThemeCancel}
-                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                  disabled={isSavingProfileTextTheme}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
                 >
                   취소
                 </button>
@@ -664,9 +689,14 @@ export default function MyPage({ embedded = false }) {
                     ? handleProfileTextThemeSave
                     : () => setIsEditingProfileTextTheme(true)
                 }
-                className="cursor-pointer text-body font-strong text-[#FF4854]"
+                disabled={isSavingProfileTextTheme}
+                className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
               >
-                {isEditingProfileTextTheme ? '저장' : '편집'}
+                {isSavingProfileTextTheme
+                  ? '저장 중...'
+                  : isEditingProfileTextTheme
+                    ? '저장'
+                    : '편집'}
               </button>
             </div>
           </div>
@@ -748,7 +778,8 @@ export default function MyPage({ embedded = false }) {
                 <button
                   type="button"
                   onClick={handleProfileMessageCancel}
-                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21]"
+                  disabled={isSavingProfileMessage}
+                  className="cursor-pointer text-body font-strong text-[#7B8491] transition hover:text-[#151A21] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
                 >
                   취소
                 </button>
@@ -760,9 +791,10 @@ export default function MyPage({ embedded = false }) {
                     ? handleProfileMessageSave
                     : () => setIsEditingProfileMessage(true)
                 }
-                className="cursor-pointer text-body font-strong text-[#FF4854]"
+                disabled={isSavingProfileMessage}
+                className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
               >
-                {isEditingProfileMessage ? '저장' : '편집'}
+                {isSavingProfileMessage ? '저장 중...' : isEditingProfileMessage ? '저장' : '편집'}
               </button>
             </div>
           </div>

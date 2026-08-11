@@ -42,6 +42,18 @@ export const changeNickname = async nickname => {
   return normalizeUser(data);
 };
 
+export const updateProfileMessage = async profileMessage => {
+  const { data } = await api.patch('/account/profile-message', {
+    profile_message: profileMessage || null,
+  });
+  return normalizeUser(data);
+};
+
+export const updateTheme = async theme => {
+  const { data } = await api.patch('/account/theme', { theme });
+  return normalizeUser(data);
+};
+
 export const withdrawAccount = async payload => {
   await api.post('/account/withdraw', payload);
 };
