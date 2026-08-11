@@ -363,14 +363,13 @@ function ProfileCard() {
       <div className="px-5 py-5">
         <div className="flex items-center gap-3">
           <div
-            className={`relative flex h-[74px] w-[74px] items-center justify-center overflow-hidden rounded-full ${hasProfileImage ? 'bg-[#F2F4F6]' : 'border border-[#E6EAF0] bg-[#F2F4F6]'}`}
+            className={`relative flex h-[74px] w-[74px] items-center justify-center overflow-hidden rounded-full ${hasProfileImage ? 'bg-[#F2F4F6]' : 'bg-[#FF4854]'}`}
           >
             <img
               src={profileImage}
               alt=""
-              className={
-                hasProfileImage ? 'h-full w-full object-cover' : 'h-11 w-11 opacity-35 grayscale'
-              }
+              className={hasProfileImage ? 'h-full w-full object-cover' : 'h-10 w-10'}
+              aria-hidden="true"
             />
           </div>
           <div className="min-w-0 flex-1 pb-1">

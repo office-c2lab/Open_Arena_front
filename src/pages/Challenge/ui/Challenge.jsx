@@ -41,8 +41,8 @@ function getAttemptStatus(status) {
 
 function SolverAvatar() {
   return (
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F1F3F5]">
-      <img src={UserIcon} alt="" className="h-5 w-5 opacity-25 grayscale" />
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FF4854] shadow-[0_3px_10px_rgba(255,72,84,0.18)]">
+      <img src={UserIcon} alt="" className="h-5 w-5" aria-hidden="true" />
     </div>
   );
 }

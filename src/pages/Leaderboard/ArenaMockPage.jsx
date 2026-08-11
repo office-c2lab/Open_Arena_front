@@ -15,14 +15,6 @@ import { useLeaderboardQuery, useLeaderboardSearchQuery } from '@/hooks/useLeade
 
 const MEDAL_ICON_MAP = { 1: medalGold, 2: medalSilver, 3: medalBronze };
 const ROWS_PER_PAGE = 30;
-const avatarColors = [
-  'bg-[#FFF2D8]',
-  'bg-[#FFE8EF]',
-  'bg-[#EAF8F0]',
-  'bg-[#F1EDFF]',
-  'bg-[#FFF0F2]',
-  'bg-[#F2F4F6]',
-];
 
 const formatNumber = value => Number(value ?? 0).toLocaleString('ko-KR');
 
@@ -48,7 +40,7 @@ const presentLeaderboardEntry = entry => ({
   lastSolvedAt: entry.last_solved_at,
 });
 
-function Avatar({ rank, size = 'md' }) {
+function Avatar({ size = 'md' }) {
   const sizeClass = {
     md: 'h-12 w-12',
     lg: 'h-[112px] w-[112px]',
@@ -56,12 +48,13 @@ function Avatar({ rank, size = 'md' }) {
 
   return (
     <div
-      className={`${sizeClass} flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/70 bg-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_8px_20px_rgba(15,23,42,0.10)] backdrop-blur-md`}
+      className={`${sizeClass} flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FF4854] shadow-[0_8px_20px_rgba(255,72,84,0.22)]`}
     >
       <img
         src={UserIcon}
         alt=""
-        className={`${size === 'lg' ? 'h-12 w-12' : 'h-5 w-5'} opacity-40 grayscale ${rank === 1 ? 'scale-110' : ''}`}
+        className={size === 'lg' ? 'h-14 w-14' : 'h-7 w-7'}
+        aria-hidden="true"
       />
     </div>
   );
@@ -101,7 +94,7 @@ function TopRankCard({ row, isCurrentUser }) {
       className={`relative flex min-h-[320px] flex-col items-center overflow-hidden rounded-[30px] border px-8 pb-8 pt-10 backdrop-blur-xl md:h-[400px] ${toneClass}`}
     >
       <RankMedal rank={row.rank} />
-      <Avatar rank={row.rank} size="lg" />
+      <Avatar size="lg" />
       <div className="mt-6 flex max-w-full items-center justify-center gap-2">
         <h2 className="truncate text-center text-card-title font-bold text-[#111827]">
           {row.name}
@@ -122,12 +115,10 @@ function TopRankCard({ row, isCurrentUser }) {
   );
 }
 
-function TableAvatar({ rank }) {
+function TableAvatar() {
   return (
-    <div
-      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#E5E9EF] ${avatarColors[rank % avatarColors.length]}`}
-    >
-      <img src={UserIcon} alt="" className="h-5 w-5 opacity-30 grayscale" />
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FF4854] shadow-[0_3px_10px_rgba(255,72,84,0.18)]">
+      <img src={UserIcon} alt="" className="h-5 w-5" aria-hidden="true" />
     </div>
   );
 }
@@ -148,7 +139,7 @@ function LeaderboardRow({ row, isCurrentUser }) {
       </td>
       <td className="min-w-[230px]">
         <div className="flex items-center gap-4">
-          <TableAvatar rank={row.rank} />
+          <TableAvatar />
           <span className="font-strong">{row.name}</span>
           {isCurrentUser ? (
             <span className="rounded-full bg-[#F52F45] px-2 py-0.5 text-caption font-bold text-white">
