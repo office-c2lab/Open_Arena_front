@@ -7,7 +7,8 @@ import TutorialElementCardImage from '@/assets/images/t1.png';
 import TutorialChatTokenCardImage from '@/assets/images/t2.png';
 import TutorialJudgeFailureCardImage from '@/assets/images/t3.png';
 import TutorialJudgeSuccessCardImage from '@/assets/images/t4.png';
-import { useTutorialProgress } from '@/hooks/useChallenges';
+import { useChallengeProblems } from '@/hooks/useChallenges';
+import { getChallengeImage } from '@/utils/challengePresentation';
 
 export const TUTORIALS = [
   {
@@ -91,32 +92,13 @@ export const TUTORIALS = [
     goal: '성공 조건을 만족하는 응답을 제출해 저지 성공 흐름을 경험하는 것이 목표입니다.',
     myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
   },
-  {
-    id: 11,
-    title: '실전 연습',
-    subtitle: '튜토리얼에서 익힌 흐름으로 미니 챌린지 풀기',
-    tier: 'Tier 3',
-    difficulty: 'Medium',
-    category: 'Practice',
-    tags: ['Tutorial', 'Practice'],
-    rating: '10.0',
-    reviews: 0,
-    duration: '30분',
-    price: '무료',
-    level: 'Starter',
-    successfulUsers: 0,
-    averageTokens: '1,240',
-    description:
-      '문제 목표를 읽고, AI와 대화하고, 제출 결과를 확인하는 전체 과정을 실제 챌린지처럼 연습합니다.',
-    goal: '최소한의 시도와 토큰으로 목표 조건을 만족하는 응답을 받아내는 것이 목표입니다.',
-    myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
-  },
 ];
 
 const tagColors = {
   Beginner: 'border-[#8FE07A] text-[#38A12A]',
   Easy: 'border-[#9CDE7B] text-[#4FAF2F]',
   Medium: 'border-[#FFBC4B] text-[#C88400]',
+  Hard: 'border-[#FF9AA2] text-[#D93643]',
 };
 
 function TutorialPreview({ tutorial }) {
@@ -133,10 +115,11 @@ function TutorialPreview({ tutorial }) {
 }
 
 function TutorialCard({ tutorial, onClick }) {
-  if (tutorial.id >= 7) {
-    const isPracticeTutorial = tutorial.id === 11;
+  if (tutorial.id >= 7 || tutorial.isPracticeTutorial) {
+    const isPracticeTutorial = Boolean(tutorial.isPracticeTutorial);
     const cardImage =
-      tutorial.id === 7
+      tutorial.image ||
+      (tutorial.id === 7
         ? TutorialElementCardImage
         : tutorial.id === 8
           ? TutorialChatTokenCardImage
@@ -144,35 +127,28 @@ function TutorialCard({ tutorial, onClick }) {
             ? TutorialJudgeFailureCardImage
             : tutorial.id === 10
               ? TutorialJudgeSuccessCardImage
-              : TutorialCardImage;
+              : TutorialCardImage);
 
     return (
       <article
-        className="surface surface-interactive group flex min-w-0 cursor-pointer flex-col overflow-hidden"
+        className="surface surface-interactive surface-no-hover-border group flex min-w-0 cursor-pointer flex-col overflow-hidden"
         onClick={onClick}
       >
         <div className="relative h-[180px] overflow-hidden">
-          <img src={cardImage} alt={tutorial.title} className="h-full w-full object-cover" />
-          {tutorial.progressStatus ? (
-            <span
-              className={`absolute right-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${
-                tutorial.progressStatus === 'completed'
-                  ? 'text-[#1EC186]'
-                  : tutorial.progressStatus === 'in_progress'
-                    ? 'text-[#FFBC4B]'
-                    : 'text-white'
-              }`}
-            >
-              {tutorial.progressStatus === 'completed'
-                ? '완료'
-                : tutorial.progressStatus === 'in_progress'
-                  ? '진행 중'
-                  : '미도전'}
-            </span>
-          ) : null}
-          <div className="absolute inset-0 flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-            <p className="text-body font-strong text-white">{tutorial.description}</p>
-            <p className="mt-3 text-body font-bold text-[#FF5A65]">{tutorial.goal}</p>
+          <img
+            src={cardImage}
+            alt={tutorial.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+          />
+          <div className="absolute inset-0 z-[5] flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            {tutorial.subtitle ? (
+              <p className="text-body-lg font-bold text-white">{tutorial.subtitle}</p>
+            ) : null}
+            {tutorial.description ? (
+              <p className="mt-3 line-clamp-4 whitespace-pre-line text-body font-strong leading-relaxed text-white/78">
+                {tutorial.description}
+              </p>
+            ) : null}
           </div>
         </div>
         <div className="flex flex-1 flex-col p-5">
@@ -197,7 +173,7 @@ function TutorialCard({ tutorial, onClick }) {
 
   return (
     <article
-      className="surface surface-interactive group flex min-h-[392px] min-w-0 cursor-pointer flex-col overflow-hidden"
+      className="surface surface-interactive surface-no-hover-border group flex min-h-[392px] min-w-0 cursor-pointer flex-col overflow-hidden"
       onClick={onClick}
     >
       <TutorialPreview tutorial={tutorial} />
@@ -257,32 +233,51 @@ export default function TutorialList() {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
   const [keyword, setKeyword] = useState('');
-  const progressQuery = useTutorialProgress();
+  const problemsQuery = useChallengeProblems();
 
-  const tutorialsWithProgress = useMemo(() => {
-    const progressItems = progressQuery.data?.items ?? [];
-
-    return TUTORIALS.map((tutorial, index) => {
-      const normalizedTitle = tutorial.title.replace(/\s/g, '').toLowerCase();
-      const progress =
-        progressItems.find(
-          item => item.title?.replace(/\s/g, '').toLowerCase() === normalizedTitle
-        ) ?? progressItems[index];
+  const tutorialCards = useMemo(() => {
+    const tutorialProblems = (problemsQuery.data?.items ?? []).filter(
+      problem => problem.is_tutorial
+    );
+    const practiceTutorials = tutorialProblems.map(problem => {
+      const difficulty =
+        problem.difficulty === 'easy'
+          ? 'Easy'
+          : problem.difficulty === 'normal'
+            ? 'Medium'
+            : 'Hard';
 
       return {
-        ...tutorial,
-        progressStatus: progress?.status,
-        serverProblemId: progress?.problem_id,
-        bestScore: progress?.best_score,
+        id: `practice-${problem.id}`,
+        isPracticeTutorial: true,
+        serverProblemId: problem.id,
+        title: problem.title,
+        subtitle: problem.sub_title || '튜토리얼에서 익힌 흐름으로 실전 문제 풀기',
+        tier: '실전 연습',
+        difficulty,
+        category: problem.category?.name || 'Practice',
+        tags: ['Tutorial', 'Practice', problem.category?.name].filter(Boolean),
+        rating: '10.0',
+        reviews: problem.successful_user_count,
+        duration: '자유롭게',
+        price: '무료',
+        level: 'Starter',
+        description:
+          problem.description ||
+          'AI와 대화하고 제출 결과를 확인하는 전체 과정을 실제 문제로 연습합니다.',
+        goal: problem.goal || problem.success_criteria || '문제의 성공 조건을 달성해 보세요.',
+        image: getChallengeImage(problem.id),
       };
     });
-  }, [progressQuery.data?.items]);
+
+    return [...TUTORIALS, ...practiceTutorials];
+  }, [problemsQuery.data?.items]);
 
   const filteredTutorials = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
-    if (!normalizedKeyword) return tutorialsWithProgress;
+    if (!normalizedKeyword) return tutorialCards;
 
-    return tutorialsWithProgress.filter(tutorial =>
+    return tutorialCards.filter(tutorial =>
       [
         tutorial.title,
         tutorial.subtitle,
@@ -295,14 +290,13 @@ export default function TutorialList() {
         .toLowerCase()
         .includes(normalizedKeyword)
     );
-  }, [keyword, tutorialsWithProgress]);
+  }, [keyword, tutorialCards]);
+  const hasPracticeTutorial = tutorialCards.some(tutorial => tutorial.isPracticeTutorial);
 
   const handleOpenTutorial = useCallback(
     tutorial => {
-      if (tutorial.id === 11) {
-        navigate(
-          tutorial.serverProblemId ? `/challenge/${tutorial.serverProblemId}` : '/kategorie'
-        );
+      if (tutorial.isPracticeTutorial) {
+        navigate(`/challenge/${tutorial.serverProblemId}`);
         return;
       }
 
@@ -379,26 +373,6 @@ export default function TutorialList() {
         </form>
       </div>
 
-      {progressQuery.data ? (
-        <div className="mb-7 rounded-[10px] border border-[#E1E6EB] bg-[#FAFBFC] px-5 py-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-body-lg font-bold text-[#2E3338]">튜토리얼 진행률</p>
-            <p className="text-body font-strong text-[#66717E]">
-              <em className="not-italic text-[#FF4854]">{progressQuery.data.completed_count}</em>/
-              {progressQuery.data.total_count} 완료
-            </p>
-          </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#E8EBEF]">
-            <div
-              className="h-full rounded-full bg-[#FF4854] transition-[width]"
-              style={{
-                width: `${progressQuery.data.total_count ? (progressQuery.data.completed_count / progressQuery.data.total_count) * 100 : 0}%`,
-              }}
-            />
-          </div>
-        </div>
-      ) : null}
-
       <div>
         <section className="min-w-0">
           <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -409,9 +383,37 @@ export default function TutorialList() {
                 onClick={() => handleOpenTutorial(tutorial)}
               />
             ))}
+            {!keyword.trim() && problemsQuery.isLoading ? (
+              <TutorialProblemState>실전 연습 문제를 불러오는 중입니다.</TutorialProblemState>
+            ) : null}
+            {!keyword.trim() && problemsQuery.error ? (
+              <TutorialProblemState error>
+                {problemsQuery.error.message || '실전 연습 문제를 불러오지 못했습니다.'}
+              </TutorialProblemState>
+            ) : null}
+            {!keyword.trim() &&
+            !problemsQuery.isLoading &&
+            !problemsQuery.error &&
+            !hasPracticeTutorial ? (
+              <TutorialProblemState>현재 공개된 튜토리얼 문제가 없습니다.</TutorialProblemState>
+            ) : null}
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+function TutorialProblemState({ children, error = false }) {
+  return (
+    <div
+      className={`flex min-h-[300px] items-center justify-center rounded-[10px] border px-6 text-center text-body-lg font-strong ${
+        error
+          ? 'border-[#FFD3D7] bg-[#FFF8F8] text-[#D93643]'
+          : 'border-[#E1E6EB] bg-[#FAFBFC] text-[#66717E]'
+      }`}
+    >
+      {children}
     </div>
   );
 }

@@ -20,11 +20,6 @@ export const getFavoriteChallengeProblems = async () => {
   return data;
 };
 
-export const getTutorialProgress = async () => {
-  const { data } = await api.get('/challenges/tutorials/progress');
-  return data;
-};
-
 export const getChallengeProblem = async problemId => {
   const { data } = await api.get(`/challenges/problems/${problemId}`);
   return data;

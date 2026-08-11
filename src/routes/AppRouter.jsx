@@ -32,7 +32,6 @@ import ChallengePlay from '../pages/Challenge/ui/ChallengePlay';
 import ChatTestPage from '../pages/ChatTestPage';
 import NotFound from '../pages/NotFound/NotFound';
 
-import ArenaMockPage from '../pages/Leaderboard/ArenaMockPage'; // ✅ 추가
 import Leaderboard from '../pages/Leaderboard/ArenaMockPage';
 import AdminProblemPage from '../pages/admin/AdminProblemPage';
 import AdminConversationMockPage from '../pages/admin/AdminConversationMockPage';
@@ -110,7 +109,13 @@ export default function AppRouter() {
       {/* ---------------------------
           🔥 LeaderboardLayout (ARENA MOCK)
          --------------------------- */}
-      <Route element={<LeaderboardLayout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <LeaderboardLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/leaderboard" element={<Leaderboard />} /> {/* ✅ 추가됨 */}
       </Route>
 
@@ -127,7 +132,6 @@ export default function AppRouter() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mypage" element={<Navigate to="/settings" replace />} />
         <Route path="/settings" element={<MyPage />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/education" element={<Education />} />
         <Route path="/education/:articleId" element={<Education />} />
         <Route path="/tutorial" element={<TutorialList />} />

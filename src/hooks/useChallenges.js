@@ -7,7 +7,6 @@ import {
   getChallengeProblems,
   getChallengeStatus,
   getFavoriteChallengeProblems,
-  getTutorialProgress,
   unfavoriteChallengeProblem,
   unlockChallengeProblem,
 } from '@/api/challengesApi';
@@ -18,7 +17,6 @@ export const challengeKeys = {
   categories: ['challenges', 'categories'],
   problems: ['challenges', 'problems'],
   favorites: ['challenges', 'favorites'],
-  tutorialProgress: ['challenges', 'tutorial-progress'],
   detail: problemId => ['challenges', 'problem', problemId],
   ranking: (problemId, offset, limit) => [
     'challenges',
@@ -57,13 +55,6 @@ export const useFavoriteChallengeProblems = ({ enabled = true } = {}) =>
     queryFn: getFavoriteChallengeProblems,
     enabled,
     staleTime: 30_000,
-  });
-
-export const useTutorialProgress = () =>
-  useQuery({
-    queryKey: challengeKeys.tutorialProgress,
-    queryFn: getTutorialProgress,
-    staleTime: 60_000,
   });
 
 export const useChallengeProblem = (problemId, { enabled = true } = {}) =>

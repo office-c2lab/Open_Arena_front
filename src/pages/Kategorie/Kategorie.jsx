@@ -245,6 +245,8 @@ function ProblemStatusBadge({ status = 'untried' }) {
 }
 
 function PathPreview({ path, status = 'untried', label }) {
+  const hasPreviewCopy = path.sub_title || path.sub_description;
+
   return (
     <div className="relative h-[180px] overflow-hidden">
       <img
@@ -266,6 +268,18 @@ function PathPreview({ path, status = 'untried', label }) {
         </span>
       ) : null}
       <ProblemStatusBadge status={status} />
+      {hasPreviewCopy ? (
+        <div className="absolute inset-0 z-[5] flex flex-col justify-center bg-[#12070A]/94 p-5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          {path.sub_title ? (
+            <p className="text-body-lg font-bold text-white">{path.sub_title}</p>
+          ) : null}
+          {path.sub_description ? (
+            <p className="mt-3 line-clamp-4 whitespace-pre-line text-body font-strong leading-relaxed text-white/78">
+              {path.sub_description}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -281,9 +295,7 @@ export function PathCard({ path, onClick, status = 'untried', label }) {
       <PathPreview path={path} status={status} label={label} />
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-card-title font-bold text-[#151A21]">{path.title}</h2>
-        <p className="mt-2 text-body font-strong text-[#66717E]">
-          {path.category}
-        </p>
+        <p className="mt-2 text-body font-strong text-[#66717E]">{path.category}</p>
         <div className="mt-5 grid grid-cols-[0.85fr_1.35fr_1.35fr_0.8fr] divide-x divide-[#D8DDE4] text-label text-[#2E3338]">
           <span className="flex items-center justify-center whitespace-nowrap pr-1 font-strong">
             성공{' '}
@@ -339,6 +351,7 @@ const ChallengeSection = () => {
         : (problemsQuery.data?.items ?? []);
 
     return sourceProblems
+      .filter(problem => !problem.is_tutorial)
       .map((problem, index) => ({
         ...problem,
         image: getChallengeImage(problem.id),
