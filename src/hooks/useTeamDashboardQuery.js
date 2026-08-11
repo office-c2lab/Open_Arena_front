@@ -1,13 +1,17 @@
 // src/hooks/useTeamDashboardQuery.js
 import { useQuery } from '@tanstack/react-query';
-import { fetchTeamDashboard } from '@/api/dashboardApi';
+import { getDashboard } from '@/api/dashboardApi';
 
-export const useTeamDashboardQuery = teamId => {
+export const DASHBOARD_QUERY_KEY = ['dashboard'];
+
+export const useDashboardQuery = () => {
   return useQuery({
-    queryKey: ['teamDashboard', teamId],
-    queryFn: () => fetchTeamDashboard(teamId),
-    enabled: !!teamId, // teamId 있을 때만 실행
+    queryKey: DASHBOARD_QUERY_KEY,
+    queryFn: getDashboard,
     staleTime: 0,
-    refetchInterval: 5000,
+    refetchOnMount: 'always',
+    retry: 1,
   });
 };
+
+export const useTeamDashboardQuery = useDashboardQuery;

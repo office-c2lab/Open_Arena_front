@@ -1,19 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { ArrowRight, BookOpen, ChevronLeft, ChevronDown, ChevronRight } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useNavigate } from 'react-router-dom';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import UserIcon from '@/assets/icons/user.svg';
 import DashboardProfileSummaryCard from '@/components/Profile/DashboardProfileSummaryCard';
+import { normalizeUser } from '@/api/auth';
+import { useDashboardQuery } from '@/hooks/useTeamDashboardQuery';
 import { useAuthStore } from '@/stores/authStore';
+import { useSessionStore } from '@/stores/useSessionStore';
 import ArenaBannerImage from '@/assets/images/banner.svg';
 import ChallengeBannerImage from '@/assets/images/chalbenner.png';
 import TutorialBannerImage from '@/assets/images/tutorial_banner.png';
 import LlmSafetyBannerImage from '@/assets/images/LLMSAFETY_banner.png';
 import LearningBannerImage from '@/assets/images/learning_banner.png';
 import { articles as educationArticles } from '@/pages/Education/Education';
-import { PATHS as challengePaths, PathCard } from '@/pages/Kategorie/Kategorie';
+import { PATHS as challengePaths } from '@/pages/Kategorie/Kategorie';
 import { TUTORIALS } from '@/pages/Tutorial/TutorialList';
+import { getChallengeDifficultyMeta, getChallengeImage } from '@/utils/challengePresentation';
 
 const dashboardBanners = [
   {
@@ -72,7 +77,6 @@ const activityLevels = [
   'bg-[#CF1723]',
 ];
 
-const dayLabels = ['월', '화', '수', '목', '금', '토', '일'];
 const timeBlocks = Array.from({ length: 8 }, (_, index) => {
   const startHour = index * 3;
 
@@ -83,105 +87,34 @@ const timeBlocks = Array.from({ length: 8 }, (_, index) => {
   };
 });
 
-const recentAttemptProblemIds = [3, 2, 1];
-
-const challengeStatusById = {
-  1: 'untried',
-  2: 'failed',
-  3: 'success',
-  4: 'untried',
-  5: 'failed',
-  6: 'success',
-  7: 'untried',
-  8: 'failed',
-  9: 'success',
-  10: 'untried',
-  11: 'failed',
-};
-
-const challengeStatusMeta = {
-  success: {
-    label: '성공',
-    className: 'text-[#1EC186]',
-  },
-  failed: {
-    label: '실패',
-    className: 'text-[#FF4854]',
-  },
-  untried: {
-    label: '미도전',
-    className: 'text-white',
-  },
-};
-
-const getChallengeById = (id, extra = {}) => {
-  const challenge = challengePaths.find(path => path.id === id);
-
-  if (!challenge) return null;
-
-  return {
-    ...challenge,
-    solvedCount: challenge.reviews ?? 7,
-    averageTokens: 1240,
-    maximumPoints: challenge.maximumPoints ?? 100,
-    status: challengeStatusById[id] ?? 'untried',
-    ...extra,
-  };
-};
-
-const todayRecommendedChallenges = [
-  getChallengeById(2, {
-    description: 'Kubernetes 환경의 설정 및 리스크를 분석하고 취약점을 찾아보세요.',
-  }),
-  getChallengeById(1),
-  getChallengeById(4),
-  getChallengeById(5),
-].filter(Boolean);
-
-const challengeBrowseItems = [6, 7, 8, 9, 10, 11]
-  .map((id, index) =>
-    getChallengeById(id, {
-      attempts: ['1,245명', '893명', '732명', '1,102명', '654명', '528명'][index],
-    })
-  )
-  .filter(Boolean);
-
-function getActivityCount(date, dayIndex, startHour) {
-  const daySeed = date.getDate() + (date.getMonth() + 1) * 7 + dayIndex * 5 + startHour * 3;
-
-  if (startHour < 6 || startHour > 21 || daySeed % 11 === 0) return 0;
-  if (daySeed % 23 === 0) return 6;
-  if (daySeed % 17 === 0) return 5;
-  if (daySeed % 7 === 0) return 4;
-  if (daySeed % 5 === 0) return 3;
-  if (daySeed % 3 === 0) return 2;
-
-  return 1;
-}
-
 function getActivityLevel(count) {
-  if (count === 0) return 0;
-  if (count <= 1) return 1;
-  if (count <= 2) return 2;
-  if (count <= 4) return 3;
-  if (count <= 5) return 4;
-
-  return 5;
+  return Math.min(Math.max(Math.floor(Number(count) || 0), 0), 5);
 }
 
-function buildActivityHeatmap() {
-  const today = new Date();
-  const mondayOffset = (today.getDay() + 6) % 7;
-  const startDate = new Date(today);
+const toLocalDateKey = date => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+function buildActivityHeatmap(activity) {
+  const parsedStartDate = activity?.start_date
+    ? new Date(`${activity.start_date}T00:00:00`)
+    : new Date();
+  const startDate = Number.isNaN(parsedStartDate.getTime()) ? new Date() : parsedStartDate;
   startDate.setHours(0, 0, 0, 0);
-  startDate.setDate(startDate.getDate() - mondayOffset);
+  const cellCountByDateAndHour = new Map(
+    (activity?.cells ?? []).map(cell => [`${cell.date}:${cell.hour}`, cell.count])
+  );
 
   const days = Array.from({ length: 7 }, (_, dayIndex) => {
     const date = new Date(startDate);
     date.setDate(startDate.getDate() + dayIndex);
+    const dateKey = toLocalDateKey(date);
     const blocks = timeBlocks.map(({ label, startHour, hours }) => {
       const cells = hours.map(hour => {
-        const count = getActivityCount(date, dayIndex, hour);
+        const count = cellCountByDateAndHour.get(`${dateKey}:${hour}`) ?? 0;
 
         return {
           hour,
@@ -199,22 +132,17 @@ function buildActivityHeatmap() {
 
     return {
       date,
+      dateKey,
+      label: new Intl.DateTimeFormat('ko-KR', { weekday: 'short' })
+        .format(date)
+        .replace('요일', ''),
       blocks,
     };
   });
 
   return {
     days,
-    totalCount: days.reduce(
-      (daySum, day) =>
-        daySum +
-        day.blocks.reduce(
-          (blockSum, block) =>
-            blockSum + block.cells.reduce((cellSum, cell) => cellSum + cell.count, 0),
-          0
-        ),
-      0
-    ),
+    totalCount: activity?.total_attempts ?? 0,
   };
 }
 
@@ -848,16 +776,39 @@ function ActivityHeatmapCell({ day, cell, onTooltipShow, onTooltipHide }) {
   );
 }
 
-function ChallengeActivityHeatmap() {
-  const { days, totalCount } = useMemo(() => buildActivityHeatmap(), []);
+function ChallengeActivityHeatmap({ dashboard }) {
+  const { account, activity, challenge, continue_challenge: continueChallenge } = dashboard;
+  const profile = useMemo(() => normalizeUser(account), [account]);
+  const { days, totalCount } = useMemo(() => buildActivityHeatmap(activity), [activity]);
   const [activeTooltip, setActiveTooltip] = useState(null);
+  const displayedRank =
+    challenge.leaderboard_visible && challenge.rank ? `${challenge.rank}위` : '-';
+  const scoreToNextRank = challenge.score_to_next_rank;
+  const summaryStats = [
+    { label: '현재 순위', value: displayedRank, subText: '전체 참가자 기준' },
+    {
+      label: '해결한 문제',
+      value: `${challenge.solved_count.toLocaleString()}문제`,
+      subText: `전체 ${challenge.total_problem_count.toLocaleString()}문제 중`,
+    },
+    {
+      label: '총 점수',
+      value: `${challenge.total_score.toLocaleString()}점`,
+      subText: `총 성공 ${challenge.total_successes.toLocaleString()}회`,
+    },
+    {
+      label: '다음 순위까지',
+      value: scoreToNextRank == null ? '-' : `${scoreToNextRank.toLocaleString()}점`,
+      subText: scoreToNextRank == null ? '현재 집계 기준' : '한 단계 상승까지',
+    },
+  ];
 
   return (
     <section className="mx-auto flex w-full max-w-[1200px] flex-col gap-7 px-4 py-7 sm:px-6 lg:px-0">
       <ActivityHeatmapTooltip tooltip={activeTooltip} />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-stretch">
-        <DashboardProfileSummaryCard />
-        <RecentAttemptProblemsCard />
+        <DashboardProfileSummaryCard profile={profile} summaryStats={summaryStats} />
+        <RecentAttemptProblemsCard challenge={continueChallenge} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
@@ -867,17 +818,17 @@ function ChallengeActivityHeatmap() {
             <div className="overflow-x-auto pb-1">
               <div className="w-max">
                 <div className="grid grid-cols-[32px_repeat(24,22px)] gap-x-[6px] gap-y-[6px]">
-                  {days.map((day, dayIndex) => {
+                  {days.map(day => {
                     const cells = day.blocks.flatMap(block => block.cells);
 
                     return (
-                      <React.Fragment key={dayLabels[dayIndex]}>
+                      <React.Fragment key={day.dateKey}>
                         <span className="flex h-[22px] items-center text-body font-bold text-[#596575]">
-                          {dayLabels[dayIndex]}
+                          {day.label}
                         </span>
                         {cells.map(cell => (
                           <ActivityHeatmapCell
-                            key={`${dayLabels[dayIndex]}-${cell.hour}`}
+                            key={`${day.dateKey}-${cell.hour}`}
                             day={day}
                             cell={cell}
                             onTooltipShow={setActiveTooltip}
@@ -912,95 +863,172 @@ function ChallengeActivityHeatmap() {
         </section>
 
         <div className="flex min-w-0 w-full flex-col gap-5">
-          <SuccessRateCard />
+          <SuccessRateCard summary={dashboard.submission_summary} />
         </div>
       </div>
-      <RecommendedChallengeSection />
+      <RecommendedChallengeSection
+        challenges={dashboard.recommended_challenges}
+        problemStatus={dashboard.problem_status}
+        categories={challenge.categories}
+        challengeEnabled={challenge.enabled}
+      />
     </section>
   );
 }
 
-function ChallengeProgressBadge({ status = 'success', className = '' }) {
-  const meta = challengeStatusMeta[status] ?? challengeStatusMeta.untried;
-
-  return (
-    <span
-      className={`absolute right-4 top-4 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${meta.className} ${className}`}
-    >
-      {meta.label}
-    </span>
-  );
-}
-
-function RecentAttemptProblemsCard() {
+function RecentAttemptProblemsCard({ challenge }) {
   const navigate = useNavigate();
-  const recentProblem = getChallengeById(recentAttemptProblemIds[0]);
+  const setSessionId = useSessionStore(state => state.setSessionId);
+  const setSessionStatus = useSessionStore(state => state.setSessionStatus);
 
-  if (!recentProblem) return null;
+  if (!challenge) {
+    return (
+      <section className="surface flex min-h-[286px] flex-col items-center justify-center px-6 py-8 text-center">
+        <p className="text-body-lg font-bold text-[#202832]">진행 중인 챌린지가 없습니다.</p>
+        <p className="mt-2 text-body font-strong text-[#8A93A5]">
+          새로운 문제에 도전해 기록을 만들어 보세요.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate('/kategorie')}
+          className="btn btn-primary btn-md mt-6 min-w-[180px]"
+        >
+          챌린지 목록
+        </button>
+      </section>
+    );
+  }
 
   const handleContinue = () => {
-    navigate(`/challenge/${recentProblem.id}`);
+    setSessionId(challenge.chat_session_id);
+    setSessionStatus('unsubmitted');
+    navigate(`/challenge/${challenge.problem_id}/play`);
   };
+  const difficultyMeta = getChallengeDifficultyMeta(challenge.difficulty);
 
   return (
-    <PathCard
-      path={recentProblem}
-      status={recentProblem.status}
-      label="이어서 도전하기"
+    <button
+      type="button"
       onClick={handleContinue}
-    />
+      className="surface surface-interactive surface-no-hover-border group flex min-h-[286px] cursor-pointer flex-col overflow-hidden text-left"
+    >
+      <div className="relative min-h-[132px] flex-1 overflow-hidden bg-[#0B0D18]">
+        <img
+          src={getChallengeImage(challenge.problem_id)}
+          alt=""
+          className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+          aria-hidden="true"
+        />
+        <span className="absolute left-4 top-4 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold text-white">
+          이어서 도전하기
+        </span>
+      </div>
+      <div className="w-full px-5 py-4">
+        <h2 className="line-clamp-2 text-card-title font-bold text-[#151A21]">{challenge.title}</h2>
+        <div className="mt-3 flex items-center justify-between gap-3 text-label font-strong text-[#66717E]">
+          <span>{challenge.is_tutorial ? '튜토리얼' : '챌린지'}</span>
+          <span className={`rounded-[4px] px-2 py-1 ${difficultyMeta.className}`}>
+            {difficultyMeta.label}
+          </span>
+        </div>
+      </div>
+    </button>
   );
 }
 
-function BrowseChallengeCard({ challenge, onClick }) {
-  const Component = onClick ? 'button' : 'article';
+const recommendationReasonLabels = {
+  unsolved_high_score: '고득점 미해결 문제',
+  high_token_usage: '토큰 최적화 추천',
+};
+
+function RecommendedChallengeCard({ challenge, onClick }) {
+  const difficultyMeta = getChallengeDifficultyMeta(challenge.difficulty);
 
   return (
-    <Component
-      type={onClick ? 'button' : undefined}
+    <button
+      type="button"
       onClick={onClick}
-      className={`surface surface-interactive surface-no-hover-border min-w-[220px] overflow-hidden text-left ${onClick ? 'cursor-pointer' : ''}`}
+      className="surface surface-interactive surface-no-hover-border group flex h-full w-full cursor-pointer flex-col overflow-hidden text-left"
     >
-      <div className="relative h-[96px] overflow-hidden bg-[#0B0D18]">
+      <div className="relative h-[150px] overflow-hidden bg-[#0B0D18]">
         <img
-          src={challenge.image}
-          alt={`${challenge.title} 챌린지`}
-          className="h-full w-full object-cover"
+          src={getChallengeImage(challenge.problem_id)}
+          alt=""
+          className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+          aria-hidden="true"
         />
-        <ChallengeProgressBadge
-          status={challenge.status}
-          className="right-3 top-3 px-2.5 py-1 text-caption"
-        />
+        <span className="absolute right-3 top-3 rounded-[7px] bg-[#171C24]/90 px-2.5 py-1 text-caption font-bold text-white">
+          {recommendationReasonLabels[challenge.reason] || '추천 문제'}
+        </span>
       </div>
-      <div className="p-4">
-        <h3 className="line-clamp-2 min-h-[44px] text-body-lg font-bold text-[#202832]">
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="line-clamp-2 min-h-[52px] text-card-title font-bold text-[#202832]">
           {challenge.title}
         </h3>
+        <p className="mt-2 text-body font-strong text-[#66717E]">
+          {challenge.category_name || '일반'}
+        </p>
+        <div className="mt-5 flex items-center justify-between gap-3 text-label font-strong text-[#596575]">
+          <span>
+            최대 <em className="not-italic text-[#FF4854]">{challenge.max_score}</em>점
+          </span>
+          {challenge.token_usage == null ? null : (
+            <span>
+              사용 토큰{' '}
+              <em className="not-italic text-[#FF4854]">
+                {challenge.token_usage.toLocaleString()}
+              </em>
+            </span>
+          )}
+          <span className={`rounded-[4px] px-2 py-1 ${difficultyMeta.className}`}>
+            {difficultyMeta.label}
+          </span>
+        </div>
+        <span className="btn btn-primary btn-lg btn-block mt-5">문제 보기</span>
       </div>
-    </Component>
+    </button>
   );
 }
 
-function RecommendedChallengeSection() {
+function RecommendedChallengeSection({ challenges, problemStatus, categories, challengeEnabled }) {
   const navigate = useNavigate();
-  const [activeStatusTab, setActiveStatusTab] = useState('all');
   const [selectedQueueIndex, setSelectedQueueIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'center',
-    loop: true,
+    loop: challenges.length > 1,
     duration: 24,
   });
-  const statusTabs = [
-    { key: 'all', label: '전체' },
-    { key: 'success', label: '성공' },
-    { key: 'failed', label: '실패' },
-    { key: 'untried', label: '미도전' },
+  const statusCards = [
+    {
+      key: 'success',
+      label: '성공',
+      value: problemStatus.success_count,
+      colorClass: 'text-[#1EC186]',
+      backgroundClass: 'bg-[#F0FBF7]',
+    },
+    {
+      key: 'failed',
+      label: '실패',
+      value: problemStatus.failed_count,
+      colorClass: 'text-[#FF4854]',
+      backgroundClass: 'bg-[#FFF3F4]',
+    },
+    {
+      key: 'in-progress',
+      label: '도전 중',
+      value: problemStatus.in_progress_count,
+      colorClass: 'text-[#FFB155]',
+      backgroundClass: 'bg-[#FFF9EE]',
+    },
+    {
+      key: 'not-started',
+      label: '미도전',
+      value: problemStatus.not_started_count,
+      colorClass: 'text-[#7B8491]',
+      backgroundClass: 'bg-[#F4F6F8]',
+    },
   ];
-  const visibleChallengeBrowseItems =
-    activeStatusTab === 'all'
-      ? challengeBrowseItems
-      : challengeBrowseItems.filter(challenge => challenge.status === activeStatusTab);
-  const queueCount = todayRecommendedChallenges.length;
+  const queueCount = challenges.length;
   const updateSelectedQueueIndex = useCallback(() => {
     if (!emblaApi) return;
 
@@ -1018,6 +1046,7 @@ function RecommendedChallengeSection() {
     [emblaApi]
   );
   const showPreviousChallenge = useCallback(() => {
+    if (!queueCount) return;
     if (!emblaApi) {
       setSelectedQueueIndex(current => (current - 1 + queueCount) % queueCount);
       return;
@@ -1026,6 +1055,7 @@ function RecommendedChallengeSection() {
     emblaApi.scrollPrev();
   }, [emblaApi, queueCount]);
   const showNextChallenge = useCallback(() => {
+    if (!queueCount) return;
     if (!emblaApi) {
       setSelectedQueueIndex(current => (current + 1) % queueCount);
       return;
@@ -1059,86 +1089,132 @@ function RecommendedChallengeSection() {
           </div>
         </div>
 
-        <button
-          type="button"
-          aria-label="이전 추천"
-          onClick={showPreviousChallenge}
-          className="absolute left-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)] transition hover:-translate-y-[calc(50%+2px)] hover:border-[#FFB8BE] hover:bg-[#FFF3F4] hover:text-[#FF4854] hover:shadow-[0_12px_24px_rgba(255,72,84,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <button
-          type="button"
-          aria-label="다음 추천"
-          onClick={showNextChallenge}
-          className="absolute right-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)] transition hover:-translate-y-[calc(50%+2px)] hover:border-[#FFB8BE] hover:bg-[#FFF3F4] hover:text-[#FF4854] hover:shadow-[0_12px_24px_rgba(255,72,84,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
+        {challenges.length ? (
+          <>
+            {challenges.length > 1 ? (
+              <>
+                <button
+                  type="button"
+                  aria-label="이전 추천"
+                  onClick={showPreviousChallenge}
+                  className="absolute left-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)] transition hover:-translate-y-[calc(50%+2px)] hover:border-[#FFB8BE] hover:bg-[#FFF3F4] hover:text-[#FF4854] hover:shadow-[0_12px_24px_rgba(255,72,84,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="다음 추천"
+                  onClick={showNextChallenge}
+                  className="absolute right-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)] transition hover:-translate-y-[calc(50%+2px)] hover:border-[#FFB8BE] hover:bg-[#FFF3F4] hover:text-[#FF4854] hover:shadow-[0_12px_24px_rgba(255,72,84,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </>
+            ) : null}
 
-        <div className="mx-auto max-w-[1000px] overflow-hidden px-10" ref={emblaRef}>
-          <div className="-ml-16 flex items-stretch">
-            {todayRecommendedChallenges.map((challenge, index) => {
-              const isSelected = index === selectedQueueIndex;
+            <div className="mx-auto max-w-[1000px] overflow-hidden px-10" ref={emblaRef}>
+              <div className="-ml-16 flex items-stretch">
+                {challenges.map(challenge => (
+                  <div
+                    key={challenge.problem_id}
+                    className="min-w-0 shrink-0 grow-0 basis-[444px] pl-16"
+                  >
+                    <RecommendedChallengeCard
+                      challenge={challenge}
+                      onClick={() => navigate(`/challenge/${challenge.problem_id}`)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
 
-              return (
-                <div key={challenge.id} className="min-w-0 shrink-0 grow-0 basis-[444px] pl-16">
-                  <PathCard
-                    path={challenge}
-                    status={challenge.status}
-                    onClick={() => navigate(`/challenge/${challenge.id}`)}
+            {challenges.length > 1 ? (
+              <div className="mt-5 flex justify-center gap-2">
+                {challenges.map((challenge, index) => (
+                  <button
+                    key={challenge.problem_id}
+                    type="button"
+                    aria-label={`${challenge.title} 추천 보기`}
+                    onClick={() => selectQueueIndex(index)}
+                    className={`h-2 w-2 cursor-pointer rounded-full ${
+                      index === selectedQueueIndex ? 'bg-[#FF4854]' : 'bg-[#D1D7E0]'
+                    }`}
                   />
-                </div>
-              );
-            })}
+                ))}
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <div className="rounded-[8px] bg-[#F7F8FA] px-5 py-10 text-center text-body font-strong text-[#8A93A5]">
+            현재 추천할 챌린지가 없습니다.
           </div>
-        </div>
-
-        <div className="mt-5 flex justify-center gap-2">
-          {todayRecommendedChallenges.map((challenge, index) => (
-            <button
-              key={challenge.id}
-              type="button"
-              aria-label={`${challenge.title} 추천 보기`}
-              onClick={() => selectQueueIndex(index)}
-              className={`h-2 w-2 cursor-pointer rounded-full ${
-                index === selectedQueueIndex ? 'bg-[#FF4854]' : 'bg-[#D1D7E0]'
-              }`}
-            />
-          ))}
-        </div>
+        )}
       </section>
 
       <section className="surface px-5 py-6 sm:px-6">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <h2 className="text-card-title font-bold text-[#202832]">챌린지 현황</h2>
-          <div className="flex items-center gap-5 text-body font-bold">
-            {statusTabs.map(tab => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setActiveStatusTab(tab.key)}
-                className={`cursor-pointer border-b-2 pb-2 transition ${
-                  activeStatusTab === tab.key
-                    ? 'border-[#FF4854] text-[#FF4854]'
-                    : 'border-transparent text-[#9AA3AF] hover:text-[#596575]'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div>
+            <h2 className="text-card-title font-bold text-[#202832]">챌린지 현황</h2>
+            <p className="mt-2 text-body font-strong text-[#8A93A5]">
+              전체 {problemStatus.total_count.toLocaleString()}개 문제 기준
+            </p>
           </div>
+          <button
+            type="button"
+            onClick={() => navigate('/kategorie')}
+            className="flex cursor-pointer items-center gap-1 text-body font-bold text-[#FF4854] transition hover:text-[#E93643]"
+          >
+            챌린지 목록 <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {visibleChallengeBrowseItems.map(challenge => (
-            <BrowseChallengeCard
-              key={challenge.id}
-              challenge={challenge}
-              onClick={() => navigate(`/challenge/${challenge.id}`)}
-            />
+        {!challengeEnabled ? (
+          <div className="mb-5 rounded-[8px] border border-[#FFD5D8] bg-[#FFF4F5] px-4 py-3 text-body font-bold text-[#E93643]">
+            현재 챌린지 운영이 일시 중지되어 있습니다.
+          </div>
+        ) : null}
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {statusCards.map(status => (
+            <div key={status.key} className={`rounded-[8px] p-5 ${status.backgroundClass}`}>
+              <p className="text-body font-bold text-[#596575]">{status.label}</p>
+              <strong className={`mt-4 block text-page-title font-bold ${status.colorClass}`}>
+                {status.value.toLocaleString()}개
+              </strong>
+            </div>
           ))}
         </div>
+
+        {categories.length ? (
+          <div className="mt-7 border-t border-[#E9ECF1] pt-6">
+            <h3 className="text-body-lg font-bold text-[#202832]">카테고리별 진행률</h3>
+            <div className="mt-4 grid gap-x-7 gap-y-5 md:grid-cols-2">
+              {categories.map(category => {
+                const progress = category.total_count
+                  ? Math.round((category.solved_count / category.total_count) * 100)
+                  : 0;
+
+                return (
+                  <div key={category.category_id || category.category_name}>
+                    <div className="mb-2 flex items-center justify-between gap-3 text-label font-strong">
+                      <span className="truncate text-[#596575]">{category.category_name}</span>
+                      <span className="shrink-0 text-[#202832]">
+                        {category.solved_count.toLocaleString()} /{' '}
+                        {category.total_count.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-[#F0F2F5]">
+                      <div
+                        className="h-full rounded-full bg-[#FF4854] transition-[width] duration-300"
+                        style={{ width: `${Math.min(progress, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
       </section>
     </div>
   );
@@ -1149,7 +1225,6 @@ function TokenEfficiencyCard() {
   const minTokens = 184;
   const maxTokens = 6120;
   const efficiency = points / minTokens;
-  const efficiencyPercent = 82;
   const gaugePercent = 56;
 
   return (
@@ -1239,18 +1314,38 @@ function SuccessRateTooltip({ active, payload }) {
         <span>{segment.label}</span>
       </div>
       <div className="mt-1 text-[#7B8491]">
-        {segment.value}% · {segment.count}
+        {segment.percentage}% · {segment.count}
       </div>
     </div>
   );
 }
 
-function SuccessRateCard() {
+function SuccessRateCard({ summary }) {
   const [selectedSegmentLabel, setSelectedSegmentLabel] = useState(null);
-  const successRate = 68;
+  const completedCount = summary.success_count + summary.failure_count;
+  const hasCompletedSubmission = completedCount > 0;
+  const calculatedSuccessRate = completedCount ? (summary.success_count / completedCount) * 100 : 0;
+  const successRate = Math.min(
+    100,
+    Math.max(0, Number(summary.success_rate ?? calculatedSuccessRate))
+  );
+  const displayedSuccessRate = Number(successRate.toFixed(1));
+  const failureRate = Number((100 - displayedSuccessRate).toFixed(1));
   const chartData = [
-    { label: '성공', value: successRate, count: '17회', color: '#FF4854' },
-    { label: '실패', value: 100 - successRate, count: '8회', color: '#F1F3F6' },
+    {
+      label: '성공',
+      value: hasCompletedSubmission ? displayedSuccessRate : 0,
+      percentage: hasCompletedSubmission ? displayedSuccessRate : 0,
+      count: `${summary.success_count.toLocaleString()}회`,
+      color: '#FF4854',
+    },
+    {
+      label: '실패',
+      value: hasCompletedSubmission ? failureRate : 1,
+      percentage: hasCompletedSubmission ? failureRate : 0,
+      count: `${summary.failure_count.toLocaleString()}회`,
+      color: '#F1F3F6',
+    },
   ];
   const selectedSegment = chartData.find(segment => segment.label === selectedSegmentLabel);
 
@@ -1260,7 +1355,10 @@ function SuccessRateCard() {
 
   return (
     <section className="surface w-full px-5 py-4">
-      <DashboardSectionHeader title="성공률" description="이번 주 도전 결과" />
+      <DashboardSectionHeader
+        title="성공률"
+        description={`전체 제출 ${summary.total_count.toLocaleString()}회 · 판정 중 ${summary.in_progress_count.toLocaleString()}회`}
+      />
 
       <div className="mt-5 flex flex-col items-center">
         <div className="relative h-[210px] w-[210px]">
@@ -1299,11 +1397,15 @@ function SuccessRateCard() {
               {selectedSegment ? selectedSegment.label : '성공률'}
             </span>
             <strong className="mt-1 text-page-title font-bold text-[#202832]">
-              {selectedSegment ? selectedSegment.count : `${successRate}%`}
+              {selectedSegment
+                ? selectedSegment.count
+                : hasCompletedSubmission
+                  ? `${displayedSuccessRate}%`
+                  : '-'}
             </strong>
             {selectedSegment ? (
               <span className="mt-1 text-label font-strong text-[#7B8491]">
-                {selectedSegment.value}%
+                {selectedSegment.percentage}%
               </span>
             ) : null}
           </div>
@@ -1326,7 +1428,7 @@ function SuccessRateCard() {
                 <ChartTooltipDot color={segment.color} />
                 <span className="text-label font-bold text-[#202832]">{segment.label}</span>
                 <span className="text-label font-strong text-[#7B8491]">
-                  {segment.value}% · {segment.count}
+                  {segment.percentage}% · {segment.count}
                 </span>
               </button>
             );
@@ -1338,10 +1440,47 @@ function SuccessRateCard() {
 }
 
 export default function Dashboard() {
+  const queryClient = useQueryClient();
+  const login = useAuthStore(state => state.login);
+  const dashboardQuery = useDashboardQuery();
+
+  useEffect(() => {
+    if (!dashboardQuery.data) return;
+
+    const normalizedAccount = normalizeUser(dashboardQuery.data.account);
+    login({ ...useAuthStore.getState().teamInfo, ...normalizedAccount });
+    queryClient.setQueryData(['account', 'me'], normalizedAccount);
+    queryClient.setQueryData(['account', 'usage', 'today'], dashboardQuery.data.usage);
+  }, [dashboardQuery.data, login, queryClient]);
+
   return (
     <div className="w-full bg-white">
       <DashboardBannerSlider />
-      <ChallengeActivityHeatmap />
+      {dashboardQuery.isPending ? (
+        <section className="mx-auto w-full max-w-[1200px] px-4 py-7 sm:px-6 lg:px-0">
+          <div className="surface flex min-h-[320px] items-center justify-center px-6 text-body-lg font-bold text-[#7B8491]">
+            대시보드를 불러오는 중입니다.
+          </div>
+        </section>
+      ) : dashboardQuery.isError ? (
+        <section className="mx-auto w-full max-w-[1200px] px-4 py-7 sm:px-6 lg:px-0">
+          <div className="surface flex min-h-[320px] flex-col items-center justify-center px-6 text-center">
+            <p className="text-body-lg font-bold text-[#202832]">대시보드를 불러오지 못했습니다.</p>
+            <p className="mt-2 text-body font-strong text-[#8A93A5]">
+              {dashboardQuery.error?.message || '잠시 후 다시 시도해 주세요.'}
+            </p>
+            <button
+              type="button"
+              onClick={() => dashboardQuery.refetch()}
+              className="btn btn-primary btn-md mt-6 min-w-[160px]"
+            >
+              다시 시도
+            </button>
+          </div>
+        </section>
+      ) : (
+        <ChallengeActivityHeatmap dashboard={dashboardQuery.data} />
+      )}
     </div>
   );
 }

@@ -1,6 +1,8 @@
-export const fetchTeamDashboard = async () => ({
-  solved_count: 0,
-  total_score: 0,
-  category_solve_status: [],
-  problems: [],
-});
+import api from './axiosInstance';
+
+export const getDashboard = async () => {
+  const { data } = await api.get('/dashboard');
+  return data;
+};
+
+export const fetchTeamDashboard = getDashboard;
