@@ -1,5 +1,5 @@
 import { Bell, ChevronLeft, LogOut, Menu, X } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
@@ -41,6 +41,7 @@ const formatNotificationTime = value => {
 export default function AppHeader({ isHidden = false }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { isLoggedIn, login, logout, teamInfo } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -120,8 +121,9 @@ export default function AppHeader({ isHidden = false }) {
   const handleAuthClick = async () => {
     if (isLoggedIn) {
       await logoutApi().catch(() => undefined);
+      queryClient.clear();
       logout();
-      navigate('/login');
+      navigate('/login', { replace: true });
       return;
     }
 
@@ -130,10 +132,11 @@ export default function AppHeader({ isHidden = false }) {
 
   const handleLogout = async () => {
     await logoutApi().catch(() => undefined);
+    queryClient.clear();
     logout();
     setIsProfileOpen(false);
     setIsNotificationOpen(false);
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   const handleNotificationToggle = () => {
@@ -438,8 +441,7 @@ export default function AppHeader({ isHidden = false }) {
                             오늘 무료 사용량
                           </p>
                           <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
-                            AI 토큰{' '}
-                              <span className="font-strong text-[#FFB155]">{tokenUsage}</span>
+                            AI 토큰 <span className="font-strong text-[#FFB155]">{tokenUsage}</span>
                           </div>
 
                           <div className="mt-3 grid grid-cols-2 gap-2">
@@ -449,7 +451,9 @@ export default function AppHeader({ isHidden = false }) {
                             </div>
                             <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
                               문제 열람{' '}
-                            <span className="font-strong text-[#1ec186]">{problemUnlockUsage}</span>
+                              <span className="font-strong text-[#1ec186]">
+                                {problemUnlockUsage}
+                              </span>
                             </div>
                           </div>
                         </>

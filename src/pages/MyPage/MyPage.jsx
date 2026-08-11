@@ -1,4 +1,5 @@
 import { Check, ShieldAlert, X } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -116,6 +117,7 @@ const validateProfileMedia = (file, label) => {
 
 export default function MyPage({ embedded = false }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const teamInfo = useAuthStore(state => state.teamInfo);
   const login = useAuthStore(state => state.login);
   const logout = useAuthStore(state => state.logout);
@@ -405,6 +407,7 @@ export default function MyPage({ embedded = false }) {
     setModalMessage('');
     try {
       await withdrawAccount({ password: withdrawPassword, confirmation: deleteConfirmText });
+      queryClient.clear();
       logout();
       closeModal();
       appToast.success('회원 탈퇴가 완료되었습니다.');
@@ -620,7 +623,9 @@ export default function MyPage({ embedded = false }) {
         <InfoRow label="글자 테마">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              {isEditingProfileTextTheme ? (
+              {!isPaidMember ? (
+                <span className="text-[#8A93A5]">유료 회원 전용 기능입니다.</span>
+              ) : isEditingProfileTextTheme ? (
                 <div
                   className="inline-flex rounded-[6px] border border-[#DDE3EA] bg-[#F4F6F8] p-1"
                   role="radiogroup"
@@ -667,12 +672,14 @@ export default function MyPage({ embedded = false }) {
                   {savedProfileTextTheme === 'white' ? '화이트' : '블랙'}
                 </span>
               )}
-              <p className="mt-1 text-caption font-strong text-[#8A93A5]">
-                내 정보 카드의 글자색을 선택합니다.
-              </p>
+              {isPaidMember ? (
+                <p className="mt-1 text-caption font-strong text-[#8A93A5]">
+                  내 정보 카드의 글자색을 선택합니다.
+                </p>
+              ) : null}
             </div>
             <div className="flex shrink-0 items-center gap-3">
-              {isEditingProfileTextTheme ? (
+              {isPaidMember && isEditingProfileTextTheme ? (
                 <button
                   type="button"
                   onClick={handleProfileTextThemeCancel}
@@ -689,14 +696,16 @@ export default function MyPage({ embedded = false }) {
                     ? handleProfileTextThemeSave
                     : () => setIsEditingProfileTextTheme(true)
                 }
-                disabled={isSavingProfileTextTheme}
+                disabled={!isPaidMember || isSavingProfileTextTheme}
                 className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
               >
-                {isSavingProfileTextTheme
-                  ? '저장 중...'
-                  : isEditingProfileTextTheme
-                    ? '저장'
-                    : '편집'}
+                {!isPaidMember
+                  ? '유료 전용'
+                  : isSavingProfileTextTheme
+                    ? '저장 중...'
+                    : isEditingProfileTextTheme
+                      ? '저장'
+                      : '편집'}
               </button>
             </div>
           </div>
@@ -750,7 +759,9 @@ export default function MyPage({ embedded = false }) {
         </InfoRow>
         <InfoRow label="프로필 메시지" last>
           <div className="flex items-start justify-between gap-4">
-            {isEditingProfileMessage ? (
+            {!isPaidMember ? (
+              <span className="min-w-0 flex-1 text-[#8A93A5]">유료 회원 전용 기능입니다.</span>
+            ) : isEditingProfileMessage ? (
               <div className="min-w-0 flex-1">
                 <textarea
                   value={profile.profileMessage}
@@ -774,7 +785,7 @@ export default function MyPage({ embedded = false }) {
               </span>
             )}
             <div className="flex shrink-0 items-center gap-3">
-              {isEditingProfileMessage ? (
+              {isPaidMember && isEditingProfileMessage ? (
                 <button
                   type="button"
                   onClick={handleProfileMessageCancel}
@@ -791,10 +802,16 @@ export default function MyPage({ embedded = false }) {
                     ? handleProfileMessageSave
                     : () => setIsEditingProfileMessage(true)
                 }
-                disabled={isSavingProfileMessage}
+                disabled={!isPaidMember || isSavingProfileMessage}
                 className="cursor-pointer text-body font-strong text-[#FF4854] disabled:cursor-not-allowed disabled:text-[#AAB1BC]"
               >
-                {isSavingProfileMessage ? '저장 중...' : isEditingProfileMessage ? '저장' : '편집'}
+                {!isPaidMember
+                  ? '유료 전용'
+                  : isSavingProfileMessage
+                    ? '저장 중...'
+                    : isEditingProfileMessage
+                      ? '저장'
+                      : '편집'}
               </button>
             </div>
           </div>
