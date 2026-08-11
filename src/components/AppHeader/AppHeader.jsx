@@ -438,8 +438,8 @@ export default function AppHeader({ isHidden = false }) {
                             오늘 무료 사용량
                           </p>
                           <div className="mt-4 rounded-[4px] border border-[#e7e8eb] px-4 py-3 text-center text-body font-medium text-[#76787a]">
-                            문제 열람{' '}
-                            <span className="font-strong text-[#1ec186]">{problemUnlockUsage}</span>
+                            AI 토큰{' '}
+                              <span className="font-strong text-[#FFB155]">{tokenUsage}</span>
                           </div>
 
                           <div className="mt-3 grid grid-cols-2 gap-2">
@@ -448,8 +448,8 @@ export default function AppHeader({ isHidden = false }) {
                               <span className="font-strong text-[#A8AAFF]">{submissionUsage}</span>
                             </div>
                             <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                              AI 토큰{' '}
-                              <span className="font-strong text-[#FFB155]">{tokenUsage}</span>
+                              문제 열람{' '}
+                            <span className="font-strong text-[#1ec186]">{problemUnlockUsage}</span>
                             </div>
                           </div>
                         </>
