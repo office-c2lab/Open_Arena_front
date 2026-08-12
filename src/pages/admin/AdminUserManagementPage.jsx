@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, RefreshCw, Save, Search, X } from 'lucide-react';
+import UserIcon from '@/assets/icons/user.svg';
 import DashboardProfileSummaryCard from '@/components/Profile/DashboardProfileSummaryCard';
 import { appToast } from '@/components/Toast/appToast';
 import {
@@ -27,6 +28,25 @@ const formatDate = value => {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? '-' : date.toLocaleDateString('ko-KR');
 };
+
+function AdminUserAvatar({ user, size = 'sm' }) {
+  const imageUrl = user?.profile_image_url;
+  const sizeClass = size === 'sm' ? 'h-10 w-10' : 'h-14 w-14';
+  const iconClass = size === 'sm' ? 'h-5 w-5' : 'h-7 w-7';
+
+  return (
+    <div
+      className={`${sizeClass} flex shrink-0 items-center justify-center overflow-hidden rounded-full ${imageUrl ? 'bg-[#F2F4F6]' : 'bg-[#FF4854]'}`}
+    >
+      <img
+        src={imageUrl || UserIcon}
+        alt=""
+        className={imageUrl ? 'h-full w-full object-cover' : iconClass}
+        aria-hidden="true"
+      />
+    </div>
+  );
+}
 
 const parseLimit = (value, label, max) => {
   const parsed = Number(value);
@@ -357,8 +377,17 @@ export default function AdminUserManagementPage() {
                         className="cursor-pointer border-b border-white/10 transition hover:bg-[#1A0B15]/70"
                       >
                         <Td>
-                          <div className="font-strong text-white">{getDisplayName(user)}</div>
-                          <div className="text-label text-gray-500">ID: {getUserId(user)}</div>
+                          <div className="flex items-center gap-3">
+                            <AdminUserAvatar user={user} />
+                            <div className="min-w-0">
+                              <div className="truncate font-strong text-white">
+                                {getDisplayName(user)}
+                              </div>
+                              <div className="truncate text-label text-gray-500">
+                                ID: {getUserId(user)}
+                              </div>
+                            </div>
+                          </div>
                         </Td>
                         <Td>{user.email ?? '-'}</Td>
                         <Td>{Number(user.total_score ?? 0).toLocaleString()}</Td>
@@ -464,14 +493,18 @@ function UserDetailModal({
     teamname: getDisplayName(user),
     membershipType: membership,
     membershipLabel: membership === 'paid' ? '유료 회원' : '무료 회원',
+    profileImage: user.profile_image_url || null,
+    profileBackgroundImage: user.profile_background_url || null,
+    profileMessage: user.profile_message ?? '',
+    profileTextTheme: user.theme || 'black',
   };
   const summaryStats = [
     { label: '현재 순위', value: user.rank ? `${user.rank}위` : '-', subText: '전체 참가자 기준' },
     { label: '해결한 문제', value: `${user.solved_count ?? 0}문제`, subText: '누적 해결 기준' },
     {
-      label: '보유 포인트',
+      label: '총 점수',
       value: `${Number(user.total_score ?? 0).toLocaleString()}점`,
-      subText: '현재 누적 점수',
+      subText: '누적 획득 점수',
     },
     {
       label: '계정 상태',
