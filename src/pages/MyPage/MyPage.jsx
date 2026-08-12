@@ -822,12 +822,8 @@ export default function MyPage({ embedded = false }) {
         <InfoRow label="계정연동">
           <div className="flex flex-wrap items-center justify-between gap-3 text-[#8A93A5]">
             <span className="flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#9AA0A6] text-caption font-bold text-white">
-                G
-              </span>
               계정이 연동되어 있습니다.
             </span>
-            <span>비밀번호 설정 후 연동 해제가 가능합니다.</span>
           </div>
         </InfoRow>
         <InfoRow label="이메일">
