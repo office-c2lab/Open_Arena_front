@@ -24,7 +24,7 @@ const formatNumber = value => Number(value ?? 0).toLocaleString('ko-KR');
 
 const getUsageText = metric =>
   metric ? `${formatNumber(metric.used)} / ${formatNumber(metric.base_limit)}` : '-';
-const formatNotificationTime = value => {
+const formatNoticeTime = value => {
   if (!value) return '';
 
   const date = new Date(value);
@@ -45,7 +45,7 @@ export default function AppHeader({ isHidden = false }) {
   const { isLoggedIn, login, logout, teamInfo } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isNoticeOpen, setIsNoticeOpen] = useState(false);
   const [selectedNoticeId, setSelectedNoticeId] = useState(null);
 
   const accountMeQuery = useQuery({
@@ -94,7 +94,7 @@ export default function AppHeader({ isHidden = false }) {
   const problemUnlockUsage = getUsageText(todayUsage?.problem_unlocks);
   const submissionUsage = getUsageText(todayUsage?.submissions);
   const tokenUsage = getUsageText(todayUsage?.tokens);
-  const notifications = noticesQuery.data?.items ?? [];
+  const notices = noticesQuery.data?.items ?? [];
 
   useEffect(() => {
     if (accountMeQuery.data) login(accountMeQuery.data);
@@ -103,7 +103,7 @@ export default function AppHeader({ isHidden = false }) {
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsProfileOpen(false);
-    setIsNotificationOpen(false);
+    setIsNoticeOpen(false);
     setSelectedNoticeId(null);
   }, [location.pathname]);
 
@@ -135,20 +135,25 @@ export default function AppHeader({ isHidden = false }) {
     queryClient.clear();
     logout();
     setIsProfileOpen(false);
-    setIsNotificationOpen(false);
+    setIsNoticeOpen(false);
     navigate('/login', { replace: true });
   };
 
-  const handleNotificationToggle = () => {
+  const handleNoticeToggle = () => {
     setIsProfileOpen(false);
-    setIsNotificationOpen(current => {
-      if (current) setSelectedNoticeId(null);
-      return !current;
-    });
+    if (isNoticeOpen) {
+      setIsNoticeOpen(false);
+      setSelectedNoticeId(null);
+      return;
+    }
+
+    setSelectedNoticeId(null);
+    setIsNoticeOpen(true);
+    noticesQuery.refetch();
   };
 
   const handleProfileToggle = async () => {
-    setIsNotificationOpen(false);
+    setIsNoticeOpen(false);
     if (isProfileOpen) {
       setIsProfileOpen(false);
       return;
@@ -166,8 +171,13 @@ export default function AppHeader({ isHidden = false }) {
     else await todayUsageQuery.refetch();
   };
 
-  const openNotification = notificationId => {
-    setSelectedNoticeId(notificationId);
+  const openNotice = noticeId => {
+    setSelectedNoticeId(noticeId);
+    queryClient.fetchQuery({
+      queryKey: ['publicNotice', noticeId],
+      queryFn: () => getPublicNotice(noticeId),
+      staleTime: 0,
+    });
   };
 
   return (
@@ -220,28 +230,28 @@ export default function AppHeader({ isHidden = false }) {
               <div className="relative">
                 <button
                   type="button"
-                  aria-label="알림"
-                  aria-expanded={isNotificationOpen}
-                  onClick={handleNotificationToggle}
+                  aria-label="공지사항"
+                  aria-expanded={isNoticeOpen}
+                  onClick={handleNoticeToggle}
                   className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#FF4854] text-white shadow-[0_3px_10px_rgba(255,72,84,0.18)] transition hover:-translate-y-0.5 hover:bg-[#FF4854]/90"
                 >
                   <Bell className="h-6 w-6" strokeWidth={2} />
                 </button>
 
-                {isNotificationOpen ? (
+                {isNoticeOpen ? (
                   <>
                     <button
                       type="button"
-                      aria-label="알림 창 닫기"
+                      aria-label="공지사항 창 닫기"
                       className="fixed inset-0 z-[75] cursor-default"
                       onClick={() => {
-                        setIsNotificationOpen(false);
+                        setIsNoticeOpen(false);
                         setSelectedNoticeId(null);
                       }}
                     />
                     <section
                       className="absolute right-0 top-[calc(100%+12px)] z-[90] w-[min(360px,calc(100vw-24px))] overflow-hidden rounded-[10px] border border-[#E3E6EB] bg-white shadow-[0_18px_44px_rgba(15,23,42,0.16)]"
-                      aria-label={selectedNoticeId ? '공지사항 상세' : '알림 목록'}
+                      aria-label={selectedNoticeId ? '공지사항 상세' : '공지사항 목록'}
                     >
                       <div className="flex items-center justify-between border-b border-[#ECEFF3] px-4 py-3.5">
                         <div className="flex items-center gap-2">
@@ -250,14 +260,12 @@ export default function AppHeader({ isHidden = false }) {
                               type="button"
                               onClick={() => setSelectedNoticeId(null)}
                               className="flex h-8 w-8 items-center justify-center rounded-full text-[#697586] transition hover:bg-[#F4F6F8] hover:text-[#202832]"
-                              aria-label="알림 목록으로 돌아가기"
+                              aria-label="공지사항 목록으로 돌아가기"
                             >
                               <ChevronLeft className="h-5 w-5" />
                             </button>
                           ) : null}
-                          <h2 className="text-card-title font-bold text-[#202832]">
-                            {selectedNoticeId ? '공지사항' : '알림'}
-                          </h2>
+                          <h2 className="text-card-title font-bold text-[#202832]">공지사항</h2>
                         </div>
                       </div>
 
@@ -282,7 +290,7 @@ export default function AppHeader({ isHidden = false }) {
                                 {noticeDetailQuery.data.title}
                               </h3>
                               <time className="mt-2 block text-caption font-strong text-[#9AA3AF]">
-                                {formatNotificationTime(noticeDetailQuery.data.published_at)}
+                                {formatNoticeTime(noticeDetailQuery.data.published_at)}
                               </time>
                               <div className="mt-5 border-t border-[#ECEFF3] pt-5">
                                 <p className="whitespace-pre-wrap break-words text-body font-strong leading-6 text-[#596575]">
@@ -294,29 +302,29 @@ export default function AppHeader({ isHidden = false }) {
                         </div>
                       ) : noticesQuery.isLoading ? (
                         <div className="flex min-h-[220px] items-center justify-center text-body font-strong text-[#9AA3AF]">
-                          알림을 불러오는 중...
+                          공지사항을 불러오는 중...
                         </div>
                       ) : noticesQuery.isError ? (
                         <div className="m-4 rounded-lg bg-[#FFF0F1] px-4 py-4 text-body font-strong text-[#D83A45]">
                           {noticesQuery.error.message}
                         </div>
-                      ) : notifications.length ? (
+                      ) : notices.length ? (
                         <div className="max-h-[420px] overflow-y-auto" role="list">
-                          {notifications.map(notification => (
+                          {notices.map(notice => (
                             <button
-                              key={notification.id}
+                              key={notice.id}
                               type="button"
                               role="listitem"
-                              onClick={() => openNotification(notification.id)}
+                              onClick={() => openNotice(notice.id)}
                               className="flex w-full cursor-pointer gap-3 border-b border-[#F0F2F5] bg-white px-4 py-4 text-left transition last:border-b-0 hover:bg-[#F8F9FA]"
                             >
                               <span className="min-w-0 flex-1">
                                 <strong className="block truncate text-body font-bold text-[#303740]">
-                                  {notification.is_pinned ? '[중요] ' : ''}
-                                  {notification.title}
+                                  {notice.is_pinned ? '[중요] ' : ''}
+                                  {notice.title}
                                 </strong>
                                 <span className="mt-2 block text-caption font-strong text-[#9AA3AF]">
-                                  {formatNotificationTime(notification.published_at)}
+                                  {formatNoticeTime(notice.published_at)}
                                 </span>
                               </span>
                             </button>
@@ -328,10 +336,10 @@ export default function AppHeader({ isHidden = false }) {
                             <Bell className="h-6 w-6" />
                           </span>
                           <p className="mt-4 text-body font-bold text-[#596575]">
-                            새로운 알림이 없습니다.
+                            등록된 공지사항이 없습니다.
                           </p>
                           <p className="mt-1.5 text-label font-strong text-[#9AA3AF]">
-                            새로운 소식이 도착하면 여기에 표시됩니다.
+                            새로운 공지가 등록되면 여기에 표시됩니다.
                           </p>
                         </div>
                       )}

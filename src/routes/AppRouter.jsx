@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminGuard from './AdminGuard';
 import LoginRedirect from './LoginRedirect';
 import ProtectedRoute from './ProtectedRoute';
+import RootRedirect from './RootRedirect';
 
 // Layouts
 import DefaultLayout from '../ui/DefaultLayout';
@@ -46,7 +47,14 @@ export default function AppRouter() {
     <Routes>
       {/* 공개 페이지 */}
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/"
+          element={
+            <RootRedirect>
+              <LandingPage />
+            </RootRedirect>
+          }
+        />
         <Route
           path="/login"
           element={
