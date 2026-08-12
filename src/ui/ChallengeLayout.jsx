@@ -12,6 +12,7 @@ export default function ChallengeLayout() {
     <div className="flex min-h-screen w-full flex-col bg-white pt-16">
       <AppHeader />
       <main
+        data-route-scroll-container
         className={
           isPlayView
             ? 'no-scrollbar h-[calc(100vh-64px)] overflow-auto p-0'
