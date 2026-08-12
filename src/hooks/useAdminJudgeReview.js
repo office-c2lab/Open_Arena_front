@@ -18,7 +18,7 @@ export const useJudgeTeams = () =>
     queryFn: fetchJudgeTeams,
   });
 
-// 문제 목록
+// 챌린지 목록
 export const useJudgeProblems = () =>
   useQuery({
     queryKey: ['judgeProblems'],

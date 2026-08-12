@@ -63,7 +63,7 @@ export default function ProblemStatusMatrix() {
               gridTemplateColumns: `200px repeat(${PROBLEM_COUNT}, minmax(28px, 1fr))`,
             }}
           >
-            {/* 문제번호 */}
+            {/* 챌린지 번호 */}
             <div
               className="
                 text-[#C56CFF] font-bold text-section-title
@@ -73,7 +73,7 @@ export default function ProblemStatusMatrix() {
                 shadow-[0_0_14px_rgba(197,108,255,0.5)]
               "
             >
-              문제번호
+              챌린지 번호
             </div>
 
             {problems.map((p, idx) => (
@@ -99,7 +99,7 @@ export default function ProblemStatusMatrix() {
                 shadow-[0_0_14px_rgba(255,72,84,0.5)]
               "
             >
-              문제 이름
+              챌린지 이름
             </div>
 
             {problems.map(p => (
@@ -118,7 +118,7 @@ export default function ProblemStatusMatrix() {
               </div>
             ))}
 
-            {/* 팀 / 문제 dot */}
+            {/* 팀 / 챌린지 dot */}
             {teamNames.map((team, tIdx) => {
               // 🔥 solved_count 백엔드 값 사용
               const solvedCount = teams[tIdx]?.solved_count ?? 0;

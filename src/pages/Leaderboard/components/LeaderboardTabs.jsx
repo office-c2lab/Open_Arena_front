@@ -1,6 +1,6 @@
 import React from 'react';
 
-const tabs = ['팀별 점수 차트', '통합 랭크보드'];
+const tabs = ['팀별 포인트 차트', '통합 랭크보드'];
 
 export default function LeaderboardTabs({ activeTab, onChange }) {
   return (

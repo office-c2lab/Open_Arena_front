@@ -201,7 +201,7 @@ export default function AdminUserManagementPage() {
     let submission;
     let token;
     try {
-      unlock = parseQuota(quotaInputs.unlock, '문제 열람 추가량');
+      unlock = parseQuota(quotaInputs.unlock, '챌린지 열람 추가량');
       submission = parseQuota(quotaInputs.submission, '제출 추가량');
       token = parseQuota(quotaInputs.token, '토큰 추가량');
     } catch (caughtError) {
@@ -237,7 +237,7 @@ export default function AdminUserManagementPage() {
     let limits;
     try {
       limits = {
-        problem_unlocks: parseLimit(dailyLimitInputs.problem_unlocks, '문제 열람 한도', 100_000),
+        problem_unlocks: parseLimit(dailyLimitInputs.problem_unlocks, '챌린지 열람 한도', 100_000),
         submissions: parseLimit(dailyLimitInputs.submissions, '제출 한도', 100_000),
         tokens: parseLimit(dailyLimitInputs.tokens, '토큰 한도', 10_000_000_000),
       };
@@ -358,8 +358,8 @@ export default function AdminUserManagementPage() {
                     <tr>
                       <Th>닉네임</Th>
                       <Th>이메일</Th>
-                      <Th>점수</Th>
-                      <Th>해결 문제</Th>
+                      <Th>포인트</Th>
+                      <Th>해결 챌린지</Th>
                       <Th>가입일</Th>
                       <Th>회원 등급</Th>
                       <Th>계정 상태</Th>
@@ -500,11 +500,15 @@ function UserDetailModal({
   };
   const summaryStats = [
     { label: '현재 순위', value: user.rank ? `${user.rank}위` : '-', subText: '전체 참가자 기준' },
-    { label: '해결한 문제', value: `${user.solved_count ?? 0}문제`, subText: '누적 해결 기준' },
     {
-      label: '총 점수',
-      value: `${Number(user.total_score ?? 0).toLocaleString()}점`,
-      subText: '누적 획득 점수',
+      label: '해결한 챌린지',
+      value: `${user.solved_count ?? 0}개`,
+      subText: '누적 해결 기준',
+    },
+    {
+      label: '총 포인트',
+      value: `${Number(user.total_score ?? 0).toLocaleString()}포인트`,
+      subText: '누적 획득 포인트',
     },
     {
       label: '계정 상태',
@@ -559,7 +563,7 @@ function UserDetailModal({
           {usage && (
             <>
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <UsageCard label="문제 열람" metric={usage.problem_unlocks} suffix="회" />
+                <UsageCard label="챌린지 열람" metric={usage.problem_unlocks} suffix="회" />
                 <UsageCard label="제출" metric={usage.submissions} suffix="회" />
                 <UsageCard label="토큰" metric={usage.tokens} suffix="토큰" />
               </div>
@@ -577,7 +581,7 @@ function UserDetailModal({
                   </div>
                   <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <LimitInput
-                      label="문제 열람 추가"
+                      label="챌린지 열람 추가"
                       suffix="회"
                       value={quotaInputs.unlock}
                       onChange={value => onQuotaChange('unlock', value)}
@@ -663,7 +667,7 @@ function FreeDailyLimitModal({ values, onChange, onClose, onSave, isLoading, err
         {!isLoading && !error && (
           <>
             <LimitInput
-              label="일일 문제 열람 한도"
+              label="일일 챌린지 열람 한도"
               suffix="회"
               value={values.problem_unlocks}
               onChange={value => onChange('problem_unlocks', value)}

@@ -17,7 +17,7 @@ export default function AdminProblemCreatePage() {
 
     try {
       await createMutation.mutateAsync(payload);
-      appToast.success('문제를 생성했습니다.');
+      appToast.success('챌린지를 생성했습니다.');
       setForm(emptyProblemForm);
     } catch (error) {
       appToast.error(error.message);
@@ -29,14 +29,14 @@ export default function AdminProblemCreatePage() {
       onSubmit={submit}
       className="w-full rounded-2xl border border-white/10 bg-[#0B021C]/70 p-8 text-white shadow-xl"
     >
-      <h1 className="mb-8 text-section-title font-bold text-[#FF4854]">문제 생성</h1>
+      <h1 className="mb-8 text-section-title font-bold text-[#FF4854]">챌린지 생성</h1>
       <AdminProblemForm form={form} setForm={setForm} />
       <button
         type="submit"
         disabled={createMutation.isPending}
         className="mt-8 h-12 w-full rounded-xl bg-[#FF4854] font-bold text-white transition hover:bg-[#ff3242] disabled:opacity-50"
       >
-        {createMutation.isPending ? '생성 중...' : '문제 생성'}
+        {createMutation.isPending ? '생성 중...' : '챌린지 생성'}
       </button>
     </form>
   );

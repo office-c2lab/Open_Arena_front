@@ -104,17 +104,17 @@ export default function ChallengePlay() {
   const problem = problemBundleData?.problem;
   const apiInfo = problemBundleData?.problem_api || problemBundleData?.api_info || {};
   const chatDisabledPlaceholder = isProblemBundleLoading
-    ? '문제 정보를 불러오는 중입니다...'
+    ? '챌린지 정보를 불러오는 중입니다...'
     : undefined;
 
   const { CHALLENGE_HEADER_INFO, overviewSections, SESSIONS_LIST } = (() => {
     if (!problemBundleData?.problem) {
       return {
         CHALLENGE_HEADER_INFO: {
-          title: isProblemBundleLoading ? '문제 로딩 중' : '문제 정보 없음',
+          title: isProblemBundleLoading ? '챌린지 로딩 중' : '챌린지 정보 없음',
           subtitle: isProblemBundleLoading
             ? '정보를 불러오는 중입니다.'
-            : '문제 데이터를 찾을 수 없습니다.',
+            : '챌린지 데이터를 찾을 수 없습니다.',
           category: '일반',
           score: 0,
         },

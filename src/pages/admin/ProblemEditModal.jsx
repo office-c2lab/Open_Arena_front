@@ -32,7 +32,7 @@ export default function ProblemEditModal({ problemId, onClose }) {
     }
     try {
       await problemActions.updateProblem({ id: problemId, payload: formToProblemPayload(form) });
-      appToast.success('문제를 수정했습니다.');
+      appToast.success('챌린지를 수정했습니다.');
       onClose();
     } catch (error) {
       appToast.error(error.message);
@@ -44,13 +44,13 @@ export default function ProblemEditModal({ problemId, onClose }) {
       appToast.error('삭제 확인 문구를 입력해 주세요.');
       return;
     }
-    if (!window.confirm('문제와 관련 통계가 함께 제외됩니다. 완전히 삭제할까요?')) return;
+    if (!window.confirm('챌린지와 관련 통계가 함께 제외됩니다. 완전히 삭제할까요?')) return;
     try {
       await problemActions.deleteProblem({
         id: problemId,
         confirmation: deleteConfirmation.trim(),
       });
-      appToast.success('문제를 삭제했습니다.');
+      appToast.success('챌린지를 삭제했습니다.');
       onClose();
     } catch (error) {
       appToast.error(error.message);
@@ -59,11 +59,11 @@ export default function ProblemEditModal({ problemId, onClose }) {
 
   const changeState = async () => {
     const isActive = !problemQuery.data.is_active;
-    if (!window.confirm(`문제를 ${isActive ? '공개' : '비공개'} 상태로 변경할까요?`)) return;
+    if (!window.confirm(`챌린지를 ${isActive ? '공개' : '비공개'} 상태로 변경할까요?`)) return;
     try {
       await stateMutation.mutateAsync({ problemId, isActive });
       await problemQuery.refetch();
-      appToast.success(`문제를 ${isActive ? '공개' : '비공개'} 상태로 변경했습니다.`);
+      appToast.success(`챌린지를 ${isActive ? '공개' : '비공개'} 상태로 변경했습니다.`);
     } catch (error) {
       appToast.error(error.message);
     }
@@ -103,12 +103,12 @@ export default function ProblemEditModal({ problemId, onClose }) {
       <section
         role="dialog"
         aria-modal="true"
-        aria-label="문제 상세 수정"
+        aria-label="챌린지 상세 수정"
         className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-2xl border border-white/10 bg-[#10050F] text-white shadow-2xl"
       >
         <header className="sticky top-0 z-50 flex items-center justify-between border-b border-white/10 bg-[#10050F] px-6 py-5">
           <div>
-            <p className="text-label text-gray-400">문제 상세</p>
+            <p className="text-label text-gray-400">챌린지 상세</p>
             <h2 className="mt-1 text-section-title font-bold text-[#FF4854]">
               {problemQuery.data?.title ?? '불러오는 중...'}
             </h2>
@@ -123,12 +123,12 @@ export default function ProblemEditModal({ problemId, onClose }) {
           </button>
         </header>
 
-        {problemQuery.isLoading && <State>문제 상세를 불러오는 중...</State>}
+        {problemQuery.isLoading && <State>챌린지 상세를 불러오는 중...</State>}
         {problemQuery.error && <State error>{problemQuery.error.message}</State>}
         {problemQuery.data && (
           <section className="mx-6 mt-6 flex flex-col gap-4 rounded-xl border border-white/10 bg-[#0B021C]/70 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="font-bold text-white">문제 공개 상태</h3>
+              <h3 className="font-bold text-white">챌린지 공개 상태</h3>
               <p className="mt-1 text-label text-gray-400">
                 현재 회원 화면에서 {problemQuery.data.is_active ? '공개 중' : '숨김'} 상태입니다.
               </p>
@@ -151,7 +151,7 @@ export default function ProblemEditModal({ problemId, onClose }) {
               disabled={problemActions.isUpdating}
               className="mt-8 h-12 w-full rounded-xl bg-[#FF4854] font-bold hover:bg-[#ff3242] disabled:opacity-50"
             >
-              {problemActions.isUpdating ? '저장 중...' : '문제 수정 저장'}
+              {problemActions.isUpdating ? '저장 중...' : '챌린지 수정 저장'}
             </button>
           </form>
         )}
@@ -217,7 +217,7 @@ export default function ProblemEditModal({ problemId, onClose }) {
         </section>
 
         <section className="mx-6 mb-8 rounded-xl border border-red-400/30 bg-red-950/20 p-5">
-          <h3 className="font-bold text-red-300">문제 완전 삭제</h3>
+          <h3 className="font-bold text-red-300">챌린지 완전 삭제</h3>
           <p className="mt-1 text-label text-gray-400">
             통계와 순위에서도 제외됩니다. 백엔드에서 요구하는 삭제 확인 문구를 입력해 주세요.
           </p>

@@ -195,8 +195,8 @@ export default function AdminConversationMockPage() {
           onChange={value => setFilterInputs(current => ({ ...current, nickname: value }))}
         />
         <FilterInput
-          label="문제 제목"
-          placeholder="문제 제목 일부 입력"
+          label="챌린지 제목"
+          placeholder="챌린지 제목 일부 입력"
           value={filterInputs.problemTitle}
           onChange={value => setFilterInputs(current => ({ ...current, problemTitle: value }))}
         />
@@ -254,10 +254,10 @@ export default function AdminConversationMockPage() {
           {!usersQuery.isLoading && users.length === 0 && <State>표시할 사용자가 없습니다.</State>}
         </ReviewColumn>
 
-        <ReviewColumn title={`문제 · ${problems.length.toLocaleString()}개`}>
+        <ReviewColumn title={`챌린지 · ${problems.length.toLocaleString()}개`}>
           {!selectedUserId && <State>사용자를 먼저 선택해 주세요.</State>}
           {selectedUserId && problemSessionsQuery.isLoading && (
-            <State>사용자의 문제를 불러오는 중...</State>
+            <State>사용자의 챌린지를 불러오는 중...</State>
           )}
           {problemSessionsQuery.error && <State error>{problemSessionsQuery.error.message}</State>}
           {problems.map(problem => (
@@ -275,7 +275,7 @@ export default function AdminConversationMockPage() {
             />
           ))}
           {selectedUserId && !problemSessionsQuery.isLoading && problems.length === 0 && (
-            <State>필터 조건에 맞는 문제가 없습니다.</State>
+            <State>필터 조건에 맞는 챌린지가 없습니다.</State>
           )}
         </ReviewColumn>
 
@@ -309,7 +309,7 @@ export default function AdminConversationMockPage() {
             ) : null
           }
         >
-          {!selectedProblemId && <State>문제를 먼저 선택해 주세요.</State>}
+          {!selectedProblemId && <State>챌린지를 먼저 선택해 주세요.</State>}
           {selectedProblemId && sessionsQuery.isLoading && <State>세션을 불러오는 중...</State>}
           {sessionsQuery.error && <State error>{sessionsQuery.error.message}</State>}
           {selectedProblemId &&
@@ -458,7 +458,7 @@ function SubmissionDetail({
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         <Info label="제출 ID" value={submission.id} />
         <Info label="상태" value={submission.status} />
-        <Info label="점수" value={submission.score ?? '-'} />
+        <Info label="포인트" value={submission.score ?? '-'} />
       </div>
       {submission.manual_reason && (
         <div className="mt-4 rounded-lg border border-amber-400/20 bg-amber-950/20 p-4">

@@ -4,8 +4,8 @@ import AdminProblemManagementPage from './AdminProblemManagementPage';
 import { CategoryManagement, EndpointManagement } from './AdminChallengeResourceManagement';
 
 const TABS = [
-  ['problems', '문제 관리'],
-  ['create', '문제 생성'],
+  ['problems', '챌린지 관리'],
+  ['create', '챌린지 생성'],
   ['categories', '카테고리'],
   ['chat-endpoints', 'Chat 엔드포인트'],
   ['judge-endpoints', 'Judge 엔드포인트'],

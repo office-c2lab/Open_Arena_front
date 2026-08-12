@@ -15,7 +15,7 @@ export default function FloatingMenu() {
   // 버튼 목록 (🔥 빨간 테마)
   const buttons = [
     { label: '사용자', path: '/admin/user-management', fontSize: '12px' },
-    { label: '문제관리', path: '/admin/problems', fontSize: '12px' },
+    { label: '챌린지 관리', path: '/admin/problems', fontSize: '12px' },
     { label: '채팅관리', path: '/admin/users', fontSize: '12px' },
     { label: '저지관리', path: '/admin/judge', fontSize: '12px' },
     { label: '운영관리', path: '/admin/operations', fontSize: '11px' },

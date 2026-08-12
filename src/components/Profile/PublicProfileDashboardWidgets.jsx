@@ -368,7 +368,10 @@ export function PublicRecentSolvedChallengeCard({ challenge, problem, onSelect }
 export function PublicTopSolvedChallenges({ challenges, problemById, onSelect }) {
   return (
     <section className="surface px-5 py-6 sm:px-6">
-      <SectionHeader title="주요 해결 챌린지" description="가장 높은 점수를 기록한 챌린지입니다." />
+      <SectionHeader
+        title="주요 해결 챌린지"
+        description="가장 높은 포인트를 기록한 챌린지입니다."
+      />
       {challenges.length ? (
         <div className="mt-6 grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
           {challenges.map(challenge => {

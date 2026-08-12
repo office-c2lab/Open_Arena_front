@@ -797,7 +797,7 @@ const presentHomeChallenge = (summary, problem) => {
 };
 
 const recommendationReasonLabels = {
-  unsolved_high_score: '고득점 미해결 문제',
+  unsolved_high_score: '높은 포인트 미해결 챌린지',
   high_token_usage: '토큰 최적화 추천',
 };
 
@@ -816,18 +816,18 @@ function ChallengeActivityHeatmap({ dashboard, challengeProblems, areChallengePr
   const summaryStats = [
     { label: '현재 순위', value: displayedRank, subText: '전체 참가자 기준' },
     {
-      label: '해결한 문제',
-      value: `${challenge.solved_count.toLocaleString()}문제`,
-      subText: `전체 ${challenge.total_problem_count.toLocaleString()}문제 중`,
+      label: '해결한 챌린지',
+      value: `${challenge.solved_count.toLocaleString()}개`,
+      subText: `전체 ${challenge.total_problem_count.toLocaleString()}개 중`,
     },
     {
-      label: '총 점수',
-      value: `${challenge.total_score.toLocaleString()}점`,
+      label: '총 포인트',
+      value: `${challenge.total_score.toLocaleString()}포인트`,
       subText: `총 성공 ${challenge.total_successes.toLocaleString()}회`,
     },
     {
       label: '다음 순위까지',
-      value: scoreToNextRank == null ? '-' : `${scoreToNextRank.toLocaleString()}점`,
+      value: scoreToNextRank == null ? '-' : `${scoreToNextRank.toLocaleString()}포인트`,
       subText: scoreToNextRank == null ? '현재 집계 기준' : '한 단계 상승까지',
     },
   ];
@@ -919,7 +919,7 @@ function RecentAttemptProblemsCard({ challenge, problem, isProblemLoading }) {
       <section className="surface flex min-h-[286px] flex-col items-center justify-center px-6 py-8 text-center">
         <p className="text-body-lg font-bold text-[#202832]">진행 중인 챌린지가 없습니다.</p>
         <p className="mt-2 text-body font-strong text-[#8A93A5]">
-          새로운 문제에 도전해 기록을 만들어 보세요.
+          새로운 챌린지에 도전해 기록을 만들어 보세요.
         </p>
         <button
           type="button"
@@ -1122,7 +1122,7 @@ function RecommendedChallengeSection({
                     <PathCard
                       path={challenge}
                       status={challenge.status}
-                      badgeLabel={recommendationReasonLabels[challenge.reason] || '추천 문제'}
+                      badgeLabel={recommendationReasonLabels[challenge.reason] || '추천 챌린지'}
                       onClick={() => navigate(`/challenge/${challenge.id}`)}
                     />
                   </div>
@@ -1218,14 +1218,14 @@ function TokenEfficiencyCard() {
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(420px,0.9fr)] xl:items-stretch">
         <div className="flex min-w-0 flex-col justify-between">
           <div>
-            <DashboardSectionHeader title="토큰 효율" description="적게 쓸수록 높은 점수" />
+            <DashboardSectionHeader title="토큰 효율" description="적게 쓸수록 높은 포인트" />
 
             <div className="mt-8 flex flex-wrap items-end gap-x-6 gap-y-4">
               <strong className="text-metric-lg font-bold text-[#FF4854]">
                 {efficiency.toFixed(2)}
               </strong>
               <div className="pb-3">
-                <p className="text-card-title font-bold text-[#202832]">효율 점수</p>
+                <p className="text-card-title font-bold text-[#202832]">효율 포인트</p>
                 <p className="mt-2 text-body font-strong text-[#7B8491]">
                   토큰을 적게 사용할수록 더 높은 효율을 얻어요.
                 </p>

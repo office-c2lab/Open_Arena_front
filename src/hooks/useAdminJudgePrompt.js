@@ -10,7 +10,7 @@ export const useJudgePromptQuery = problemId => {
   return useQuery({
     queryKey: ['judgePrompt', problemId],
     queryFn: () => fetchJudgePrompt(problemId),
-    enabled: !!problemId, // 문제 ID 있어야만 실행
+    enabled: !!problemId, // 챌린지 ID가 있어야만 실행
   });
 };
 

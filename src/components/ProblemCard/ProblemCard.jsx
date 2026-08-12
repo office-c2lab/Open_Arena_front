@@ -89,7 +89,7 @@ const ProblemCard = ({ challenge, onSolveClick, isLoading = false }) => {
       <div className={imageContainerClasses.trim()}>
         <img
           src={currentImage}
-          alt={`문제 ${title}의 ${normalizedCategory} 이미지`}
+          alt={`챌린지 ${title}의 ${normalizedCategory} 이미지`}
           className={imageClasses.trim()}
         />
 

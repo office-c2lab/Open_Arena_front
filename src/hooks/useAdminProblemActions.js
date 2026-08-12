@@ -4,7 +4,7 @@ import { updateProblem, deleteProblem } from '@/api/adminProblemsApi';
 export const useAdminProblemActions = () => {
   const queryClient = useQueryClient();
 
-  // 문제 수정(PATCH)
+  // 챌린지 수정(PATCH)
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }) => updateProblem(id, payload),
     onSuccess: () => {
@@ -12,7 +12,7 @@ export const useAdminProblemActions = () => {
     },
   });
 
-  // 문제 삭제(DELETE)
+  // 챌린지 삭제(DELETE)
   const deleteMutation = useMutation({
     mutationFn: ({ id, confirmation }) => deleteProblem(id, confirmation),
     onSuccess: () => {

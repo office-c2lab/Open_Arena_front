@@ -151,7 +151,7 @@ export default function ShowcaseSection() {
             className="max-w-3xl text-body-lg font-medium text-[#4D5968]"
             {...SECTION_COPY_REVEAL}
           >
-            시즌은 일정 주기로 새롭게 운영되며 새로운 문제가 출제되고, <br />
+            시즌은 일정 주기로 새롭게 운영되며 새로운 챌린지가 공개되고, <br />
             대회는 참가자들이 LLM Safety 공격 성과를 겨루는 방식으로 진행됩니다. <br />
             아래 타임라인에서 전체 운영 흐름을 한눈에 볼 수 있습니다.
           </motion.div>

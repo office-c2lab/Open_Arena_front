@@ -114,7 +114,7 @@ export default function ChallengeInfoPanel({
     <div ref={panelRef} className="relative flex h-full min-h-0 w-[340px] flex-col flex-shrink-0">
       <div className="glass-panel relative flex h-full min-h-0 flex-col overflow-hidden rounded-[30px]">
         <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
-        {/* 문제 헤더 */}
+        {/* 챌린지 헤더 */}
         <div className="relative flex flex-col justify-center overflow-hidden flex-shrink-0 px-4 pt-4 pb-3">
           <div className="glass-subtle relative flex w-full items-center gap-3 rounded-[18px] px-3 py-2.5">
             <button

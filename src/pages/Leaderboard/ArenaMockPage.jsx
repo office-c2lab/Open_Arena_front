@@ -111,7 +111,9 @@ function TopRankCard({ row, isCurrentUser, onOpenProfile }) {
           </span>
         ) : null}
       </div>
-      <p className="mt-1 text-page-title font-bold text-[#F52F45]">{formatNumber(row.score)}점</p>
+      <p className="mt-1 text-page-title font-bold text-[#F52F45]">
+        {formatNumber(row.score)}포인트
+      </p>
       <div className="mt-5 h-px w-full bg-white/70" />
       <div className="mt-4 grid w-full grid-cols-2 divide-x divide-[#D7DDE6]">
         <StatPair value={`${formatNumber(row.challenges)}개`} label="성공 챌린지" />
@@ -342,7 +344,7 @@ export default function Leaderboard() {
                       <span className="flex w-[40px] justify-center">순위</span>
                     </th>
                     <th>유저 정보</th>
-                    <th className="w-[160px]">점수</th>
+                    <th className="w-[160px]">포인트</th>
                     <th className="w-[150px] text-center">성공 챌린지</th>
                     <th className="w-[170px] text-center">최소 성공 토큰</th>
                     <th className="w-[180px] text-center">최근 성공</th>

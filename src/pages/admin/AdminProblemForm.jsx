@@ -101,7 +101,7 @@ export default function AdminProblemForm({ form, setForm }) {
     <div className="space-y-8">
       <Section title="기본 정보">
         <Input
-          label="문제 제목"
+          label="챌린지 제목"
           value={form.title}
           onChange={value => change('title', value)}
           required
@@ -155,7 +155,7 @@ export default function AdminProblemForm({ form, setForm }) {
           <option value="hard">어려움</option>
         </Select>
         <Input
-          label="최대 점수"
+          label="최대 포인트"
           type="number"
           min="1"
           max="1000000"
@@ -174,15 +174,15 @@ export default function AdminProblemForm({ form, setForm }) {
           required
         />
         <Checkbox
-          label="튜토리얼 문제"
+          label="튜토리얼 챌린지"
           checked={form.is_tutorial}
           onChange={value => change('is_tutorial', value)}
         />
       </Section>
 
-      <Section title="문제 콘텐츠">
+      <Section title="챌린지 콘텐츠">
         <TextArea
-          label="문제 설명"
+          label="챌린지 설명"
           value={form.description}
           onChange={value => change('description', value)}
           required

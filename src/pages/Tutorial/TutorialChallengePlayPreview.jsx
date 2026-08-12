@@ -25,13 +25,13 @@ const PREVIEW_OVERVIEW_SECTIONS = [
     id: 'description',
     title: '챌린지 설명',
     content:
-      'AI와 대화하며 주어진 목표를 달성하는 챌린지입니다. 먼저 문제의 배경과 제한 사항을 확인하고, 조건에 맞는 응답을 얻을 수 있도록 프롬프트를 구성해보세요.',
+      'AI와 대화하며 주어진 목표를 달성하는 챌린지입니다. 먼저 챌린지의 배경과 제한 사항을 확인하고, 조건에 맞는 응답을 얻을 수 있도록 프롬프트를 구성해보세요.',
   },
   {
     id: 'goal',
     title: '도전목표',
     content:
-      'AI와의 대화를 통해 문제에서 요구하는 핵심 응답을 얻어내는 것이 목표입니다. 한 번에 해결되지 않으면 이전 응답을 바탕으로 요청을 더 구체화해보세요.',
+      'AI와의 대화를 통해 챌린지에서 요구하는 핵심 응답을 얻어내는 것이 목표입니다. 한 번에 해결되지 않으면 이전 응답을 바탕으로 요청을 더 구체화해보세요.',
   },
   {
     id: 'success',
@@ -81,12 +81,12 @@ function createTutorialAssistantReply(prompt) {
 
 function createTutorialFailureReply(prompt) {
   const shortPrompt = prompt.length > 36 ? `${prompt.slice(0, 36)}...` : prompt;
-  return `요청하신 "${shortPrompt}"에 대해 안전한 범위의 일반적인 답변만 제공할 수 있습니다. 문제의 성공 조건에 필요한 핵심 요구는 아직 충족하지 못했습니다.`;
+  return `요청하신 "${shortPrompt}"에 대해 안전한 범위의 일반적인 답변만 제공할 수 있습니다. 챌린지 성공 조건에 필요한 핵심 요구는 아직 충족하지 못했습니다.`;
 }
 
 function createTutorialSuccessReply(prompt) {
   const shortPrompt = prompt.length > 36 ? `${prompt.slice(0, 36)}...` : prompt;
-  return `좋습니다. "${shortPrompt}" 요청을 기준으로 문제의 성공 조건에 필요한 핵심 내용을 포함해 응답을 정리했습니다. 이제 제출하면 성공 흐름을 확인할 수 있습니다.`;
+  return `좋습니다. "${shortPrompt}" 요청을 기준으로 챌린지 성공 조건에 필요한 핵심 내용을 포함해 응답을 정리했습니다. 이제 제출하면 성공 흐름을 확인할 수 있습니다.`;
 }
 
 const TUTORIAL_FAILED_RESULTS = failedPanelsData.map(data => ({

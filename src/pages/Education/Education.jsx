@@ -110,8 +110,8 @@ export const articles = [
     relatedTutorial: {
       title: '구성요소 튜토리얼',
       description:
-        'AI Red Teaming의 기본 흐름을 이해했다면, 구성요소 튜토리얼에서 문제, 모델, 채팅, 제출, Judge 등 학습 환경을 이루는 요소를 직접 살펴봅니다.',
-      buttonLabel: '튜토리얼 풀기',
+        'AI Red Teaming의 기본 흐름을 이해했다면, 구성요소 튜토리얼에서 챌린지, 모델, 채팅, 제출, Judge 등 학습 환경을 이루는 요소를 직접 살펴봅니다.',
+      buttonLabel: '튜토리얼 보기',
       to: '/tutorial/7',
     },
     quiz: {
@@ -277,7 +277,7 @@ export const articles = [
       title: '채팅과 토큰 튜토리얼',
       description:
         '채팅과 토큰 튜토리얼에서 메시지를 주고받을 때 입력과 출력 토큰이 어떻게 표시되고, 대화가 이어질수록 사용량이 어떻게 변하는지 확인합니다.',
-      buttonLabel: '튜토리얼 풀기',
+      buttonLabel: '튜토리얼 보기',
       to: '/tutorial/8',
     },
     quiz: {
@@ -356,7 +356,7 @@ export const articles = [
           '좋은 평가 기준은 “모델이 이상하게 답했다”처럼 모호하지 않습니다. 무엇이 출력되거나 어떤 행동이 발생하면 챌린지 성공인지, 어떤 경우에는 챌린지 실패인지 미리 정의해야 합니다. 이 결과는 모델 관점의 방어 성공·실패와 반대일 수 있습니다.',
         ],
         steps: [
-          '문제 또는 테스트의 목표를 확인합니다.',
+          '챌린지 또는 테스트의 목표를 확인합니다.',
           '모델의 최종 응답에서 핵심 결과가 포함되었는지 확인합니다.',
           '경고나 거절 문구가 아니라 실제 제공된 내용을 평가합니다.',
           '애매한 경우에는 자동으로 통과나 실패를 확정하지 않고 검토 필요 사례로 분리합니다.',
@@ -382,7 +382,7 @@ export const articles = [
       title: '저지 실패 튜토리얼',
       description:
         '제품 내부의 저지 실패 튜토리얼에서 챌린지 목표를 충족하지 못한 응답을 제출하고, 자동 평가 모델의 판정 실패가 어떤 의미인지 확인합니다.',
-      buttonLabel: '튜토리얼 풀기',
+      buttonLabel: '튜토리얼 보기',
       to: '/tutorial/9',
     },
     quiz: {
@@ -645,7 +645,7 @@ export const articles = [
       {
         title: 'LLM-as-a-Judge',
         paragraphs: [
-          '별도의 LLM에게 문제의 목표, 판정 기준, 제출된 응답을 제공하고 판정 통과 여부를 판단하게 하는 방식입니다. 이러한 모델을 LLM Judge 또는 자동 평가 모델이라고 하며, 대량의 결과를 자연어 기준으로 평가할 수 있어 AI 벤치마크와 보안 테스트에서 활용됩니다.',
+          '별도의 LLM에게 챌린지의 목표, 판정 기준, 제출된 응답을 제공하고 판정 통과 여부를 판단하게 하는 방식입니다. 이러한 모델을 LLM Judge 또는 자동 평가 모델이라고 하며, 대량의 결과를 자연어 기준으로 평가할 수 있어 AI 벤치마크와 보안 테스트에서 활용됩니다.',
         ],
         bullets: [
           '장점: 자연어 의미를 고려하면서 많은 결과를 빠르게 처리',
@@ -696,7 +696,7 @@ export const articles = [
       title: '저지 성공 튜토리얼',
       description:
         '제품 내부의 저지 성공 튜토리얼에서 챌린지 성공 조건을 충족한 응답을 제출하고, LLM Judge가 어떤 근거로 판정 통과를 결정하는지 확인합니다.',
-      buttonLabel: '튜토리얼 풀기',
+      buttonLabel: '튜토리얼 보기',
       to: '/tutorial/10',
     },
     quiz: {
@@ -855,7 +855,7 @@ function EducationQuiz({ quiz }) {
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
           <p className="text-page-title font-bold uppercase tracking-[0.18em] ">Quiz</p>
           <p className="text-body font-strong text-[#7B8491]">
-            문제 풀이를 통해 제대로 학습했는지 확인해보세요.
+            챌린지 풀이를 통해 제대로 학습했는지 확인해보세요.
           </p>
         </div>
       </div>

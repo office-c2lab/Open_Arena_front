@@ -28,7 +28,7 @@ export default function FailedModal({
     queryClient.invalidateQueries({ queryKey: ['problemBundle'] });
   }, [closeFailedModal, resetChatAction, queryClient]);
 
-  // 💡 다른 문제 풀기
+  // 💡 다른 챌린지 도전하기
   const handleContinue = useCallback(() => {
     closeFailedModal();
     clearSession();
@@ -102,7 +102,7 @@ export default function FailedModal({
             onClick={continueHandler}
             className="flex h-[56px] w-full cursor-pointer items-center justify-center rounded-[18px] bg-[#FF4854] shadow-[0_3px_8px_rgba(255,72,84,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:bg-[#FF4854]/90 hover:shadow-[0_5px_12px_rgba(255,72,84,0.18)] sm:h-[61px] sm:w-[400px]"
           >
-            <span className="text-section-title font-strong text-white">다른 문제 풀기</span>
+            <span className="text-section-title font-strong text-white">다른 챌린지 도전하기</span>
           </button>
         </div>
       </div>

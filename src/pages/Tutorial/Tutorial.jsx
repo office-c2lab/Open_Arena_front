@@ -34,8 +34,8 @@ const TUTORIAL_REWARD_CHALLENGES = [
     best_score: 100,
     status: 'success',
     image: getChallengeImage('tutorial-reward-easy'),
-    sub_title: 'Easy 난이도 획득 점수 예시',
-    sub_description: 'Easy 챌린지에서 성공하면 최대 100점을 획득할 수 있습니다.',
+    sub_title: 'Easy 난이도 획득 포인트 예시',
+    sub_description: 'Easy 챌린지에서 성공하면 최대 100포인트를 획득할 수 있습니다.',
   },
   {
     id: 'tutorial-reward-normal',
@@ -47,8 +47,8 @@ const TUTORIAL_REWARD_CHALLENGES = [
     best_score: 150,
     status: 'success',
     image: getChallengeImage('tutorial-reward-normal'),
-    sub_title: 'Normal 난이도 획득 점수 예시',
-    sub_description: 'Normal 챌린지에서 성공하면 최대 150점을 획득할 수 있습니다.',
+    sub_title: 'Normal 난이도 획득 포인트 예시',
+    sub_description: 'Normal 챌린지에서 성공하면 최대 150포인트를 획득할 수 있습니다.',
   },
   {
     id: 'tutorial-reward-hard',
@@ -60,8 +60,8 @@ const TUTORIAL_REWARD_CHALLENGES = [
     best_score: 200,
     status: 'success',
     image: getChallengeImage('tutorial-reward-hard'),
-    sub_title: 'Hard 난이도 획득 점수 예시',
-    sub_description: 'Hard 챌린지에서 성공하면 최대 200점을 획득할 수 있습니다.',
+    sub_title: 'Hard 난이도 획득 포인트 예시',
+    sub_description: 'Hard 챌린지에서 성공하면 최대 200포인트를 획득할 수 있습니다.',
   },
 ];
 
@@ -117,7 +117,7 @@ const tutorialTabs = {
     { key: 'chat', label: '채팅 영역' },
     { key: 'reset', label: '새 대화 시작' },
     { key: 'tokens', label: '토큰 확인' },
-    { key: 'score', label: '점수 계산' },
+    { key: 'score', label: '포인트 계산' },
     { key: 'practice', label: '직접 해보기' },
   ],
   9: [
@@ -128,7 +128,7 @@ const tutorialTabs = {
   ],
   10: [
     { key: 'goals', label: '학습 목표' },
-    { key: 'reward', label: '획득 점수' },
+    { key: 'reward', label: '획득 포인트' },
     { key: 'result', label: '성공 모달' },
     { key: 'practice', label: '직접 제출하기' },
   ],
@@ -145,7 +145,7 @@ const tutorialTabSummaries = {
     chat: 'AI와 대화를 시작하고 응답을 바탕으로 다음 프롬프트를 작성합니다.',
     reset: '진행 중인 대화를 초기화하고 새로운 시도를 시작하는 방법을 확인합니다.',
     tokens: '대화가 늘어날 때 사용 토큰이 어떻게 달라지는지 확인합니다.',
-    score: '사용 토큰이 최종 점수에 반영되는 방식을 예시로 알아봅니다.',
+    score: '사용 토큰이 최종 포인트에 반영되는 방식을 예시로 알아봅니다.',
     practice: '프롬프트를 직접 입력하며 채팅과 토큰 변화를 함께 연습합니다.',
   },
   9: {
@@ -154,7 +154,7 @@ const tutorialTabSummaries = {
     practice: '응답을 직접 제출하고 실패 결과가 표시되는 전체 흐름을 연습합니다.',
   },
   10: {
-    reward: '성공한 제출의 최종 획득 점수와 토큰 효율이 반영되는 흐름을 확인합니다.',
+    reward: '성공한 제출의 최종 획득 포인트와 토큰 효율이 반영되는 흐름을 확인합니다.',
     result: '성공 모달의 최종 판정과 획득 결과를 확인합니다.',
     practice: '응답을 직접 제출하고 성공 결과가 표시되는 전체 흐름을 연습합니다.',
   },
@@ -364,7 +364,7 @@ const CHAT_TOKEN_MESSAGES = [
   {
     id: 'chat-token-user-1',
     role: 'user',
-    content: '문제의 목표 조건을 만족하려면 어떤 정보를 먼저 확인해야 할까요?',
+    content: '챌린지의 목표 조건을 만족하려면 어떤 정보를 먼저 확인해야 할까요?',
   },
   {
     id: 'chat-token-assistant-1',
@@ -382,7 +382,7 @@ function ChallengePanelPreviews({ activeTab }) {
           title="챌린지 개요"
           intro={
             <>
-              챌린지 개요에는 문제를 시작하기 전에 알아야 할 정보가 정리되어 있습니다.
+              챌린지 개요에는 도전을 시작하기 전에 알아야 할 정보가 정리되어 있습니다.
               <br />
               챌린지 설명과 도전목표를 읽고, 성공조건과 실패조건을 비교하면 대화의 방향을 빠르게
               잡을 수 있습니다.
@@ -390,7 +390,8 @@ function ChallengePanelPreviews({ activeTab }) {
           }
           items={[
             <React.Fragment key="challenge-overview-copy">
-              위에서 아래로 문제의 배경과 목표를 먼저 읽고, 성공조건과 실패조건을 서로 비교해보세요.
+              위에서 아래로 챌린지의 배경과 목표를 먼저 읽고, 성공조건과 실패조건을 서로
+              비교해보세요.
               <br />
               확인한 조건은 대화의 방향을 정하고 제출 여부를 판단하는 체크리스트로 활용할 수
               있습니다.
@@ -398,16 +399,16 @@ function ChallengePanelPreviews({ activeTab }) {
             '챌린지 개요에는 챌린지 설명, 도전목표, 성공조건, 실패조건이 순서대로 표시됩니다.',
             '목표 항목은 AI에게서 어떤 결과를 받아내야 하는지 알려줍니다. 프롬프트를 작성할 때는 이 목표 문장을 계속 기준점으로 삼아야 합니다.',
             '성공조건과 실패조건은 제출 전 체크리스트 역할을 합니다. AI가 그럴듯하게 답해도 성공조건에 필요한 핵심 내용이 없으면 실패할 수 있습니다.',
-            'API형 문제에서는 설명 항목 하단에 API 정보가 함께 표시될 수 있습니다. URL, Method, Header, API Key 같은 값은 외부 요청을 구성할 때 필요한 재료입니다.',
+            'API형 챌린지에서는 설명 항목 하단에 API 정보가 함께 표시될 수 있습니다. URL, Method, Header, API Key 같은 값은 외부 요청을 구성할 때 필요한 재료입니다.',
           ]}
           steps={[
-            '챌린지 개요에서 문제의 배경과 목표를 읽어봅니다.',
+            '챌린지 개요에서 배경과 목표를 읽어봅니다.',
             '성공조건과 실패조건을 비교하며 제출 기준을 확인합니다.',
           ]}
           cautions={[
-            '문제 설명만 읽고 바로 대화를 시작하면 성공조건을 놓칠 수 있습니다.',
+            '챌린지 설명만 읽고 바로 대화를 시작하면 성공조건을 놓칠 수 있습니다.',
             'AI가 긴 답변을 했다고 해서 성공은 아닙니다. 성공조건에 필요한 핵심 문장이 있는지 확인해야 합니다.',
-            'API 정보는 모든 문제에 항상 필요한 것은 아닙니다. API형 문제일 때만 요청 구성에 사용합니다.',
+            'API 정보는 모든 챌린지에 항상 필요한 것은 아닙니다. API형 챌린지일 때만 요청 구성에 사용합니다.',
           ]}
           nextAction="챌린지 개요를 확인했다면, 도전기록에서 이전 시도의 판정 결과를 살펴봅니다."
           width="min-w-[340px]"
@@ -541,7 +542,7 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
             '제출하기는 현재 대화가 목표 조건을 만족한다고 판단될 때 누릅니다. 채팅 입력과 제출은 다른 행동이므로, 응답을 충분히 확인한 뒤 제출해야 합니다.',
           ]}
           steps={[
-            '입력창에 문제 목표를 기준으로 첫 프롬프트를 작성합니다.',
+            '입력창에 챌린지 목표를 기준으로 첫 프롬프트를 작성합니다.',
             '전송 버튼이 활성화되는지 확인한 뒤 메시지를 보냅니다.',
             'AI 응답에서 목표에 가까운 부분과 부족한 부분을 나눠 읽습니다.',
             '부족한 내용을 다음 프롬프트에 반영해 대화를 이어갑니다.',
@@ -604,7 +605,7 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
             '첫 대화를 시작한 뒤에는 채팅 응답을 읽고, 왼쪽 하단의 토큰 숫자가 갱신되는 위치를 함께 확인합니다.',
             '토큰 숫자는 효율을 보는 기준입니다. 같은 성공 결과라면 더 적은 토큰으로 목표를 달성한 시도가 더 좋은 풀이가 될 수 있습니다.',
             '제출 전에는 토큰 숫자만 보지 말고, 응답이 목표와 성공조건을 만족하는지도 함께 확인해야 합니다.',
-            '토큰을 줄이려면 문제 조건을 먼저 읽고, 질문을 명확하게 작성하고, 응답을 보고 필요한 부분만 이어서 요청하는 습관이 중요합니다.',
+            '토큰을 줄이려면 챌린지 조건을 먼저 읽고, 질문을 명확하게 작성하고, 응답을 보고 필요한 부분만 이어서 요청하는 습관이 중요합니다.',
           ]}
           steps={[
             '채팅 영역에서 메시지를 한 번 보낸 뒤 사용한 토큰 숫자를 확인합니다.',
@@ -617,7 +618,7 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
             '사용 토큰 숫자만 보고 판단하지 말고, 채팅 영역의 응답이 실제로 성공조건을 만족하는지도 함께 확인해야 합니다.',
             '전송은 대화를 이어가는 행동이고, 제출하기는 Judge 평가를 요청하는 행동입니다.',
           ]}
-          nextAction="사용 토큰 위치를 확인했다면, 이어서 토큰이 점수에 어떻게 반영되는지 계산 예시를 살펴봅니다."
+          nextAction="사용 토큰 위치를 확인했다면, 이어서 토큰이 포인트에 어떻게 반영되는지 계산 예시를 살펴봅니다."
           width="min-w-[420px]"
           height="h-[94px]"
         >
@@ -630,34 +631,34 @@ function ChatTokenGuide({ activeTab, onTabChange }) {
           <div className="max-w-xl">
             <SectionTitle
               eyebrow=""
-              title="점수 계산 예시"
+              title="포인트 계산 예시"
               desc={
                 <TutorialBodyText>
-                  아래 계산은 총 150점, 토큰 기준 3000인 챌린지를 가정한 예시입니다.
+                  아래 계산은 총 150포인트, 토큰 기준 3000인 챌린지를 가정한 예시입니다.
                   <br />
-                  먼저 성공조건을 만족한 뒤 토큰 사용량을 줄이면 더 높은 점수를 받을 수 있습니다.
+                  먼저 성공조건을 만족한 뒤 토큰 사용량을 줄이면 더 높은 포인트를 받을 수 있습니다.
                 </TutorialBodyText>
               }
             />
             <p className="mt-6 text-body-lg font-medium text-[#4D5968]">
-              성공한 시도는 기본 점수에 토큰 효율 점수가 더해집니다.
+              성공한 시도는 기본 포인트에 토큰 효율 포인트가 더해집니다.
               <br />
-              같은 결과를 얻었다면 사용 토큰이 적을수록 높은 점수를 받을 수 있으므로, 조건을
+              같은 결과를 얻었다면 사용 토큰이 적을수록 높은 포인트를 받을 수 있으므로, 조건을
               빠뜨리지 않는 범위에서 프롬프트를 간결하게 다듬어보세요.
             </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-[12px] bg-[#F7F9FC] p-5">
-              <p className="text-label font-bold text-[#66717E]">토큰 점수 공식</p>
+              <p className="text-label font-bold text-[#66717E]">토큰 포인트 공식</p>
               <p className="text-card-title font-bold text-[#202832]">
-                토큰 점수 = (3000 - 사용 토큰) / 3000 * 75
+                토큰 포인트 = (3000 - 사용 토큰) / 3000 * 75
               </p>
             </div>
             <div className="rounded-[12px] bg-[#202832] p-5 text-white">
               <p className="text-label font-bold text-white/60">1000 토큰 사용 시</p>
               <p className="mt-2 text-section-title font-bold">
-                75점 + 50점 = <span className="text-[#FF6973]">125점</span>
+                75포인트 + 50포인트 = <span className="text-[#FF6973]">125포인트</span>
               </p>
             </div>
           </div>
@@ -758,7 +759,7 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
                 title="실패 판정은 어떻게 보이나요?"
                 desc={
                   <TutorialBodyText>
-                    실패 모달은 제출한 대화가 문제의 목표와 <br />
+                    실패 모달은 제출한 대화가 챌린지의 목표와 <br />
                     성공조건을 충분히 만족하지 못했을 때 표시됩니다.
                     <br />
                     각 Judge Model의 판정과 설명을 함께 보여줘서 <br />
@@ -800,7 +801,7 @@ function JudgeFailureGuide({ activeTab, onTabChange }) {
           ]}
           cautions={[
             '이 실습은 실패 흐름을 익히기 위한 튜토리얼이므로 어떤 프롬프트를 입력해도 실패 모달이 뜹니다.',
-            '실제 챌린지에서는 실패 사유가 현재 대화 내용과 문제의 성공조건을 기준으로 달라집니다.',
+            '실제 챌린지에서는 실패 사유가 현재 대화 내용과 성공조건을 기준으로 달라집니다.',
             '실패 후 바로 다시 제출하기보다, 실패 사유를 읽고 프롬프트를 수정하는 습관을 들이는 것이 좋습니다.',
           ]}
           nextAction="실패 모달까지 확인했다면, 다음 튜토리얼에서 성공 조건을 만족했을 때 어떤 화면이 나오는지 살펴봅니다."
@@ -827,7 +828,7 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
               성공 모달에 표시되는 결과와 이후 선택할 수 있는 행동을 확인합니다.
             </p>
             <p>
-              성공 여부뿐 아니라 사용 토큰과 점수까지 함께 확인하고,
+              성공 여부뿐 아니라 사용 토큰과 포인트까지 함께 확인하고,
               <br />
               같은 성공 결과를 더 효율적으로 만드는 방법을 생각해봅니다.
             </p>
@@ -841,12 +842,12 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
           <div className="max-w-2xl">
             <SectionTitle
               eyebrow=""
-              title="성공하면 점수는 어떻게 반영되나요?"
+              title="성공하면 포인트는 어떻게 반영되나요?"
               desc={
                 <TutorialBodyText>
-                  문제 난이도에 따라 획득할 수 있는 최대 점수가 달라집니다.
+                  챌린지 난이도에 따라 획득할 수 있는 최대 포인트가 달라집니다.
                   <br />
-                  Judge 평가를 통과하면 사용한 토큰 효율을 반영한 최종 획득 점수가 표시됩니다.
+                  Judge 평가를 통과하면 사용한 토큰 효율을 반영한 최종 획득 포인트가 표시됩니다.
                 </TutorialBodyText>
               }
             />
@@ -874,14 +875,14 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
                 key={challenge.id}
                 path={challenge}
                 status={challenge.status}
-                badgeLabel="획득 점수 예시"
+                badgeLabel="획득 포인트 예시"
                 onClick={() => {}}
               />
             ))}
           </div>
 
           <p className="rounded-[12px] bg-[#FFF7F8] px-5 py-4 text-body font-strong text-[#596575]">
-            성공조건을 만족해야 점수를 획득할 수 있으며, 실제 획득 점수는 제출에 사용한 토큰을
+            성공조건을 만족해야 포인트를 획득할 수 있으며, 실제 획득 포인트는 제출에 사용한 토큰을
             반영해 서버에서 계산됩니다.
           </p>
         </section>
@@ -896,9 +897,9 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
                 title="성공 판정은 어떻게 보이나요?"
                 desc={
                   <TutorialBodyText>
-                    성공 모달은 제출한 대화가 문제의 목표와 성공조건을 충족했을 때 표시됩니다.
+                    성공 모달은 제출한 대화가 챌린지의 목표와 성공조건을 충족했을 때 표시됩니다.
                     <br />
-                    최종 판정과 획득 포인트를 확인한 뒤 다시 도전하거나 다른 문제로 이동할 수
+                    최종 판정과 획득 포인트를 확인한 뒤 다시 도전하거나 다른 챌린지로 이동할 수
                     있습니다.
                   </TutorialBodyText>
                 }
@@ -942,8 +943,8 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
           ]}
           cautions={[
             '이 실습은 성공 흐름을 익히기 위한 튜토리얼이므로 어떤 프롬프트를 입력해도 성공 모달이 뜹니다.',
-            '실제 챌린지에서는 성공 여부가 현재 대화 내용과 문제의 성공조건을 기준으로 달라집니다.',
-            '성공 후에도 토큰을 줄여 더 높은 점수를 노릴 수 있다는 점을 기억하면 좋습니다.',
+            '실제 챌린지에서는 성공 여부가 현재 대화 내용과 성공조건을 기준으로 달라집니다.',
+            '성공 후에도 토큰을 줄여 더 높은 포인트를 노릴 수 있다는 점을 기억하면 좋습니다.',
           ]}
           nextAction="성공 모달까지 확인했다면, 마지막 실전 연습에서 지금까지 익힌 전체 흐름을 이어서 사용합니다."
           width="min-w-[640px]"
@@ -965,7 +966,7 @@ function ChallengeElementGuide({ activeTab, onTabChange }) {
           <div className="mt-4 max-w-[760px] space-y-3 text-body-lg font-medium text-[#4D5968]">
             <p>
               챌린지 화면을 이루는 주요 영역과 각 구성요소의 역할을 익힙니다. <br />
-              문제 정보를 확인하는 곳과 AI에게 프롬프트를 입력하는 곳을 구분해 살펴봅니다.
+              챌린지 정보를 확인하는 곳과 AI에게 프롬프트를 입력하는 곳을 구분해 살펴봅니다.
             </p>
             <p>
               목표와 성공조건을 읽고 대화를 시작한 뒤, <br />
@@ -986,7 +987,7 @@ function ChallengeElementGuide({ activeTab, onTabChange }) {
                   <TutorialBodyText>
                     전체 화면은 챌린지의 조건을 확인하고 AI와 대화를 진행하는 작업 공간입니다.
                     <br />
-                    왼쪽에는 문제 정보와 사용 토큰이, 오른쪽에는 채팅과 제출 기능이 배치됩니다.
+                    왼쪽에는 챌린지 정보와 사용 토큰이, 오른쪽에는 채팅과 제출 기능이 배치됩니다.
                   </TutorialBodyText>
                 }
               />

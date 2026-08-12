@@ -79,13 +79,13 @@ export default function PublicProfile() {
       subText: profile.rank == null ? '리더보드 비공개' : '전체 참가자 기준',
     },
     {
-      label: '해결한 문제',
-      value: `${formatNumber(profile.solved_count)}문제`,
+      label: '해결한 챌린지',
+      value: `${formatNumber(profile.solved_count)}개`,
       subText: '누적 해결 기준',
     },
     {
-      label: '총 점수',
-      value: `${formatNumber(profile.total_score)}점`,
+      label: '총 포인트',
+      value: `${formatNumber(profile.total_score)}포인트`,
       subText: `총 성공 ${formatNumber(profile.total_successes)}회`,
     },
     {
@@ -93,7 +93,7 @@ export default function PublicProfile() {
       value:
         profile.rank == null || profile.score_to_next_rank == null
           ? '-'
-          : `${formatNumber(profile.score_to_next_rank)}점`,
+          : `${formatNumber(profile.score_to_next_rank)}포인트`,
       subText: profile.rank == null ? '리더보드 비공개' : '한 단계 상승까지',
     },
   ];

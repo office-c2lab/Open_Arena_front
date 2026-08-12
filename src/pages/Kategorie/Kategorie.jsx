@@ -272,7 +272,7 @@ function PathPreview({ path, status = 'untried', badgeLabel, earnedScore }) {
       {path.is_favorite ? (
         <span
           className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#FF4854] shadow-[0_6px_16px_rgba(0,0,0,0.2)] transition-opacity duration-200 group-hover:opacity-0"
-          aria-label="찜한 문제"
+          aria-label="찜한 챌린지"
         >
           <Heart className="h-5 w-5 fill-current" />
         </span>
@@ -339,7 +339,7 @@ export function PathCard({ path, onClick, status = 'untried', badgeLabel, suppor
           <p className="mt-4 text-center text-label font-strong text-[#7B8491]">{supportingText}</p>
         ) : null}
         <button type="button" className="btn btn-primary btn-lg btn-block mt-5">
-          문제풀기
+          챌린지 도전하기
         </button>
       </div>
     </article>
@@ -598,7 +598,7 @@ const ChallengeSection = () => {
                 챌린지 운영이 중지되었습니다.
               </p>
               <p className="mt-2 text-body font-medium text-[#8A94A1]">
-                운영이 재개되면 다시 문제에 도전할 수 있습니다.
+                운영이 재개되면 다시 챌린지에 도전할 수 있습니다.
               </p>
             </div>
           ) : isLoading ? (

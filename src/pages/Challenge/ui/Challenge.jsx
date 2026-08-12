@@ -110,7 +110,7 @@ function ChallengeSolverList({ ranking, isLoading, error }) {
       <div className="flex items-center justify-between gap-4">
         <p className="text-body-lg font-strong text-[#5C6875]">
           <em className="not-italic text-[#FF4854]">{(ranking?.total ?? 0).toLocaleString()}명</em>
-          이 문제를 풀었습니다.
+          이 챌린지를 해결했습니다.
         </p>
         <button
           type="button"
@@ -181,7 +181,7 @@ function ChallengeSolverList({ ranking, isLoading, error }) {
                   </td>
                   <td className="w-[190px] font-bold">{solver.prompt_tokens.toLocaleString()}</td>
                   <td className="w-[190px] text-center font-bold text-[#FF4854]">
-                    {solver.best_score.toLocaleString()} P
+                    {solver.best_score.toLocaleString()}포인트
                   </td>
                   <td className="w-[170px] text-center">
                     <time dateTime={solver.succeeded_at}>
@@ -342,8 +342,10 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
                     </span>
                     <span className="h-4 w-px bg-[#D8DDE4]" aria-hidden="true" />
                     <span>
-                      획득포인트{' '}
-                      <em className="ml-1 not-italic text-[#FF4854]">{points.toLocaleString()}P</em>
+                      획득 포인트{' '}
+                      <em className="ml-1 not-italic text-[#FF4854]">
+                        {points.toLocaleString()}포인트
+                      </em>
                     </span>
                     <span className="h-4 w-px bg-[#D8DDE4]" aria-hidden="true" />
                     <span>
@@ -418,7 +420,7 @@ export default function Challenge() {
     try {
       if (isFreeMember && !challenge.unlocked_today) {
         await unlockMutation.mutateAsync();
-        appToast.success('오늘의 무료 문제 열람 권한을 사용했습니다.');
+        appToast.success('오늘의 무료 챌린지 열람 권한을 사용했습니다.');
       }
       setIsCreatingSession(true);
       const session = await createSession({ problemId: challenge.id, title: challenge.title });
@@ -503,7 +505,7 @@ export default function Challenge() {
 
       {statusQuery.data?.enabled === false ? (
         <div className="mb-8 rounded-[10px] border border-[#FFD3D7] bg-[#FFF8F8] px-5 py-4 text-body font-strong text-[#D93643]">
-          현재 챌린지 운영이 중지되어 있어 문제에 도전할 수 없습니다.
+          현재 챌린지 운영이 중지되어 있어 도전할 수 없습니다.
         </div>
       ) : null}
 
@@ -559,7 +561,7 @@ export default function Challenge() {
               className="btn btn-primary h-[52px] rounded-[6px] text-body-lg"
             >
               {unlockMutation.isPending
-                ? '문제 열람 중'
+                ? '챌린지 열람 중'
                 : isCreatingSession
                   ? '도전 준비 중'
                   : pendingPlayPath

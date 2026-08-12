@@ -37,7 +37,7 @@ export default function AdminProblemManagementPage() {
           <input
             value={searchInput}
             onChange={event => setSearchInput(event.target.value)}
-            placeholder="문제 제목·설명·Slug 검색"
+            placeholder="챌린지 제목·설명·Slug 검색"
             className="h-11 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-10 pr-4 text-white outline-none focus:border-[#FF4854]"
           />
         </label>
@@ -48,7 +48,7 @@ export default function AdminProblemManagementPage() {
             onChange={event => setActiveOnly(event.target.checked)}
             className="h-5 w-5 accent-[#FF4854]"
           />{' '}
-          공개 문제만
+          공개 챌린지만
         </label>
         <button
           type="button"
@@ -61,10 +61,10 @@ export default function AdminProblemManagementPage() {
         </button>
       </div>
 
-      {problemsQuery.isLoading && <State>문제 목록을 불러오는 중...</State>}
+      {problemsQuery.isLoading && <State>챌린지 목록을 불러오는 중...</State>}
       {problemsQuery.error && <State error>{problemsQuery.error.message}</State>}
       {!problemsQuery.isLoading && !problemsQuery.error && items.length === 0 && (
-        <State>표시할 문제가 없습니다.</State>
+        <State>표시할 챌린지가 없습니다.</State>
       )}
 
       <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
@@ -88,7 +88,7 @@ export default function AdminProblemManagementPage() {
             <div className="mt-4 flex flex-wrap gap-2 text-label text-gray-300">
               <span className="rounded bg-white/10 px-2 py-1">{problem.difficulty}</span>
               <span className="rounded bg-white/10 px-2 py-1">
-                {problem.max_score.toLocaleString()}점
+                {problem.max_score.toLocaleString()}포인트
               </span>
               {problem.is_tutorial && (
                 <span className="rounded bg-[#FFB155]/15 px-2 py-1 text-[#FFD08A]">튜토리얼</span>

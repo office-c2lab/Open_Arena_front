@@ -5,8 +5,8 @@ import { useAuthStore } from '@/stores/authStore';
 
 const defaultDashboardSummaryStats = [
   { label: '현재 순위', value: '-', subText: '전체 참가자 기준' },
-  { label: '해결한 문제', value: '-', subText: '전체 문제 기준' },
-  { label: '총 점수', value: '-', subText: '누적 획득 점수' },
+  { label: '해결한 챌린지', value: '-', subText: '전체 챌린지 기준' },
+  { label: '총 포인트', value: '-', subText: '누적 획득 포인트' },
   { label: '다음 순위까지', value: '-', subText: '한 단계 상승까지' },
 ];
 

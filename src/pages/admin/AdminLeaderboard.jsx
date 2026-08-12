@@ -20,9 +20,9 @@ const Leaderboard = () => {
           gap-10
         "
       >
-        {/* 왼쪽: 점수 차트 */}
+        {/* 왼쪽: 포인트 차트 */}
         <div className="flex flex-col items-start gap-4">
-          <h1 className="text-page-title font-strong mb-5 text-[#FF4854]">팀별 점수 차트</h1>
+          <h1 className="text-page-title font-strong mb-5 text-[#FF4854]">팀별 포인트 차트</h1>
           <PointChart />
         </div>
 
@@ -45,7 +45,7 @@ const Leaderboard = () => {
         onClick={() => navigate('/admin/matrix')}
         className="px-5 py-2 bg-[#FF4854] hover:bg-[#e13a47] text-white text-card-title font-medium rounded-lg"
       >
-        문제풀이 매트릭스 보기
+        챌린지 풀이 매트릭스 보기
       </button> */}
       <div className="flex gap-x-10">
         <AdminLeaderboardToggle />

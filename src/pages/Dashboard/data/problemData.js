@@ -1,7 +1,7 @@
 // src/data/problemData.js (최종, 색상 값 없는 버전)
 
 /**
- * 문제 목록 데이터 (순수 데이터 및 상태만 포함)
+ * 챌린지 목록 데이터 (순수 데이터 및 상태만 포함)
  * - status: 'SUCCESS', 'UNSUBMITTED', 'LOCKED' 중 하나
  * - result: 'SUCCESS'일 경우 표시되는 텍스트
  */

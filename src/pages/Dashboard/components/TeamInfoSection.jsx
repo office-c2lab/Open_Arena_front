@@ -14,7 +14,7 @@ export default function TeamInfoSection({ isLoading = false, solvedCount = 0, to
         isLoading={isLoading}
       />
       <TeamInfoCard
-        title="획득 점수"
+        title="획득 포인트"
         value={totalScore}
         iconType="coin"
         valueColor="#FF93AC"

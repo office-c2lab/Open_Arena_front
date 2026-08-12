@@ -28,7 +28,7 @@ export const TUTORIALS = [
     successfulUsers: 0,
     averageTokens: '0',
     description:
-      '문제 설명, 목표, 대화 영역, 제출 버튼, 시도 기록 등 챌린지를 진행할 때 보는 기본 화면 요소를 살펴봅니다.',
+      '챌린지 설명, 목표, 대화 영역, 제출 버튼, 시도 기록 등 진행할 때 보는 기본 화면 요소를 살펴봅니다.',
     goal: '챌린지 화면의 각 구성요소가 어떤 역할을 하는지 이해하는 것이 목표입니다.',
     myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
   },
@@ -88,7 +88,7 @@ export const TUTORIALS = [
     successfulUsers: 0,
     averageTokens: '920',
     description:
-      '문제 목표와 성공 조건을 비교하며 AI 응답을 제출하고, 성공 판정과 점수 반영 방식을 확인합니다.',
+      '챌린지 목표와 성공 조건을 비교하며 AI 응답을 제출하고, 성공 판정과 포인트 반영 방식을 확인합니다.',
     goal: '성공 조건을 만족하는 응답을 제출해 저지 성공 흐름을 경험하는 것이 목표입니다.',
     myRecord: { status: '미도전', attempts: 0, successes: 0, failures: 0, tokens: 0, score: 0 },
   },
@@ -156,7 +156,7 @@ function TutorialCard({ tutorial, onClick }) {
           <p className="mt-2 text-body font-strong text-[#66717E]">{tutorial.subtitle}</p>
           <div className="mt-auto pt-5">
             <button type="button" className="btn btn-primary btn-lg btn-block">
-              {isPracticeTutorial ? '문제풀기' : '튜토리얼 진행하기'}
+              {isPracticeTutorial ? '챌린지 도전하기' : '튜토리얼 진행하기'}
             </button>
           </div>
         </div>
@@ -252,7 +252,7 @@ export default function TutorialList() {
         isPracticeTutorial: true,
         serverProblemId: problem.id,
         title: problem.title,
-        subtitle: problem.sub_title || '튜토리얼에서 익힌 흐름으로 실전 문제 풀기',
+        subtitle: problem.sub_title || '튜토리얼에서 익힌 흐름으로 실전 챌린지 도전하기',
         tier: '실전 연습',
         difficulty,
         category: problem.category?.name || 'Practice',
@@ -264,8 +264,8 @@ export default function TutorialList() {
         level: 'Starter',
         description:
           problem.description ||
-          'AI와 대화하고 제출 결과를 확인하는 전체 과정을 실제 문제로 연습합니다.',
-        goal: problem.goal || problem.success_criteria || '문제의 성공 조건을 달성해 보세요.',
+          'AI와 대화하고 제출 결과를 확인하는 전체 과정을 실제 챌린지로 연습합니다.',
+        goal: problem.goal || problem.success_criteria || '챌린지의 성공 조건을 달성해 보세요.',
         image: getChallengeImage(problem.id),
       };
     });
@@ -384,18 +384,18 @@ export default function TutorialList() {
               />
             ))}
             {!keyword.trim() && problemsQuery.isLoading ? (
-              <TutorialProblemState>실전 연습 문제를 불러오는 중입니다.</TutorialProblemState>
+              <TutorialProblemState>실전 연습 챌린지를 불러오는 중입니다.</TutorialProblemState>
             ) : null}
             {!keyword.trim() && problemsQuery.error ? (
               <TutorialProblemState error>
-                {problemsQuery.error.message || '실전 연습 문제를 불러오지 못했습니다.'}
+                {problemsQuery.error.message || '실전 연습 챌린지를 불러오지 못했습니다.'}
               </TutorialProblemState>
             ) : null}
             {!keyword.trim() &&
             !problemsQuery.isLoading &&
             !problemsQuery.error &&
             !hasPracticeTutorial ? (
-              <TutorialProblemState>현재 공개된 튜토리얼 문제가 없습니다.</TutorialProblemState>
+              <TutorialProblemState>현재 공개된 튜토리얼 챌린지가 없습니다.</TutorialProblemState>
             ) : null}
           </div>
         </section>

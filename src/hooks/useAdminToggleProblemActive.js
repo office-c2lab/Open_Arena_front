@@ -14,7 +14,7 @@ export const useAdminToggleProblemActive = () => {
     },
 
     onError: err => {
-      console.error('🔴 문제 활성/비활성 토글 실패:', err);
+      console.error('🔴 챌린지 활성/비활성 토글 실패:', err);
     },
   });
 };

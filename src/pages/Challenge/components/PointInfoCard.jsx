@@ -25,7 +25,7 @@ const PointInfoCardSkeleton = ({ compact = false }) => (
     </div>
     <div className="flex flex-row ml-4 items-center flex-1 justify-between">
       <span className={`${compact ? 'text-body-lg' : 'text-card-title'} font-medium text-black`}>
-        점수
+        포인트
       </span>
       <Skeleton className="h-8 w-20 rounded" />
     </div>
@@ -36,7 +36,7 @@ export default function PointInfoCard({ compact = false }) {
   const { problemId } = useParams();
   const currentProblemId = problemId || undefined;
 
-  // 문제 기본 점수
+  // 챌린지 기본 포인트
   const { data: problemData, isLoading: isProblemLoading } = useProblemBundle(currentProblemId);
 
   const score = problemData?.problem?.score ?? 0;
@@ -62,11 +62,11 @@ export default function PointInfoCard({ compact = false }) {
 
       <div className="flex flex-row ml-4 items-center flex-1 justify-between">
         <span className={`${compact ? 'text-body-lg' : 'text-card-title'} font-medium text-black`}>
-          점수
+          포인트
         </span>
 
         <div className="flex items-baseline">
-          {/* 최고 점수 */}
+          {/* 최고 포인트 */}
           <span
             className={`${compact ? 'text-card-title' : 'text-section-title'} font-strong text-gray-600`}
           >
@@ -80,7 +80,7 @@ export default function PointInfoCard({ compact = false }) {
             /
           </span>
 
-          {/* 문제 점수 */}
+          {/* 챌린지 포인트 */}
           <span
             className={`${compact ? 'text-card-title' : 'text-section-title'} font-strong text-black`}
           >

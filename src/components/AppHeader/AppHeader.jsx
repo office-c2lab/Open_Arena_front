@@ -458,7 +458,7 @@ export default function AppHeader({ isHidden = false }) {
                               <span className="font-strong text-[#A8AAFF]">{submissionUsage}</span>
                             </div>
                             <div className="rounded-[4px] border border-[#e7e8eb] px-3 py-3 text-center text-body font-medium text-[#76787a]">
-                              문제 열람{' '}
+                              챌린지 열람{' '}
                               <span className="font-strong text-[#1ec186]">
                                 {problemUnlockUsage}
                               </span>

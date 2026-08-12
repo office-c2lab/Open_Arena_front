@@ -103,7 +103,7 @@ export default function AdminJudgePromptEditor() {
               <input
                 value={searchInput}
                 onChange={event => setSearchInput(event.target.value)}
-                placeholder="문제 검색"
+                placeholder="챌린지 검색"
                 className="h-10 w-full rounded-lg border border-white/10 bg-[#1A0B15] pl-9 pr-3 outline-none focus:border-[#FF4854]"
               />
             </label>
@@ -113,7 +113,7 @@ export default function AdminJudgePromptEditor() {
           </form>
         </div>
         <div className="max-h-[75vh] overflow-y-auto p-3">
-          {problemsQuery.isLoading && <State>문제를 불러오는 중...</State>}
+          {problemsQuery.isLoading && <State>챌린지를 불러오는 중...</State>}
           {problemsQuery.error && <State error>{problemsQuery.error.message}</State>}
           {problems.map(problem => (
             <button
@@ -130,16 +130,16 @@ export default function AdminJudgePromptEditor() {
             </button>
           ))}
           {!problemsQuery.isLoading && problems.length === 0 && (
-            <State>표시할 문제가 없습니다.</State>
+            <State>표시할 챌린지가 없습니다.</State>
           )}
         </div>
       </aside>
 
       <main className="min-w-0 flex-1 rounded-xl border border-white/10 bg-[#0B021C]/70 p-6">
         {!selectedProblemId && (
-          <State>왼쪽에서 문제를 선택하면 Judge 프롬프트를 수정할 수 있습니다.</State>
+          <State>왼쪽에서 챌린지를 선택하면 Judge 프롬프트를 수정할 수 있습니다.</State>
         )}
-        {problemQuery.isLoading && <State>문제 Judge 설정을 불러오는 중...</State>}
+        {problemQuery.isLoading && <State>챌린지 Judge 설정을 불러오는 중...</State>}
         {problemQuery.error && <State error>{problemQuery.error.message}</State>}
         {problemQuery.data && (
           <form onSubmit={save}>

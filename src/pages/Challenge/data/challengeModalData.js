@@ -28,7 +28,7 @@ export const successPanelsData = [
     imageSrc: GreenPhoenixImg,
     animalName: '불타오르는 주작',
     title: '성공',
-    description: '제출한 대화가 문제에서 요구한 성공 기준을 충족했습니다.',
+    description: '제출한 대화가 챌린지에서 요구한 성공 기준을 충족했습니다.',
     imageStyle: { img: { width: '88px', height: '116px', borderRadius: '117px' } },
     isFirstPanel: false,
   },
@@ -47,7 +47,7 @@ export const failedPanelsData = [
   {
     imageSrc: TigerImg,
     animalName: '포효하는 백호',
-    description: '제출한 응답에서 문제의 성공 조건에 필요한 핵심 내용을 확인하지 못했습니다.',
+    description: '제출한 응답에서 챌린지 성공 조건에 필요한 핵심 내용을 확인하지 못했습니다.',
     imageStyle: {
       img: { width: '76px', height: '112px', borderRadius: '62px' },
     },
@@ -56,7 +56,7 @@ export const failedPanelsData = [
   {
     imageSrc: PhoenixImg,
     animalName: '불타오르는 주작',
-    description: '모델의 답변이 문제에서 요구한 목표에 충분히 도달하지 못했습니다.',
+    description: '모델의 답변이 챌린지에서 요구한 목표에 충분히 도달하지 못했습니다.',
     imageStyle: {
       img: { width: '88px', height: '116px', borderRadius: '117px' },
     },

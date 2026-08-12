@@ -35,7 +35,7 @@ const PointChart = () => {
   const latest = data[data.length - 1];
   const teamNames = Object.keys(latest).filter(k => k !== 'time');
 
-  // ⭐ 0점 팀도 모두 보여줌
+  // ⭐ 0포인트 팀도 모두 보여줌
   const visibleTeams = teamNames;
 
   // 사용자 리더보드 차트와 동일한 색상 팔레트

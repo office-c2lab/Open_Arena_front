@@ -78,14 +78,14 @@ export default function SuccessModal({
           <p className="text-body-lg font-medium text-[#444] text-center">
             제출한 대화가 챌린지의 성공 조건을 충족했습니다.
             <br />
-            획득한 포인트를 확인하고 다음 문제에도 도전해보세요!
+            획득한 포인트를 확인하고 다음 챌린지에도 도전해보세요!
           </p>
 
           {typeof rewardPoints === 'number' ? (
             <div className="flex items-baseline gap-2 rounded-[14px]  px-5 py-3">
               <span className="text-section-title font-strong text-[#047857]">획득 포인트</span>
               <span className="text-section-title font-strong text-[#04B07B]">
-                {rewardPoints.toLocaleString()} P
+                {rewardPoints.toLocaleString()}포인트
               </span>
             </div>
           ) : null}
@@ -111,7 +111,7 @@ export default function SuccessModal({
                        text-white shadow-[0_3px_8px_rgba(4,176,123,0.16)] transition-all duration-200 hover:-translate-y-[1px] hover:opacity-90 hover:shadow-[0_5px_12px_rgba(4,176,123,0.18)] cursor-pointer"
             style={{ backgroundColor: SUCCESS_COLOR_PRIMARY }}
           >
-            <span className="text-section-title font-strong">다른 문제 풀기</span>
+            <span className="text-section-title font-strong">다른 챌린지 도전하기</span>
           </button>
         </div>
       </div>

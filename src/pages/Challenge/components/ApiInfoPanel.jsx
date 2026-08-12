@@ -30,13 +30,13 @@ export default function ApiInfoPanel({
   if (isLoading) return <ApiInfoPanelSkeleton />;
 
   const requestBodyExample = `{
-  "problem_id": "${problemCode ?? '문제코드 없음'}",
+  "problem_id": "${problemCode ?? '챌린지 코드 없음'}",
   "content": "안녕하세요"
 }`;
 
   return (
     <div className="glass-subtle flex w-full flex-shrink-0 flex-col items-start gap-3 rounded-[18px] p-4">
-      <h3 className="text-body-lg font-strong text-[#837BBD]">문제 API</h3>
+      <h3 className="text-body-lg font-strong text-[#837BBD]">챌린지 API</h3>
 
       <div className="text-body font-medium whitespace-pre-wrap text-[#0F172A]">
         <p>

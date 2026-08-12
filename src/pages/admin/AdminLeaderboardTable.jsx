@@ -23,8 +23,8 @@ const TableSkeleton = ({ rows = 8 }) => (
     <div className="flex items-center h-[79px] text-card-title border-b border-[#FF4854] text-[#FF4854] font-medium">
       <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
       <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
-      <div className={`${COL_WIDTHS.score} text-center`}>획득 점수</div>
-      <div className={`${COL_WIDTHS.solved} text-center`}>해결한 문제</div>
+      <div className={`${COL_WIDTHS.score} text-center`}>획득 포인트</div>
+      <div className={`${COL_WIDTHS.solved} text-center`}>해결한 챌린지</div>
     </div>
 
     {Array.from({ length: rows }).map((_, i) => (
@@ -57,7 +57,7 @@ export default function AdminLeaderboardTable() {
   const { data, isLoading, error } = useAdminLeaderboardQuery();
 
   // -------------------------------
-  // ⭐ 점수 증가 감지 → 3초 하이라이트
+  // ⭐ 포인트 증가 감지 → 3초 하이라이트
   // -------------------------------
   useEffect(() => {
     if (!data) return;
@@ -67,7 +67,7 @@ export default function AdminLeaderboardTable() {
     data.forEach(team => {
       newScores[team.teamname] = team.score;
 
-      // 점수 증가한 팀 하이라이트
+      // 포인트 증가한 팀 하이라이트
       if (lastScoresRef.current[team.teamname] < team.score) {
         setHighlightedTeam(team.teamname);
         setTimeout(() => setHighlightedTeam(null), 3000);
@@ -88,8 +88,8 @@ export default function AdminLeaderboardTable() {
       <div className="flex items-center h-[79px] text-card-title border-b border-[#FF4854] text-[#FF4854] font-medium">
         <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
         <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
-        <div className={`${COL_WIDTHS.score} text-center`}>획득 점수</div>
-        <div className={`${COL_WIDTHS.solved} text-center`}>해결 문제</div>
+        <div className={`${COL_WIDTHS.score} text-center`}>획득 포인트</div>
+        <div className={`${COL_WIDTHS.solved} text-center`}>해결 챌린지</div>
       </div>
 
       {/* ------------------- 팀 목록 ------------------- */}
@@ -117,10 +117,10 @@ export default function AdminLeaderboardTable() {
             {/* 팀명 */}
             <div className={`${COL_WIDTHS.team} text-center`}>{row.teamname}</div>
 
-            {/* 점수 */}
+            {/* 포인트 */}
             <div className={`${COL_WIDTHS.score} text-center`}>{row.score}</div>
 
-            {/* 해결 문제 수 */}
+            {/* 해결 챌린지 수 */}
             <div className={`${COL_WIDTHS.solved} text-center`}>{row.solved_count}</div>
           </div>
         );

@@ -189,7 +189,7 @@ export default function JudgeStackOnlySection() {
                   title="성공 판정은 어떻게 보이나요?"
                   desc={
                     <>
-                      성공 결과는 단순한 점수 표기가 아니라, <br />
+                      성공 결과는 단순한 포인트 표기가 아니라, <br />
                       Judge Model 다수결에 따른 최종 판정으로 사용자에게 전달됩니다.
                       <br />
                       성공 상태에서는 어떤 판단을 통해 <br />
@@ -203,7 +203,7 @@ export default function JudgeStackOnlySection() {
                 {...SECTION_COPY_REVEAL}
               >
                 사용자는 단순히 성공 여부만 확인하는 데 그치지 않고, <br />
-                더 높은 점수를 얻기 위해 어떤 기준을 충족해야 하는지 <br />
+                더 높은 포인트를 얻기 위해 어떤 기준을 충족해야 하는지 <br />
                 화면에서 직관적으로 파악할 수 있습니다.
               </motion.div>
             </div>

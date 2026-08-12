@@ -39,7 +39,7 @@ const LeaderboardTableSkeleton = ({ rows = 12 }) => (
     <div className="flex items-center h-[79px] text-card-title font-strong border-b border-[#FF4854] text-[#FF4854] bg-[#1A0B15]/90 shadow-[0_0_15px_rgba(255,72,84,0.6)]">
       <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
       <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
-      <div className={`${COL_WIDTHS.score} text-center`}>점수</div>
+      <div className={`${COL_WIDTHS.score} text-center`}>포인트</div>
       <div className={`${COL_WIDTHS.solved} text-center`}>해결</div>
       <div className={`${COL_WIDTHS.time} text-center`}>해결 시간</div>
     </div>
@@ -94,11 +94,11 @@ export default function LeaderboardTable() {
   if (error) return <div className="text-red-400 text-center">데이터 불러오기 실패</div>;
 
   /* ===========================================
-     점수 기반 정렬 + 새 rank 부여
+     포인트 기반 정렬 + 새 rank 부여
   ============================================ */
   let rows = (data ?? [])
     .sort((a, b) => {
-      // 점수 높은 순 → 동일하면 해결 시간 빠른 순
+      // 포인트 높은 순 → 동일하면 해결 시간 빠른 순
       if (b.score !== a.score) return b.score - a.score;
       return new Date(a.last_solved_at) - new Date(b.last_solved_at);
     })
@@ -122,7 +122,7 @@ export default function LeaderboardTable() {
       <div className="flex items-center h-[79px] text-card-title font-strong border-b border-[#FF4854] text-[#FF4854] bg-[#1A0B15]/90 shadow-[0_0_20px_rgba(255,72,84,0.6)]">
         <div className={`${COL_WIDTHS.rank} text-center`}>순위</div>
         <div className={`${COL_WIDTHS.team} text-center`}>팀명</div>
-        <div className={`${COL_WIDTHS.score} text-center`}>점수</div>
+        <div className={`${COL_WIDTHS.score} text-center`}>포인트</div>
         <div className={`${COL_WIDTHS.solved} text-center`}>해결</div>
         <div className={`${COL_WIDTHS.time} text-center`}>최근 해결 시간</div>
       </div>
@@ -156,10 +156,10 @@ export default function LeaderboardTable() {
             {/* 팀명 */}
             <div className={`${COL_WIDTHS.team} text-center font-strong`}>{row.teamname}</div>
 
-            {/* 점수 */}
+            {/* 포인트 */}
             <div className={`${COL_WIDTHS.score} text-center font-strong`}>{row.score}</div>
 
-            {/* 해결 문제 수 */}
+            {/* 해결 챌린지 수 */}
             <div className={`${COL_WIDTHS.solved} text-center font-strong`}>{row.solved_count}</div>
 
             {/* 해결 시간 */}

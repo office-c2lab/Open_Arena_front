@@ -56,7 +56,7 @@ export function CategoryManagement() {
   };
 
   return (
-    <ResourceLayout title="카테고리 관리" description="문제 분류와 노출 순서를 관리합니다.">
+    <ResourceLayout title="카테고리 관리" description="챌린지 분류와 노출 순서를 관리합니다.">
       <ResourceForm onSubmit={save}>
         <Field
           label="이름"

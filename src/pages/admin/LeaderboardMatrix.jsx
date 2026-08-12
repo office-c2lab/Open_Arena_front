@@ -12,7 +12,7 @@ const LeaderboardMatrix = () => {
     <div className="w-full min-h-screen flex flex-col items-center p-6 gap-[40px] pb-40">
       {/* 매트릭스 */}
       <div className="w-full flex flex-col items-start gap-4">
-        <h1 className="text-page-title font-strong mb-5 text-[#FF4854]">팀별 문제풀이 현황</h1>
+        <h1 className="text-page-title font-strong mb-5 text-[#FF4854]">팀별 챌린지 풀이 현황</h1>
         <ProblemStatusMatrix />
       </div>
       <AdminProblemToggleList />

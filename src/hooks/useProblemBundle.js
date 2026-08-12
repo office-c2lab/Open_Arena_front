@@ -5,8 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchProblemBundle } from '@/api/problemApi';
 
 /**
- * 특정 문제에 대한 번들 정보(문제 상세, API 정보, 세션 목록)를 불러오는 훅
- * @param {number} problemId - 현재 챌린지의 문제 ID (예: 1)
+ * 특정 챌린지의 번들 정보(챌린지 상세, API 정보, 세션 목록)를 불러오는 훅
+ * @param {number} problemId - 현재 챌린지의 ID (예: 1)
  * @param {number} teamId - 현재 인증된 사용자의 팀 ID (예: 1)
  * @returns {object} React Query 결과 객체
  */

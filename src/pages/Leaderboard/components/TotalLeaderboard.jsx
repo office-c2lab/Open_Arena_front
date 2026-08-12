@@ -47,7 +47,7 @@ export default function TotalLeaderboard() {
   if (error?.response?.status === 404) {
     return (
       <div className="text-white text-center text-section-title mt-10">
-        토탈 점수 차트는 현재 비공개 상태입니다.
+        토탈 포인트 차트는 현재 비공개 상태입니다.
       </div>
     );
   }
@@ -61,7 +61,7 @@ export default function TotalLeaderboard() {
   if (enabled === false) {
     return (
       <div className="text-white text-center text-section-title mt-10">
-        토탈 점수 차트는 현재 비공개 상태입니다.
+        토탈 포인트 차트는 현재 비공개 상태입니다.
       </div>
     );
   }
@@ -69,7 +69,9 @@ export default function TotalLeaderboard() {
   // 로딩
   if (isLoading || !data || data.length === 0) {
     return (
-      <div className="text-white text-center text-card-title mt-10">Loading 점수 변화 차트...</div>
+      <div className="text-white text-center text-card-title mt-10">
+        Loading 포인트 변화 차트...
+      </div>
     );
   }
 
