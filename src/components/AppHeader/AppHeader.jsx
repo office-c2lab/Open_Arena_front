@@ -23,7 +23,7 @@ const isNavItemActive = (item, pathname) => item.match.some(path => pathname.sta
 const formatNumber = value => Number(value ?? 0).toLocaleString('ko-KR');
 
 const getUsageText = metric =>
-  metric ? `${formatNumber(metric.used)} / ${formatNumber(metric.base_limit)}` : '-';
+  metric ? `${formatNumber(metric.used)} / ${formatNumber(metric.effective_limit)}` : '-';
 const formatNoticeTime = value => {
   if (!value) return '';
 
