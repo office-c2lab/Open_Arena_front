@@ -296,13 +296,13 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
   }
 
   return (
-    <section className="mt-5 w-full">
+    <section className="mt-5 w-full max-w-none">
       <p className="text-body-lg font-strong text-[#5C6875]">
         내 도전 기록{' '}
         <em className="not-italic text-[#FF4854]">{sessions.length.toLocaleString()}개</em>
       </p>
 
-      <ul className="mt-6">
+      <ul className="mt-6 w-full">
         {sessions.map(session => {
           const status = getAttemptStatus(session.status);
           const latestUserMessage = [...(session.messages ?? [])]
@@ -334,7 +334,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
               <button
                 type="button"
                 onClick={() => onSessionOpen(session.id, status)}
-                className="group grid min-h-[132px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_84px_28px] items-center gap-6 px-6 py-5 text-left transition-colors hover:bg-[#FAFBFC] sm:grid-cols-[minmax(0,1fr)_96px_32px] sm:px-8"
+                className="group grid min-h-[132px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_84px_28px] items-center gap-6 py-5 text-left transition-colors hover:bg-[#FAFBFC] sm:grid-cols-[minmax(0,1fr)_96px_32px]"
                 aria-label={`${statusLabel} 도전 기록 플레이 화면으로 이동`}
               >
                 <div className="min-w-0">
