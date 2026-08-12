@@ -474,16 +474,19 @@ export function TutorialJudgeFailureInteractivePreview() {
   );
 }
 
-export function TutorialSuccessModalPreview() {
+export function TutorialSuccessModalPreview({
+  rewardPoints = 150,
+  previewScaleClassName = 'origin-center scale-[0.86]',
+}) {
   return (
-    <div className="relative flex h-full min-w-[900px] items-center justify-center overflow-hidden">
+    <div className="relative flex h-full min-w-[900px] items-center justify-center">
       <SuccessModal
         isOpen
         onClose={() => {}}
         previewMode
         embeddedPreview
-        previewRewardPoints={0}
-        previewScaleClassName="origin-center scale-[0.86]"
+        previewRewardPoints={rewardPoints}
+        previewScaleClassName={previewScaleClassName}
       />
     </div>
   );

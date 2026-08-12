@@ -284,9 +284,12 @@ function PathPreview({ path, status = 'untried', badgeLabel }) {
   );
 }
 
-export function PathCard({ path, onClick, status = 'untried', badgeLabel }) {
+export function PathCard({ path, onClick, status = 'untried', badgeLabel, supportingText }) {
   const difficultyMeta = getChallengeDifficultyMeta(path.difficulty);
-  const bestScore = path.best_score ?? 0;
+  const isSolved = status === 'success';
+  const displayedScore = isSolved
+    ? Number(path.best_score ?? 0)
+    : Number(path.maximumPoints ?? path.max_score ?? 0);
 
   return (
     <article
@@ -313,8 +316,22 @@ export function PathCard({ path, onClick, status = 'untried', badgeLabel }) {
             회
           </span>
           <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
-            <em className="mr-1 not-italic text-[#FF4854]">{bestScore.toLocaleString()}</em>
-            포인트 획득
+            {isSolved ? (
+              <>
+                <em className="mr-1 not-italic text-[#FF4854]">
+                  {displayedScore.toLocaleString()}
+                </em>
+                포인트 획득
+              </>
+            ) : (
+              <>
+                최대{' '}
+                <em className="mx-1 not-italic text-[#FF4854]">
+                  {displayedScore.toLocaleString()}
+                </em>
+                포인트
+              </>
+            )}
           </span>
           <span className="flex items-center justify-center pl-1">
             <span
@@ -324,6 +341,9 @@ export function PathCard({ path, onClick, status = 'untried', badgeLabel }) {
             </span>
           </span>
         </div>
+        {supportingText ? (
+          <p className="mt-4 text-center text-label font-strong text-[#7B8491]">{supportingText}</p>
+        ) : null}
         <button type="button" className="btn btn-primary btn-lg btn-block mt-5">
           문제풀기
         </button>

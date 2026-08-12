@@ -6,12 +6,11 @@ import TutorialElementImage from '@/assets/images/t1.png';
 import TutorialChatTokenImage from '@/assets/images/t2.png';
 import TutorialJudgeFailureImage from '@/assets/images/t3.png';
 import TutorialJudgeSuccessImage from '@/assets/images/t4.png';
-import {
-  FailedJudgeModelPreview,
-  SuccessJudgeModelPreview,
-} from '@/pages/LandingPage/JudgeModelPreviews';
+import { FailedJudgeModelPreview } from '@/pages/LandingPage/JudgeModelPreviews';
 import { SectionTitle } from '@/pages/LandingPage/LandingPage.primitives';
 import TokenInfoCard from '@/pages/Challenge/components/TokenInfoCard';
+import { PathCard } from '@/pages/Kategorie/Kategorie';
+import { getChallengeImage } from '@/utils/challengePresentation';
 import {
   TutorialChatTokenInteractivePreview,
   TutorialJudgeFailureInteractivePreview,
@@ -19,9 +18,52 @@ import {
   TutorialPreviewCenterPanel,
   TutorialPreviewLeftPanel,
   TutorialResetModalPreview,
+  TutorialSuccessModalPreview,
   TutorialSubmitModalPreview,
 } from './TutorialChallengePlayPreview';
 import { TUTORIALS } from './TutorialList';
+
+const TUTORIAL_REWARD_CHALLENGES = [
+  {
+    id: 'tutorial-reward-easy',
+    title: '기초 프롬프트 분석',
+    category: 'Tutorial Challenge',
+    difficulty: 'easy',
+    successfulUsers: 32,
+    totalSuccesses: 48,
+    best_score: 100,
+    status: 'success',
+    image: getChallengeImage('tutorial-reward-easy'),
+    sub_title: 'Easy 난이도 획득 점수 예시',
+    sub_description: 'Easy 챌린지에서 성공하면 최대 100점을 획득할 수 있습니다.',
+  },
+  {
+    id: 'tutorial-reward-normal',
+    title: '조건 우회 탐색',
+    category: 'Tutorial Challenge',
+    difficulty: 'normal',
+    successfulUsers: 21,
+    totalSuccesses: 30,
+    best_score: 150,
+    status: 'success',
+    image: getChallengeImage('tutorial-reward-normal'),
+    sub_title: 'Normal 난이도 획득 점수 예시',
+    sub_description: 'Normal 챌린지에서 성공하면 최대 150점을 획득할 수 있습니다.',
+  },
+  {
+    id: 'tutorial-reward-hard',
+    title: '고급 방어 우회',
+    category: 'Tutorial Challenge',
+    difficulty: 'hard',
+    successfulUsers: 8,
+    totalSuccesses: 12,
+    best_score: 200,
+    status: 'success',
+    image: getChallengeImage('tutorial-reward-hard'),
+    sub_title: 'Hard 난이도 획득 점수 예시',
+    sub_description: 'Hard 챌린지에서 성공하면 최대 200점을 획득할 수 있습니다.',
+  },
+];
 
 const learningSections = [
   {
@@ -86,6 +128,7 @@ const tutorialTabs = {
   ],
   10: [
     { key: 'goals', label: '학습 목표' },
+    { key: 'reward', label: '획득 점수' },
     { key: 'result', label: '성공 모달' },
     { key: 'practice', label: '직접 제출하기' },
   ],
@@ -111,6 +154,7 @@ const tutorialTabSummaries = {
     practice: '응답을 직접 제출하고 실패 결과가 표시되는 전체 흐름을 연습합니다.',
   },
   10: {
+    reward: '성공한 제출의 최종 획득 점수와 토큰 효율이 반영되는 흐름을 확인합니다.',
     result: '성공 모달의 최종 판정과 획득 결과를 확인합니다.',
     practice: '응답을 직접 제출하고 성공 결과가 표시되는 전체 흐름을 연습합니다.',
   },
@@ -792,30 +836,85 @@ function JudgeSuccessGuide({ activeTab, onTabChange }) {
         </section>
       ) : null}
 
-      {activeTab === 'result' ? (
-        <section className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
-          <div className="mt-8 lg:mt-12">
-            <SuccessJudgeModelPreview surface="gray" />
+      {activeTab === 'reward' ? (
+        <section className="mt-8 space-y-8">
+          <div className="max-w-2xl">
+            <SectionTitle
+              eyebrow=""
+              title="성공하면 점수는 어떻게 반영되나요?"
+              desc={
+                <TutorialBodyText>
+                  문제 난이도에 따라 획득할 수 있는 최대 점수가 달라집니다.
+                  <br />
+                  Judge 평가를 통과하면 사용한 토큰 효율을 반영한 최종 획득 점수가 표시됩니다.
+                </TutorialBodyText>
+              }
+            />
+            <div className="mt-6">
+              <p className="text-body font-bold text-[#66717E]">
+                각 난이도별 최대 획득 가능 포인트
+              </p>
+              <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-body-lg font-bold text-[#202832]">
+                <span>
+                  Easy: <em className="not-italic text-[#FF4854]">100포인트</em>
+                </span>
+                <span>
+                  Normal: <em className="not-italic text-[#FF4854]">150포인트</em>
+                </span>
+                <span>
+                  Hard: <em className="not-italic text-[#FF4854]">200포인트</em>
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col gap-6 lg:pl-6">
+
+          <div className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
+            {TUTORIAL_REWARD_CHALLENGES.map(challenge => (
+              <PathCard
+                key={challenge.id}
+                path={challenge}
+                status={challenge.status}
+                badgeLabel="획득 점수 예시"
+                onClick={() => {}}
+              />
+            ))}
+          </div>
+
+          <p className="rounded-[12px] bg-[#FFF7F8] px-5 py-4 text-body font-strong text-[#596575]">
+            성공조건을 만족해야 점수를 획득할 수 있으며, 실제 획득 점수는 제출에 사용한 토큰을
+            반영해 서버에서 계산됩니다.
+          </p>
+        </section>
+      ) : null}
+
+      {activeTab === 'result' ? (
+        <section className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-12">
+          <div className="flex flex-col gap-6 lg:pr-6">
             <div className="max-w-xl space-y-4">
               <SectionTitle
                 eyebrow=""
                 title="성공 판정은 어떻게 보이나요?"
                 desc={
                   <TutorialBodyText>
-                    성공 모달은 제출한 대화가 문제의 목표와 <br />
-                    성공조건을 충족했을 때 표시됩니다.
+                    성공 모달은 제출한 대화가 문제의 목표와 성공조건을 충족했을 때 표시됩니다.
                     <br />
-                    3개의 Judge Model 중 2개 이상이 성공으로 판단하면 <br />
-                    최종 성공 결과를 확인할 수 있습니다.
+                    최종 판정과 획득 포인트를 확인한 뒤 다시 도전하거나 다른 문제로 이동할 수
+                    있습니다.
                   </TutorialBodyText>
                 }
               />
             </div>
-            <div className="max-w-lg text-body-lg font-medium text-[#4D5968]">
-              성공 후에는 사용 토큰과 점수를 함께 확인하고, <br />더 적은 토큰으로 같은 결과를 만들
-              수 있는지 돌아보세요.
+            <p className="max-w-lg text-body-lg font-medium text-[#4D5968]">
+              성공 후에는 획득 포인트를 확인하고, 더 적은 토큰으로 같은 성공 결과를 만들 수 있는지
+              돌아보세요.
+            </p>
+          </div>
+
+          <div className="relative mt-8 h-[540px] overflow-hidden rounded-[16px] bg-[#E2E5E9] lg:mt-12">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="h-[760px] w-[1000px] shrink-0 scale-[0.66]">
+                <TutorialSuccessModalPreview previewScaleClassName="" />
+              </div>
             </div>
           </div>
         </section>

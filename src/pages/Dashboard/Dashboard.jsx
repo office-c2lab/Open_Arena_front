@@ -796,6 +796,11 @@ const presentHomeChallenge = (summary, problem) => {
   };
 };
 
+const recommendationReasonLabels = {
+  unsolved_high_score: '고득점 미해결 문제',
+  high_token_usage: '토큰 최적화 추천',
+};
+
 function ChallengeActivityHeatmap({ dashboard, challengeProblems, areChallengeProblemsLoading }) {
   const { account, activity, challenge, continue_challenge: continueChallenge } = dashboard;
   const profile = useMemo(() => normalizeUser(account), [account]);
@@ -1117,6 +1122,7 @@ function RecommendedChallengeSection({
                     <PathCard
                       path={challenge}
                       status={challenge.status}
+                      badgeLabel={recommendationReasonLabels[challenge.reason] || '추천 문제'}
                       onClick={() => navigate(`/challenge/${challenge.id}`)}
                     />
                   </div>

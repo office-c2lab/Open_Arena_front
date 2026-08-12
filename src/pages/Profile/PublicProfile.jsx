@@ -1,6 +1,14 @@
+import { useMemo } from 'react';
 import { ArrowLeft, UserRoundX } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardProfileSummaryCard from '@/components/Profile/DashboardProfileSummaryCard';
+import {
+  PublicActivityHeatmapCard,
+  PublicRecentSolvedChallengeCard,
+  PublicSuccessRateCard,
+  PublicTopSolvedChallenges,
+} from '@/components/Profile/PublicProfileDashboardWidgets';
+import { useChallengeProblems } from '@/hooks/useChallenges';
 import { usePublicUserProfile } from '@/hooks/usePublicUserProfile';
 
 const formatNumber = value => Number(value ?? 0).toLocaleString('ko-KR');
@@ -24,7 +32,12 @@ export default function PublicProfile() {
   const { userId } = useParams();
   const navigate = useNavigate();
   const profileQuery = usePublicUserProfile(userId);
+  const challengeProblemsQuery = useChallengeProblems();
   const profile = profileQuery.data;
+  const problemById = useMemo(
+    () => new Map((challengeProblemsQuery.data?.items ?? []).map(problem => [problem.id, problem])),
+    [challengeProblemsQuery.data?.items]
+  );
 
   const handleBack = () => {
     if (window.history.length > 1) navigate(-1);
@@ -73,12 +86,15 @@ export default function PublicProfile() {
     {
       label: '총 점수',
       value: `${formatNumber(profile.total_score)}점`,
-      subText: '누적 획득 점수',
+      subText: `총 성공 ${formatNumber(profile.total_successes)}회`,
     },
     {
-      label: '총 성공',
-      value: `${formatNumber(profile.total_successes)}회`,
-      subText: '전체 성공 횟수',
+      label: '다음 순위까지',
+      value:
+        profile.rank == null || profile.score_to_next_rank == null
+          ? '-'
+          : `${formatNumber(profile.score_to_next_rank)}점`,
+      subText: profile.rank == null ? '리더보드 비공개' : '한 단계 상승까지',
     },
   ];
 
@@ -94,17 +110,38 @@ export default function PublicProfile() {
       </button>
 
       <header className="mb-6">
-        <h1 className="text-display font-bold text-[#151A21]">사용자 프로필</h1>
+        <h1 className="text-display font-bold text-[#151A21]">{profile.nickname}님의 프로필</h1>
         <p className="mt-2 text-body-lg font-strong text-[#66717E]">
-          사용자가 공개한 프로필과 챌린지 기록입니다.
+          <strong className="font-bold text-[#3D4754]">{profile.nickname}</strong> 님이 공개한
+          프로필과 챌린지 기록입니다.
         </p>
       </header>
 
-      <DashboardProfileSummaryCard
-        profile={profile}
-        summaryStats={summaryStats}
-        showEmail={false}
-      />
+      <div className="flex flex-col gap-7">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-stretch">
+          <DashboardProfileSummaryCard
+            profile={profile}
+            summaryStats={summaryStats}
+            showEmail={false}
+          />
+          <PublicRecentSolvedChallengeCard
+            challenge={profile.recent_solved_challenge}
+            problem={problemById.get(profile.recent_solved_challenge?.problem_id)}
+            onSelect={problemId => navigate(`/challenge/${problemId}`)}
+          />
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(300px,0.85fr)] lg:items-stretch">
+          <PublicActivityHeatmapCard activity={profile.activity} />
+          <PublicSuccessRateCard summary={profile.submission_summary} />
+        </div>
+
+        <PublicTopSolvedChallenges
+          challenges={profile.top_solved_challenges ?? []}
+          problemById={problemById}
+          onSelect={problemId => navigate(`/challenge/${problemId}`)}
+        />
+      </div>
     </div>
   );
 }

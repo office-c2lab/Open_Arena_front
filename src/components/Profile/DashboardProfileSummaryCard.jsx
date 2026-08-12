@@ -4,10 +4,10 @@ import HomeMyBgImage from '@/assets/images/homemybg.png';
 import { useAuthStore } from '@/stores/authStore';
 
 const defaultDashboardSummaryStats = [
-  { label: '현재 순위', value: '24위', subText: '전체 참가자 기준' },
-  { label: '해결한 문제', value: '2문제', subText: '전체 6문제 중' },
-  { label: '보유 포인트', value: '188점', subText: '이번 주 기준' },
-  { label: '다음 순위까지', value: '12점', subText: '23위 추월까지' },
+  { label: '현재 순위', value: '-', subText: '전체 참가자 기준' },
+  { label: '해결한 문제', value: '-', subText: '전체 문제 기준' },
+  { label: '총 점수', value: '-', subText: '누적 획득 점수' },
+  { label: '다음 순위까지', value: '-', subText: '한 단계 상승까지' },
 ];
 
 export default function DashboardProfileSummaryCard({ profile, summaryStats, showEmail = true }) {
