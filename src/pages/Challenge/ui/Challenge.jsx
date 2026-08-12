@@ -39,6 +39,18 @@ function getAttemptStatus(status) {
   return 'unsubmitted';
 }
 
+const formatChallengeDateTime = value => {
+  if (!value) return '-';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '-';
+
+  return new Intl.DateTimeFormat('ko-KR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(date);
+};
+
 function SolverAvatar({ src }) {
   return (
     <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FF4854] shadow-[0_3px_10px_rgba(255,72,84,0.18)]">
@@ -185,10 +197,7 @@ function ChallengeSolverList({ ranking, isLoading, error }) {
                   </td>
                   <td className="w-[170px] text-center">
                     <time dateTime={solver.succeeded_at}>
-                      {new Intl.DateTimeFormat('ko-KR', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                      }).format(new Date(solver.succeeded_at))}
+                      {formatChallengeDateTime(solver.succeeded_at)}
                     </time>
                   </td>
                 </tr>
@@ -316,7 +325,7 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
           const tokens = Number(
             session.user_prompt_tokens ?? session.tokens ?? session.token_count ?? 0
           );
-          const createdAt = session.createdAt ?? session.created_at ?? '-';
+          const createdAt = session.createdAt ?? session.created_at;
           const statusLabel =
             status === 'success' ? '성공' : status === 'failed' ? '실패' : '미제출';
 
@@ -349,7 +358,10 @@ function ChallengeAttemptHistory({ sessions, isLoading, onSessionOpen }) {
                     </span>
                     <span className="h-4 w-px bg-[#D8DDE4]" aria-hidden="true" />
                     <span>
-                      도전일시 <time className="ml-1 text-[#4D5968]">{createdAt}</time>
+                      도전일시{' '}
+                      <time dateTime={createdAt} className="ml-1 text-[#4D5968]">
+                        {formatChallengeDateTime(createdAt)}
+                      </time>
                     </span>
                   </div>
                 </div>
