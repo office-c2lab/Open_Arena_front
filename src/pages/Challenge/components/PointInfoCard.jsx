@@ -10,8 +10,7 @@ const COLOR_BLACK = '#000000';
 
 const PointInfoCardSkeleton = ({ compact = false }) => (
   <div
-    className={`w-full ${compact ? 'h-[58px] p-2.5' : 'h-[80px] p-4'} flex justify-start items-center flex-shrink-0 
-               glass-panel rounded-[20px] animate-pulse`}
+    className={`glass-panel w-full ${compact ? 'min-h-[72px] p-2.5' : 'min-h-[96px] p-4'} flex flex-shrink-0 items-center justify-start rounded-[20px] animate-pulse`}
   >
     <div
       className={`${compact ? 'h-[36px] w-[36px]' : 'w-[49px] h-[49px]'} flex justify-center items-center rounded-[10px] flex-shrink-0`}
@@ -23,11 +22,9 @@ const PointInfoCardSkeleton = ({ compact = false }) => (
         className={compact ? 'h-[22px] w-[22px]' : 'w-[28px] h-[28px]'}
       />
     </div>
-    <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-      <span className={`${compact ? 'text-body-lg' : 'text-card-title'} font-medium text-black`}>
-        포인트
-      </span>
-      <Skeleton className="h-8 w-20 rounded" />
+    <div className="ml-4 flex flex-1 flex-col gap-2">
+      <Skeleton className="h-4 w-full rounded" />
+      <Skeleton className="h-4 w-full rounded" />
     </div>
   </div>
 );
@@ -46,8 +43,7 @@ export default function PointInfoCard({ compact = false }) {
 
   return (
     <div
-      className={`w-full ${compact ? 'h-[58px] p-2.5' : 'h-[80px] p-4'} flex justify-start items-center flex-shrink-0 
-                 glass-panel rounded-[20px]`}
+      className={`glass-panel w-full ${compact ? 'min-h-[72px] p-2.5' : 'min-h-[96px] p-4'} flex flex-shrink-0 items-center justify-start rounded-[20px]`}
     >
       <div
         className={`${compact ? 'h-[36px] w-[36px]' : 'w-[49px] h-[49px]'} flex justify-center items-center rounded-[10px] flex-shrink-0`}
@@ -55,38 +51,19 @@ export default function PointInfoCard({ compact = false }) {
       >
         <img
           src={PointSvg}
-          alt="Point Icon"
+          alt=""
+          aria-hidden="true"
           className={compact ? 'h-[22px] w-[22px]' : 'w-[28px] h-[28px]'}
         />
       </div>
 
-      <div className="flex flex-row ml-4 items-center flex-1 justify-between">
-        <span className={`${compact ? 'text-body-lg' : 'text-card-title'} font-medium text-black`}>
-          포인트
-        </span>
-
-        <div className="flex items-baseline">
-          {/* 최고 포인트 */}
-          <span
-            className={`${compact ? 'text-card-title' : 'text-section-title'} font-strong text-gray-600`}
-          >
-            {bestScore}
-          </span>
-
-          {/* / 구분 */}
-          <span
-            className={`${compact ? 'text-card-title' : 'text-section-title'} font-medium text-black mx-2`}
-          >
-            /
-          </span>
-
-          {/* 챌린지 포인트 */}
-          <span
-            className={`${compact ? 'text-card-title' : 'text-section-title'} font-strong text-black`}
-          >
-            {score}
-          </span>
-        </div>
+      <div className="ml-4 flex min-w-0 flex-1 flex-col items-end gap-2">
+        <strong className={`${compact ? 'text-body' : 'text-body-lg'} text-[#FF4854]`}>
+          {Number(bestScore).toLocaleString()} 포인트 획득
+        </strong>
+        <strong className={`${compact ? 'text-body' : 'text-body-lg'} text-black`}>
+          최대 {Number(score).toLocaleString()} 포인트
+        </strong>
       </div>
     </div>
   );

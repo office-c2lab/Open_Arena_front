@@ -55,6 +55,7 @@ export default function AppRouter() {
             </RootRedirect>
           }
         />
+        <Route path="/landing" element={<LandingPage />} />
         <Route
           path="/login"
           element={

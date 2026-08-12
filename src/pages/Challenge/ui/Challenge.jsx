@@ -540,9 +540,16 @@ export default function Challenge() {
             </span>
             <span className="whitespace-nowrap px-4 font-strong">
               <em className="mr-1 not-italic text-[#FF4854]">
-                {(challenge.best_score ?? 0).toLocaleString()}
+                {Number(challenge.best_score ?? 0).toLocaleString()}
               </em>
               포인트 획득
+            </span>
+            <span className="whitespace-nowrap px-4 font-strong">
+              최대{' '}
+              <em className="mx-1 not-italic text-[#FF4854]">
+                {Number(challenge.max_score ?? 0).toLocaleString()}
+              </em>
+              포인트
             </span>
             <span className="whitespace-nowrap pl-4">
               <span

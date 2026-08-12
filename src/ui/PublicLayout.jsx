@@ -5,7 +5,7 @@ import FooterSection from '@/pages/LandingPage/FooterSection';
 
 export default function PublicLayout() {
   const { pathname } = useLocation();
-  const isLandingPage = pathname === '/';
+  const isLandingPage = pathname === '/' || pathname === '/landing';
   const shouldShowFooter = !isLandingPage;
   const [hasScrolled, setHasScrolled] = useState(false);
 
