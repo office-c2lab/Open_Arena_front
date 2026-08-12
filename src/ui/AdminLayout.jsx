@@ -5,7 +5,7 @@ import FloatingMenu from '../components/FloatingMenu/FloatingMenu';
 
 export default function AdminLayout() {
   return (
-    <div className="relative w-full min-h-screen bg-[#F7F8FA]">
+    <div data-route-scroll-container className="relative w-full min-h-screen bg-[#F7F8FA]">
       {/* 메인 Content */}
       <div className="admin-interactive-scope mx-auto w-full max-w-[1400px] pb-20">
         <Outlet />

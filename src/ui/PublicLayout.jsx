@@ -40,6 +40,7 @@ export default function PublicLayout() {
 
   return (
     <div
+      data-route-scroll-container
       className={`flex min-h-screen w-full flex-col overflow-x-hidden bg-white ${isLandingPage ? '' : 'pt-16'}`}
     >
       <AppHeader isHidden={isLandingPage && !hasScrolled} />
