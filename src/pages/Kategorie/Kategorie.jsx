@@ -237,15 +237,16 @@ function ProblemStatusBadge({ status = 'untried' }) {
 
   return (
     <span
-      className={`absolute right-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold shadow-[0_8px_18px_rgba(0,0,0,0.24)] ${meta.className}`}
+      className={`absolute right-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold shadow-[0_8px_18px_rgba(0,0,0,0.24)] transition-opacity duration-200 group-hover:opacity-0 ${meta.className}`}
     >
       {meta.label}
     </span>
   );
 }
 
-function PathPreview({ path, status = 'untried', badgeLabel }) {
+function PathPreview({ path, status = 'untried', badgeLabel, earnedScore }) {
   const hasPreviewCopy = path.sub_title || path.sub_description;
+  const isSolved = status === 'success';
 
   return (
     <div className="relative h-[180px] overflow-hidden">
@@ -254,14 +255,23 @@ function PathPreview({ path, status = 'untried', badgeLabel }) {
         alt={`${path.title} 챌린지`}
         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
       />
-      {badgeLabel ? (
-        <span className="absolute left-3 top-3 z-10 rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
-          {badgeLabel}
-        </span>
+      {badgeLabel || isSolved ? (
+        <div className="absolute left-3 top-3 z-10 flex flex-col items-start gap-2 transition-opacity duration-200 group-hover:opacity-0">
+          {badgeLabel ? (
+            <span className="rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
+              {badgeLabel}
+            </span>
+          ) : null}
+          {isSolved ? (
+            <span className="rounded-[7px] bg-[#171C24]/90 px-3 py-1.5 text-label font-bold text-white shadow-[0_8px_18px_rgba(0,0,0,0.24)]">
+              {earnedScore.toLocaleString()} 포인트 획득
+            </span>
+          ) : null}
+        </div>
       ) : null}
       {path.is_favorite ? (
         <span
-          className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#FF4854] shadow-[0_6px_16px_rgba(0,0,0,0.2)]"
+          className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#FF4854] shadow-[0_6px_16px_rgba(0,0,0,0.2)] transition-opacity duration-200 group-hover:opacity-0"
           aria-label="찜한 문제"
         >
           <Heart className="h-5 w-5 fill-current" />
@@ -286,17 +296,15 @@ function PathPreview({ path, status = 'untried', badgeLabel }) {
 
 export function PathCard({ path, onClick, status = 'untried', badgeLabel, supportingText }) {
   const difficultyMeta = getChallengeDifficultyMeta(path.difficulty);
-  const isSolved = status === 'success';
-  const displayedScore = isSolved
-    ? Number(path.best_score ?? 0)
-    : Number(path.maximumPoints ?? path.max_score ?? 0);
+  const earnedScore = Number(path.best_score ?? 0);
+  const maximumScore = Number(path.maximumPoints ?? path.max_score ?? 0);
 
   return (
     <article
       className="surface surface-interactive surface-no-hover-border group flex min-w-0 cursor-pointer flex-col overflow-hidden"
       onClick={onClick}
     >
-      <PathPreview path={path} status={status} badgeLabel={badgeLabel} />
+      <PathPreview path={path} status={status} badgeLabel={badgeLabel} earnedScore={earnedScore} />
       <div className="flex flex-1 flex-col p-5">
         <h2 className="text-card-title font-bold text-[#151A21]">{path.title}</h2>
         <p className="mt-2 text-body font-strong text-[#66717E]">{path.category}</p>
@@ -316,22 +324,8 @@ export function PathCard({ path, onClick, status = 'untried', badgeLabel, suppor
             회
           </span>
           <span className="flex items-center justify-center whitespace-nowrap px-1 font-strong">
-            {isSolved ? (
-              <>
-                <em className="mr-1 not-italic text-[#FF4854]">
-                  {displayedScore.toLocaleString()}
-                </em>
-                포인트 획득
-              </>
-            ) : (
-              <>
-                최대{' '}
-                <em className="mx-1 not-italic text-[#FF4854]">
-                  {displayedScore.toLocaleString()}
-                </em>
-                포인트
-              </>
-            )}
+            최대 <em className="mx-1 not-italic text-[#FF4854]">{maximumScore.toLocaleString()}</em>
+            포인트
           </span>
           <span className="flex items-center justify-center pl-1">
             <span
