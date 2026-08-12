@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { PathCard } from '@/pages/Kategorie/Kategorie';
 import { getChallengeImage } from '@/utils/challengePresentation';
@@ -366,28 +368,102 @@ export function PublicRecentSolvedChallengeCard({ challenge, problem, onSelect }
 }
 
 export function PublicTopSolvedChallenges({ challenges, problemById, onSelect }) {
+  const displayedChallenges = useMemo(
+    () =>
+      challenges.map(challenge => ({
+        record: challenge,
+        path: presentSolvedChallenge(challenge, problemById.get(challenge.problem_id)),
+      })),
+    [challenges, problemById]
+  );
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'center',
+    loop: displayedChallenges.length > 1,
+    duration: 24,
+  });
+
+  const updateSelectedIndex = useCallback(() => {
+    if (emblaApi) setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return undefined;
+
+    updateSelectedIndex();
+    emblaApi.on('select', updateSelectedIndex);
+    emblaApi.on('reInit', updateSelectedIndex);
+
+    return () => {
+      emblaApi.off('select', updateSelectedIndex);
+      emblaApi.off('reInit', updateSelectedIndex);
+    };
+  }, [emblaApi, updateSelectedIndex]);
+
   return (
-    <section className="surface px-5 py-6 sm:px-6">
+    <section className="surface relative px-5 py-6 sm:px-6">
       <SectionHeader
         title="주요 해결 챌린지"
         description="가장 높은 포인트를 기록한 챌린지입니다."
       />
-      {challenges.length ? (
-        <div className="mt-6 grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
-          {challenges.map(challenge => {
-            const path = presentSolvedChallenge(challenge, problemById.get(challenge.problem_id));
-            return (
-              <PathCard
-                key={challenge.problem_id}
-                path={path}
-                status="success"
-                badgeLabel="주요 해결"
-                supportingText={getSolvedSupportingText(challenge)}
-                onClick={() => onSelect(challenge.problem_id)}
-              />
-            );
-          })}
-        </div>
+      {displayedChallenges.length ? (
+        <>
+          {displayedChallenges.length > 1 ? (
+            <>
+              <button
+                type="button"
+                aria-label="이전 주요 해결 챌린지"
+                onClick={() => emblaApi?.scrollPrev()}
+                className="absolute left-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)] transition hover:-translate-y-[calc(50%+2px)] hover:border-[#FFB8BE] hover:bg-[#FFF3F4] hover:text-[#FF4854] hover:shadow-[0_12px_24px_rgba(255,72,84,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="다음 주요 해결 챌린지"
+                onClick={() => emblaApi?.scrollNext()}
+                className="absolute right-4 top-[calc(50%+24px)] z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#EEF1F5] bg-white text-[#2E3338] shadow-[0_8px_20px_rgba(15,23,42,0.1)] transition hover:-translate-y-[calc(50%+2px)] hover:border-[#FFB8BE] hover:bg-[#FFF3F4] hover:text-[#FF4854] hover:shadow-[0_12px_24px_rgba(255,72,84,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4854]/30"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </>
+          ) : null}
+
+          <div className="mx-auto mt-6 max-w-[1000px] overflow-hidden px-10" ref={emblaRef}>
+            <div className="-ml-16 flex items-stretch">
+              {displayedChallenges.map(({ record, path }) => (
+                <div
+                  key={record.problem_id}
+                  className="min-w-0 shrink-0 grow-0 basis-[444px] pl-16"
+                >
+                  <PathCard
+                    path={path}
+                    status="success"
+                    badgeLabel="주요 해결"
+                    supportingText={getSolvedSupportingText(record)}
+                    onClick={() => onSelect(record.problem_id)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {displayedChallenges.length > 1 ? (
+            <div className="mt-5 flex justify-center gap-2">
+              {displayedChallenges.map(({ record }, index) => (
+                <button
+                  key={record.problem_id}
+                  type="button"
+                  aria-label={`${record.title ?? '챌린지'} 보기`}
+                  onClick={() => emblaApi?.scrollTo(index)}
+                  className={`h-2 w-2 cursor-pointer rounded-full ${
+                    index === selectedIndex ? 'bg-[#FF4854]' : 'bg-[#D1D7E0]'
+                  }`}
+                />
+              ))}
+            </div>
+          ) : null}
+        </>
       ) : (
         <div className="mt-6 rounded-[8px] bg-[#F7F8FA] px-5 py-10 text-center text-body font-strong text-[#8A93A5]">
           아직 표시할 해결 챌린지가 없습니다.
